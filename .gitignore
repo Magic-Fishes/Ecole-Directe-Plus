@@ -1,5 +1,10 @@
+# nodeJS dependencies
 node_modules
 .DS_Store
 dist
 dist-ssr
 *.local
+
+# useles dependcies
+replit.nix
+.replit
