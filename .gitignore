@@ -5,6 +5,6 @@ dist
 dist-ssr
 *.local
 
-# useles dependcies
+# useless dependcies
 replit.nix
 .replit
