@@ -8,3 +8,6 @@ dist-ssr
 # useless dependcies
 replit.nix
 .replit
+
+# vite-config file
+*.mjs
