@@ -1,3 +1,22 @@
+console.log(`
+EEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD                             
+E::::::::::::::::::::ED::::::::::::DDD                          
+E::::::::::::::::::::ED:::::::::::::::DD                        
+EE::::::EEEEEEEEE::::EDDD:::::DDDDD:::::D         +++++++       
+  E:::::E       EEEEEE  D:::::D    D:::::D        +:::::+       
+  E:::::E               D:::::D     D:::::D       +:::::+       
+  E::::::EEEEEEEEEE     D:::::D     D:::::D +++++++:::::+++++++ 
+  E:::::::::::::::E     D:::::D     D:::::D +:::::::::::::::::+ 
+  E:::::::::::::::E     D:::::D     D:::::D +:::::::::::::::::+       Join us: https://github.com/Magic-Fishes/Ecole-Directe-Enhanced
+  E::::::EEEEEEEEEE     D:::::D     D:::::D +++++++:::::+++++++ 
+  E:::::E               D:::::D     D:::::D       +:::::+       
+  E:::::E       EEEEEE  D:::::D    D:::::D        +:::::+       
+EE::::::EEEEEEEE:::::EDDD:::::DDDDD:::::D         +++++++       
+E::::::::::::::::::::ED:::::::::::::::DD                        
+E::::::::::::::::::::ED::::::::::::DDD                          
+EEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD                             
+`)
+
 
 import { useState } from 'react'
 import './App.css'
