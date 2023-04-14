@@ -1,12 +1,15 @@
+
+import { useState } from 'react'
 import './App.css'
 import Login from "./components/Login"
-import { useState } from 'react'
 import useUserId from './components/useUserId.js'
 
 export default function App() {
 
     const apiUrl = "https://api.ecoledirecte.com/v3/";
-    const apiVersion = "4.27.0";
+    const apiVersion = "4.29.4";
+
+    const [currentEDPVersion, setCurrentEDPVersion] = useState("0.0.5");
     
     const [id, setLogin] = useState("");
     const [pwd, setPassword] = useState("");/* dcp password et identifiant c'est useless en dehors de login nn ? */
@@ -30,7 +33,7 @@ export default function App() {
                     <li>{student.id} : {student.name}</li>
                 })}</ol>
             </div>
-            <Login apiUrl={apiUrl} apiVersion={apiVersion} onLogin={handleLogin}/>
+            <Login apiUrl={apiUrl} apiVersion={apiVersion} onLogin={handleLogin} currentEDPVersion={currentEDPVersion}/>
         </div>
     )
 }

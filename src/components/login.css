@@ -143,13 +143,13 @@ p.policy {
 }
 
 .login-option input[type="checkbox"]:hover {
-    background-color: #9291CA;
+    background-color: #4b48d9;
     cursor: pointer;
 }
 
 .login-option input[type="checkbox"]:checked {
-    background-color: #C7C6FF;
-    background-image: url("/images/checkedBox.png");
+    background-color: #4b48d9;
+    background-image: url("/images/checkedWhite.png");
     background-size: 90%;
     background-position: center;
     background-repeat: no-repeat;

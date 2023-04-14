@@ -7,6 +7,7 @@ const nomDeFonction = (paramètres) => ce que ca return (quand il y a pas de {})
 const nomDeFonction = (paramètres) => {return ce que ca return} (quand il y a des {})
 (paramètres de fonction anonyme) => {} (mm fonctionnment qu'au dessus)
 
+
 RAPPEL PRIMORDIAL JS :
 0.1 + 0.2 === 0.3
 > False
@@ -23,9 +24,12 @@ array.map(parseInt)
 
 aled go typescript
 */
+
 import { useState } from "react";
-import "./Login.css"
-export default function Login({ apiUrl, apiVersion, onLogin }) {
+import "./login.css"
+import EDPVersion from "./EDPVersion"
+
+export default function Login({ apiUrl, apiVersion, onLogin, currentEDPVersion }) {
     /*les props c les trucs que tu mets dans ta balise genre 
     <input azerty="abc"> bah azerty c un props et abc c sa 
     valeur rien de plus ez.
@@ -38,7 +42,7 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
     jsp si les states sont censées remplacer ttes les variables ou juste les variables
     destinées à être envoyé sur le jsx dans le render
     éclaire moi de ta lumière divinement blanchâtre */
-    const apiLoginUrl = apiUrl + "/login.awp?v=" + apiVersion;
+    const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
 
     // States
     const [username, setUsername] = useState("");
@@ -52,7 +56,7 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
     const updateUsername = (newUsername) => { setUsername(newUsername) };
     const updatePassword = (newPassword) => { setPassword(newPassword) };
 
-    function fetchData() {
+    function setupFetch() {
         let payload = `{
             "uuid": "",
             "identifiant": "${username}",
@@ -64,16 +68,12 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
             "body": `data=${payload}`,
             "method": "POST"
         };
-        
-        return fetch(apiLoginUrl, init)
-        .then((response) => response.json());
+
+        return init;
     }
-    
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = fetchData();
+
+    const handleData = (data) => {
         console.log(data);
-        
         setStatusCode(data["code"]);
         if (statusCode === 200) {
             setToken(data["token"])    
@@ -89,20 +89,33 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
             
             onLogin(accountType, studentsList, statusCode, token);
             
+        } else if (statusCode === 505) {
+            console.log(`Error: login failure (code ${statusCode})`);
+            console.log(`Identifiant ou mot de passe invalide !`);
         } else {
             console.log(`Error: login failure (code ${statusCode})`);
         }
-        
+    }
+
+    const handleError = (error) => {
+        console.log("Error:", error)
+    }
+    
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const init = setupFetch();
+        fetch(apiLoginUrl, init)
+        .then((response) => {return response.json()})
+        .then(handleData)
+        .catch(handleError);
     }
 
     // JSX
     return (
         <div>
-            <img src="/images/noLogo.png" className="logo" />
+            <img src="/images/no-logo.png" className="logo" />
             <div className="login-box">
-                <h1>
-                    Se connecter
-                </h1>
+                <h1>Connexion</h1>
                 <form action="submit" onSubmit={handleSubmit}>
                     <input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={(event) => { updateUsername(event.target.value) }} />
                     <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={(event) => { updatePassword(event.target.value) }} />
@@ -111,7 +124,7 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
                         <label htmlFor="keep-login">Se souvenir de moi</label>
                         <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
-                    <input type="submit" value="Connexion" />
+                    <input type="submit" value="Se connecter" />
                 </form>
             </div>
             <p className="policy">
@@ -120,6 +133,7 @@ export default function Login({ apiUrl, apiVersion, onLogin }) {
                 et notre
                 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="privacy-policy"> politique de confidentialité</a>.
             </p>
+        <EDPVersion currentEDPVersion={currentEDPVersion}/>
         </div>
     )
 }

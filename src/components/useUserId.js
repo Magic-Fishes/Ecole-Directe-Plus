@@ -9,19 +9,24 @@ EXACTEMENT comme avec useStates() mais l'avantage c
 qu'on pourra le reset en vrai je pense que c usefull
 pour la propreté et la clareté mais si ca pose des 
 problèmes on enlèvera on mettra un useState dans la App
+
+j'ai pas compris mais ça me semble pertinent
 */
 
 import {useState} from 'react';
 
 function useUserId() {
     const [id, setId] = useState(null);
+    
     const setUserId = (id) => {
         setId(id);
         console.log("test:" + id);
     }
-    const resetUserId = () =>{
+    
+    const resetUserId = () => {
         setId(null);
     }
+    
     return [id, setUserId, resetUserId]
 }
 
