@@ -1,0 +1,203 @@
+/*1vh = 7.5px*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+* {
+    appearance: none;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body, input {
+    font-family: Inter, sans-serif;
+}
+
+:root {
+    font-size: 62.5%;
+}
+
+body {
+    background-color: #181829;
+    color: #FFF;
+    font-weight: 400; /* regular */
+    font-size: 1.725rem;
+    margin: 0;
+    padding: 0;
+}
+
+
+p.policy {
+    width: 90vw;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 90%;
+    transform: translate(-50%, -50%);
+}
+
+.policy2 {
+    text-decoration: none;
+    color: #6D6AFB;
+}
+
+
+.logo {
+    position: absolute;
+    left: 2vh;
+    top: 2vh;
+    width: 10vh;
+}
+
+.login-box {
+    padding: 0.7vh 4vh 0.7vh 4vh;
+    text-align: center;
+    position: absolute;
+    width: 100vw;
+    max-width: 65vh;
+    min-width: 47vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);  
+    border: .15vh solid #4B48D9;
+    border-radius: 2.6vh;
+    background-color: #323257;
+    box-shadow: 0 0 2.6vh rgba(0, 0, 0, 0.4);
+}
+
+.login-box h1 {
+    font-size: 6vh;
+    font-weight: 800;
+    margin: 4.1vh 0 4.7vh 0;
+}
+
+.login-box .login-input {
+    display: block;
+    margin: auto;
+    font-size: 2.5vh;
+    margin-bottom: 2.6vh;
+    padding: 1.3vh;
+    width: 100%;
+    border-color: #4B48D9FF;
+    border-style: solid;
+    border-width: 0.4vh;
+    border-radius: 2vh;
+    background-color: transparent;
+    color: white;
+    outline: none;
+}
+
+.login-box .login-input:hover {
+    background-color: #4B48D940;
+}
+
+.login-box input[type="submit"] {
+    display: block;
+    margin: 0 auto;
+    font-size: 2.3vh;
+    margin-bottom: 2.6vh;
+    padding: 1.3vh;
+    width: 90vw;
+    min-width: 0;
+    max-width: 26vh;
+    border: 0.4vh solid #4B48D9FF;
+    border-radius: 2vh;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    transition: 0.1s;
+    cursor: pointer;
+}
+
+.login-box input[type="submit"]:hover {
+    background-color:  #4B48D9FF;
+}
+
+.login-option {
+    width: 100%;
+    margin-bottom: 2.6vh;
+    text-align: center;
+    display: flex;
+    flex-flow: row wrap;   
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.login-option label, .login-option a {
+    text-align: center;
+    cursor: pointer;
+    margin: 0.8vh;
+}
+
+.login-option input[type="checkbox"] {
+    appearance: none;
+    width: 4.5vh;
+    height: 4.7vh;
+    padding: 1.3vh;
+    margin: 0;
+    border: 0.4vh solid #4B48D9FF;
+    border-radius: 1.3vh;
+    background-color: transparent;
+    outline: none;
+    transition: 0.1s;
+}
+
+.login-option input[type="checkbox"]:hover {
+    background-color: #9291CA;
+    cursor: pointer;
+}
+
+.login-option input[type="checkbox"]:checked {
+    background-color: #C7C6FF;
+    background-image: url("/images/checkedBox.png");
+    background-size: 90%;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: 0s;
+}
+
+.login-option a {
+    text-decoration: none;
+    text-align: right;
+    color: #AAD;
+}
+
+@media only screen and (max-width: 55vh) {
+    body {
+        background-color: #323257;
+        padding: 1.3vh;
+    }
+
+    .login-box {
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
+        margin: 0;
+        padding: 5px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .logo {
+        width: 20vh;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .login-box .login-input {
+        width: 90%;
+        margin: 0 auto 2.6vh auto;
+    }
+    
+    .ltransformput {
+        width: 40%;
+    }
+    
+    .login-box h1 {
+        font-size: 10vw;
+    }
+
+    p.policy {
+        font-size: 4vw;
+    }
+}
