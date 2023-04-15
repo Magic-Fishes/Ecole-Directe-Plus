@@ -11,7 +11,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "react-router-dom": "^6.10.0",
+    "react-router-use-history": "^1.0.0"
+  },
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

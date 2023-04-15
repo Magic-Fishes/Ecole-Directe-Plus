@@ -9,7 +9,7 @@ export default function Window() {
 
     // JSX
     return (
-        <div class="window">
+        <div className="window">
             
         </div>)
 }

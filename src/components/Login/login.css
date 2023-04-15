@@ -1,31 +1,6 @@
 /*1vh = 7.5px*/
 
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-
-* {
-    appearance: none;
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
-
-body, input {
-    font-family: Inter, sans-serif;
-}
-
-:root {
-    font-size: 62.5%;
-}
-
-body {
-    background-color: #181829;
-    color: #FFF;
-    font-weight: 400; /* regular */
-    font-size: 1.725rem;
-    margin: 0;
-    padding: 0;
-}
-
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap'); /* c'est quoi la diff avec @font-face ? */
 
 p.policy {
     width: 90vw;
@@ -43,10 +18,11 @@ p.policy {
 
 
 .logo {
-    position: absolute;
-    left: 2vh;
-    top: 2vh;
-    width: 10vh;
+    position: absolute;/*t allé ingérer des nutriments man ?*/
+    left: 15px;
+    top: 15px;
+    width: 70px;
+    height: auto;
 }
 
 .login-box {
