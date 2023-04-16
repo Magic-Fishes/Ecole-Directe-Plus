@@ -11,3 +11,5 @@ replit.nix
 
 # vite-config file
 *.mjs
+tsconfig.json
+vite.config.json

