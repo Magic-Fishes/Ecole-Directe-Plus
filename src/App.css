@@ -1,11 +1,41 @@
 
-:root { /* les chads ils mettent les variables css dans la root donc on fait pareil */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+/* j'ai importé Inter pour font-weight: 400 600 et 800 dcp le titre du login il remarche normalement*/
+/*Dcp ça correspond à 3 niveaux de gras : regular, semiBold extra-bold OK g capté tkt*/
+/*le gras cest trop beau wallah */
+/*ail ail ail l'arabiscisme*/
+/*c'est quoi l'équivalent français de wallah d'aprs l'académie française flemme de chercher ça doit être jeu en nuage*/
+/*ok c'est je jure*/
+/*OK c EZ en vrai bref programming là on doit avoir finit avant la fin de l'année scolaire nn en vrai on doit avoir fait dashboard+notes avant la fin après avec tah le bac et tt c'est cancer et puis il ya ZELDA TOTK*/
+/* j'ai commencé à clear le login.css; t déter j'aurais pas eu le courage mtnt*/
+/* j'avais vla plus la flemme de faire le redirect */
+/* en vrai ca a l'air moins chiant que les windows*/
+
+/* mais d'ailleurs quand on arrive sur le login ou n'importe ou enft ça charge tous les fichiers du site même avec le routing */
+/* ce qui est franchement insupportable */
+/* jsp si il ya moyen de dire non mais le fonctionnement de base c'est ça */
+/* dcp notre loading il va être un peu useless mais pg ça dépend de la durée d'une requête ED */
+:root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
+    /* colors */
     --main-text-color: #FFF;
     --main-background0-color: #181829;
     --main-background1-color: #484866;
     --main-window-header-color: #323257;
-    --main-nav-bar-color: #39378f;
+    --main-nav-bar-color: #39378f;/*ok dcp idée validée on verra comment on met ca en placeenfin c simple mais voilà*/
     --main-window-box-shadow: 0 0 20px black;
+    
+    /* font*/
+    --main-font-size-16: 1.6rem;
+    --main-font-size-18: 1.8rem;
+    --main-font-size-20: 2rem; /* window content */
+    --main-font-size-24: 2.4rem; /* window header */
+    --main-font-size-32: 3.2rem;
+    --main-font-size-36: 3.6rem;
+    --main-font-size-42: 4.2rem;
+    --main-font-size-48: 4.8rem;
+    --main-font-weight-regular: 400;
+    --main-font-weight-semi-bold: 600;
+    --main-font-weight-extra-bold: 800;
 
     font-size: 62.5%; /*pour que 1rem = 10px*/
 }
@@ -32,7 +62,7 @@ body {
     background-color: var(--main-background0-color);
     color: var(--main-text-color);
     font-weight: 400; /* regular */
-    font-size: 1.725rem;
+    font-size: 1.6rem;
     margin: 0;
     padding: 0;
 }

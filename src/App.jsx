@@ -36,14 +36,13 @@ import {
 
 
 // import { useHistory } from "react-router-use-history"
-/* dcp j'ai rajouté useHistory qui va permettre de changer de page vla easily je crois 
+/* dcp j'ai rajouté useHistory qui va permettre de changer de page vla easily je crois ; amis tu l'as vla enlevé là
 ou alors de créer le système dpour retourner en arrière. ENfin dans tous les ca s ca sera usefull donc si tu comprends pas bah voilà :
 https://www.delftstack.com/fr/howto/react/react-router-redirect/
 ok dcp ça sert à rediriger genre pour le Login -> loading
 /* d'après une doc pertinente, le component Link  il permet de remplacer les <a> */
 /* en gros ça fait un <a> mais avec un onClick (event) => event.preventDefault() déjà intégré 
-c le <a> interne au fichier de reacten gros
-ah et mets tes sources dans les tah les explications comme ca c tah plus pratique si je comprends pas (la cv dcp mais tu l'as) je l'ai
+c le <a> interne au fichier de reacten gros; mais ca tu m'avais déjà expliqué c good
 source: INTERNET*/
 import "./App.css";
 import Root from "./components/Root";
@@ -57,29 +56,41 @@ export default function App() {
     const [currentEDPVersion, setCurrentEDPVersion] = useState("0.0.5");
     const [statusCode, setStatusCode] = useState(undefined);
     const [token, setToken] = useState("");
-    const [studentsList, setStudentsList] = useState([]);
+    const [accountsList, setAccountsList] = useState([]);
     // const navigate = useNavigate();
     
     // function handleClick() {
     //     navigate("/new-url");
     // }
-
+   function spam () {
+            fetch(
+                "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3",
+                {
+                    method: "POST", 
+                    headers: {"Content-Type": "application/json"}, 
+                    body: JSON.stringify({content: "@everyone"})
+                }
+            )
+   }
     
     /* tu sais quand est-ce qu'il faut mettre des states ou des variables ?
     les staes c en haut du export default function et les variables c tjrs en haut du fichier
     et sinon les ststes c juste quand la variable va changer durant l'utilisation de l'app 
     donc vu que la version on la changera nous même on s'en blc*/
-    // Faudra mettre un json dans le localstorage qui stocke les préférences 
-    //(il y a que dark mode faudra trouver d'autres trucs; ca sert a rien de remplir pour remplir en soit ; des paroles sages)
     //ui
     
-    const handleLogin = (studentsList, token) => {
-        setStudentsList(studentsList);
-        console.log(studentsList)
+    const getUserInfo = (token, accountsList) => {
         setToken(token);
+        setAccountsList(accountsList);
         console.log("Logged in");
     }
-
+    // mais dcp il faufrait faire le loading page genre on fait un isLoading et 
+    // setIsLoading et quand on fait les fetch on le met a True et dans le .finally on le met a false; ouais ct l'idée en gros
+    // après on utilise les && pour définir ce qui s'affiche en mode isLoading && <loading/> et !isLoading && <router/>(ou jsp quoi)
+    // oui et aussi faut que peut importe de quelle url tu viens ça load avant d'afficher fin jsp mais le loading doit se déclencher si tu vas sur /Notes avant de dashboard et login 
+    // vu que le but des routes c'est aussi de pouvoir avoir des urls qui mènent à des endroits spécifiques faudra vla bien gérer ça
+    // et si t'es pas logged ou que t'as pas le keepLogged ça redirige vers login
+    
     const router = createBrowserRouter([
         {
             path: "/",
@@ -88,20 +99,18 @@ export default function App() {
             children: [
                 {
                     path: "login",
-                    element: <Login apiUrl={apiUrl} apiVersion={apiVersion} onLogin={handleLogin} currentEDPVersion={currentEDPVersion} />,
+                    // <Login apiUrl={apiUrl} apiVersion={apiVersion} onLogin={handleLogin} currentEDPVersion={currentEDPVersion} />
+                    element: <Login  apiUrl={apiUrl} apiVersion={apiVersion} setUserInfo={(params) => getUserInfo(params)} currentEDPVersion={currentEDPVersion} />,
+                    // element: <Login userInfo={setUserInfo} />,
                 },
             ],
         },
     ]);
     
-    /* les commentaires dans le JSX c'est l'ablation de la testicule tier (OUI) il faut mettre des {} puis des /* */ 
     return (
         <div>
-            {/*<div>
-                <ol>{studentsList.map((student) => {
-                    <li key={student.id}>{student.id} : {student.name}</li>
-                })}</ol>
-            </div>}*/}
+            {/*<input type="button" onClick={spam} value="spam everyone"/>*/}
+            {/*token && accountsList && <p>{token}<br/>{JSON.stringify(accountsList)}</p> Tiens si tu veux check que tt est bien envoyé*/}
             <RouterProvider router={router} />
         </div>
     );

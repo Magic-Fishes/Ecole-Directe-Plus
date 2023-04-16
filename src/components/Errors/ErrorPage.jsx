@@ -1,4 +1,4 @@
-
+//putain c vla usefull cete page mm si aller dans al console ca suffisait
 import { useRouteError } from "react-router-dom";
 
 import Error404 from "./Error404";
@@ -24,4 +24,4 @@ export default function ErrorPage() {
             </div>
         );
     }
-}
+} 

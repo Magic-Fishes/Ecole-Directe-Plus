@@ -5,12 +5,17 @@
 // dcp c plus rapide de le mettre deux fois je pense que de faire u component pour ca
 // C'est réel mais dcp il faut dupliquer le css aussi
 import { useState } from "react";
+import PatchNotes from "./PatchNotes";
 import "./EDPVersion.css"
 
 export default function EDPVersion({ currentEDPVersion }) {
 
+    const handleClick = (event) => {
+        <PatchNotes />
+    }  
+    
     return (
-       <div id="edp-version">
+       <div id="edp-version" onClick={handleClick}>
            v{currentEDPVersion}
        </div> 
     )
