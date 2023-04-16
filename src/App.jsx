@@ -36,14 +36,7 @@ import {
 
 
 // import { useHistory } from "react-router-use-history"
-/* dcp j'ai rajouté useHistory qui va permettre de changer de page vla easily je crois ; amis tu l'as vla enlevé là
-ou alors de créer le système dpour retourner en arrière. ENfin dans tous les ca s ca sera usefull donc si tu comprends pas bah voilà :
-https://www.delftstack.com/fr/howto/react/react-router-redirect/
-ok dcp ça sert à rediriger genre pour le Login -> loading
-/* d'après une doc pertinente, le component Link  il permet de remplacer les <a> */
-/* en gros ça fait un <a> mais avec un onClick (event) => event.preventDefault() déjà intégré 
-c le <a> interne au fichier de reacten gros; mais ca tu m'avais déjà expliqué c good
-source: INTERNET*/
+
 import "./App.css";
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
@@ -73,23 +66,11 @@ export default function App() {
             )
    }
     
-    /* tu sais quand est-ce qu'il faut mettre des states ou des variables ?
-    les staes c en haut du export default function et les variables c tjrs en haut du fichier
-    et sinon les ststes c juste quand la variable va changer durant l'utilisation de l'app 
-    donc vu que la version on la changera nous même on s'en blc*/
-    //ui
-    
     const getUserInfo = (token, accountsList) => {
         setToken(token);
         setAccountsList(accountsList);
         console.log("Logged in");
     }
-    // mais dcp il faufrait faire le loading page genre on fait un isLoading et 
-    // setIsLoading et quand on fait les fetch on le met a True et dans le .finally on le met a false; ouais ct l'idée en gros
-    // après on utilise les && pour définir ce qui s'affiche en mode isLoading && <loading/> et !isLoading && <router/>(ou jsp quoi)
-    // oui et aussi faut que peut importe de quelle url tu viens ça load avant d'afficher fin jsp mais le loading doit se déclencher si tu vas sur /Notes avant de dashboard et login 
-    // vu que le but des routes c'est aussi de pouvoir avoir des urls qui mènent à des endroits spécifiques faudra vla bien gérer ça
-    // et si t'es pas logged ou que t'as pas le keepLogged ça redirige vers login
     
     const router = createBrowserRouter([
         {
@@ -99,9 +80,7 @@ export default function App() {
             children: [
                 {
                     path: "login",
-                    // <Login apiUrl={apiUrl} apiVersion={apiVersion} onLogin={handleLogin} currentEDPVersion={currentEDPVersion} />
                     element: <Login  apiUrl={apiUrl} apiVersion={apiVersion} setUserInfo={(params) => getUserInfo(params)} currentEDPVersion={currentEDPVersion} />,
-                    // element: <Login userInfo={setUserInfo} />,
                 },
             ],
         },

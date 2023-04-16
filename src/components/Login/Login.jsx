@@ -48,10 +48,8 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
     }
 
     function handleSubmit(event) {
-        // ici la partie côté affichage
         setSubmitText("Connexion...");
 
-        // ici la partie côté fetch et data 
         event.preventDefault();
         const options = getOptions();
         fetch(apiLoginUrl, options)
@@ -122,7 +120,6 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                 setSubmitText("Se connecter");
             })
     }
-
 
     // JSX
     return (
