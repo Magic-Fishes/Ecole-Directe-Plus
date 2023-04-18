@@ -1,8 +1,16 @@
 
 #edp-version {
-/*     background-color: red; */
+    background: rgba(255, 255, 255, 0);
     position: absolute;
     right: 10px;
     bottom: 10px;
     z-index: -99;
+    padding: 4px;
+    border-radius: 6px;
+    pointer: cursor;
+    transition: 0.1s;
+}
+
+#edp-version:hover, #edp-version:focus, #edp-version:active{
+    background: rgba(255, 255, 255, 0.2);
 }

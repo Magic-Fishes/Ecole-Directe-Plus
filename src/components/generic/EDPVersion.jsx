@@ -9,14 +9,22 @@ import PatchNotes from "./PatchNotes";
 import "./EDPVersion.css"
 
 export default function EDPVersion({ currentEDPVersion }) {
-
-    const handleClick = (event) => {
-        <PatchNotes />
-    }  
+    const [isPatchNotesOpened, setIsPatchNotesOpened] = useState(false);
     
-    return (
-       <div id="edp-version" onClick={handleClick}>
-           v{currentEDPVersion}
-       </div> 
+    const handleClick = () => {
+        // ouvre et ferme la pop-up patch notes
+        setIsPatchNotesOpened(!isPatchNotesOpened);
+    }
+    
+    if (isPatchNotesOpened) {
+        return (
+            <PatchNotes currentEDPVersion={currentEDPVersion} onClose={handleClick}/>
+        )
+    } else {
+        return (
+           <div id="edp-version" onClick={handleClick}>
+               v{currentEDPVersion}
+           </div> 
     )
+    }
 }

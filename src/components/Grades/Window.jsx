@@ -1,15 +1,20 @@
 import { useState } from "react"
+import "./window.css"
 
-export default function Window() {
+export default function Window({ title, windowContent }) {
     // States
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState(<div id="id"><p>Window content</p></div>);
 
     // Behavior
 
     // JSX
     return (
-        <div className="window">
-            
-        </div>)
+        <div className="window" id="last-grades">
+            <h2 className="window-header">
+                {title}
+            </h2>
+            <div className="window-content">
+                {windowContent}
+            </div>
+        </div>
+    )
 }

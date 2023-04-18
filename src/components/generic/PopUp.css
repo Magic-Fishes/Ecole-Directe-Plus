@@ -1,0 +1,111 @@
+
+#pop-up { /*assombris l'arrière du pop-up */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    animation: 0.3s ease 0s fade-in;
+}
+
+#pop-up-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--main-background-color-1);
+    padding: 25px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--main-window-box-shadow);
+    filter: none;
+    animation: 0.3s ease-out 0s blur-in;
+}
+
+.relative-container {
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: -12px; /*valeurs négatives pour counter le padding du pop-up-background*/
+    right: -10px;
+    background: none;
+    line-height: 22px; /* vu que la croix est pas très haute ça faisait que l'origine y se trouvait vla haut par rapport à la croix alors que l'origine x était bonne dcp ça crashait à l'affichage*/
+    border: none;
+    color: var(--main-text-color);
+    font-size: var(--main-font-size-36);
+    font-weight: var(--main-font-weight-extra-bold);
+}
+
+#close-pop-up {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: none;
+    line-height: 1;
+    border: none;
+    margin-top: 25px; /*=padding pop-up-background*/
+    font-size: var(--main-font-size-18);
+    color: var(--main-font-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#close-pop-up:hover {
+    text-decoration: none;
+}
+
+/* header */
+
+#pop-up-header {
+    margin-bottom: 25px; /*= padding pop-up-background*/
+}
+
+#pop-up h2 {
+    font-size: var(--main-font-size-20);
+    margin-right: 20px; /*laisse de l'espace à la croix*/
+}
+
+#pop-up h4 {
+    font-size: 14px;
+    font-weight: var(--main-font-weight-regular);
+}
+
+#pop-up-content h3 {
+    margin-bottom: 10px;
+    font-weight: var(--main-font-weight-extra-bold);
+    font-size: var(--main-font-size-18);
+}
+
+#pop-up-content {
+    margin: 0 auto;
+    background-color: var(--main-background-color-0);
+    border-radius: 20px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: scroll;
+    list-style-position: inside;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes blur-in {
+    from {
+        filter: blur(10px);
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        filter: blur(0px);
+        transform: translate(-50%, -50%) scale(1);
+    }
+}

@@ -18,10 +18,10 @@
 :root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
     /* colors */
     --main-text-color: #FFF;
-    --main-background0-color: #181829;
-    --main-background1-color: #484866;
+    --main-background-color-0: #181829;
+    --main-background-color-1: #484866;
     --main-window-header-color: #323257;
-    --main-nav-bar-color: #39378f;/*ok dcp idée validée on verra comment on met ca en placeenfin c simple mais voilà*/
+    --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;
     
     /* font*/
@@ -44,11 +44,11 @@
 /* si light mode ajouter classe light à root*/
 :root.light { /* si on peut pas mettre de classe sur root on met sur body c'est pour écraser les variables du dark mode t'as la ref*/
     --main-text-color: #000;
-    --main-background0-color: #ffffff; /*valeurs totalement random à changer*/
-    --main-background1-color: #c7c7ff;
-    --main-frame-header-color: #a8a8ff;
+    --main-background-color-0: #ffffff; /*valeurs totalement random à changer*/
+    --main-background-color-1: #c7c7ff;
+    --main-window-header-color: #a8a8ff;
     --main-nav-bar-color: #8785ff;
-    --main-frame-shadow-color: rgba(0, 0, 0, 0.4);
+    --main-window-box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -59,7 +59,7 @@
 }
 
 body {
-    background-color: var(--main-background0-color);
+    background-color: var(--main-background-color-0);
     color: var(--main-text-color);
     font-weight: 400; /* regular */
     font-size: 1.6rem;

@@ -1,9 +1,14 @@
 /*1vh = 7.5px*/
 
+#error-message {
+    color: red;
+}
+
 p.policy {
-    width: 90vw;
+    width: 80vw;
     text-align: center;
     position: absolute;
+    font-size: min(var(--main-font-size-16), 4vmin);
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
     transform: translateX(-50%);
@@ -28,7 +33,7 @@ p.policy {
     position: absolute;
     width: 100vw;
     max-width: 480px;
-    min-width: 350px;
+    min-width: 0;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -40,7 +45,7 @@ p.policy {
 
 .login-box h1 {
     font-size: var(--main-font-size-42);
-    font-weight: 800;
+    font-weight: var(--main-font-weight-extra-bold);
     margin: 3rem 0 3.5rem 0;
 }
 
@@ -170,9 +175,5 @@ p.policy {
     
     .login-box h1 {
         font-size: 10vw;
-    }
-
-    p.policy {
-        font-size: 4vw;
     }
 }
