@@ -5,7 +5,7 @@ dist
 dist-ssr
 *.local
 
-# useless dependcies
+# useless dependencies
 replit.nix
 .replit
 
@@ -13,3 +13,6 @@ replit.nix
 *.mjs
 tsconfig.json
 vite.config.json
+
+# prevent build folder from being committed
+dist
