@@ -5,6 +5,10 @@ dist
 dist-ssr
 *.local
 
+# packager files
+package-lock.json
+package.json
+
 # useless dependencies
 replit.nix
 .replit
@@ -12,7 +16,4 @@ replit.nix
 # vite-config file
 *.mjs
 tsconfig.json
-vite.config.json
-
-# prevent build folder from being committed
-dist
+vite.config.js
