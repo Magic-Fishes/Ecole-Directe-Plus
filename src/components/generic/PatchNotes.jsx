@@ -18,6 +18,7 @@ export default function PatchNotes({ currentEDPVersion, onClose}) {
             <li>Dark mode surcôté</li>
             <li>La religion est un abri qui nous protège de notre ignorance</li>
             <li>Nous ne savons rien, mais je suis plus savant que toi puisque je sais que je ne sais rien</li>
+            <li>Ajout du système automatique de reconnexion qui a le cancer et qui sera à l'origine de la fuite de vos données personnelles sur le dark web</li>
         </ul>
     );
     
