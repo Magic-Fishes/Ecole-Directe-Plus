@@ -36,8 +36,9 @@
     line-height: 22px; /* vu que la croix est pas très haute ça faisait que l'origine y se trouvait vla haut par rapport à la croix alors que l'origine x était bonne dcp ça crashait à l'affichage*/
     border: none;
     color: var(--main-text-color);
-    font-size: var(--main-font-size-36);
+    font-size: var(--main-font-size-24);
     font-weight: var(--main-font-weight-extra-bold);
+    cursor: pointer;
 }
 
 #close-pop-up {

@@ -37,10 +37,10 @@ p.policy {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid #4B48D9;
+    border: 1px solid var(--main-border-color-0);
     border-radius: 20px;
-    background-color: #323257;
-    box-shadow: 0 0 20px rgba(0, 0, 0, .75);
+    background-color: var(--main-window-header-color);
+    box-shadow: var(--main-box-shadow);
 }
 
 .login-box h1 {
@@ -52,36 +52,20 @@ p.policy {
 /* marque ligne */
 
 .login-box .login-input {
-    display: block;
-    margin: auto;
-    font-size: var(--main-font-size-18);
-    margin-bottom: 2.6vh;
-    padding: 1.3vh;
-    width: 100%;
-    border-color: #4B48D9FF;
-    border-style: solid;
-    border-width: 0.4vh;
-    border-radius: 2vh;
-    background-color: transparent;
-    color: white;
-    outline: none;
-}
-
-.login-box .login-input:focus {
-    background-color: #4B48D940;
+    margin-bottom: 20px;
 }
 
 .login-box input[type="submit"] {
     display: block;
     margin: 0 auto;
-    font-size: 2.3vh;
+    font-size: var(--main-font-size-18);
     margin-bottom: 2.6vh;
-    padding: 1.3vh;
-    width: 90vw;
+    padding: 10px 15px;
+    
     min-width: 0;
-    max-width: 26vh;
+    /*max-width: 26vh;*/
     border: 0.4vh solid #4B48D9FF;
-    border-radius: 2vh;
+    border-radius: 15px;
     background-color: transparent;
     color: white;
     outline: none;
@@ -103,49 +87,19 @@ p.policy {
     justify-content: space-evenly;
 }
 
-.login-option label, .login-option a {
-    text-align: center;
-    cursor: pointer;
-    margin: 0.8vh;
-}
-
-.login-option input[type="checkbox"] {
-    appearance: none;
-    width: 4.5vh;
-    height: 4.7vh;
-    padding: 1.3vh;
-    margin: 0;
-    border: 0.4vh solid #4B48D9FF;
-    border-radius: 1.3vh;
-    background-color: transparent;
-    outline: none;
-    transition: 0.1s;
-}
-
-.login-option input[type="checkbox"]:hover {
-    background-color: #4b48d9;
-    cursor: pointer;
-}
-
-.login-option input[type="checkbox"]:checked {
-    background-color: #4b48d9;
-    background-image: url("/images/checkedWhite.png");
-    background-size: 90%;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: 0s;
-}
-
 .login-option a {
-    text-decoration: none;
+    /*text-align: center;*/
     text-align: right;
+    margin: 0.8vh;
+    text-decoration: none;
     color: #AAD;
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 55vh) {
     body {
         background-color: #323257;
-        padding: 1.3vh;
+        padding: 1.3vh;        
     }
 
     .login-box {
@@ -166,7 +120,7 @@ p.policy {
 
     .login-box .login-input {
         width: 90%;
-        margin: 0 auto 2.6vh auto;
+        margin: 0 auto 20px auto;
     }
     
     .ltransformput {

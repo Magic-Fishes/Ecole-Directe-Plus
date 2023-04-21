@@ -1,11 +1,27 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./PopUp.css"
 
 export default function PopUp({ header, subHeader, contentTitle, content, onClose }) {
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        // Utilise la fonction de nettoyage de useEffect pour supprimer le gestionnaire d'événements lorsque le composant est démonté
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [])
+    
+    const handleKeyDown = (event) => {
+        console.log(event.key);
+        if (event.key === "Escape") {
+            onClose();
+        }
+    }
+    
     return (
-       <div id="pop-up" onClick={console.log("Clicked")}>
-            <div id="pop-up-background">
+       <div id="pop-up" onClick={onClose}>
+            <div id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* empêche la détection du clique par le background si le pop-up est cliqué */}
                 <div className="relative-container">
                     <button className="close-button" onClick={onClose}>✕</button>
                     <div id="pop-up-header">
