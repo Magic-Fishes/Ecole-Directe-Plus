@@ -2,8 +2,8 @@
 import "./TextInput.css"
 
 export default function TextInput({ className, textType, placeholder, value, onChange}) {
-    const availableTextTypes = ["text", "password", "email", "search", "url"];
-    if (!availableTextTypes.includes(textType)) {
+    const allowedTextTypes = ["text", "password", "email", "search", "url"];
+    if (!allowedTextTypes.includes(textType)) {
         textType = "text";
     }
 

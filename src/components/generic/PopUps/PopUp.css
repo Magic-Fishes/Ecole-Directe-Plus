@@ -1,19 +1,29 @@
 
-#pop-up { /*assombris l'arrière du pop-up */
+#pop-up { /*assombris l'arrière du pop-up; g assombris encore plus pour que ca ressorte mieux je trouve c plus beau comme ca */
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
     animation: 0.3s ease 0s fade-in;
+    animation-fill-mode: forwards;
 }
 
-#pop-up-background {
+/*g fait un micro modif genre en gros on met les paramètres 
+initaux (de ton animation tt en bas) et après on met animation-fill-mode: 
+forwards et ca permet de garder la version de fin d'animation l'avantage 
+c que g l'impression que avant l'animation t'as une fraction de sec ou la 
+version finale pop dcp c bzr et la ca le fait pas
+j'ai parfaitement laref et c'est tres pertinent*/
+
+#pop-up-background { 
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    filter: blur(10px);
+    transform: translate(-50%, -50%) scale(0.8);
     background-color: var(--main-background-color-1);
     padding: 25px;
     border-radius: 20px;
@@ -22,6 +32,7 @@
     box-shadow: var(--main-window-box-shadow);
     filter: none;
     animation: 0.3s ease-out 0s blur-in;
+    animation-fill-mode: forwards;
 }
 
 .relative-container {

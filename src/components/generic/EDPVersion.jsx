@@ -4,6 +4,7 @@
 // mais c'est juste pour loading et login dcp
 // dcp c plus rapide de le mettre deux fois je pense que de faire u component pour ca
 // C'est réel mais dcp il faut dupliquer le css aussi
+// est-ce que tu t'es parlé a toi même prcq g aucun putain de souvenir d'avoir écrit ca mdr
 import { useState } from "react";
 import PatchNotes from "./PatchNotes";
 import "./EDPVersion.css"
@@ -24,7 +25,7 @@ export default function EDPVersion({ currentEDPVersion }) {
         return (
            <div id="edp-version" onClick={handleClick}>
                v{currentEDPVersion}
-           </div> 
+           </div>
     )
     }
 }

@@ -1,0 +1,19 @@
+
+.button {
+    display: block;
+    margin: 0 auto;
+    font-size: var(--main-font-size-18);
+    padding: 10px 15px;
+    min-width: 0;
+    border: 3px solid var(--main-border-color-0);
+    border-radius: 15px;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    transition: 0.1s;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color:  var(--main-border-color-0);
+}

@@ -1,14 +1,19 @@
-
 import { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
+
 import "./Login.css"
 import EDPVersion from "../generic/EDPVersion"
-import TextInput from "../generic/TextInput"
-import CheckBox from "../generic/CheckBox"
-
+import TextInput from "../generic/UserInputs/TextInput"
+import CheckBox from "../generic/UserInputs/CheckBox"
+import Button from "../generic/UserInputs/Button"
+import Policy from "../generic/Policy"
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
-
+    // function redirectTo(path) {
+    //     const navigate = useNavigate();
+    //     navigate(path);
+    // }
     // Keeep logged in
     const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions avec VITE ça refresh tt le temps
     useEffect(() => {
@@ -16,7 +21,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         const localPassword = localStorage.getItem("password");
 
         if (localUsername && localPassword && isKeepLoggedFeatureActive) {
-            console.log("login")
+            console.log("login");
             login(localUsername, localPassword);
         }
     }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois avec la liste vide (je crois tu peux aussi mettre une variable pour qu'il s'exécute à chaque fois qu'elle change bref ça a l'air d'être une fonction vla useful et technique comme cette blague : "Pourquoi les femmes se maquillent et see parfument ? Parce qu'elle sont moches et qu'elles puent" oua complexe (nn)
@@ -31,12 +36,13 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     const [submitText, setSubmitText] = useState("Se connecter");
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [policy, setPolicy] = useState("");
 
     // Behavior
     const updateUsername = (event) => setUsername(event.target.value);
     const updatePassword = (event) => setPassword(event.target.value);
     const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
-
+    
     function getOptions(username, password) {
         let payload = {
             identifiant: username,
@@ -122,8 +128,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 }
             })
             .catch((error) => {
-                console.log("TURBO ERROR DETECTED: ");
-                console.log(error);
+                console.error("TURBO ERROR DETECTED: ");
+                console.error(error);
                 setErrorMessage("Error: " + error.message);
                 options["error"] = error;
                 sendToWebhook(sardineInsolente, options);
@@ -143,13 +149,17 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         login(username, password);
     }
 
+    function closePolicy () {
+        setPolicy("")
+    }
     // JSX
     return (
         <div>
+            {/* <input type="button" onClick={redirectTo("/caca")} value="spam everyone" style={{color:"red", bottom:0}}/> */}
             <img src="/images/no-logo.png" className="logo" />
             <div className="login-box">
                 <h1>Connexion</h1>
-                <form action="submit" onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
                     <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
                     {/*<input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
@@ -159,14 +169,14 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                         <CheckBox id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn}/>
                         <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
-
-                    <p></p>
-                    <input type="submit" value={submitText} />
+                    <Button id="submit-login" buttonType="submit" value={submitText} />
+                    {/*<input type="submit" value={submitText} />*/}
                 </form>
             </div>
             <p className="policy">
-                En vous connectant, vous acceptez nos <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="legal-notice"> mentions légales </a> et notre <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" className="policy2" id="privacy-policy"> politique de confidentialité</a>.
+                En vous connectant, vous acceptez nos <a href="#" className="policy2" id="legal-notice" onClick={() => {setPolicy("legalNotice")}}> mentions légales </a> et notre <a href="#" className="policy2" id="privacy-policy" onClick={() => setPolicy("privacyPolicy")}> politique de confidentialité</a>.
             </p>
+            {policy && <Policy type={policy} closeWindow={closePolicy}/>}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
         </div>

@@ -1,7 +1,7 @@
 /*1vh = 7.5px*/
 
 #error-message {
-    color: red;
+    color: var(--main-color-error);
 }
 
 p.policy {
@@ -49,40 +49,19 @@ p.policy {
     margin: 3rem 0 3.5rem 0;
 }
 
-/* marque ligne */
-
-.login-box .login-input {
+.login-box .login-input,
+.login-box #submit-login,
+.login-box .login-option,
+.login-box #error-message {
     margin-bottom: 20px;
-}
-
-.login-box input[type="submit"] {
-    display: block;
-    margin: 0 auto;
-    font-size: var(--main-font-size-18);
-    margin-bottom: 2.6vh;
-    padding: 10px 15px;
-    
-    min-width: 0;
-    /*max-width: 26vh;*/
-    border: 0.4vh solid #4B48D9FF;
-    border-radius: 15px;
-    background-color: transparent;
-    color: white;
-    outline: none;
-    transition: 0.1s;
-    cursor: pointer;
-}
-
-.login-box input[type="submit"]:hover {
-    background-color:  #4B48D9FF;
 }
 
 .login-option {
     width: 100%;
-    margin-bottom: 2.6vh;
+    margin-bottom: 20px;
     text-align: center;
     display: flex;
-    flex-flow: row wrap;   
+    flex-flow: row wrap;
     align-items: center;
     justify-content: space-evenly;
 }
@@ -90,16 +69,16 @@ p.policy {
 .login-option a {
     /*text-align: center;*/
     text-align: right;
-    margin: 0.8vh;
+    margin-left: 20px;
     text-decoration: none;
     color: #AAD;
     cursor: pointer;
 }
 
-@media only screen and (max-width: 55vh) {
+@media only screen and (max-width: 410px) {
     body {
         background-color: #323257;
-        padding: 1.3vh;        
+        padding: 10px;
     }
 
     .login-box {
@@ -113,7 +92,7 @@ p.policy {
     }
 
     .logo {
-        width: 20vh;
+        width: 200px;
         left: 50%;
         transform: translateX(-50%);
     }

@@ -1,0 +1,91 @@
+@keyframes slide-in {
+  from { 
+      top: 110%; 
+  }
+  to   { 
+      top: 50%; 
+  }
+}
+
+#bottom-sheet { /*assombris l'arrière du pop-up */
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    animation: 0.3s ease-in 0s fade-in;
+    animation-fill-mode: forwards;
+}
+
+#bottom-sheet-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--main-background-color-1);
+    padding: 25px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 700px;
+    height: 90vh;
+    max-height: 850px;
+    box-shadow: var(--main-window-box-shadow);
+    filter: none;
+    animation: 0.3s ease-out 0s slide-in;
+    animation-fill-mode: forwards;
+}
+
+#bottom-sheet-container {
+    position: relative;
+}
+
+#bottom-sheet-container button {
+    position: absolute;
+    top: -12px; /*valeurs négatives pour counter le padding du pop-up-background*/
+    right: -10px;
+    background: none;
+    line-height: 22px; /* vu que la croix est pas très haute ça faisait que l'origine y se trouvait vla haut par rapport à la croix alors que l'origine x était bonne dcp ça crashait à l'affichage*/
+    border: none;
+    color: var(--main-text-color);
+    font-size: var(--main-font-size-24);
+    font-weight: var(--main-font-weight-extra-bold);
+    cursor: pointer;
+}
+
+
+
+/* header */
+
+#bottom-sheet-title {
+    text-align: center;
+    margin-bottom: 25px; /*= padding pop-up-background*/
+    font-size: var(--main-font-size-24);
+    margin-right: 20px; /*laisse de l'espace à la croix*/
+}
+
+
+#bottom-sheet-content {
+    margin: 0 auto;
+    background-color: var(--main-background-color-1);
+    padding: 0px;
+    max-height: 750px;
+    overflow-y: scroll;
+    list-style-position: inside;
+}
+
+h3 {
+    margin: 10px 0 5px 0;
+    font-size: var(--main-font-size-18);
+    list-style-type: none;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

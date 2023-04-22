@@ -26,3 +26,5 @@
 // Checkbox : Retour anonyme
 // TextInput : Adresse email pour contacter (attribut disable si checkbox pas checked) ()
 // -> On envoie tt à Carpe Conviviale
+
+

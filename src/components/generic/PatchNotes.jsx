@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import PopUp from "./PopUp";
+import PopUp from "./PopUps/PopUp";
 import "./PatchNotes.css"
 
 export default function PatchNotes({ currentEDPVersion, onClose}) {

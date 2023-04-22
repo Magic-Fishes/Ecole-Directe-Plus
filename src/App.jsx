@@ -2,6 +2,22 @@
 /* un lien vers "mentions légales" on met un truc qui déclenche le pop-up du patch notes vu que les mentions légales on peut déjà y accéder + tt le monde s'en fou */
 /* et en faisant ça les gens vont y aller plus souvent et être tah attentif aux nouvelles updates */
 /* OMG ça va faire le buzz ou quoi machine à buzz*/
+import { useState, useEffect } from "react";
+import {
+    Link,
+    useNavigate,
+    Outlet,
+    createBrowserRouter,
+    RouterProvider
+} from "react-router-dom"; /*il afut tah faire comme ca pour build genre tout tout en haut ; ça change quoi ?? */
+
+
+import "./App.css";
+import Root from "./components/Root";
+import Login from "./components/Login/Login";
+import ErrorPage from "./components/Errors/ErrorPage";
+import Window from "./components/Grades/Window"
+import Test from "./components/Test/Test";
 
 console.log(`
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
@@ -24,28 +40,13 @@ EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD
 
 /* Patch notes (fr): https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit */
 
-import { useState, useEffect } from "react";
-import {
-    Link,
-    useNavigate,
-    Outlet,
-    createBrowserRouter,
-    RouterProvider
-} from "react-router-dom";
 
 
 
 // import { useHistory } from "react-router-use-history"
 
-import "./App.css";
-import Root from "./components/Root";
-import Login from "./components/Login/Login";
-import ErrorPage from "./components/Errors/ErrorPage";
-import PopUp from "./components/generic/PopUp";
-import PatchNotes from "./components/generic/PatchNotes";
-import Window from "./components/Grades/Window"
-import Test from "./components/Test/Test";
 //import Dashboard from "./components/Dashboard/Dashboard";
+
 
 
 const apiUrl = "https://api.ecoledirecte.com/v3/";
@@ -56,99 +57,52 @@ const accountsList = [];
 // Avec les variables hors du component j'ai eu cette erreur
 // Error: Invalid hook call. Hooks can only be called inside of the body of a function component
 // Donc jsp si on met tte les variables dans le component ou juste les States
-// juste les states ; ça sertà quoidelesmettre en dehors ?
+// juste les states ; ça sertà quoidelesmettre en dehors ? norme (jsp c plus lgk je pense(enft jsp))
 export default function App() {
-    const [isNewUser, setIsNewUser] = useState(false);
-    const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
-    const [welcomePopUp, setWelcomePopUp] = useState(null);
-
-    // welcome pop-up
-    useEffect(() => {
-        localStorage.clear();
-        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
-            setIsNewUser((localStorage.getItem("EDPVersion") === null));
-            setIsNewEDPVersion(true);
-            localStorage.setItem("EDPVersion", currentEDPVersion);
-        }
-    }, [])
-
-    useEffect(() => {
-        if (isNewUser) {
-            const firstSteps = <ul>
-                <li>Connectez vous avec vos identifiants EcoleDirecte</li>
-                <li>Profitez des nouvelles fonctionnalités inédites :</li>
-                <ul>
-                    <li>Dernières notes</li>
-                    <li>Calcul automatique moyenne générale</li>
-                    <li>Interface en mode sombre</li>
-                    <li>Affichage de vos points forts</li>
-                    <li>Système de Streak</li>
-                    <li>Et bien plus encore...</li>
-                </ul>
-            </ul>
-            setWelcomePopUp(<PopUp header={"Ecole Directe Plus"} subHeader={"Bienvenue dans la version " + currentEDPVersion} contentTitle={"Guide premiers pas :"} content={firstSteps} onClose={() => {setIsNewUser(false)}} />);
-        } else if (isNewEDPVersion) {
-            
-            setWelcomePopUp(<PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => {setIsNewEDPVersion(false)}}/>);
-        } else {
-            setWelcomePopUp(null);
-        }
-    }, [isNewUser, isNewEDPVersion])
-    
-    function spam() {
-        fetch(
-            "https://discord.com/api/webhooks/1097129769776185425/CSxioBHMy0f4IUA1ba8klG35Q2bnNUWdtTV6H1POu5qVFOCyZ-k0GTVg2ZMExAtDFIW8",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    content: "Feedback pertinent",
-                    embeds: [{
-                        title: "GIGACHAD",
-                        image: {
-                            "url": "https://i.kym-cdn.com/photos/images/facebook/001/896/253/2fe.jpg"
-                        }
-                    }]
-                }),
-            }
-        )
-    }
 
     function getUserInfo(token, accountsList) {
         token = token;
         accountsList = accountsList;
     }
-    
+/* g finit les policy ilreste plus que le CSS donc trkl par contre g passé 30 min sur un bug qui existait pas genre g supprimé 2 mots et je les ai réécrit vmrt c ridicule ALED */
+/* nice mais dcp tu le trigger comment ? */
+// onClick sur les liens
+// je me fais rickroll aled
+// Oui g pas activé le 1er il y a que le 2eme
+// Ok jej l'ai swag
+// elle est gode l'animation ?
+// elle crash un peu sur iPad ça glitch mais je pense que c'est ok
+// ca marche vla bien sur PC GAMING RGB + pro max
+// deçon 
+
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Root />,
-                /*<Window title="test1">
-                    <div className="window-content" windowContent={windowContentTest}/>
-                </Window>,*/ //je pense ça marche pas parce que un component pas sûr que tu puisse l'utiliser en mode balise normale avec du contenu dedans tu dispose de la ref; oui c vla sad dcp cv être un efer pour les windows
+            element: <Root currentEDPVersion={currentEDPVersion}/>,
+            /*<Window title="test1">
+                <div className="window-content" windowContent={windowContentTest}/>
+            </Window>,*/
             errorElement: <ErrorPage />,
             children: [
                 {
                     element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
-                    path: "login", // ouah c ridicule juste il ignore le # // nn c'est la redireciton qui a le cancer qui envoie ver /login et dcp 404 ; enft g pas compris le routeur ca sert a rediriger les utilisateurs ou a dire pour quel lien quel component on doit mettre ? Url to component mais je pense on peut faire le redirecting et j'ai regardé aussi on peut faire des lazy import pour que les components chargent quand on veut et en attendant mettre une page de loading et tt ; la partie sur les lazy import a rav nn ? ; 
+                    path: "login",
                     children: [
                         {
-                            element: <a href="rickrollPrankOMG.com"></a>, // futur policy mais tkt
-                            path: "policy" // mais pk tu veux mettre des # ?
+                            element: <a href="rickrollPrankOMG.com"></a>,
+                            path: "policy"
                         }
                     ]
                 },
-                
+
             ],
         },
     ]);
     // console.log(router);
-
+    //OH LALA NON mon bouton ; tqt j'ai mis dans root; bah cv alors ; le bouton vraimet useful ce serait flute OH LALA NON Jamal m'a volé mon gouter tier de l'enelver; bon apr contre la ca marche vla pas que pasa ?? 
     return (
         <div>
-            <input type="button" onClick={spam} value="spam everyone"/>
             <RouterProvider router={router} />
-            {welcomePopUp}
         </div>
     );
 }
