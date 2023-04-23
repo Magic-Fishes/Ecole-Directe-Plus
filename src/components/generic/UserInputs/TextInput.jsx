@@ -6,7 +6,7 @@ export default function TextInput({ className, textType, placeholder, value, onC
     if (!allowedTextTypes.includes(textType)) {
         textType = "text";
     }
-
+    //pk pour définir className tu fais pas "text-input-"+className??
     return (
         <input className={"text-input " + className} type={textType} placeholder={placeholder} value={value} onChange={onChange} />
     )

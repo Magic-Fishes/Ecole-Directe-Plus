@@ -19,7 +19,7 @@ export default function BottomSheet({ title, content, closeWindow }) {
         <div id="bottom-sheet" onClick={closeWindow}>
             <div id="bottom-sheet-box" onClick={(event) => event.stopPropagation()}>
                 <div id="bottom-sheet-container">
-                    <button onClick={closeWindow}>✕</button>
+                    <button id="close-button" onClick={closeWindow}>✕</button>
                     <h1 id="bottom-sheet-title">{title}</h1>
                     <div id="bottom-sheet-content">
                     {content}

@@ -15,6 +15,7 @@ export default function Button({ className, id, buttonType, value, onClick }) {
     // et pour rendre le programme plus modulaire
     // et après on va se perdre si on a parfois des components parfois des classes css globales on saura plus ou edit
     // mais en vrai n'importe
+    // OK bah stv
     const allowedButtonTypes = ["button", "submit"];
     if (!allowedButtonTypes.includes(buttonType)) {
         buttonType = "button";
@@ -22,6 +23,6 @@ export default function Button({ className, id, buttonType, value, onClick }) {
     // qqchose
     //<input className={"button " + className} id={id} type={buttonType} value={value} onClick={onClick} />
     return (
-        <button className={"button " + className} id={id} type={buttonType} onClick={onClick}>{value}</button>
+        <input className={"button " + className} id={id} type={buttonType} value={value} onClick={onClick} />
     )
 }

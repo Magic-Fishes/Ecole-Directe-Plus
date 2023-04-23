@@ -5,7 +5,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.4);
     opacity: 0;
     animation: 0.3s ease 0s fade-in;
     animation-fill-mode: forwards;
@@ -18,7 +18,7 @@ c que g l'impression que avant l'animation t'as une fraction de sec ou la
 version finale pop dcp c bzr et la ca le fait pas
 j'ai parfaitement laref et c'est tres pertinent*/
 
-#pop-up-background { 
+#pop-up-background {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -31,6 +31,7 @@ j'ai parfaitement laref et c'est tres pertinent*/
     max-width: 400px;
     box-shadow: var(--main-window-box-shadow);
     filter: none;
+    /* cubic-bezier(.31,1.83,.53,.63) */
     animation: 0.3s ease-out 0s blur-in;
     animation-fill-mode: forwards;
 }

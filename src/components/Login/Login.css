@@ -9,6 +9,7 @@ p.policy {
     text-align: center;
     position: absolute;
     font-size: min(var(--main-font-size-16), 4vmin);
+    z-index: -1;
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
     transform: translateX(-50%);
@@ -25,6 +26,14 @@ p.policy {
     top: 15px;
     width: 70px;
     height: auto;
+}
+
+.logo#outside-container {
+    display: block;
+}
+
+.logo#inside-container {
+    display: none;
 }
 
 .login-box {
@@ -76,28 +85,49 @@ p.policy {
 }
 
 @media only screen and (max-width: 410px) {
-    body {
+    /* body {
         background-color: #323257;
-        padding: 10px;
+    } */
+
+    /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/
+    .logo#outside-container {
+        display: none;
+    }
+    
+    .logo#inside-container {
+        position: static;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100px;
+        display: block;
+        margin: 8px auto;
     }
 
     .login-box {
+        /* background-color: transparent; */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
         box-shadow: none;
         border: none;
-        background-color: transparent;
+        border-radius: 0;
+        background-color: #323257;
         margin: 0;
         padding: 5px;
         min-width: 0;
         width: 100%;
+        z-index: -99;
+    }
+    
+    .login-box h1 {
+        font-size: 10vw;
+        margin-top: 0;
     }
 
-    .logo {
-        width: 200px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .login-box .login-input {
+    .login-box .login-input, .login-option {
         width: 90%;
         margin: 0 auto 20px auto;
     }
@@ -106,7 +136,4 @@ p.policy {
         width: 40%;
     }
     
-    .login-box h1 {
-        font-size: 10vw;
-    }
 }

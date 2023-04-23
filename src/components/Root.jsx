@@ -76,7 +76,7 @@ export default function Root({ currentEDPVersion }) {
     // }
     return (
         <div id="Root">
-            <input type="button" onClick={spam} value="test BUTTON ACTIVATOR BECAUSE C PRATIQUE DE FOU EN VRAI" />
+            <input type="button" onClick={spam} value="ZIZIMAN FUCKING ZIZIWOMAN" />
             {welcomePopUp}
             <Outlet />
         </div>

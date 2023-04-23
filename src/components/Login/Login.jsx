@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 // import { Navigate } from "react-router-dom";
 
-import "./Login.css"
-import EDPVersion from "../generic/EDPVersion"
-import TextInput from "../generic/UserInputs/TextInput"
-import CheckBox from "../generic/UserInputs/CheckBox"
-import Button from "../generic/UserInputs/Button"
-import Policy from "../generic/Policy"
+import "./Login.css";
+import EDPVersion from "../generic/EDPVersion";
+import TextInput from "../generic/UserInputs/TextInput";
+import CheckBox from "../generic/UserInputs/CheckBox";
+import Button from "../generic/UserInputs/Button";
+import Policy from "../generic/Policy";
+import Tooltip from "../generic/PopUps/Tooltip"//ah non my bad 
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
     // function redirectTo(path) {
@@ -101,7 +102,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                         })
 
                     } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
-                        // compte dont on ne doit pas prononcer le nom (cringe mais sinon road to jailbreak**-1)
+                        // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
                         sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
 
                     } else {
@@ -149,16 +150,19 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         login(username, password);
     }
 
-    function closePolicy () {
+    const closePolicy = () => {
         setPolicy("")
     }
     // JSX
     return (
         <div>
             {/* <input type="button" onClick={redirectTo("/caca")} value="spam everyone" style={{color:"red", bottom:0}}/> */}
-            <img src="/images/no-logo.png" className="logo" />
+            <img src="/images/no-logo.png" className="logo" id="outside-container" /> {/* dsl pour ça vrmt */}
             <div className="login-box">
-                <h1>Connexion</h1>
+                <img src="/images/no-logo.png" className="logo" id="inside-container" /> {/* c'est vrmt golémique mais flemme de javascript */}
+                <Tooltip text="Ceci est un tip pertinent qui s'étend sur plusieurs lignes et jamais deux sans trois">
+                    <h1>Connexion</h1>
+                </Tooltip>
                 <form onSubmit={handleSubmit}>
                     <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
                     <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />

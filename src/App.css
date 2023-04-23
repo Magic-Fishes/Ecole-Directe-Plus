@@ -1,16 +1,17 @@
 
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
 :root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
     /* colors */
-    --main-text-color: #FFF;
+    --main-text-color: white;
     --main-color-error: red;
     --main-color-success: lime;
+    --main-color-important: #67F;
     --main-background-color-0: #181829;
     --main-background-color-0-5: #333347;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas*/
     --main-background-color-1: #484866;
     --main-border-color-0: #4B48D9;
+    --main-border-color-1: #6C6AFF;
     --main-window-header-color: #323257;
     --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;

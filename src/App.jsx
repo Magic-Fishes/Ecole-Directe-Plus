@@ -78,7 +78,8 @@ export default function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Root currentEDPVersion={currentEDPVersion}/>,
+            element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
+            /*element: <Root currentEDPVersion={currentEDPVersion}/>,*/
             /*<Window title="test1">
                 <div className="window-content" windowContent={windowContentTest}/>
             </Window>,*/
@@ -99,7 +100,6 @@ export default function App() {
         },
     ]);
     // console.log(router);
-    //OH LALA NON mon bouton ; tqt j'ai mis dans root; bah cv alors ; le bouton vraimet useful ce serait flute OH LALA NON Jamal m'a volé mon gouter tier de l'enelver; bon apr contre la ca marche vla pas que pasa ?? 
     return (
         <div>
             <RouterProvider router={router} />
