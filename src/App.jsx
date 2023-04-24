@@ -64,16 +64,7 @@ export default function App() {
         token = token;
         accountsList = accountsList;
     }
-/* g finit les policy ilreste plus que le CSS donc trkl par contre g passé 30 min sur un bug qui existait pas genre g supprimé 2 mots et je les ai réécrit vmrt c ridicule ALED */
-/* nice mais dcp tu le trigger comment ? */
-// onClick sur les liens
-// je me fais rickroll aled
-// Oui g pas activé le 1er il y a que le 2eme
-// Ok jej l'ai swag
-// elle est gode l'animation ?
-// elle crash un peu sur iPad ça glitch mais je pense que c'est ok
-// ca marche vla bien sur PC GAMING RGB + pro max
-// deçon 
+
 
     const router = createBrowserRouter([
         {

@@ -1,64 +1,37 @@
+
 .segmented-control {
     flex-direction: row; 
     display: flex;
+    width: 100%;
+    border: 5px solid var(--main-border-color-0);
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-.cancer-de-la-mangue {
-    border-width: unset;
-    display: block;
-    width: 95%; /* on pourra peut-etre metre ca dans le jsx avec un props jsp */
-    max-width: 500px;
-    border-width: 5px;/*jsp pk ca fait pas la border*/
-    border-color: var(--main-border-color-0);
-    height: 30px;
-}
-
-button {
+button.option {
     border: none;
+    border-right: 1px solid var(--main-border-color-0);
+    font-size: var(--main-font-size-18);
+    padding: 0.5em;
+    min-width: 0;
+    white-space: nowrap; /* enfer pour les utilisateurs mobile */
+    overflow: hidden;
+    text-overflow: ellipsis; /* cut un texte avec points de suspension*/
+    color: var(--main-text-color); /* safari */
     background-color: transparent;
+    flex-grow: 1;
+    transition: 0.1s;
 }
 
-button:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-/*wtf le rendu il est trop bzr avec des % essaie tu verras ca a aucun sens*/
-button:last-child  {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-
-
-
-
-
-
-
-/*je t'ai décalé je voyais vla rien c relou*/                    
-
-
-
-
-
-
-
-
-
-
-button:hover{
+button.option:hover {
     background-color: var(--main-border-color-1);
 }
 
-/* bah relou on verra plus tard */
-/* par contre les mentions légales elles me paraissent vl fine (enfin le CSS du bottomSheet) */
-
-.selected-option {
-    background-color: var(--main-border-color-0);
-    flex-grow: 1.6;
+button.option:last-child {
+    border: none;
 }
 
-.not-selected-option {
-    appearance: none;
-    flex-grow: 1;
+button.option.selected {
+    background-color: var(--main-border-color-0);
+    flex-grow: 1.5;
 }

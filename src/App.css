@@ -8,7 +8,7 @@
     --main-color-success: lime;
     --main-color-important: #67F;
     --main-background-color-0: #181829;
-    --main-background-color-0-5: #333347;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas*/
+    --main-background-color-0-5: #333347;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas)*/
     --main-background-color-1: #484866;
     --main-border-color-0: #4B48D9;
     --main-border-color-1: #6C6AFF;
@@ -53,7 +53,7 @@
 body {
     background-color: var(--main-background-color-0);
     color: var(--main-text-color);
-    font-weight: 400; /* regular */
+    font-weight: var(--main-font-weight-regular);
     font-size: var(--main-font-size-16);
     margin: 0;
     padding: 0;
@@ -88,4 +88,3 @@ body, input {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #8f8db9;
 }
-

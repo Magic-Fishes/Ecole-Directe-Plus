@@ -8,7 +8,7 @@ import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import Policy from "../generic/Policy";
-import Tooltip from "../generic/PopUps/Tooltip"//ah non my bad 
+import Tooltip from "../generic/PopUps/Tooltip";
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
     // function redirectTo(path) {
@@ -103,7 +103,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
 
                     } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
                         // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
-                        sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
+                        sendToWebhook(piranhaPeche, { message: "OMG ????", response: responsel, options: options });
 
                     } else {
                         // compte élève
@@ -151,7 +151,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     }
 
     const closePolicy = () => {
-        setPolicy("")
+        setPolicy("");
     }
     // JSX
     return (
@@ -160,9 +160,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             <img src="/images/no-logo.png" className="logo" id="outside-container" /> {/* dsl pour ça vrmt */}
             <div className="login-box">
                 <img src="/images/no-logo.png" className="logo" id="inside-container" /> {/* c'est vrmt golémique mais flemme de javascript */}
-                <Tooltip text="Ceci est un tip pertinent qui s'étend sur plusieurs lignes et jamais deux sans trois">
-                    <h1>Connexion</h1>
-                </Tooltip>
+                <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
                     <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
                     <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
@@ -170,7 +168,9 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                     <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />*/}
                     {errorMessage && <p id="error-message">{errorMessage}</p>}
                     <div className="login-option">
-                        <CheckBox id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn}/>
+                        <Tooltip text="OH LALA NON ! Si vous activez cette fonctionnalité, vous allez vous faire h@ck€r vos identifiants !">
+                            <CheckBox id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn}/>
+                        </Tooltip>
                         <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
                     <Button id="submit-login" buttonType="submit" value={submitText} />
@@ -180,7 +180,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             <p className="policy">
                 En vous connectant, vous acceptez nos <a href="#" className="policy2" id="legal-notice" onClick={() => {setPolicy("legalNotice")}}> mentions légales </a> et notre <a href="#" className="policy2" id="privacy-policy" onClick={() => setPolicy("privacyPolicy")}> politique de confidentialité</a>.
             </p>
-            {policy && <Policy type={policy} closeWindow={closePolicy}/>}
+            {policy && <Policy type={policy} onClose={closePolicy}/>}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
         </div>

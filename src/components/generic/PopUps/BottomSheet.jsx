@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import "./BottomSheet.css"
 
-export default function BottomSheet({ title, content, closeWindow }) {
+export default function BottomSheet({ heading, content, onClose }) {
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
         return () => {
@@ -16,11 +16,11 @@ export default function BottomSheet({ title, content, closeWindow }) {
     }
     
     return (
-        <div id="bottom-sheet" onClick={closeWindow}>
+        <div id="bottom-sheet" onClick={onClose}>
             <div id="bottom-sheet-box" onClick={(event) => event.stopPropagation()}>
                 <div id="bottom-sheet-container">
-                    <button id="close-button" onClick={closeWindow}>✕</button>
-                    <h1 id="bottom-sheet-title">{title}</h1>
+                    <button id="close-button" onClick={onClose}>✕</button>
+                    <h1 id="bottom-sheet-heading">{heading}</h1>
                     <div id="bottom-sheet-content">
                     {content}
                     </div>

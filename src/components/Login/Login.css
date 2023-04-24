@@ -101,7 +101,7 @@ p.policy {
         transform: none;
         width: 100px;
         display: block;
-        margin: 8px auto;
+        margin: 5dvh auto; /*dvh = dynamic vh -> prend en compte la barre de recherche sur mobile */
     }
 
     .login-box {
@@ -127,13 +127,8 @@ p.policy {
         margin-top: 0;
     }
 
-    .login-box .login-input, .login-option {
+    .login-box .login-input, .login-box .login-option {
         width: 90%;
         margin: 0 auto 20px auto;
     }
-    
-    .ltransformput {
-        width: 40%;
-    }
-    
 }

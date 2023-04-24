@@ -60,12 +60,12 @@
 
 /* header */
 
-#bottom-sheet-title {
+#bottom-sheet-heading {
     text-align: center;
+    margin-inline: 10px;
     margin-bottom: 25px; /*= padding pop-up-background*/
     font-size: var(--main-font-size-36);
     color: var(--main-color-important);
-    margin-right: 20px; /*laisse de l'espace à la croix; c un peu manguesue mais trkl; */
 }
 
 
@@ -78,17 +78,18 @@
     list-style-position: inside;
 }
 
-h3 {
+#bottom-sheet-content h3 {
     margin: 15px 0 20px 0;
     font-size: var(--main-font-size-18);
     list-style-type: none;
 }
 
-li {
+#bottom-sheet-content li {
     margin-left: 10px;
     margin-bottom: 10px;
 }
-a{
+
+#bottom-sheet-content a {
     text-decoration: none;
     color: #6D6AFB;
     opacity: 1;

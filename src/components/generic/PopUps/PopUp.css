@@ -11,13 +11,6 @@
     animation-fill-mode: forwards;
 }
 
-/*g fait un micro modif genre en gros on met les paramètres 
-initaux (de ton animation tt en bas) et après on met animation-fill-mode: 
-forwards et ca permet de garder la version de fin d'animation l'avantage 
-c que g l'impression que avant l'animation t'as une fraction de sec ou la 
-version finale pop dcp c bzr et la ca le fait pas
-j'ai parfaitement laref et c'est tres pertinent*/
-
 #pop-up-background {
     position: absolute;
     top: 50%;
@@ -88,16 +81,26 @@ j'ai parfaitement laref et c'est tres pertinent*/
 }
 
 #pop-up-content h3 {
-    margin-bottom: 10px;
+    display: block;
+    position: sticky; /* sticky dans la box de contenu lors du scroll */
+    top: -10px;
+    padding: 10px 0;
+    padding-top: 20px; /* pas obligatoire d'avoir 20 mais pour avoir un moment ou le h3 monte puis un moment ou il est sticky*/
+    margin: 0;
     font-weight: var(--main-font-weight-extra-bold);
     font-size: var(--main-font-size-18);
+    background-color: var(--main-background-color-0);
+    /* opacity: .90; */
+    box-shadow: 0 0 10px var(--main-background-color-0);
 }
 
 #pop-up-content {
+    position: relative; /* pour le sticky header */
     margin: 0 auto;
     background-color: var(--main-background-color-0);
     border-radius: 20px;
     padding: 15px;
+    padding-top: 0; /* remplacé par le padding du h3*/
     max-height: 300px;
     overflow-y: scroll;
     list-style-position: inside;

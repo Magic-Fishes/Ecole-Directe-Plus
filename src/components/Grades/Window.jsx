@@ -1,7 +1,7 @@
 import { useState } from "react"
-import "./window.css"
+import "./Window.css"
 
-export default function Window({ title, windowContent }) {
+export default function Window({ heading, content }) {
     // States
 
     // Behavior
@@ -10,10 +10,10 @@ export default function Window({ title, windowContent }) {
     return (
         <div className="window" id="last-grades">
             <h2 className="window-header">
-                {title}
+                {heading}
             </h2>
             <div className="window-content">
-                {windowContent}
+                {content}
             </div>
         </div>
     )

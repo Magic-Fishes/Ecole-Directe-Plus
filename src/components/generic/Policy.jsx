@@ -3,16 +3,15 @@ import BottomSheet from "./PopUps/BottomSheet"
 import SegmentedControl from "./UserInputs/SegmentedControl"
 import "./Policy.css"
 
-let options = ["a", "b", "c", "d"]
+let options = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"]
 
-export default function Policy({ type, closeWindow }) {
-    const [selected, setSelected] = useState("");
+export default function Policy({ type, onClose }) {
+    const [selectedOption, setSelectedOption] = useState("");
     
     const privacyPolicy = <div>
-        <SegmentedControl className="test" options={options} selected={selected} onClick={setSelected}/> 
-    {selected}
+        <SegmentedControl options={options} selected={selectedOption} onChange={setSelectedOption}/> 
+        {selectedOption}
     </div>
-        // ca me servira de zone de test vu que sinon c useless
     
     const legalNotice = <ul>
             <h3>Ecole Directe Enhanced hérite de la politique de confidentialité du site EcoleDirecte qui sont les suivantes :</h3>
@@ -31,13 +30,13 @@ export default function Policy({ type, closeWindow }) {
     if (type === "privacyPolicy") {
         return (
             <div>
-                <BottomSheet title="Politique de confidentialité" content={privacyPolicy} closeWindow={closeWindow} />
+                <BottomSheet heading="Politique de confidentialité" content={privacyPolicy} onClose={onClose} />
             </div>
         )
     } else {
         return (
             <div>
-                <BottomSheet title="Mentions légales" content={legalNotice} closeWindow={closeWindow} />
+                <BottomSheet heading="Mentions légales" content={legalNotice} onClose={onClose} />
             </div>
         )
     }

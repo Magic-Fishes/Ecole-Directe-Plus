@@ -5,30 +5,30 @@
 }
 
 .tooltip {
-    display: none;
     opacity: 0;
+    visibility: hidden;
     transform-origin: bottom;
-    width: 100vw;
+    width: 100%; /* faudrait trouver une solution pour quand le component enfant est pas large pour que le tooltip reste assez large*/
     max-width: 250px;
     position: absolute;
-    /*transform: translateX(0%);*/
-    transform: translate(0%, 0%);
+    bottom: 90%;
     padding: 10px;
     font-size: 1.4rem;
     text-align: center;
     background-color: var(--main-background-color-1);
     border: 1px solid var(--main-background-color-0-5);
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .4);
     z-index: 99;
     cursor: help;
-    transition: 0.3s ease-out;
+    transition: 0.25s ease-out;
     transition-delay: 0.5s; /* delai d'apparition de la tooltip'*/
 }
 
 /* .tooltip-container:active .tooltip, */
 .tooltip-container:hover .tooltip,
 .tooltip-container:focus .tooltip {
-    display: block;
+    bottom: 125%; /* positionne au dessus du contenu*/
+    visibility: visible;
     opacity: 1;
-    transform: translateY(-100%);
 }
