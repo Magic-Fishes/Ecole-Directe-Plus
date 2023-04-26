@@ -80,7 +80,7 @@ p.policy {
     text-align: right;
     margin-left: 20px;
     text-decoration: none;
-    color: #AAD;
+    color: var(--main-alt-text-color);
     cursor: pointer;
 }
 

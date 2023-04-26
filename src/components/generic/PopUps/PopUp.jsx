@@ -5,10 +5,12 @@ import "./PopUp.css"
 export default function PopUp({ header, subHeader, contentTitle, content, onClose }) {
 
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
+        document.body.style.overflow = "hidden"; /* empêche le scrolling */
         // Utilise la fonction de nettoyage de useEffect pour supprimer le gestionnaire d'événements lorsque le composant est démonté
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = "auto";
         };
     }, [])
     

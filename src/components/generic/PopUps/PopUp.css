@@ -1,6 +1,6 @@
 
 #pop-up { /*assombris l'arrière du pop-up; g assombris encore plus pour que ca ressorte mieux je trouve c plus beau comme ca */
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -12,7 +12,7 @@
 }
 
 #pop-up-background {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     filter: blur(10px);

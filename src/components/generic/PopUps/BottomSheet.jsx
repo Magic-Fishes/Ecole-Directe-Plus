@@ -3,9 +3,12 @@ import "./BottomSheet.css"
 
 export default function BottomSheet({ heading, content, onClose }) {
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
+        document.body.style.overflow = "hidden"; /* empêche le scrolling */
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = "auto";
         };
     }, [])
 
@@ -22,7 +25,7 @@ export default function BottomSheet({ heading, content, onClose }) {
                     <button id="close-button" onClick={onClose}>✕</button>
                     <h1 id="bottom-sheet-heading">{heading}</h1>
                     <div id="bottom-sheet-content">
-                    {content}
+                        {content}
                     </div>
               </div>
           </div>

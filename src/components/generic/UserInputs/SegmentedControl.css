@@ -3,8 +3,8 @@
     flex-direction: row; 
     display: flex;
     width: 100%;
-    border: 5px solid var(--main-border-color-0);
-    border-radius: 20px;
+    border: 3px solid var(--main-border-color-0);
+    border-radius: 15px;
     overflow: hidden;
 }
 
@@ -21,6 +21,7 @@ button.option {
     background-color: transparent;
     flex-grow: 1;
     transition: 0.1s;
+    cursor: pointer;
 }
 
 button.option:hover {
@@ -33,5 +34,5 @@ button.option:last-child {
 
 button.option.selected {
     background-color: var(--main-border-color-0);
-    flex-grow: 1.5;
+    flex-grow: 2;
 }

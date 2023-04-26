@@ -27,7 +27,7 @@ EE::::::EEEEEEEEE::::E DDD:::::DDDDDD:::::D         +++++++
   E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
   E:::::E                D:::::D      D:::::D       +:::::+       
   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
-  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+   Curious & driven ? Join us:
+  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+   Curious & driven? Join us:
   E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+   https://github.com/Magic-Fishes/Ecole-Directe-Plus
   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
   E:::::E                D:::::D      D:::::D       +:::::+       
@@ -54,10 +54,11 @@ const apiVersion = "4.29.4";
 const currentEDPVersion = "0.0.69";
 const token = "";
 const accountsList = [];
-// Avec les variables hors du component j'ai eu cette erreur
-// Error: Invalid hook call. Hooks can only be called inside of the body of a function component
-// Donc jsp si on met tte les variables dans le component ou juste les States
-// juste les states ; ça sertà quoidelesmettre en dehors ? norme (jsp c plus lgk je pense(enft jsp))
+// ça sertà quoidelesmettre en dehors ? norme (jsp c plus lgk je pense(enft jsp))
+// c'est vla étrange comme norme
+// c la mm chose en moins pratique prcq on a pas accès aux props
+// et ça met les variables dans la scope globale dcp cancer
+
 export default function App() {
 
     function getUserInfo(token, accountsList) {
@@ -69,8 +70,8 @@ export default function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
-            /*element: <Root currentEDPVersion={currentEDPVersion}/>,*/
+            // element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
+            element: <Root currentEDPVersion={currentEDPVersion}/>,
             /*<Window title="test1">
                 <div className="window-content" windowContent={windowContentTest}/>
             </Window>,*/

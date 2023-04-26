@@ -4,6 +4,7 @@
 :root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
     /* colors */
     --main-text-color: white;
+    --main-alt-text-color: #AAD;
     --main-color-error: red;
     --main-color-success: lime;
     --main-color-important: #67F;
@@ -65,26 +66,31 @@ body, input {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    background-color: transparent;
-    width: 10px;
-    height: 10px;
+    /* background-color: transparent; */
+    width: 20px;
+    height: 20px;
 }
 
 /* Track */
+/* tricks pour mettre de l'espace autour de la scrollbar pour plus qu'elle soit collé au contenu et au bord du container */
+/* https://stackoverflow.com/questions/29866759/how-do-i-add-a-margin-to-a-css-webkit-scrollbar */
 ::-webkit-scrollbar-track {
-    width: 1vh;
-    background-color: transparent;
+    /* background-color: transparent; */
     border-radius: 30px;
-    margin: 1vh;
+    margin: 10px;
+    box-shadow: inset 0 0 10px 10px #c7c7ff22;
+    border: solid 5px transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background-color: #7676a2;
+    /* background-color: #7676a2; */
+    box-shadow: inset 0 0 10px 10px #7676a2;
+    border: solid 5px transparent;
     border-radius: 30px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #8f8db9;
+    box-shadow: inset 0 0 10px 10px #8f8db9;
 }

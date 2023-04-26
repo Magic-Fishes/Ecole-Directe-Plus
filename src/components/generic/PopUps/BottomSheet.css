@@ -1,46 +1,49 @@
 @keyframes slide-in {
-  from { 
-      top: 110%; 
-      transform: translate(-50%, -50%)
+  from {
+      bottom: -100%;
   }
-  to   { 
-      top: 50%;
-      transform: translate(-50%, -50%)
+  to { 
+      bottom: 0;
   }
 }
 
 #bottom-sheet { /*assombris l'arrière du pop-up */
-    overflow: hidden;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    
     background-color: rgba(0, 0, 0, 0.4);
     animation: 0.5s ease 0s fade-in;
     animation-fill-mode: forwards;
 }
 
+
+
 #bottom-sheet-box {
-    position: absolute;
-    top: 50%;
+    position: fixed;
+    transform: translateX(-50%);
     left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--main-background-color-1);
-    padding: 25px;
-    border-radius: 20px;
     width: 100%;
-    max-width: 700px;
-    height: 90vh;
-    max-height: 850px;
+    max-width: 800px;
+    height: 100%; /* cancer c'est pour que les hauteurs des éléments enfants aient un référentiel vu qu'ils sont définis avec % ; mais dcp dans ce cas elle est toujours à 90% alors qu'elle devrait s'adapter au contenu et max-height = 90% */
+    min-height: 65%;
+    max-height: 90%;
+    
+    background-color: var(--main-background-color-0);
+    padding: 25px;
+    padding-bottom: 0;
+    border-radius: 20px 20px 0 0;
     box-shadow: var(--main-window-box-shadow);
     filter: none;
-    animation: 0.5s ease-out 0s slide-in;
+    animation: 0.5s ease-in-out 0s slide-in;
     animation-fill-mode: forwards;
 }
 
 #bottom-sheet-container {
     position: relative;
+    height: 100%;
 }
 
 #bottom-sheet-container #close-button {
@@ -56,8 +59,6 @@
     cursor: pointer;
 }
 
-
-
 /* header */
 
 #bottom-sheet-heading {
@@ -68,16 +69,19 @@
     color: var(--main-color-important);
 }
 
-
 #bottom-sheet-content {
-    margin: 0 auto;
-    background-color: var(--main-background-color-1);
-    padding: 0px;
-    max-height: 750px;
-    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
     list-style-position: inside;
+    overflow-y: scroll;
+    text-align: justify;
 }
 
+
+
+
+
+/* à mettre dans policy.css */
 #bottom-sheet-content h3 {
     margin: 15px 0 20px 0;
     font-size: var(--main-font-size-18);
@@ -92,7 +96,6 @@
 #bottom-sheet-content a {
     text-decoration: none;
     color: #6D6AFB;
-    opacity: 1;
 }
 
 @keyframes fade-in {

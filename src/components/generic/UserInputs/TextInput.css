@@ -13,7 +13,7 @@
 }
 
 .text-input::placeholder {
-    color: #AAD;
+    color: var(--main-alt-text-color);
 }
 
 .text-input:focus {

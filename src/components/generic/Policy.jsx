@@ -27,17 +27,14 @@ export default function Policy({ type, onClose }) {
             <li className="inherited-from-ed">En toute hypothèse, il vous est possible d'introduire une réclamation auprès de la Commission Nationale de l'Informatique et des Libertés si vous vous estimez lésé par le traitement de vos données personnelles par l’établissement scolaire.</li>
             <li className="inherited-from-ed">L'activation de l'amélioration de l'accessibilité des personnes déficientes visuelles utilise la police de caractères <a href="https://luciole-vision.com/">Luciole</a>. Cette police de caractères est distribuée gratuitement sous Licence publique <a href="https://creativecommons.org/licenses/by/4.0/legalcode.fr"> Creative Commons Attribution 4.0 International </a> : Luciole © Laurent Bourcellier & Jonathan Perez</li>
         </ul>
+    
     if (type === "privacyPolicy") {
         return (
-            <div>
                 <BottomSheet heading="Politique de confidentialité" content={privacyPolicy} onClose={onClose} />
-            </div>
         )
     } else {
         return (
-            <div>
                 <BottomSheet heading="Mentions légales" content={legalNotice} onClose={onClose} />
-            </div>
         )
     }
 }
