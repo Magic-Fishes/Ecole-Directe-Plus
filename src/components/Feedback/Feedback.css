@@ -51,11 +51,14 @@ textarea#feedback-content:focus {
     background-color: var(--main-color-focus);
 }
 
-div.drop-zone {
+.file-input {
     margin-block: 20px;
+}
+
+div.drop-zone {
+    position: relative;
     border: 2px dashed var(--main-border-color-0);
     border-radius: 15px;
-    position: relative;
     cursor: pointer;
 }
 

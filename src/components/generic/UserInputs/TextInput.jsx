@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./TextInput.css"
+import WarningMessage from "../WarningMessage"
 
 export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, canAutoComplete, icon, className, id }) {
     const [warningMessageState, setWarningMessageState] = useState("");
@@ -21,7 +22,6 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
 
     return (
         <div className={className} id={id}>
-            {/* <div className={warningMessageState ? "input-container" : "warning-input-container"} > */}
             <div className={`input-container ${warningMessageState && "invalid"}`} >
                 <input
                     className="text-input"
@@ -33,11 +33,12 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     required={isRequired}
                     onInvalid={handleInvalid}
                     autoComplete={canAutoComplete}
-                    
                 />
                 {icon && <img src={icon} className="input-icon" alt="Icône illustrant l'entrée utilisateur"/>}
             </div>
-            {warningMessageState && <p className="warning-message">{warningMessage}</p>}
+            <WarningMessage condition={warningMessageState}>
+                {warningMessageState}
+            </WarningMessage>
         </div>
     )
 }

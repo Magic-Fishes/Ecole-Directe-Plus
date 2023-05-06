@@ -19,8 +19,9 @@
     --main-window-header-color: #323257;
     --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;
-    
-    /* --NOMENCLATURE-- */
+
+    /* - - - Nouvelles variables - - - */
+    /* -- NOMENCLATURE -- */
     /*
         --attribut_lié-definition: valeur rgb sans le rgb();
     */
@@ -78,6 +79,17 @@ body {
 
 body, input, button, textarea {
     font-family: Inter, sans-serif;
+}
+
+
+/* invalid inputs */
+.invalid {
+    border-color: rgb(var(--border-color-soft-error)) !important;
+    background-color: rgba(var(--background-color-soft-error), 0.1) !important;
+}
+
+.invalid:focus-within {
+    background-color: rgba(var(--background-color-soft-error), 0.2) !important;
 }
 
 

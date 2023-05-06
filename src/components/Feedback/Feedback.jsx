@@ -4,10 +4,11 @@ import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import TextInput from "../generic/UserInputs/TextInput";
 import Button from "../generic/UserInputs/Button";
 import CheckBox from "../generic/UserInputs/CheckBox";
+import WarningMessage from "../generic/WarningMessage";
 
 import "./Feedback.css";
-
-let attachedFile = null; // cancer
+const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif|\.tif|\.webp|\.heic|\.pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche
+let attachedFile = null;
 export default function Feedback() {
     // States
     const feedbackTypes = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"];
@@ -20,11 +21,13 @@ export default function Feedback() {
 **Quelles zones et fonctionnalités sont impliquées ?**
 `);
     const [isAnonymous, setIsAnonymous] = useState(false);
-    const [userEmail, setUserEmail] = useState(""); // on pourra préremplir avec l'email du compte
+    const [userEmail, setUserEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [warningMessage, setWarningMessage] = useState("");
 
     // Refs
     const imgRef = useRef(null);
+    const fileInputRef = useRef(null);
     const labelRef = useRef(null);
 
     const [isFileInputHovered, setIsFileInputHovered] = useState(false);
@@ -32,19 +35,10 @@ export default function Feedback() {
         setIsFileInputHovered(true);
     }
 
-    function handleDragOverStop () {
+    function handleDragOverStop() {
         setIsFileInputHovered(false)
     }
-    
-    /*function handleDragLeave() {
-        setIsFileInputHovered(false);
-    }
 
-    function handleDrop() {
-        setIsFileInputHovered(false);
-    }*/
-    // !!! la t'as 2 fonctions qui font la mm chose un handleDragStop serait plus pertinent je pense
-    // je comprends ton mécontentement, toutefois, test en biphasé
     // Behavior
     const updateSubject = (event) => { setSubject(event.target.value) }
     const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value) }
@@ -63,15 +57,13 @@ export default function Feedback() {
 
         let data = null;
 
-        await fetch(apiURL, { // il sert a quoi le await ? ça attend la résolution de la promesse pour exécuter la suite de la fonction, dcp ça attend de recevoir la réponse de la requête avant de la return ; et dcp quand il y a un await dans la fonction il faut mettre un "async"
+        await fetch(apiURL, {
             method: "POST",
             body: body
         })
-        .then(response => response.json())
-        .then(response => data = response.data)
-        .catch(error => {
-            setErrorMessage(error.message);
-        });
+            .then(response => response.json())
+            .then(response => data = response.data)
+            .catch(error => error.json())
 
         return data;
     }
@@ -79,18 +71,23 @@ export default function Feedback() {
 
     const handleFile = (event) => {
         attachedFile = event.target.files[0];
-        console.log(attachedFile);
-
-        let reader = new FileReader();
-
-        reader.onload = () => {
-            labelRef.current.style.display = "none";
-
-            imgRef.current.src = reader.result;
-            imgRef.current.style.display = "block";
+        if (allowedExtensions.exec(attachedFile.name) && attachedFile.size <= 32_000_000) {
+            setWarningMessage("")
+            let reader = new FileReader();
+            reader.onload = () => {
+                labelRef.current.style.display = "none";
+                imgRef.current.src = reader.result;
+                imgRef.current.style.display = "block";
+            }
+            reader.readAsDataURL(attachedFile);
+        } else {
+            setWarningMessage(attachedFile.size > 32_000_000 ? "Le fichier est trop volumineux" : "Le format du fichier est invalide");
+            imgRef.current.src = "";
+            imgRef.current.style.display = "none";
+            labelRef.current.style.display = "block";
+            fileInputRef.current.value = "";
+            attachedFile = null;
         }
-
-        reader.readAsDataURL(attachedFile);
     }
 
     const handleSubmit = async (event) => {
@@ -122,7 +119,7 @@ export default function Feedback() {
                                 name: "Poisson-zèbre Augmenté" + " (" + (isAnonymous ? "*/*" : userEmail) + ")",
                                 icon_url: "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg"
                             },
-                            title: "__"+selectedFeedbackType+"__ : " + "**"+subject+"**",
+                            title: "__" + selectedFeedbackType + "__ : " + "**" + subject + "**",
                             description: feedbackContent,
                             image: {
                                 url: (data && data.display_url)
@@ -135,9 +132,9 @@ export default function Feedback() {
                 }),
             }
         )
-        .catch((error) => {
-            setErrorMessage(error.message);
-        });
+            .catch((error) => {
+                setErrorMessage(error.message);
+            });
     }
 
     return (
@@ -147,17 +144,20 @@ export default function Feedback() {
                     <h1>Faire un retour</h1>
                     <SegmentedControl id="SC-feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={setSelectedFeedbackType} />
                     <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" />
-                    <textarea required={true} id="feedback-content" value={feedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown [mb])"></textarea>
-                    <div className={`drop-zone ${isFileInputHovered ? "file-hovered" : ""}`} onDragOver={handleDragOver} onDragLeave={handleDragOverStop} onDrop={handleDragOverStop}>
-                        <div id="preview-container">
-                            <img id="file-preview" ref={imgRef} alt="Prévisualisation de l'image" />
-                            <label htmlFor="attached-file" ref={labelRef}>Ajouter une capture d'écran</label>
+                    <textarea required={true} className="text-area" id="feedback-content" value={feedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown)"></textarea>
+                    <div className="file-input">
+                        <div className={`drop-zone ${isFileInputHovered && "file-hovered"} ${warningMessage && "invalid"}`} onDragOver={handleDragOver} onDragLeave={handleDragOverStop} onDrop={handleDragOverStop}>
+                            <div id="preview-container">
+                                <img id="file-preview" ref={imgRef} alt="Prévisualisation de l'image" />
+                                <label htmlFor="attached-file" ref={labelRef}>Ajouter une capture d'écran</label>
+                            </div>
+                            <input name="attached-file" id="attached-file" ref={fileInputRef} type="file" onChange={handleFile} />
                         </div>
-                        <input name="attached-file" id="attached-file" type="file" accept="image/*, image/heic" onChange={handleFile} />
+                        <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
                     </div>
                     <div id="contact">
                         <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                        <TextInput id="user-email" textType="email" placeholder="Adresse email" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} />
+                        <TextInput id="user-email" textType="email" placeholder="Adresse email" icon="/images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} />
                     </div>
                     <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
                     {errorMessage && <p className="error-message" style={{ display: "block", color: "red", margin: "auto" }}>{errorMessage}</p>}

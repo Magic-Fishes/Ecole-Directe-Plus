@@ -160,8 +160,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 <img src="/images/no-logo.png" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
-                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} icon="/images/no-logo.png" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" />
-                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} icon="/images/no-logo.png" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" />
+                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} icon="/images/account-icon.svg" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" />
+                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} icon="/images/key-icon.svg" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" />
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="login-option">
                         <CheckBox id="keep-logged-in" label="Rester connecter" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />

@@ -21,6 +21,7 @@ import Feedback from "./components/Feedback/Feedback";
 import Policy from "./components/generic/Policy";
 import Header from "./components/App/Header"
 import Grades from "./components/App/Grades/Grades"
+import Canardman from "./components/Canardman/Canardman"
 
 console.log(`
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
@@ -73,6 +74,10 @@ export default function App() {
                     path: "feedback",
                 },
                 {
+                    element: <Canardman />,
+                    path: "coincoin",
+                },
+                {
                     element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                     children: [
@@ -95,7 +100,6 @@ export default function App() {
             ],
         },
     ]);
-    // console.log(router);
 
     return (
         <div>

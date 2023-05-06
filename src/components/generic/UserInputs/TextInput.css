@@ -10,14 +10,6 @@
     overflow: hidden;
 }
 
-.warning-message {
-    text-align: left;
-    color: var(--main-color-soft-error);
-    font-size: var(--main-font-size-13);
-    maring-top: 10px;
-    margin-left: 8px;
-}
-
 .input-container:focus-within {
     background-color: #4B48D940;
 }
@@ -27,6 +19,7 @@
     display: block;
     font-size: var(--main-font-size-18);
     padding: 10px;
+    padding-right: 0;
     width: 100%;
     background-color: transparent;
     color: white;
@@ -41,13 +34,4 @@
 .input-icon {
     height: 100%;
     padding: 10px;
-}
-
-.invalid {
-    border-color: rgb(var(--border-color-soft-error));
-    background-color: rgba(var(--background-color-soft-error), 0.1);
-}
-
-.invalid:focus-within {
-    background-color: rgba(var(--background-color-soft-error), 0.2);
 }
