@@ -1,8 +1,8 @@
 import { useState } from "react"
 import "./TextInput.css"
 
-export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, onWarningMessage, canAutoComplete, className, id }) {
-    const [warningMessage, setWarningMessage] = useState("")
+export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, canAutoComplete, icon, className, id }) {
+    const [warningMessageState, setWarningMessageState] = useState("");
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
     if (!allowedTextTypes.includes(textType)) {
         textType = "text";
@@ -10,29 +10,34 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
 
     function handleInvalid(event) {
         event.preventDefault();
-        setWarningMessage(onWarningMessage)
+        setWarningMessageState(warningMessage)
+        
     }
 
     function handleChange(event) {
-        onChange(event)
-        setWarningMessage("")
+        onChange(event);
+        setWarningMessageState("");
     }
 
     return (
-        <div>
-            {warningMessage && <p className="warning-message">{warningMessage}</p>}
-            <input
-                className={"text-input " + className}
-                id={id}
-                type={textType}
-                placeholder={placeholder}
-                value={value}
-                onChange={handleChange}
-                disabled={disabled}
-                required={isRequired}
-                onInvalid={handleInvalid}
-                autoComplete={canAutoComplete}
-            />
+        <div className={className} id={id}>
+            {/* <div className={warningMessageState ? "input-container" : "warning-input-container"} > */}
+            <div className={`input-container ${warningMessageState && "invalid"}`} >
+                <input
+                    className="text-input"
+                    type={textType}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={handleChange}
+                    disabled={disabled}
+                    required={isRequired}
+                    onInvalid={handleInvalid}
+                    autoComplete={canAutoComplete}
+                    
+                />
+                {icon && <img src={icon} className="input-icon" alt="Icône illustrant l'entrée utilisateur"/>}
+            </div>
+            {warningMessageState && <p className="warning-message">{warningMessage}</p>}
         </div>
     )
 }

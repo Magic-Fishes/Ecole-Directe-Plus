@@ -6,7 +6,8 @@
     --main-text-color: white;
     --main-alt-text-color: #AAD;
     --main-color-error: red;
-    --main-color-soft-error: #ffb400;
+    --main-color-soft-error: #DF6262;
+    --main-color-soft-background-error: #DF62621D;
     --main-color-success: lime;
     --main-color-important: #67F;
     --main-color-focus: #4B48D940;
@@ -19,8 +20,19 @@
     --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;
     
+    /* --NOMENCLATURE-- */
+    /*
+        --attribut_lié-definition: valeur rgb sans le rgb();
+    */
+
+    --border-color-error: 255, 0, 0;
+    --color-soft-error: 223, 98, 98;
+    --border-color-soft-error: 223, 98, 98;
+    --background-color-soft-error: 223, 98, 98;
+
     /* font*/
     --main-font-size-12: 1.2rem;
+    --main-font-size-13: 1.3rem;
     --main-font-size-14: 1.4rem;
     --main-font-size-16: 1.6rem;
     --main-font-size-18: 1.8rem;

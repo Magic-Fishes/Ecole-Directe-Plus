@@ -3,11 +3,6 @@
 .error-message {
     color: var(--main-color-error);
 }
-.warning-message {
-    color: var(--main-color-soft-error);
-    margin-top: calc(15px * -1);
-    margin-bottom: 5px;
-}
 
 p.policy {
     width: 80vw;

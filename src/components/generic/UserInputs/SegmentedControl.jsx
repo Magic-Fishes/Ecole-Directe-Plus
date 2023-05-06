@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import "./SegmentedControl.css";
 
@@ -8,10 +8,12 @@ export default function SegmentedControl({ options, selected, onChange, id, clas
     const [optionsState, setOptionsState] = useState(options);
 
     /* sélectionne le 1er élément si rien n'est sélectionné */
-    if (!selected) {
-        onChange(optionsState[0]);
-    }
-
+    useEffect(() => {
+        if (!selected) {
+            onChange(optionsState[0]);
+        }
+    });
+    
     const handleClick = (event) => {
         onChange(event.target.value);
     }

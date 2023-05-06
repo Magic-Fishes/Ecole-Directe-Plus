@@ -1,7 +1,4 @@
-//truite séchée le rester anon,yme ca devrait permettre de  ne pas mettre son nom mais de quand même mettre l'adress e-mail
-// je psense il faut pas appeler ça rester anonyme parce que dans les 2 cas c pas anonyme
-// On peut juste mettre genre "Adresse de contact" mais c'est un peu useless juste le man a qu'a rien mettre
-// mais pg c'est stylé ça casse la monotonie du design et ça ajoute de la complexité tah complexe
+
 import { useState, useEffect, useRef } from "react";
 import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import TextInput from "../generic/UserInputs/TextInput";
@@ -11,11 +8,9 @@ import CheckBox from "../generic/UserInputs/CheckBox";
 import "./Feedback.css";
 
 let attachedFile = null; // cancer
-const feedbackTypes = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"]
 export default function Feedback() {
     // States
-    /*const [feedbackTypes, setFeedbackTypes] = useState(["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"]);*/ 
-    // !!! en state c vla useless ca met une const directement
+    const feedbackTypes = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"];
     const [selectedFeedbackType, setSelectedFeedbackType] = useState("");
     const [subject, setSubject] = useState(""); // Objet du feedback
     const [feedbackContent, setFeedbackContent] = useState(`**Description du problème**
@@ -37,7 +32,7 @@ export default function Feedback() {
         setIsFileInputHovered(true);
     }
 
-    function handleDragStop () {
+    function handleDragOverStop () {
         setIsFileInputHovered(false)
     }
     
@@ -49,6 +44,7 @@ export default function Feedback() {
         setIsFileInputHovered(false);
     }*/
     // !!! la t'as 2 fonctions qui font la mm chose un handleDragStop serait plus pertinent je pense
+    // je comprends ton mécontentement, toutefois, test en biphasé
     // Behavior
     const updateSubject = (event) => { setSubject(event.target.value) }
     const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value) }
@@ -64,32 +60,30 @@ export default function Feedback() {
         let body = new FormData();
         body.append('image', file);
 
-        let data = undefined;
 
-        await fetch(apiURL, { // il sert a quoi le await ?
+        let data = null;
+
+        await fetch(apiURL, { // il sert a quoi le await ? ça attend la résolution de la promesse pour exécuter la suite de la fonction, dcp ça attend de recevoir la réponse de la requête avant de la return ; et dcp quand il y a un await dans la fonction il faut mettre un "async"
             method: "POST",
             body: body
         })
         .then(response => response.json())
         .then(response => data = response.data)
         .catch(error => {
-            console.log(error);
-            setErrorMessage(error);
+            setErrorMessage(error.message);
         });
 
-        // console.log(data);
         return data;
     }
 
 
     const handleFile = (event) => {
         attachedFile = event.target.files[0];
-        // console.log("event.target.files : ", event.target.files[0]);
-        // console.log("attachedFile : ", attachedFile);
+        console.log(attachedFile);
 
         let reader = new FileReader();
 
-        reader.onload = function() {
+        reader.onload = () => {
             labelRef.current.style.display = "none";
 
             imgRef.current.src = reader.result;
@@ -101,13 +95,8 @@ export default function Feedback() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("Feedback submitted");
-        console.log(attachedFile);
 
-        const data = await imageToURL(attachedFile)
-        // console.log(attachedFile);
-        // console.log(data);
-        // console.log(data.display_url);
+        const data = await imageToURL(attachedFile);
 
         // Envoyer to webhook
         const date = new Date();
@@ -147,8 +136,8 @@ export default function Feedback() {
             }
         )
         .catch((error) => {
-            setErrorMessage(error);
-        })
+            setErrorMessage(error.message);
+        });
     }
 
     return (
@@ -157,9 +146,9 @@ export default function Feedback() {
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <h1>Faire un retour</h1>
                     <SegmentedControl id="SC-feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={setSelectedFeedbackType} />
-                    <TextInput isRequired={true} id="feedback-subject" textType="text" placeholder="Objet" value={subject} onChange={updateSubject} />
+                    <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" />
                     <textarea required={true} id="feedback-content" value={feedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown [mb])"></textarea>
-                    <div className={`drop-zone ${isFileInputHovered ? "file-hovered" : ""}`} onDragOver={handleDragOver} onDragLeave={handleDragStop} onDrop={handleDragStop}>
+                    <div className={`drop-zone ${isFileInputHovered ? "file-hovered" : ""}`} onDragOver={handleDragOver} onDragLeave={handleDragOverStop} onDrop={handleDragOverStop}>
                         <div id="preview-container">
                             <img id="file-preview" ref={imgRef} alt="Prévisualisation de l'image" />
                             <label htmlFor="attached-file" ref={labelRef}>Ajouter une capture d'écran</label>

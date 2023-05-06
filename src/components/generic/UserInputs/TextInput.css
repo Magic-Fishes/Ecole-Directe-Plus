@@ -1,22 +1,53 @@
-
-.text-input {
-    display: block;
-    font-size: var(--main-font-size-18);
-    margin-bottom: 10px; /*à enlever*/
-    padding: 10px;
-    width: 100%;
+.input-container {
     border: 2px solid var(--main-border-color-0);
     border-radius: 15px;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    width: 100%;
+    height: 2.8em;
+    overflow: hidden;
+}
+
+.warning-message {
+    text-align: left;
+    color: var(--main-color-soft-error);
+    font-size: var(--main-font-size-13);
+    maring-top: 10px;
+    margin-left: 8px;
+}
+
+.input-container:focus-within {
+    background-color: #4B48D940;
+}
+
+.text-input {
+    border: none;
+    display: block;
+    font-size: var(--main-font-size-18);
+    padding: 10px;
+    width: 100%;
     background-color: transparent;
     color: white;
     outline: none;
 }
 
-.text-input:focus {
-    background-color: #4B48D940;
-}
-
 .text-input:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+.input-icon {
+    height: 100%;
+    padding: 10px;
+}
+
+.invalid {
+    border-color: rgb(var(--border-color-soft-error));
+    background-color: rgba(var(--background-color-soft-error), 0.1);
+}
+
+.invalid:focus-within {
+    background-color: rgba(var(--background-color-soft-error), 0.2);
 }

