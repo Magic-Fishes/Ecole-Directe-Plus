@@ -10,6 +10,14 @@ export default function Button({ className, id, buttonType, value, onClick }) {
     // qqchose
     //<input className={"button " + className} id={id} type={buttonType} value={value} onClick={onClick} />
     return (
-        <input className={"button " + className} id={id} type={buttonType} value={value} onClick={onClick} />
+        <button 
+            type={buttonType} 
+            value={value} 
+            onClick={onClick}
+            className={"button " + className} 
+            id={id} 
+            >
+            {value}
+        </button>
     )
 }

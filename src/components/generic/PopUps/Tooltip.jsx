@@ -12,16 +12,16 @@ import "./Tooltip.css";
 // </Tooltip>
 // c'est Changeur de jeu
 
-export default function Tooltip({ text, children }) {
+export default function Tooltip({ id, text, children }) {
     // States
 
     // Behavior
 
     // JSX
     return (
-        <div className="tooltip-container">
+        <div className="tooltip-container" id={id}>
             <span className="tooltip">{text}</span>
             {children}
-        </div>
+        </div >
     )
 }

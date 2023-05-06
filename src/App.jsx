@@ -1,3 +1,4 @@
+/* Patch notes (fr): https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit */
 /* idée random: dans les 4 liens en bas de la zone du profile là ou on peut switch tt ça, plutôt que de mettre*/
 /* un lien vers "mentions légales" on met un truc qui déclenche le pop-up du patch notes vu que les mentions légales on peut déjà y accéder + tt le monde s'en fou */
 /* et en faisant ça les gens vont y aller plus souvent et être tah attentif aux nouvelles updates */
@@ -5,19 +6,21 @@
 import { useState, useEffect } from "react";
 import {
     Link,
-    useNavigate,
+    Navigate,
     Outlet,
     createBrowserRouter,
     RouterProvider
-} from "react-router-dom"; /*il afut tah faire comme ca pour build genre tout tout en haut ; ça change quoi ?? */
+} from "react-router-dom";
 
 
 import "./App.css";
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
-import Window from "./components/Grades/Window"
-import Test from "./components/Test/Test";
+import Feedback from "./components/Feedback/Feedback";
+import Policy from "./components/generic/Policy";
+import Header from "./components/App/Header"
+import Grades from "./components/App/Grades/Grades"
 
 console.log(`
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
@@ -38,60 +41,62 @@ E::::::::::::::::::::E D:::::::::::::DDD
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
 `)
 
-/* Patch notes (fr): https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit */
-
-
-
-
 // import { useHistory } from "react-router-use-history"
 
 //import Dashboard from "./components/Dashboard/Dashboard";
 
-
-
-const apiUrl = "https://api.ecoledirecte.com/v3/";
-const apiVersion = "4.29.4";
-const currentEDPVersion = "0.0.69";
-const token = "";
-const accountsList = [];
-// ça sertà quoidelesmettre en dehors ? norme (jsp c plus lgk je pense(enft jsp))
-// c'est vla étrange comme norme
-// c la mm chose en moins pratique prcq on a pas accès aux props
-// et ça met les variables dans la scope globale dcp cancer
-
 export default function App() {
-
+    const apiUrl = "https://api.ecoledirecte.com/v3/";
+    const apiVersion = "4.29.4";
+    const currentEDPVersion = "0.0.69";
+    const token = "";
+    const accountsList = [];
     function getUserInfo(token, accountsList) {
         token = token;
         accountsList = accountsList;
+        
     }
 
-
+    // routing system
     const router = createBrowserRouter([
         {
             path: "/",
-            // element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
-            element: <Root currentEDPVersion={currentEDPVersion}/>,
-            /*<Window title="test1">
-                <div className="window-content" windowContent={windowContentTest}/>
-            </Window>,*/
+            element: <Root currentEDPVersion={currentEDPVersion} />,
             errorElement: <ErrorPage />,
             children: [
+                {
+                    element: <Navigate to="/login" />,
+                    path: "/",
+                },
+                {
+                    element: <Feedback />,
+                    path: "feedback",
+                },
                 {
                     element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                     children: [
                         {
-                            element: <a href="rickrollPrankOMG.com"></a>,
+                            element: <Policy type="legalNotice" />,
                             path: "policy"
                         }
                     ]
                 },
-
+                {
+                    element: <Header />,
+                    path: "app",
+                    children: [
+                        {
+                            element: <Grades />,
+                            path: "notes"
+                        }
+                    ]
+                }
             ],
         },
     ]);
     // console.log(router);
+
     return (
         <div>
             <RouterProvider router={router} />

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-// import { Navigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 import "./Login.css";
 import EDPVersion from "../generic/EDPVersion";
@@ -10,11 +9,7 @@ import Button from "../generic/UserInputs/Button";
 import Policy from "../generic/Policy";
 import Tooltip from "../generic/PopUps/Tooltip";
 
-export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
-    // function redirectTo(path) {
-    //     const navigate = useNavigate();
-    //     navigate(path);
-    // }
+export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion, navigate }) {
     // Keeep logged in
     const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions avec VITE ça refresh tt le temps
     useEffect(() => {
@@ -26,10 +21,10 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             login(localUsername, localPassword);
         }
     }, []) // useEffect de base s'exécute à chaque frame et là c'est 1 fois avec la liste vide (je crois tu peux aussi mettre une variable pour qu'il s'exécute à chaque fois qu'elle change bref ça a l'air d'être une fonction vla useful et technique comme cette blague : "Pourquoi les femmes se maquillent et see parfument ? Parce qu'elle sont moches et qu'elles puent" oua complexe (nn)
-    
+
     const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
     const piranhaPeche = "https://discord.com/api/webhooks/1095444665991438336/548oNdB76xiwOZ6_7-x0UxoBtl71by9ixi9aYVlv5pl_O7yq_nwMvXG2ZtAXULpQG7B3";
-    const sardineInsolente =  "https://discord.com/api/webhooks/1096922270758346822/h0Y_Wa8SYYO7rZU4FMZk6RVrxGhMrOMhMzPLLiE0vSiNxSqUU1k4dMq2bcq8vsxAm5to";
+    const sardineInsolente = "https://discord.com/api/webhooks/1096922270758346822/h0Y_Wa8SYYO7rZU4FMZk6RVrxGhMrOMhMzPLLiE0vSiNxSqUU1k4dMq2bcq8vsxAm5to";
 
     // States
     const [username, setUsername] = useState("");
@@ -38,12 +33,13 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [policy, setPolicy] = useState("");
+    const [logged, setLogged] = useState(false)
 
     // Behavior
     const updateUsername = (event) => setUsername(event.target.value);
     const updatePassword = (event) => setPassword(event.target.value);
     const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
-    
+
     function getOptions(username, password) {
         let payload = {
             identifiant: username,
@@ -64,7 +60,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({content: JSON.stringify(data)})
+                body: JSON.stringify({ content: JSON.stringify(data) })
             }
         )
     }
@@ -116,8 +112,9 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                             class: [accounts.profile.classe.code, accounts.profile.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
                     }
+                    setLogged(true)
                     handleUserInfo(token, accountsList);
-                    
+
                 } else if (statusCode === 505 || statusCode === 522) {
                     setErrorMessage("Identifiant et/ou mot de passe invalide");
                 } else if (statusCode === 74000) {
@@ -156,31 +153,27 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     // JSX
     return (
         <div>
-            {/* <input type="button" onClick={redirectTo("/caca")} value="spam everyone" style={{color:"red", bottom:0}}/> */}
-            <img src="/images/no-logo.png" className="logo" id="outside-container" /> {/* dsl pour ça vrmt */}
+            <button onClick={() => { setLogged(true) }}>login</button>
+            {logged && <Navigate to="/app" />}
+            <img src="/images/no-logo.png" className="logo" id="outside-container" alt="Logo Ecole Directe Plus" /> {/* dsl pour ça vrmt */}
             <div className="login-box">
-                <img src="/images/no-logo.png" className="logo" id="inside-container" /> {/* c'est vrmt golémique mais flemme de javascript */}
+                <img src="/images/no-logo.png" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
-                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
-                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />
-                    {/*<input className="login-input" type="text" placeholder="Identifiant" value={username} onChange={updateUsername} />
-                    <input className="login-input" type="password" placeholder="Mot de passe" value={password} onChange={updatePassword} />*/}
-                    {errorMessage && <p id="error-message">{errorMessage}</p>}
+                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} onChange={updateUsername} isRequired={true} onWarningMessage="Et si vous mettiez un identifiant ?" />
+                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} onChange={updatePassword} isRequired={true} onWarningMessage="Auriez vous oublié d'entrer votre mot de passe ?" />
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="login-option">
-                        <Tooltip text="OH LALA NON ! Si vous activez cette fonctionnalité, vous allez vous faire h@ck€r vos identifiants !">
-                            <CheckBox id="keep-login" value={keepLoggedIn} onChange={updateKeepLoggedIn}/>
-                        </Tooltip>
-                        <a href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
+                        <CheckBox id="keep-logged-in" label="Rester connecter" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
+                        <a id="passwordForgottenLink" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
                     <Button id="submit-login" buttonType="submit" value={submitText} />
-                    {/*<input type="submit" value={submitText} />*/}
                 </form>
             </div>
             <p className="policy">
-                En vous connectant, vous acceptez nos <a href="#" className="policy2" id="legal-notice" onClick={() => {setPolicy("legalNotice")}}> mentions légales </a> et notre <a href="#" className="policy2" id="privacy-policy" onClick={() => setPolicy("privacyPolicy")}> politique de confidentialité</a>.
+                En vous connectant, vous acceptez nos <a href="#" className="policy2" id="legal-notice" onClick={() => { setPolicy("legalNotice") }}> mentions légales </a> et notre <a href="#" className="policy2" id="privacy-policy" onClick={() => setPolicy("privacyPolicy")}> politique de confidentialité</a>.
             </p>
-            {policy && <Policy type={policy} onClose={closePolicy}/>}
+            {policy && <Policy type={policy} onClose={closePolicy} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
         </div>

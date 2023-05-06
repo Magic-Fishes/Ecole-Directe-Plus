@@ -1,13 +1,38 @@
-
+import { useState } from "react"
 import "./TextInput.css"
 
-export default function TextInput({ className, textType, placeholder, value, onChange}) {
+export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, onWarningMessage, canAutoComplete, className, id }) {
+    const [warningMessage, setWarningMessage] = useState("")
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
     if (!allowedTextTypes.includes(textType)) {
         textType = "text";
     }
-    //pk pour définir className tu fais pas "text-input-"+className??
+
+    function handleInvalid(event) {
+        event.preventDefault();
+        setWarningMessage(onWarningMessage)
+    }
+
+    function handleChange(event) {
+        onChange(event)
+        setWarningMessage("")
+    }
+
     return (
-        <input className={"text-input " + className} type={textType} placeholder={placeholder} value={value} onChange={onChange} />
+        <div>
+            {warningMessage && <p className="warning-message">{warningMessage}</p>}
+            <input
+                className={"text-input " + className}
+                id={id}
+                type={textType}
+                placeholder={placeholder}
+                value={value}
+                onChange={handleChange}
+                disabled={disabled}
+                required={isRequired}
+                onInvalid={handleInvalid}
+                autoComplete={canAutoComplete}
+            />
+        </div>
     )
 }

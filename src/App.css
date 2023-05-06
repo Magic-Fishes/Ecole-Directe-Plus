@@ -6,18 +6,22 @@
     --main-text-color: white;
     --main-alt-text-color: #AAD;
     --main-color-error: red;
+    --main-color-soft-error: #ffb400;
     --main-color-success: lime;
     --main-color-important: #67F;
+    --main-color-focus: #4B48D940;
     --main-background-color-0: #181829;
-    --main-background-color-0-5: #333347;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas)*/
+    --main-background-color-0-5: #323257;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas)*/
     --main-background-color-1: #484866;
     --main-border-color-0: #4B48D9;
-    --main-border-color-1: #6C6AFF;
+    --main-border-color-1: #6D6AFB;
     --main-window-header-color: #323257;
     --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;
     
     /* font*/
+    --main-font-size-12: 1.2rem;
+    --main-font-size-14: 1.4rem;
     --main-font-size-16: 1.6rem;
     --main-font-size-18: 1.8rem;
     --main-font-size-20: 2rem; /* window content */
@@ -60,15 +64,20 @@ body {
     padding: 0;
 }
 
-body, input {
+body, input, button, textarea {
     font-family: Inter, sans-serif;
 }
+
 
 /* Scrollbar */
 ::-webkit-scrollbar {
     /* background-color: transparent; */
     width: 20px;
     height: 20px;
+}
+
+::placeholder {
+    color: var(--main-alt-text-color);
 }
 
 /* Track */

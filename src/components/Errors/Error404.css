@@ -1,5 +1,23 @@
 
-/* css incoming
-OMG le teasing du CSS je suis TLLMT HYPE OH OH OH GOTAGA
-J'éspère ils annonce la date des sortie bientits
-*/
+#error-404 div#error-404-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px;
+    text-align: center;
+}
+
+#error-404-container img {
+    height: 250px;
+    padding: 30px 35px;
+    margin-bottom: 20px;
+    background-color: #3B38A1FF;
+    border-radius: 20px;
+}
+
+#error-404-container a {
+    margin-top: 30px;
+    color: var(--main-text-color);
+    text-decoration: none;
+}

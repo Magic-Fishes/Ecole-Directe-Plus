@@ -1,7 +1,12 @@
 /*1vh = 7.5px*/
 
-#error-message {
+.error-message {
     color: var(--main-color-error);
+}
+.warning-message {
+    color: var(--main-color-soft-error);
+    margin-top: calc(15px * -1);
+    margin-bottom: 5px;
 }
 
 p.policy {
@@ -61,7 +66,7 @@ p.policy {
 .login-box .login-input,
 .login-box #submit-login,
 .login-box .login-option,
-.login-box #error-message {
+.login-box .error-message {
     margin-bottom: 20px;
 }
 
@@ -72,13 +77,12 @@ p.policy {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-around;
+    gap: 10px;
 }
 
-.login-option a {
-    /*text-align: center;*/
+.login-option #passwordForgottenLink {
     text-align: right;
-    margin-left: 20px;
     text-decoration: none;
     color: var(--main-alt-text-color);
     cursor: pointer;
@@ -100,6 +104,7 @@ p.policy {
         left: 0;
         transform: none;
         width: 100px;
+        height: auto;
         display: block;
         margin: 5dvh auto; /*dvh = dynamic vh -> prend en compte la barre de recherche sur mobile */
     }
@@ -114,7 +119,7 @@ p.policy {
         box-shadow: none;
         border: none;
         border-radius: 0;
-        background-color: #323257;
+        background-color: var(--main-background-color-0-5);
         margin: 0;
         padding: 5px;
         min-width: 0;

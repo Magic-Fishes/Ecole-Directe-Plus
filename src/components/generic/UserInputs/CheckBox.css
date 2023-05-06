@@ -12,7 +12,7 @@
     height: 30px;
     padding: 0;
     margin: 0;
-    border: 3px solid #4B48D9FF;
+    border: 2px solid #4B48D9FF;
     border-radius: 10px;
     background-color: transparent;
     outline: none;
@@ -20,9 +20,9 @@
     transition: 0.1s;
 }
 
-.check-box input[type="checkbox"]:hover:not(:checked) {
+.check-box input[type="checkbox"]:hover:not(:checked), .check-box input[type="checkbox"]:focus-visible {
     /*background-color: #4b48d9;*/
-    border-color: #6D6AFB;
+    border-color: var(--main-border-color-1);
 }
 
 .check-box input[type="checkbox"]:checked {

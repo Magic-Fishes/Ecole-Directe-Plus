@@ -1,38 +1,62 @@
 
-.segmented-control {
-    flex-direction: row; 
+fieldset.segmented-control {
     display: flex;
+    flex-flow: row nowrap;
     width: 100%;
-    border: 3px solid var(--main-border-color-0);
+    min-width: 0;
+    border: 2px solid var(--main-border-color-0);
     border-radius: 15px;
-    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
-button.option {
+
+label.option input {
+    position: absolute;
+}
+
+label.option {
     border: none;
-    border-right: 1px solid var(--main-border-color-0);
+    border-inline: 1px solid var(--main-border-color-0);
     font-size: var(--main-font-size-18);
     padding: 0.5em;
     min-width: 0;
+    text-align: center;
     white-space: nowrap; /* enfer pour les utilisateurs mobile */
     overflow: hidden;
     text-overflow: ellipsis; /* cut un texte avec points de suspension*/
     color: var(--main-text-color); /* safari */
     background-color: transparent;
     flex-grow: 1;
+    outline: none;
     transition: 0.1s;
     cursor: pointer;
 }
 
-button.option:hover {
-    background-color: var(--main-border-color-1);
+label {
+    cursor: pointer;
 }
 
-button.option:last-child {
-    border: none;
+label.option:hover {
+    background-color: var(--main-color-focus);
 }
 
-button.option.selected {
+label.option:first-child {
+    border-left: none;
+    border-top-left-radius: 13px;
+    border-bottom-left-radius: 13px;
+}
+label.option:last-child {
+    border-right: none;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+}
+
+label.option.selected {
     background-color: var(--main-border-color-0);
-    flex-grow: 2;
+    flex-grow: 5;
+}
+
+fieldset.segmented-control:focus-within {
+    border-color: var(--main-border-color-1);
 }

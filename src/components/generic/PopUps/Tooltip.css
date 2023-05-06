@@ -27,7 +27,7 @@
 
 /* .tooltip-container:active .tooltip, */
 .tooltip-container:hover .tooltip,
-.tooltip-container:focus .tooltip {
+.tooltip-container:focus-within .tooltip {
     bottom: 125%; /* positionne au dessus du contenu*/
     visibility: visible;
     opacity: 1;

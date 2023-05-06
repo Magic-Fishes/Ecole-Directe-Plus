@@ -9,6 +9,7 @@
     opacity: 0;
     animation: 0.3s ease 0s fade-in;
     animation-fill-mode: forwards;
+    z-index: 99;
 }
 
 #pop-up-background {
@@ -102,7 +103,7 @@
     padding: 15px;
     padding-top: 0; /* remplacé par le padding du h3*/
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
     list-style-position: inside;
 }
 

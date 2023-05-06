@@ -3,9 +3,10 @@
     display: block;
     margin: 0 auto;
     font-size: var(--main-font-size-18);
+    font-weight: var(--main-font-weight-semi-bold);
     padding: 10px 15px;
     min-width: 0;
-    border: 3px solid var(--main-border-color-0);
+    border: 2px solid var(--main-border-color-0);
     border-radius: 15px;
     background-color: transparent;
     color: white;
@@ -16,4 +17,17 @@
 
 .button:hover {
     background-color:  var(--main-border-color-0);
+}
+
+.button:focus-visible {
+    border-color: var(--main-border-color-1);
+}
+
+.button::after {
+    content: " ->";
+    transition: 0.1s;
+}
+
+.button:hover::after {
+    content: " -->";
 }
