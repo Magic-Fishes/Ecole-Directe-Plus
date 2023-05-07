@@ -26,12 +26,13 @@
     outline: none;
 }
 
-.text-input:disabled {
+div.input-container:has(.text-input:disabled) {
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.input-icon {
+img.input-icon {
     height: 100%;
+    width: auto;
     padding: 10px;
 }

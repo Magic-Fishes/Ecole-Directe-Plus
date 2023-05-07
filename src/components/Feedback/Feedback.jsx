@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import TextInput from "../generic/UserInputs/TextInput";
 import Button from "../generic/UserInputs/Button";
@@ -7,19 +7,44 @@ import CheckBox from "../generic/UserInputs/CheckBox";
 import WarningMessage from "../generic/WarningMessage";
 
 import "./Feedback.css";
-const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif|\.tif|\.webp|\.heic|\.pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche
+
 let attachedFile = null;
 export default function Feedback() {
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif|\.tif|\.webp|\.heic|\.pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche
+    const feedbackTips = [
+`**Description du problème**
+
+**Comportement attendu**
+
+**Comportement réel**
+
+**Étapes pour reproduire**
+
+**Navigateur/OS/Appareil**
+`,
+`**Description de la fonctionnalité**
+
+**Quel(s) problème(s) cette fonctionnalité pourrait régler ?**
+
+**Expliquez ce que vous essayiez de faire lorsque vous avez rencontré le problème menant à cette demande de fonctionnalité**
+`,
+`**Ce que vous aimez**
+
+**Ce que vous aimez moins**
+
+**Pistes de progression**
+`,
+`**Type de retour**
+
+**Contenu du retour**
+`,
+]
+    
     // States
-    const feedbackTypes = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Général"];
+    const feedbackTypes = ["Signaler un bug", "Suggestion", "Retour d'expérience", "Autre"];
     const [selectedFeedbackType, setSelectedFeedbackType] = useState("");
     const [subject, setSubject] = useState(""); // Objet du feedback
-    const [feedbackContent, setFeedbackContent] = useState(`**Description du problème**
-
-**Expliquez ce que vous étiez en train d'essayer de faire**
-
-**Quelles zones et fonctionnalités sont impliquées ?**
-`);
+    const [feedbackContent, setFeedbackContent] = useState(feedbackTips[0]);
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [userEmail, setUserEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -44,7 +69,11 @@ export default function Feedback() {
     const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value) }
     const updateIsAnonymous = (event) => { setIsAnonymous(event.target.checked) };
     const updateUserEmail = (event) => { setUserEmail(event.target.value) };
-
+    const handleFeedbackTypeChange = (feedbackType) => {
+        setSelectedFeedbackType(feedbackType);
+        setFeedbackContent(feedbackTips[feedbackTypes.indexOf(feedbackType)]);
+    }
+    
     // ----------------
     async function imageToURL(file) {
         // TODO: Gérer les erreurs status_code
@@ -103,7 +132,7 @@ export default function Feedback() {
             "Signaler un bug": "FF0000",
             "Suggestion": "FFFF00",
             "Retour d'expérience": "00FF00",
-            "Général": "4B48D9",
+            "Autre": "4B48D9",
         }
         let color = colors[selectedFeedbackType];
         fetch(
@@ -142,7 +171,7 @@ export default function Feedback() {
             <div id="feedback-box">
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <h1>Faire un retour</h1>
-                    <SegmentedControl id="SC-feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={setSelectedFeedbackType} />
+                    <SegmentedControl id="SC-feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} />
                     <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" />
                     <textarea required={true} className="text-area" id="feedback-content" value={feedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown)"></textarea>
                     <div className="file-input">

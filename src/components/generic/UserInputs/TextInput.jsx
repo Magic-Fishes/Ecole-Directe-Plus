@@ -34,7 +34,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     onInvalid={handleInvalid}
                     autoComplete={canAutoComplete}
                 />
-                {icon && <img src={icon} className="input-icon" alt="Icône illustrant l'entrée utilisateur"/>}
+                {icon && <img src={icon} className="input-icon" alt="Icône illustrant le type d'entrée utilisateur"/>}
             </div>
             <WarningMessage condition={warningMessageState}>
                 {warningMessageState}
