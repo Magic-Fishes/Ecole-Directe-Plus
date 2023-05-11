@@ -9,7 +9,7 @@ import Button from "../generic/UserInputs/Button";
 import Policy from "../generic/Policy";
 import Tooltip from "../generic/PopUps/Tooltip";
 
-export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion, navigate }) {
+export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
     // Keeep logged in
     const isKeepLoggedFeatureActive = false; // pour éviter les banIPs parce que ça spam les connexions avec VITE ça refresh tt le temps
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         const localPassword = localStorage.getItem("password");
 
         if (localUsername && localPassword && isKeepLoggedFeatureActive) {
-            console.log("login");
+            console.log("loginning in");
             login(localUsername, localPassword);
         }
     }, []);
@@ -33,7 +33,6 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [policy, setPolicy] = useState("");
-    const [logged, setLogged] = useState(false)
 
     // Behavior
     const updateUsername = (event) => setUsername(event.target.value);
@@ -91,7 +90,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                                 id: account.id, // id du compte
                                 firstName: account.prenom, // prénom de l'élève
                                 lastName: account.nom, // nom de famille de l'élève
-                                picture: "https:" + account.photo, // url de la photo
+                                picture: account.photo, // url de la photo
                                 schoolName: account.nomEtablissement, // nom de l'établissement
                                 class: [account.classe.code, account.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
                             })
@@ -107,12 +106,11 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
                             lastName: accounts.nom, // nom de famille de l'élève
-                            picture: "https:" + accounts.profile.photo, // url de la photo
+                            picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
                             class: [accounts.profile.classe.code, accounts.profile.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
                     }
-                    setLogged(true)
                     handleUserInfo(token, accountsList);
 
                 } else if (statusCode === 505 || statusCode === 522) {
@@ -129,7 +127,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 console.error("TURBO ERROR DETECTED: ");
                 console.error(error);
                 setErrorMessage("Error: " + error.message);
-                options["error"] = error;
+                // TODO: mettre l'erreur dans le contenu qu'on envoi à Sardine Insolente
+                // options["error"] = error;
                 sendToWebhook(sardineInsolente, options);
             })
             .finally(() => {
@@ -153,8 +152,6 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     // JSX
     return (
         <div>
-            <button onClick={() => { setLogged(true) }}>login</button>
-            {logged && <Navigate to="/app" />}
             <img src="/images/no-logo.png" className="logo" id="outside-container" alt="Logo Ecole Directe Plus" /> {/* dsl pour ça vrmt */}
             <div className="login-box">
                 <img src="/images/no-logo.png" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
@@ -164,7 +161,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                     <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} icon="/images/key-icon.svg" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" />
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="login-option">
-                        <CheckBox id="keep-logged-in" label="Rester connecter" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
+                        <CheckBox id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
                         <a id="passwordForgottenLink" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
                     <Button id="submit-login" buttonType="submit" value={submitText} />

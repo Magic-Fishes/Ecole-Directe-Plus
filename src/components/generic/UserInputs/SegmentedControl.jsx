@@ -21,8 +21,8 @@ export default function SegmentedControl({ options, selected, onChange, id, clas
     return (
         <fieldset className={`segmented-control ${className}`} id={id}>
             {optionsState.map((option) =>
-                <label htmlFor={option} key={option} className={"option " + "selected ".repeat(selected === option)}>
-                    <input name="" type="radio" id={option} value={option} title={option} onClick={handleClick}/>
+                <label htmlFor={option} key={option} title={option} className={"option " + "selected ".repeat(selected === option)}>
+                    <input name="" type="radio" id={option} value={option} onClick={handleClick}/>
                     {option}
                 </label>
             )}

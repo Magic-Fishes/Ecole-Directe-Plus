@@ -8,9 +8,6 @@ export default function Error404() {
     function getRandomInt(min, max) { // ça sert à quoi ?? c'est pour le futur JEU VIDEO GAME ? c au cas ou on veut mettre des message randomisés ou alors si on veut mettre une image randomisée ; flemme de faire du contenu ça veut dire il faut être créatif wtf ???
         return Math.floor(min + Math.random() * (max-min));
     }
-    // for (let i = 0 ; i < 10 ; i++) {
-    //     console.log(getRandomInt(3, 8));
-    // }
     
     return (
         <div id="error-404">
@@ -24,7 +21,7 @@ export default function Error404() {
                     On dirait que Canardman a dérobé la page que vous cherchez...
                 </h2>
                 <Link to="login" className="button">Retourner au menu de connexion</Link>
-                <iframe src="https://scratch.mit.edu/projects/524241797/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                <iframe src="https://scratch.mit.edu/projects/524241797/embed" allowtransparency="true" width="485" height="402" frameBorder="0" scrolling="no" allowFullScreen></iframe>
             </div>
             {/* Canardman le VOYOU */}
             {/* Oh LALA NON */}

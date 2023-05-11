@@ -54,7 +54,7 @@ label.option:last-child {
 
 label.option.selected {
     background-color: var(--main-border-color-0);
-    flex-grow: 5;
+    flex-grow: 1.8;
 }
 
 fieldset.segmented-control:focus-within {

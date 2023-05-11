@@ -87,15 +87,15 @@ ul.pages li.page span {
     transition: 0.1s;
 }
 
-.account-selection:not(:focus):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton*/
+.account-selection:not(:focus-within):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton*/
     background-color: #4c4aa5;
 }
 
-.account-selection:focus {
+.account-selection:focus-within {
     border-radius: 20px 20px 0 0;
 }
 
-.account-selection:focus .drop-down-list {
+.account-selection:focus-within .drop-down-list {
     display: block; 
     height: auto; /* c'est pour essayer d'animer le déroulement de la drop-down-list mais sad ça marche pas*/
 }

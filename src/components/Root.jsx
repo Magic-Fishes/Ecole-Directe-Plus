@@ -1,19 +1,28 @@
+
 import { useState, useEffect } from "react";
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, Navigate, useNavigate } from 'react-router-dom';
 
 import PopUp from "./generic/PopUps/PopUp";
 import PatchNotes from "./generic/PatchNotes";
 
-export default function Root({ currentEDPVersion }) {
+export default function Root({ currentEDPVersion, token, accountsList, logIn, loggedIn }) {
     const navigate = useNavigate();
-
     const [isNewUser, setIsNewUser] = useState(false);
     const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
     const [welcomePopUp, setWelcomePopUp] = useState(null);
-    // if (window.location["href"] === "https://ecole-directe-plus.magicfish.repl.co/") { //je crois il y a pas de / de base
-    //     window.location["href"] += "login";
-    // }
 
+    function redirectToFeedback() {
+        navigate("/feedback");
+    }
+    
+    function redirectToApp() {
+        navigate("/app");
+    }
+    
+    function redirectToPage(pageRelativePath) {
+        navigate(pageRelativePath);
+    }
+    
     // welcome pop-up
     useEffect(() => {
         // localStorage.clear();
@@ -24,6 +33,16 @@ export default function Root({ currentEDPVersion }) {
         }
     }, [])
 
+    useEffect(() => {
+        if (token && accountsList && !loggedIn) {
+            console.log(token);
+            console.log("accountsList");
+            console.log(accountsList);
+            redirectToApp();
+            logIn(true);
+        }
+    }, [token, accountsList, loggedIn])
+    
     useEffect(() => {
         if (isNewUser) {
             const firstSteps = <ul>
@@ -45,99 +64,12 @@ export default function Root({ currentEDPVersion }) {
             setWelcomePopUp(null);
         }
     }, [isNewUser, isNewEDPVersion])
-
-
-    function spam() {
-        fetch(
-            "https://discord.com/api/webhooks/1097129769776185425/CSxioBHMy0f4IUA1ba8klG35Q2bnNUWdtTV6H1POu5qVFOCyZ-k0GTVg2ZMExAtDFIW8",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    content: "Feedback pertinent",
-                    embeds: [{
-                        title: "GIGACHAD",
-                        image: {
-                            "url": "https://i.ibb.co/dfpr4M6/canardman.png"
-                        }
-                    }]
-                }),
-            }
-        )
-    }
-
-    function testMisEnForme() {
-        const date = new Date();
-        const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: "numeric" };
-        const readableDate = date.toLocaleDateString('fr-FR', options);
-        const colors = {
-            error: "FF0000",
-            suggestion: "FFFF00",
-            experience: "00FF00",
-            general: "4B48D9",
-        }
-
-        const userInfos = {
-            id: 15464, // simulation du compte d'un gars qui fait un feedback
-            firstName: "poisson-zèbre",
-            lastName: "augmenté",
-            picture: "https:" + "//i.ibb.co/dfpr4M6/canardman.png",
-        }
-
-        const feedback = {
-            type: "suggestion",
-            object: "MBEEEEEEEEEUH JE PEUX PLUS JOUER IL EST 22H",
-            content: "*FARTING VERY LOUDLY*",
-        }
-        fetch(
-            "https://discord.com/api/webhooks/1097129769776185425/CSxioBHMy0f4IUA1ba8klG35Q2bnNUWdtTV6H1POu5qVFOCyZ-k0GTVg2ZMExAtDFIW8",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    embeds: [
-                        {
-                            color: parseInt("0x" + colors.error),
-                            author: {
-                                name: userInfos.firstName + " " + userInfos.lastName,
-                                icon_url: "https://i.imgur.com/4M34hi2.png"
-                            },
-                            title: "__**" + feedback.object + "**__",
-                            description: feedback.content,
-                            thumbnail: {
-                                url: userInfos.picture
-                            },
-                            image: {
-                                url: userInfos.picture
-                            },
-                            footer: {
-                                text: readableDate,
-                            }
-                        }
-                    ]
-                }),
-            }
-        )
-    }
-
-    function redirectToFeedback() {
-        navigate("/feedback");
-        console.log("Redirected to feedback page");
-    }
-
-
-    // function redirectTo(path) {
-    //     const navigate = useNavigate();
-    //     navigate(path);
-    // }
-    // JSX
-    // if (window.location["href"] === "https://ecole-directe-plus.magicfish.repl.co") {
-    //     redirectTo("/login");
-    // }
+    
     return (
         <div id="Root">
-            <input type="button" onClick={testMisEnForme} value="DISCORDAH" />
             <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />
+            {/*<input type="button" onClick={() => setLoggedIn(true)} value="LOGIN" />loggedIn c un prank, ca te log pas c juste que ca évite que le useState s'exite et redirect à l'infini */}
+            <input type="button" onClick={() => console.log(token)} value="TOKEN STATE" />
             {welcomePopUp}
             <Outlet />
         </div>

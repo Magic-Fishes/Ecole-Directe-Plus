@@ -27,7 +27,7 @@
 
 .check-box input[type="checkbox"]:checked {
     background-color: #4b48d9;
-    background-image: url("./images/checked-icon.svg");
+    background-image: url("../../../../public/images/checked-icon.svg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 90%;

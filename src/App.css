@@ -25,12 +25,28 @@
     /*
         --attribut_lié-definition: valeur rgb sans le rgb();
     */
-
+    
+    /* Main (darker to lighter) */
+    --background-color-0: 24, 24, 41;
+    --background-color-1: 50, 50, 87;
+    --background-color-2: 72, 72, 102;
+    
+    
+    /* Process states (errors ; success) */
+    /* ToT */
     --border-color-error: 255, 0, 0;
+
+    /* TOTK */
     --color-soft-error: 223, 98, 98;
     --border-color-soft-error: 223, 98, 98;
     --background-color-soft-error: 223, 98, 98;
+    
+    /* UwU */
+    --background-color-success: 0, 255, 56;
 
+    --border-color-success: 98, 207, 122;
+    
+    
     /* font*/
     --main-font-size-12: 1.2rem;
     --main-font-size-13: 1.3rem;
@@ -93,6 +109,16 @@ body, input, button, textarea {
 }
 
 
+::placeholder {
+    color: var(--main-alt-text-color);
+}
+
+/* Textarea resizer */
+/* ::-webkit-resizer {
+    background: url("/images/expand.png") no-repeat rgb(var(--background-color-1));
+} */
+
+
 /* Scrollbar */
 ::-webkit-scrollbar {
     /* background-color: transparent; */
@@ -100,9 +126,6 @@ body, input, button, textarea {
     height: 20px;
 }
 
-::placeholder {
-    color: var(--main-alt-text-color);
-}
 
 /* Track */
 /* tricks pour mettre de l'espace autour de la scrollbar pour plus qu'elle soit collé au contenu et au bord du container */

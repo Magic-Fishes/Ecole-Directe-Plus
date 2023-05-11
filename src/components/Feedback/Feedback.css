@@ -35,7 +35,8 @@ textarea#feedback-content {
     width: 100%;
     max-width: 100%;
     min-width: 100%;
-    height: 100px;
+    min-height: 80px;
+    height: 150px;
     max-height: 400px;
     
     color: var(--main-text-color);
@@ -96,11 +97,17 @@ div.drop-zone:focus-within {
     cursor: pointer;
 }
 
+input#attached-file#file-upload-button {
+    cursor: pointer;
+    opacity: 1;
+}
+
 /* rester anonyme + email */
 #contact {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
 }
 
@@ -122,8 +129,17 @@ p#usage-info {
     margin-top: 20px;
 }
 
-/* ::-webkit-resizer {
-    width: 10px;
-    height: 10px;
-    background-color: var(--main-focus-color);
-} */
+@media only screen and (max-width: 500px) {
+    #feedback-box {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        height: 100%;
+
+        border: none;
+        border-radius: 0;
+        
+    }
+}

@@ -15,19 +15,24 @@
     cursor: pointer;
 }
 
-.button:hover {
+.button:hover, .button:focus-visible {
     background-color:  var(--main-border-color-0);
-}
-
-.button:focus-visible {
     border-color: var(--main-border-color-1);
 }
 
-.button::after {
+.button.submitter::after {
     content: " ->";
-    transition: 0.1s;
 }
 
-.button:hover::after {
+.button.submitter:hover::after {
     content: " -->";
+}
+
+.button.submitter.submitted {
+    background-color: rgba(var(--background-color-success), 0.15);
+    border-color: rgb(var(--border-color-success));
+}
+
+.button.submitter.submitted:after {
+    content: "  ✓";
 }
