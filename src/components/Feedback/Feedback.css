@@ -61,6 +61,7 @@ div.drop-zone {
     border: 2px dashed var(--main-border-color-0);
     border-radius: 15px;
     cursor: pointer;
+    max-height: 500px;
 }
 
 div.drop-zone.file-hovered {
