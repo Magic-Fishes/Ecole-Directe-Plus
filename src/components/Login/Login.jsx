@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 import "./Login.css";
 import EDPVersion from "../generic/EDPVersion";
 import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
-import Policy from "../generic/Policy";
 import Tooltip from "../generic/PopUps/Tooltip";
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
@@ -32,7 +31,6 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     const [submitText, setSubmitText] = useState("Se connecter");
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [policy, setPolicy] = useState("");
 
     // Behavior
     const updateUsername = (event) => setUsername(event.target.value);
@@ -146,9 +144,6 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         login(username, password);
     }
 
-    const closePolicy = () => {
-        setPolicy("");
-    }
     // JSX
     return (
         <div>
@@ -168,9 +163,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 </form>
             </div>
             <p className="policy">
-                En vous connectant, vous acceptez nos <a href="#" className="policy2" id="legal-notice" onClick={() => { setPolicy("legalNotice") }}> mentions légales </a> et notre <a href="#" className="policy2" id="privacy-policy" onClick={() => setPolicy("privacyPolicy")}> politique de confidentialité</a>.
+                En vous connectant, vous confirmez avoir lu et accepté notre <Link to="policy" className="policy-link" id="legal-notice"> Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
-            {policy && <Policy type={policy} onClose={closePolicy} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
         </div>

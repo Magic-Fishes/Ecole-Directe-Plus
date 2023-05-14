@@ -1,11 +1,3 @@
-@keyframes slide-in {
-  from {
-      bottom: -100%;
-  }
-  to { 
-      bottom: 0;
-  }
-}
 
 #bottom-sheet { /*assombris l'arrière du pop-up */
     position: fixed;
@@ -19,6 +11,10 @@
     animation-fill-mode: forwards;
 }
 
+#bottom-sheet.closing {
+    animation: 0.5s ease 0s fade-out;
+    animation-fill-mode: forwards;
+}
 
 
 #bottom-sheet-box {
@@ -40,6 +36,12 @@
     animation: 0.5s ease-in-out 0s slide-in;
     animation-fill-mode: forwards;
 }
+
+#bottom-sheet-box.closing {
+    animation: 0.5s ease-in-out 0s slide-out;
+    animation-fill-mode: forwards;
+}
+
 
 #bottom-sheet-container {
     position: relative;
@@ -79,31 +81,38 @@
 }
 
 
-
-
-
-/* à mettre dans policy.css */
-#bottom-sheet-content h3 {
-    margin: 15px 0 20px 0;
-    font-size: var(--main-font-size-18);
-    list-style-type: none;
+@keyframes slide-in {
+  from {
+      bottom: -100%;
+  }
+  to { 
+      bottom: 0;
+  }
 }
 
-#bottom-sheet-content li {
-    margin-left: 10px;
-    margin-bottom: 10px;
-}
-
-#bottom-sheet-content a {
-    text-decoration: none;
-    color: #6D6AFB;
+@keyframes slide-out {
+  from {
+      bottom: 0;
+  }
+  to { 
+      bottom: -100%;
+  }
 }
 
 @keyframes fade-in {
     from {
-        opacity: 0;
+        background-color: rgba(0, 0, 0, 0);
     }
     to {
-        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+}
+
+@keyframes fade-out {
+    from {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0);
     }
 }

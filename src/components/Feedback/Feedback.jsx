@@ -10,7 +10,7 @@ import "./Feedback.css";
 
 let attachedFile = null;
 export default function Feedback() {
-    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif|\.tif|\.webp|\.heic|\.pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.bmp|\.gif|\.tif|\.webp|\.heic|\.pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche ; moi nn plus tqt
     const feedbackTips = [
         `**Description du problème**
 
@@ -79,7 +79,7 @@ export default function Feedback() {
     const handleFeedbackTypeChange = (feedbackType) => {
         setSelectedFeedbackType(feedbackType);
         // N'affiche le tip que si l'utilisateur n'a pas commencé à modifier le contenu du feedback
-        if (feedbackTips.includes(feedbackContent)) {
+        if (feedbackTips.includes(feedbackContent) || feedbackContent === "") {
             setFeedbackContent(feedbackTips[feedbackTypes.indexOf(feedbackType)]);
         }
     }

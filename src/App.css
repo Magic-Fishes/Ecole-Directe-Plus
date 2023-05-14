@@ -30,6 +30,9 @@
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
+    --border-color-0: 75 72 217;
+    --border-color-1: 109 106 251;
+    --box-shadow-window: 0 0 20px black;
     
     
     /* Process states (errors ; success) */

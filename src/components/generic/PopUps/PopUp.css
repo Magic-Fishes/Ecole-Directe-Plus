@@ -6,10 +6,14 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    opacity: 0;
     animation: 0.3s ease 0s fade-in;
     animation-fill-mode: forwards;
     z-index: 99;
+}
+
+#pop-up.closing {
+    animation: 0.3s ease 0s fade-out;
+    animation-fill-mode: forwards;    
 }
 
 #pop-up-background {
@@ -28,6 +32,11 @@
     /* cubic-bezier(.31,1.83,.53,.63) */
     animation: 0.3s ease-out 0s blur-in;
     animation-fill-mode: forwards;
+}
+
+#pop-up-background.closing {
+    animation: 0.3s ease-out 0s blur-out;
+    animation-fill-mode: forwards;    
 }
 
 .relative-container {
@@ -109,20 +118,44 @@
 
 @keyframes fade-in {
     from {
-        opacity: 0;
+        background-color: rgba(0, 0, 0, 0);
     }
     to {
-        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+}
+
+@keyframes fade-out {
+    from {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+    to {
+        background-color: rgba(0, 0, 0, 0);
     }
 }
 
 @keyframes blur-in {
     from {
+        opacity: 0;
         filter: blur(10px);
         transform: translate(-50%, -50%) scale(0.8);
     }
     to {
+        opacity: 1;
         filter: blur(0px);
         transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes blur-out {
+    from {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translate(-50%, -50%) scale(0.8);
     }
 }

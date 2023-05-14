@@ -1,3 +1,21 @@
-.inherited-from-ed {
+
+h3.part-header {
+    margin: 15px 0 20px 0;
+    font-size: var(--main-font-size-18);
+    list-style-type: none;
+}
+
+li.legal-content {
+    margin-left: 10px;
+    margin-bottom: 10px;
     color: var(--main-alt-text-color);
+}
+
+a.external-link {
+    text-decoration: none;
+    color: rgb(var(--border-color-1));
+}
+
+a.external-link:hover {
+    color: rgb(var(--border-color-0));    
 }

@@ -14,6 +14,7 @@
     background-color: var(--main-background-color-0-5);
     border: 1px solid var(--main-border-color-0);
     border-radius: 20px;
+    box-shadow: var(--box-shadow-window)
 }
 
 #feedback-box h1 {
@@ -98,10 +99,6 @@ div.drop-zone:focus-within {
     cursor: pointer;
 }
 
-input#attached-file#file-upload-button {
-    cursor: pointer;
-    opacity: 1;
-}
 
 /* rester anonyme + email */
 #contact {
@@ -141,6 +138,7 @@ p#usage-info {
 
         border: none;
         border-radius: 0;
+        box-shadow: none;
         
     }
 }

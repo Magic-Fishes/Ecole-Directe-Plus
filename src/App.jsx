@@ -1,4 +1,4 @@
-/* Patch notes (fr): https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit */
+// Patch notes (fr): https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit
 /* enft dans les 4 liens go mettre les infos comptes dans les paramètres pour remplacé par Patch Notes et dcp on laisse mentions légales */
 
 import { useState, useEffect } from "react";
@@ -46,6 +46,7 @@ export default function App() {
     const apiUrl = "https://api.ecoledirecte.com/v3/";
     const apiVersion = "4.31.1";
     const currentEDPVersion = "0.0.69";
+    
     const [tokenState, setTokenState] = useState("");
     const [accountsListState, setAccountsListState] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
@@ -98,7 +99,7 @@ export default function App() {
                     path: "login",
                     children: [
                         {
-                            element: <Policy type="legalNotice" />,
+                            element: <Policy />,
                             path: "policy"
                         }
                     ]

@@ -15,9 +15,13 @@ p.policy {
     transform: translateX(-50%);
 }
 
-.policy2 {
+.policy-link {
     text-decoration: none;
-    color: #6D6AFB;
+    color: rgb(var(--border-color-1));
+}
+
+.policy-link:hover {
+    color: rgb(var(--border-color-0));    
 }
 
 .logo {
@@ -49,7 +53,7 @@ p.policy {
     border: 1px solid var(--main-border-color-0);
     border-radius: 20px;
     background-color: var(--main-window-header-color);
-    box-shadow: var(--main-box-shadow);
+    box-shadow: var(--box-shadow-window);
 }
 
 .login-box h1 {
