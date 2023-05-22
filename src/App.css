@@ -5,7 +5,8 @@
     /* colors */
     --main-text-color: white;
     --main-alt-text-color: #AAD;
-    --main-color-error: red;
+    /*--main-color-error: red;*/
+    --main-color-error: #FF4242;
     --main-color-soft-error: #DF6262;
     --main-color-soft-background-error: #DF62621D;
     --main-color-success: lime;
@@ -25,17 +26,19 @@
     /*
         --attribut_lié-definition: valeur rgb sans le rgb();
     */
+
     
-    /* Main (darker to lighter) */
+    /* - - Main (darker to lighter) - - */
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
+    --background-color-69: 24, 24, 41;
     --border-color-0: 75 72 217;
     --border-color-1: 109 106 251;
     --box-shadow-window: 0 0 20px black;
     
     
-    /* Process states (errors ; success) */
+    /* - - Process states (errors ; success) - - */
     /* ToT */
     --border-color-error: 255, 0, 0;
 
@@ -48,9 +51,13 @@
     --background-color-success: 0, 255, 56;
 
     --border-color-success: 98, 207, 122;
+
     
+    /* - - timing functions - - */
+    --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
+
     
-    /* font*/
+    /* - - font - - */
     --main-font-size-12: 1.2rem;
     --main-font-size-13: 1.3rem;
     --main-font-size-14: 1.4rem;
@@ -87,7 +94,13 @@
     margin: 0;
 }
 
+
+html {
+    height: 100%;
+}
+
 body {
+    /* min-height: 100%; */
     background-color: var(--main-background-color-0);
     color: var(--main-text-color);
     font-weight: var(--main-font-weight-regular);

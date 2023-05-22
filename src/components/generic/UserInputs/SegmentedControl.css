@@ -25,15 +25,11 @@ label.option {
     white-space: nowrap; /* enfer pour les utilisateurs mobile */
     overflow: hidden;
     text-overflow: ellipsis; /* cut un texte avec points de suspension*/
-    color: var(--main-text-color); /* safari */
+    color: var(--main-alt-text-color); /* safari */
     background-color: transparent;
     flex-grow: 1;
     outline: none;
     transition: 0.1s;
-    cursor: pointer;
-}
-
-label {
     cursor: pointer;
 }
 
@@ -55,6 +51,7 @@ label.option:last-child {
 label.option.selected {
     background-color: var(--main-border-color-0);
     flex-grow: 1.8;
+    color: var(--main-text-color); /* safari */
 }
 
 fieldset.segmented-control:focus-within {

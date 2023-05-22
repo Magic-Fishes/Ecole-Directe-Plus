@@ -34,5 +34,14 @@
 }
 
 .button.submitter.submitted:after {
-    content: "  ✓";
+    background-image: url('./images/checked-icon.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 19px;
+    height: 13px;
+    content:"";
+    margin-left: 8px;
+    transform: translateY(1px);
+    /*content: "  ✓";*/
 }

@@ -1,0 +1,6 @@
+#pop-up-content hr {
+    height: 3px;
+    background-color: rgb(var(--background-color-2));
+    border-color: rgb(var(--background-color-2));
+    border-style: solid;
+};

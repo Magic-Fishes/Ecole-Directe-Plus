@@ -5,7 +5,7 @@
 }
 
 p.policy {
-    width: 80vw;
+    width: calc(100vw - 2*65px); /* fullscreen width - taille de EDPVersion */
     text-align: center;
     position: absolute;
     font-size: min(var(--main-font-size-16), 4vmin);

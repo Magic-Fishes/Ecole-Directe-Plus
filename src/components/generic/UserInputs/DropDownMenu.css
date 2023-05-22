@@ -1,0 +1,36 @@
+.drop-down-menu {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    background-color: rgb(var(--background-color-1));
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.drop-down-menu button {
+    border: none;
+    background-color: transparent;
+    border-radius: 10px;
+}
+
+.drop-down-menu .options {
+    display: none;
+}
+
+.drop-down-menu .options:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.drop-down-menu .selected {
+    display: block;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: solid 2px rgb(var(--border-color-1));
+    border-radius: 10px;
+}
+
+.drop-down-menu .selected:target .options {
+    display: block;
+    background-color: red !important;
+}

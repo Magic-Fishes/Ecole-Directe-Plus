@@ -216,7 +216,7 @@ export default function Feedback() {
                     </div>
                     <div id="contact">
                         <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                        <TextInput id="user-email" isRequired={isAnonymous ? false : true} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder="Adresse email" icon="/images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} />
+                        <TextInput id="user-email" isRequired={isAnonymous ? false : true} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder="Adresse email" icon="./images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} />
                     </div>
                     <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
                     {errorMessage && <p className="error-message" style={{ display: "block", color: "red", margin: "auto" }}>{errorMessage}</p>}

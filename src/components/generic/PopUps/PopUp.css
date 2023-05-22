@@ -1,5 +1,5 @@
 
-#pop-up { /*assombris l'arrière du pop-up; g assombris encore plus pour que ca ressorte mieux je trouve c plus beau comme ca */
+#pop-up {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
 
 #pop-up.closing {
     animation: 0.3s ease 0s fade-out;
-    animation-fill-mode: forwards;    
+    animation-fill-mode: forwards; 
 }
 
 #pop-up-background {
@@ -22,7 +22,7 @@
     left: 50%;
     filter: blur(10px);
     transform: translate(-50%, -50%) scale(0.8);
-    background-color: var(--main-background-color-1);
+    background-color: rgb(var(--background-color-2));
     padding: 25px;
     border-radius: 20px;
     width: 100%;
@@ -31,6 +31,7 @@
     filter: none;
     /* cubic-bezier(.31,1.83,.53,.63) */
     animation: 0.3s ease-out 0s blur-in;
+    animation-timing-function: var(--timing-function-spring-effect);
     animation-fill-mode: forwards;
 }
 
@@ -68,8 +69,8 @@
     color: var(--main-font-color);
     text-decoration: underline;
     cursor: pointer;
-}
 
+}
 #close-pop-up:hover {
     text-decoration: none;
 }
@@ -99,15 +100,15 @@
     margin: 0;
     font-weight: var(--main-font-weight-extra-bold);
     font-size: var(--main-font-size-18);
-    background-color: var(--main-background-color-0);
+    background-color:rgb(var(--background-color-0));
     /* opacity: .90; */
-    box-shadow: 0 0 10px var(--main-background-color-0);
+    box-shadow: 0 0 8px rgb(var(--background-color-0));
 }
 
 #pop-up-content {
     position: relative; /* pour le sticky header */
     margin: 0 auto;
-    background-color: var(--main-background-color-0);
+    background-color: rgb(var(--background-color-0));
     border-radius: 20px;
     padding: 15px;
     padding-top: 0; /* remplacé par le padding du h3*/

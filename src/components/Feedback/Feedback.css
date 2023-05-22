@@ -53,8 +53,14 @@ textarea#feedback-content:focus {
     background-color: var(--main-color-focus);
 }
 
+
+/* file input */
 .file-input {
     margin-block: 20px;
+}
+
+input::-webkit-file-upload-button{
+    cursor: pointer;
 }
 
 div.drop-zone {

@@ -14,7 +14,7 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
     return (
         <div>
             {!(accountsList && token) ? <Navigate to="/login"/> : <header className="header-menu">
-                <img src="../public/images/no-logo.png" className="logo" />
+                <img src="./images/no-logo.png" className="logo" />
                 <nav>
                     <ul className="pages">
                         <li className="page">

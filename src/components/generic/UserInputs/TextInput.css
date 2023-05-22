@@ -31,7 +31,7 @@ div.input-container:has(:disabled) {
     cursor: not-allowed;
 }
 
-.text-input:disabled {
+input.text-input:disabled {
     cursor: not-allowed;
 }
 

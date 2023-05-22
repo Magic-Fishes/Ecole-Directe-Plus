@@ -147,9 +147,9 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     // JSX
     return (
         <div>
-            <img src="/images/no-logo.png" className="logo" id="outside-container" alt="Logo Ecole Directe Plus" /> {/* dsl pour ça vrmt */}
+            <img src="./images/EDP-logo-white.svg" className="logo" id="outside-container" alt="Logo Ecole Directe Plus" /> {/* dsl pour ça vrmt */}
             <div className="login-box">
-                <img src="/images/no-logo.png" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
+                <img src="./images/EDP-logo-white.svg" className="logo" id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
                     <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} icon="/images/account-icon.svg" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" />
