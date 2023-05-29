@@ -4,7 +4,7 @@
 :root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
     /* colors */
     --main-text-color: white;
-    --main-alt-text-color: #AAD;
+    --main-alt-text-color: #AAE;
     /*--main-color-error: red;*/
     --main-color-error: #FF4242;
     --main-color-soft-error: #DF6262;
@@ -21,14 +21,17 @@
     --main-nav-bar-color: #39378f;
     --main-window-box-shadow: 0 0 20px black;
 
+
+    
     /* - - - Nouvelles variables - - - */
-    /* -- NOMENCLATURE -- */
+    /* - NOMENCLATURE - */
     /*
         --attribut_lié-definition: valeur rgb sans le rgb();
     */
-
     
-    /* - - Main (darker to lighter) - - */
+    /* - Main (darker to lighter) - */
+    --text-color-main: 255, 255, 255;
+    --text-color-alt: 170 170 238;
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
@@ -38,7 +41,7 @@
     --box-shadow-window: 0 0 20px black;
     
     
-    /* - - Process states (errors ; success) - - */
+    /* - Process states (errors ; success) - */
     /* ToT */
     --border-color-error: 255, 0, 0;
 
@@ -53,11 +56,11 @@
     --border-color-success: 98, 207, 122;
 
     
-    /* - - timing functions - - */
+    /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
 
     
-    /* - - font - - */
+    /* - font - */
     --main-font-size-12: 1.2rem;
     --main-font-size-13: 1.3rem;
     --main-font-size-14: 1.4rem;

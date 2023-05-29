@@ -159,7 +159,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                         <CheckBox id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
                         <a id="passwordForgottenLink" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp">Mot de passe oublié ?</a>
                     </div>
-                    <Button id="submit-login" buttonType="submit" value={submitText} />
+                    <Button id="submit-login" className={(submitText === "Connexion..." && "submitting")} buttonType="submit" value={submitText} />
                 </form>
             </div>
             <p className="policy">

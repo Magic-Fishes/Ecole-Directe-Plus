@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="./images/EDP-logo-white.png" />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="./images/EDP-logo-white.svg" />
+    <link rel="icon" href="./images/EDP-logo-black.png" type="image/png" />
+    <link rel="icon" type="image/svg+xml" href="./images/EDP-logo-black.svg" />
+
+    <!-- Icône pour le thème sombre -->
+    <link rel="icon" type="image/png" href="./images/EDP-logo-white.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="./images/EDP-logo-white.svg" media="(prefers-color-scheme: dark)" />
+
+    <!-- Preload des images essentielles -->
+    <!-- <link rel="preload" href="./images/checked-icon.svg" as="image"/>
+    <link rel="preload" href="./images/loading-animation.svg" as="image"/>
+     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ecole Directe Plus</title>
-  </head>
-  <body>
+</head>
+<body>
     <div id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
     <script>
@@ -19,5 +28,5 @@
             }
          });
     </script>
-  </body>
+</body>
 </html>

@@ -1,5 +1,8 @@
 
 import { useState, useRef, useEffect } from "react"
+
+import ScrollShadedDiv from "../ScrollShadedDiv";
+
 import "./BottomSheet.css"
 
 export default function BottomSheet({ heading, content, onClose }) {
@@ -8,8 +11,9 @@ export default function BottomSheet({ heading, content, onClose }) {
     const resizingBreakpoints = [0, 60, 95]; // chaque "cran" de redimensionnement (croissant)
 
     const [targetSheetHeight, setTargetSheetHeight] = useState("95%");
-    const [isResizing, setIsResizing] = useState(false);
     const [resizingSpeed, setResizingSpeed] = useState(0);
+    const [oldHeight, setOldHeight] = useState(targetSheetHeight);
+    const [isResizing, setIsResizing] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
 
     const bottomSheetRef = useRef(null);
@@ -30,10 +34,6 @@ export default function BottomSheet({ heading, content, onClose }) {
             fitToClosestResizingBreakpoint();
         }
     }, [isResizing])
-    
-    useEffect(() => {
-        console.log(targetSheetHeight)
-    }, [targetSheetHeight])
 
     // closing
     const handleClose = () => {
@@ -71,41 +71,41 @@ export default function BottomSheet({ heading, content, onClose }) {
     }
 
 
+
+    useEffect(() => {
+        setOldHeight(Number(targetSheetHeight.slice(0, -1)));
+    }, [targetSheetHeight]);
+    
+    
+    useEffect(() => {
+        console.log(oldHeight);
+    }, [oldHeight]);
+    
+    function resizeBottomSheetHeight(newHeight) {
+        setTargetSheetHeight(newHeight.toString() + "%");        
+    }
+
     const handleMouseResize = (event) => {
-        const yOffset = 15; // décalage Y entre hauteur de resize-handle et le centre pour éviter un TP de la BottomSheet
-        const oldHeight = Number(targetSheetHeight.slice(0, -1));
-        const oldY = -oldHeight / 100 * window.innerHeight - yOffset - window.innerHeight; // on considère que la dernière position de la souris est la hauteur de la Bottom sheet
-        const newSpeed = event.clientY - oldY;
-        console.log(newSpeed);
-        
         const newHeight = (window.innerHeight - event.clientY + 15) / window.innerHeight * 100;
-        setTargetSheetHeight(newHeight.toString() + "%");
-        console.log(targetSheetHeight);
+        resizeBottomSheetHeight(newHeight);
     }
 
     const handleTouchResize = (event) => {
-        const yOffset = 15; // décalage Y entre hauteur de resize-handle et le centre pour éviter un TP de la BottomSheet
-        const oldHeight = Number(targetSheetHeight.slice(0, -1));
-        const oldY = -oldHeight / 100 * window.innerHeight - yOffset - window.innerHeight; // on considère que la dernière position de la souris est la hauteur de la Bottom sheet
-        const newSpeed = event.touches[0].clientY - oldY;
-        console.log(oldY);
-        
-        const newHeight = (window.innerHeight - event.touches[0].clientY + yOffset) / window.innerHeight * 100;
-        setTargetSheetHeight(newHeight.toString() + "%");
-        console.log(targetSheetHeight);
+        const newHeight = (window.innerHeight - event.touches[0].clientY + 15) / window.innerHeight * 100;
+        resizeBottomSheetHeight(newHeight);
     }
 
     const handleMouseUp = () => {
         window.removeEventListener('mousemove', handleMouseResize);
-        setTimeout(setIsResizing, 100, false); // réactive le redimensionnement après 100ms
-        bottomSheetRef.current.style.transition = null; // réactive l'animation pour atteindre le cran le plus proche
+        setIsResizing(false);
+        bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche
         window.removeEventListener('mouseup', handleMouseUp);
     }
 
     const handleTouchEnd = () => {
         window.removeEventListener('touchmove', handleTouchResize);
-        setTimeout(setIsResizing, 100, false); // réactive le redimensionnement après 100ms
-        bottomSheetRef.current.style.transition = null; // réactive l'animation pour atteindre le cran le plus proche
+        setIsResizing(false);
+        bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche
         window.removeEventListener('touchend', handleTouchEnd);
     }
     
@@ -130,9 +130,9 @@ export default function BottomSheet({ heading, content, onClose }) {
                     </div>
                     <button id="close-button" onClick={handleClose}>✕</button>
                     <h1 id="bottom-sheet-heading">{heading}</h1>
-                    <div id="bottom-sheet-content">
+                    <ScrollShadedDiv id="bottom-sheet-content">
                         {content}
-                    </div>
+                    </ScrollShadedDiv>
                 </div>
             </div>
         </div>

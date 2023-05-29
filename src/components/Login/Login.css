@@ -1,14 +1,15 @@
-/*1vh = 7.5px*/
+/*1vh ~= 7.5px*/
 
 .error-message {
     color: var(--main-color-error);
 }
 
 p.policy {
-    width: calc(100vw - 2*65px); /* fullscreen width - taille de EDPVersion */
+    width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
     text-align: center;
     position: absolute;
-    font-size: min(var(--main-font-size-16), 4vmin);
+    font-size: var(--main-font-size-14);
+    color: var(--main-alt-text-color);
     z-index: -1;
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
@@ -134,5 +135,13 @@ p.policy {
     .login-box .login-input, .login-box .login-option {
         width: 90%;
         margin: 0 auto 20px auto;
+    }
+
+    p.policy {
+        font-size: 0;
+    }
+
+    .policy-link {
+        font-size: min(var(--main-font-size-16), 4.5vmin);
     }
 }

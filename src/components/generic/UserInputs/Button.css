@@ -28,20 +28,31 @@
     content: " -->";
 }
 
+.button.submitter.submitting::after {
+    content:"";
+    background-image: url('./images/loading-animation.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 10px;
+    transform: translateY(2px) scale(1.5);
+}
+
 .button.submitter.submitted {
     background-color: rgba(var(--background-color-success), 0.15);
     border-color: rgb(var(--border-color-success));
 }
 
 .button.submitter.submitted:after {
+    content:"";
     background-image: url('./images/checked-icon.svg');
     background-size: cover;
     background-repeat: no-repeat;
     display: inline-block;
     width: 19px;
     height: 13px;
-    content:"";
     margin-left: 8px;
     transform: translateY(1px);
-    /*content: "  ✓";*/
 }

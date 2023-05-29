@@ -70,6 +70,13 @@ div.drop-zone {
     cursor: pointer;
     max-height: 500px;
 }
+div.drop-zone:hover {
+    border-color: var(--main-border-color-1);
+}
+
+div.drop-zone:active {
+    background-color: var(--main-color-focus);
+}
 
 div.drop-zone.file-hovered {
     background-color: var(--main-color-focus);
@@ -80,15 +87,15 @@ div.drop-zone:focus-within {
 }
 
 #preview-container {
+    text-align: center;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 100%;
+    max-height: inherit;
 }
 
 #preview-container label {
-    text-align: center;
     color: var(--main-alt-text-color);
 }
 

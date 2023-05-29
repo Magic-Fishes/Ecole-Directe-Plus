@@ -12,6 +12,7 @@ import "./Tooltip.css";
 // </Tooltip>
 // c'est Changeur de jeu
 
+// https://www.w3schools.com/Css/css_tooltip.asp
 export default function Tooltip({ id, text, children }) {
     // States
 

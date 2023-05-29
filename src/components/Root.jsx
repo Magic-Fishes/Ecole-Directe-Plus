@@ -24,6 +24,10 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
         navigate("/lab");
     }
     
+    function redirectToLogin() {
+        navigate("/login");
+    }
+    
     // welcome pop-up
     useEffect(() => {
         // localStorage.clear();
@@ -88,6 +92,7 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
             {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
             {/*<input type="button" onClick={() => setLoggedIn(true)} value="LOGIN" />loggedIn c un prank, ca te log pas c juste que ca évite que le useState s'exite et redirect à l'infini */}
             {isAdmin && <input type="button" onClick={() => console.log(token)} value="TOKEN STATE" />}
+            {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
             {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
             {welcomePopUp}
             <Outlet />

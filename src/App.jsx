@@ -3,9 +3,7 @@
 
 import { useState, useEffect } from "react";
 import {
-    Link,
     Navigate,
-    Outlet,
     createBrowserRouter,
     RouterProvider
 } from "react-router-dom";
@@ -48,12 +46,12 @@ export default function App() {
     const apiUrl = "https://api.ecoledirecte.com/v3/";
     const apiVersion = "4.31.1";
     const currentEDPVersion = "0.0.7";
-    
+
     const [tokenState, setTokenState] = useState("");
     const [accountsListState, setAccountsListState] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
+    // récupère le token et les informations du compte depuis le localStorage
     useEffect(() => {
-        //et celle là bah jsp c ce que le gars avait mis dans mon stage en Octobre pour moyennefromed
         const token = localStorage.getItem("token");
         if (token) setTokenState(token);
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
@@ -76,6 +74,21 @@ export default function App() {
         localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
+    // Preload les images essentielles
+    function preloadImages() {
+        let images = [
+            "./images/checked-icon.svg",
+            "./images/loading-animation.svg"
+        ];
+        
+        for (let i = 0; i < images.length; i++) {
+            let img = new Image();
+            img.src = images[i];
+        }
+    }
+    window.addEventListener("load", preloadImages);
+
+    
 
     // routing system
     const router = createBrowserRouter([

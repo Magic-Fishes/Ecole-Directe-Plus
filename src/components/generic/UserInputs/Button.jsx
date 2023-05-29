@@ -13,7 +13,7 @@ export default function Button({ buttonType, value, onClick, className, id }) {
             type={buttonType}
             value={value}
             onClick={onClick}
-            className={"button " + className + (buttonType === "submit" && " submitter")}
+            className={"button " + (buttonType === "submit" && "submitter ") + className}
             id={id}
         >
             {value}

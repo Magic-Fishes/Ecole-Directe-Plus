@@ -1,3 +1,7 @@
+#pop-up-content li {
+    margin-bottom: 8px;
+}
+
 #pop-up-content hr {
     height: 3px;
     background-color: rgb(var(--background-color-2));

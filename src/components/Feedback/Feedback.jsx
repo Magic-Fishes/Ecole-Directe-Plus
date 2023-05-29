@@ -73,7 +73,7 @@ export default function Feedback() {
 
     // Behavior
     const updateSubject = (event) => { setSubject(event.target.value) }
-    const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value) }
+    const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value) ; setFeedbackContentWarningMessage("")}
     const updateIsAnonymous = (event) => { setIsAnonymous(event.target.checked) };
     const updateUserEmail = (event) => { setUserEmail(event.target.value) };
     const handleFeedbackTypeChange = (feedbackType) => {
@@ -200,7 +200,7 @@ export default function Feedback() {
             <div id="feedback-box">
                 <form onSubmit={handleSubmit} autoComplete="off">
                     <h1>Faire un retour</h1>
-                    <SegmentedControl id="SC-feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} />
+                    <SegmentedControl fieldsetName="feedback-type" id="SC-feedback-type" segments={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} />
                     <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" />
                     <textarea required={true} className={`text-area ${feedbackContentWarningMessage && "invalid"}`} id="feedback-content" value={feedbackContent} onInvalid={handleInvalidFeedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown)"></textarea>
                     <WarningMessage condition={feedbackContentWarningMessage} >{feedbackContentWarningMessage}</WarningMessage>
@@ -220,7 +220,7 @@ export default function Feedback() {
                     </div>
                     <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
                     {errorMessage && <p className="error-message" style={{ display: "block", color: "red", margin: "auto" }}>{errorMessage}</p>}
-                    <Button className={(submitButtonText === "Envoyé" && "submitted")} id="submit-feedback" buttonType="submit" value={submitButtonText} />
+                    <Button className={submitButtonText === "Envoyé" ? "submitted" : (submitButtonText === "Envoi..." && "submitting")} id="submit-feedback" buttonType="submit" value={submitButtonText} />
                 </form>
             </div>
         </div>

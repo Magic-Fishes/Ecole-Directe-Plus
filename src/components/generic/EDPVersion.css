@@ -1,6 +1,8 @@
 
 #edp-version {
     background: rgba(255, 255, 255, 0);
+    font-size: var(--main-font-size-14);
+    color: rgb(var(--text-color-alt));
     position: absolute;
     right: 6px; /*=10px - padding -> aligne avec policy*/
     bottom: 6px;
@@ -13,4 +15,5 @@
 
 #edp-version:hover, #edp-version:focus, #edp-version:active{
     background: rgba(255, 255, 255, 0.2);
+    color: rgb(var(--text-color-main));
 }
