@@ -14,7 +14,7 @@ h3.part-header {
 li.legal-content {
     margin-left: 10px;
     margin-bottom: 10px;
-    color: var(--main-alt-text-color);
+    color: rgb(var(--text-color-alt));
 }
 
 a.external-link {

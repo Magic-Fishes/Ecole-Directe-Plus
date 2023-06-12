@@ -2,7 +2,7 @@ import { useState } from "react"
 import "./TextInput.css"
 import WarningMessage from "../WarningMessage"
 
-export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, canAutoComplete, icon, className, id }) {
+export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, canAutoComplete, icon, onWarning, className, id }) {
     const [warningMessageState, setWarningMessageState] = useState("");
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
     if (!allowedTextTypes.includes(textType)) {
@@ -12,6 +12,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
     function handleInvalid(event) {
         event.preventDefault();
         setWarningMessageState(warningMessage);
+        onWarning();
     }
 
     function handleChange(event) {

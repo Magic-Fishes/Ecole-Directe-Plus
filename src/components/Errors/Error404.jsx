@@ -6,14 +6,14 @@ import "./Error404.css";
 
 export default function Error404() {
     function getRandomInt(min, max) { // ça sert à quoi ?? c'est pour le futur JEU VIDEO GAME ? c au cas ou on veut mettre des message randomisés ou alors si on veut mettre une image randomisée ; flemme de faire du contenu ça veut dire il faut être créatif wtf ???
-        return Math.floor(min + Math.random() * (max-min));
+        return Math.floor(min + Math.random() * (max - min));
     }
-    
+
     return (
         <div id="error-404">
-            <img src="./images/no-logo.png" className="logo" alt="Logo Ecole Directe Plus"/>
+            <img src="/public/images/EDP-logo-black.svg" className="logo" alt="Logo Ecole Directe Plus" />
             <div id="error-404-container">
-                <img src="./images/confused-canardman.png" alt="CANARDMAN confus"></img>
+                <img src="/public/images/confused-canardman.svg" alt="CANARDMAN confus"></img>
                 <h1>
                     Erreur 404 :
                 </h1>

@@ -1,11 +1,14 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import "./DropDownMenu.css";
 
-export default function DropDownMenu({ options, selected, onChange, id, className }) {
-    const [opened, setOpened] = useState(false)
+export default function DropDownMenu({ name, options, selected, onChange, id, className }) {
+    const [isOpen, setIsOpen] = useState(false);
     const [optionsState, setOptionsState] = useState(options);
+
+    // Refs
+    const dropDownMenuRef = useRef(null);
 
     /* sélectionne le 1er élément si rien n'est sélectionné */
     useEffect(() => {
@@ -14,31 +17,66 @@ export default function DropDownMenu({ options, selected, onChange, id, classNam
         }
     });
 
-    const onOpen = () => {
-        setOpened(!opened)
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // détecte si la cible du clic appartient au DropDownMenu
+            if (event.target !== dropDownMenuRef.current || !dropDownMenuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+        
+        if (isOpen) {
+            document.addEventListener("click", handleClickOutside);
+        } else {
+            document.removeEventListener("click", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);            
+        }
+    }, [isOpen]);
+
+    const handleClick = () => {
+        setIsOpen(!isOpen);
     }
 
     const onChoose = (event) => {
-        setOpened(false)
-        onChange(event.target.value)
+        onChange(event.target.value);
+        setIsOpen(false);
+    }
+    
+    // Pour navigation clavier
+    const handleEnterPressed = (event) => {
+        // Si touche pressée est "entrer" ou "espace"
+        if (event.keyCode === 13 || event.keyCode === 32) {
+            let newEvent = {
+                target: {
+                    value: event.target.outerText
+                }
+            }
+            onChoose(newEvent);
+        }
     }
 
     return (
-        <fieldset className={`drop-down-menu ${className}`} id={id}>
-            <img src="images/selected-arrow.svg" className="loader" />
-            <img src="images/not-selected-option.svg" className="loader" />
-            <button className="selected" onClick={onOpen}>
-                {selected}
-                <img src="images/drop-down-arrow.svg" />
-            </button>
-            {opened && <div className="options-container">
-                {optionsState.map((option) =>
-                    <button className={"option-container" + (option === selected ? " selected-option" : "")} value={option} onClick={onChoose} name="options" key={option} className="options-radio" >
-                        {option === selected ? <img src="images/selected-arrow.svg" /> : <img src="images/not-selected-option.svg" />}
-                        {option}
-                    </button>
-                )}
-            </div>}
-        </fieldset>
+        <div className={`drop-down-menu ${className}` + (isOpen ? " focus" : "")} id={id}>
+            <div className="main-container">
+                <button type="button" className="selected" onClick={handleClick} ref={dropDownMenuRef}>
+                    <span id="selected-option-value">{selected}</span>
+                    <img src="/public/images/drop-down-arrow.svg" />
+                </button>
+                <fieldset className="options-container">
+                    {optionsState.map((option) => <div key={option} name={name} className="option-container" >
+                        <hr />
+                        <label htmlFor={option} onKeyDown={handleEnterPressed} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
+                            {option === selected ? <img src="/public/images/selected-arrow.svg" className="selected-arrow" /> : <img src="/public/images/not-selected-option.svg" className="not-selected-option" />}
+                            <input type="radio" id={option} name={name} value={option} onClick={onChoose} defaultChecked={option === selected} />
+                            <span className="option-content">{option}</span>
+                        </label>
+                    </div>
+                    )}
+                </fieldset>
+            </div>
+        </div>
     )
 }

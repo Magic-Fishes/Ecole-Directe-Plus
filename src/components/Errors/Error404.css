@@ -12,12 +12,12 @@
     height: 250px;
     padding: 30px 35px;
     margin-bottom: 20px;
-    background-color: #3B38A1FF;
+    background-color: rgb(var(--background-color-1));
     border-radius: 20px;
 }
 
 #error-404-container a {
     margin-top: 30px;
-    color: var(--main-text-color);
+    color: rgb(var(--text-color-main));
     text-decoration: none;
 }

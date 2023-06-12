@@ -2,12 +2,14 @@
 import { useState, useEffect } from "react";
 import "./PopUp.css"
 
-export default function PopUp({ header, subHeader, contentTitle, content, onClose }) {
-
-    const closingCooldown = 300; // milliseconds
-
-    const [isClosing, setIsClosing] = useState(false);
+export default function PopUp({ type, header, subHeader, contentTitle, content, onClose }) {
     
+    const closingCooldown = 300; // milliseconds
+    const types = ["info", "warning", "error"]
+    
+    const [isClosing, setIsClosing] = useState(false);
+    const [typeState, setTypeState] = useState(types.includes(type) ? type : types[0]);
+
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
         document.body.style.overflow = "hidden"; /* empêche le scrolling */
@@ -18,6 +20,7 @@ export default function PopUp({ header, subHeader, contentTitle, content, onClos
         };
     }, [])
 
+    
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(onClose, closingCooldown);
@@ -31,7 +34,7 @@ export default function PopUp({ header, subHeader, contentTitle, content, onClos
     
     return (
        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose}>
-            <div className={isClosing ? "closing" : ""} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* empêche la détection du clique par le background si le pop-up est cliqué */}
+            <div className={(isClosing ? "closing " : "") + typeState} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* empêche la détection du clique par le background si le pop-up est cliqué */}
                 <div className="relative-container">
                     <button className="close-button" onClick={handleClose}>✕</button>
                     <div id="pop-up-header">

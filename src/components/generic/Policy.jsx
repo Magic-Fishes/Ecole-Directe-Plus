@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -9,6 +10,9 @@ import "./Policy.css";
 
 export default function Policy() {
     const navigate = useNavigate();
+
+    const leadDeveloppers = ["Saumon Brulé", "Truite Séchée"];
+    const [firstLeadDeveloppersDisplayedIdx, setFirstLeadDevelopperDisplayedIdx] = useState(Math.floor(Math.random() * 2));
     
     const legalNotice = <ul id="legal-notice">
         <h3 className="part-header">Politique de confidentialité</h3>
@@ -26,22 +30,59 @@ export default function Policy() {
         <li className="legal-content">L'activation de l'amélioration de l'accessibilité des personnes déficientes visuelles utilise la police de caractères <a className="external-link" href="https://luciole-vision.com/">Luciole</a>. Cette police de caractères est distribuée gratuitement sous Licence publique <a className="external-link" href="https://creativecommons.org/licenses/by/4.0/legalcode.fr"> Creative Commons Attribution 4.0 International </a> : Luciole © Laurent Bourcellier & Jonathan Perez</li>
         <hr />
         <h3 className="part-header" >Conditions d'utilisations</h3>
-        <h4 className="sub-header">1. General</h4>
-        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "Nous", "Notre/Nos" renvoient à l'entité Ecole Directe Plus. L'accès et l'utilisation du service proposé par Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
+        <h4 className="sub-header">1. Général</h4>
+        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service proposé par Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
         <h4 className="sub-header">2. Description du site et du service</h4>
-        <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du Service, temporairement ou définitivement.</li>
+        <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du service, temporairement ou définitivement.</li>
         <h4 className="sub-header">3. Usages acceptables du service</h4>
-        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe qu'elle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillants pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'ED+.</li>
+        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe qu'elle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillant pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'ED+. Par ailleurs, bien que nous ayons pour objectif d'offrir à nos utilisateurs un service toujours plus complet et fiable, l'usage d'Ecole Directe Plus ne se substitue en aucun cas entièrement à celui d'EcoleDirecte, notemment en ce qui concerne des fonctionnalités avancées telles que les QCM, les visio-conférences, la vie de la classe, et toute autre fonctionnalité encore indisponible sur ED+. Il est ainsi fortement déconseillé de faire usage exclusivement d'Ecole Directe Plus.</li>
         <h4 className="sub-header">4. Connexion</h4>
         <li className="legal-content">En vous connectant à Ecole Directe Plus avec votre compte EcoleDirecte, vous acceptez de nous fournir des informations précises, actuelles, et complètes à propos de vous et votre établissement. Pour garantir la confidentialité de vos informations, nous ne partageons à des fins commerciales ni ne stockons dans des serveurs vos données personnelles.</li>
         <h4 className="sub-header">69. Retour utilisateur</h4>
-        <li className="legal-content">La page de retour permet aux utilisateurs de signaler des dysfonctionnements, faire des suggestions, partager un retour d'expérience ou un avis général. Cette page nous permet d'améliorer notre service, le bénéficiaire étant l'utilisateur final. En soumettant le formulaire de retour, vous acceptez partager une partie de vos informations avec Ecole Directe Plus.</li>
+        <li className="legal-content">La page de retour permet aux utilisateurs de signaler des dysfonctionnements, faire des suggestions, partager un retour d'expérience ou un avis général. Cette page nous permet d'améliorer notre service, le bénéficiaire étant l'utilisateur final. En soumettant le formulaire de retour, vous acceptez de partager une partie de vos informations avec Ecole Directe Plus.</li>
+        <hr />
+        <h3 className="part-header">Crédits</h3>
+        <li className="legal-content">Ecole Directe Plus est l'initiative du groupuscule Magic-Fish :<br />
+            Développeurs principaux :<br />
+            - {leadDeveloppers[firstLeadDeveloppersDisplayedIdx]}<br />
+            - {leadDeveloppers[leadDeveloppers.length-firstLeadDeveloppersDisplayedIdx-1]}<br /><br />
+
+            APIs et services tiers :<br />
+            - EcoleDirecte<br />
+            - EcoleDirecte Neptunium<br />
+            - IMGBB<br />
+            - Discord Webhooks<br />
+            - 000webhost<br /><br />
+
+            Dépendances :<br />
+            - React ; react-router-dom<br />
+            - Floating UI<br />
+            - content-loader<br /><br />
+
+            Testeurs de pré-lancement :<br />
+            - Thon Humide<br />
+            - XxSigmaChadxX<br /><br />
+
+            Remerciements spéciaux :<br />
+            - Thon Humide<br />
+            - Jésus Christ<br />
+            - Internet<br />
+            - ChatGPT<br />
+        </li>
+        <li className="legal-content">Curieux et motivé ? Rejoignez nous : signalez des bugs, partagez vos retours utilisateurs, et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
+        <hr />
+        <h3 className="part-header">License (MIT)</h3>
+        <li className="legal-content">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+            The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
         <li id="copyleft-container">Copyleft <img src="/images/copyleft-white.png" id="copyleft" alt="Copyleft" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 
 
     const handleClose = () => {
-        navigate("../..");
+        navigate("", { replace: true });
     }
 
     return (

@@ -1,5 +1,4 @@
 // Patch notes (fr) : https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit
-/* enft dans les 4 liens go mettre les infos comptes dans les paramètres pour remplacé par Patch Notes et dcp on laisse mentions légales */
 
 import { useState, useEffect } from "react";
 import {
@@ -21,7 +20,6 @@ import Canardman from "./components/Canardman/Canardman"
 import Lab from "./components/Lab/Lab"
 
 
-
 console.log(`%c
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
 E::::::::::::::::::::E D:::::::::::::DDD                          
@@ -30,8 +28,8 @@ EE::::::EEEEEEEEE::::E DDD:::::DDDDDD:::::D         +++++++
   E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
   E:::::E                D:::::D      D:::::D       +:::::+       
   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
-  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+   Curious & driven? Join us:
-  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+   https://github.com/Magic-Fishes/Ecole-Directe-Plus
+  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
+  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
   E:::::E                D:::::D      D:::::D       +:::::+       
   E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
@@ -39,6 +37,9 @@ EE::::::EEEEEEEE:::::E DDD:::::DDDDDD:::::D         +++++++
 E::::::::::::::::::::E D::::::::::::::::DD                        
 E::::::::::::::::::::E D:::::::::::::DDD                          
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
+
+            Looking for curious minds. Are you in?      
+      https://github.com/Magic-Fishes/Ecole-Directe-Plus
 `, "color: #6D6AFB");
 
 
@@ -52,12 +53,45 @@ export default function App() {
     const [loggedIn, setLoggedIn] = useState(false);
     // récupère le token et les informations du compte depuis le localStorage
     useEffect(() => {
+        // informations de connexion
         const token = localStorage.getItem("token");
         if (token) setTokenState(token);
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
         if (accountsList) setAccountsListState(accountsList);
+
+        // informations de configuration
+        // Thème
+        // 
     }, [])
 
+    const [preloadedImages, setPreloadedImages] = useState([]);
+    useEffect(() => {
+        // Preload les images SUBSTANTIELLES
+        console.log("Preloading useEffect")
+        function preloadImages() {
+            let images = [
+                "/public/images/checked-icon.svg",
+                "/public/images/loading-animation.svg"
+            ];
+            console.log("Preloading...")
+
+            let newPreloadedImages = preloadedImages;
+            for (let i = 0; i < images.length; i++) {
+                let img = new Image();
+                img.src = images[i];
+                console.log("new image processed")
+                console.log(newPreloadedImages.push(img));
+            }
+            setPreloadedImages(newPreloadedImages);
+            console.log(newPreloadedImages);
+        }
+        window.addEventListener("load", preloadImages);
+        console.log("Preloading useEffect end")
+    }, [])
+
+
+
+    
     function disconnect() {
         setTokenState("");
         setAccountsListState([]);
@@ -74,27 +108,11 @@ export default function App() {
         localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    // Preload les images essentielles
-    function preloadImages() {
-        let images = [
-            "./images/checked-icon.svg",
-            "./images/loading-animation.svg"
-        ];
-        
-        for (let i = 0; i < images.length; i++) {
-            let img = new Image();
-            img.src = images[i];
-        }
-    }
-    window.addEventListener("load", preloadImages);
-
-    
-
     // routing system
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Root currentEDPVersion={currentEDPVersion} token={tokenState} accountsList={accountsListState} logIn={(logged) => setLoggedIn(logged)} loggedIn={loggedIn}/>,
+            element: <Root currentEDPVersion={currentEDPVersion} token={tokenState} accountsList={accountsListState} logIn={(logged) => setLoggedIn(logged)} loggedIn={loggedIn} />,
             errorElement: <ErrorPage />,
             children: [
                 {
@@ -102,7 +120,8 @@ export default function App() {
                     path: "/",
                 },
                 {
-                    element: <Feedback />,
+                    // TODO: remplacer 0 par l'utilisateur actif
+                    element: <Feedback activeUser={(accountsListState && accountsListState[0])} />,
                     path: "feedback",
                 },
                 {
@@ -115,13 +134,7 @@ export default function App() {
                 },
                 {
                     element: <Login apiUrl={apiUrl} apiVersion={apiVersion} handleUserInfo={getUserInfo} currentEDPVersion={currentEDPVersion} />,
-                    path: "login",
-                    children: [
-                        {
-                            element: <Policy />,
-                            path: "policy"
-                        }
-                    ]
+                    path: "login"
                 },
                 {
                     element: <Navigate to="/app/dashboard" />,
@@ -147,7 +160,7 @@ export default function App() {
     ]);
 
     return (
-        <div>
+        <div id="app">
             <RouterProvider router={router} />
         </div>
     );

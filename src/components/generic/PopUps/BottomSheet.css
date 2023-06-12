@@ -66,8 +66,12 @@
 /* - - inner bottom sheet - - */
 /* resize handle */
 #bottom-sheet-container #resize-handle {
-    padding-block: 10px 12.5px;
+    padding-block: 10px 10px;
     position: relative;
+    cursor: grab;
+}
+#bottom-sheet-container #resize-handle:active {
+    cursor: grabbing;
 }
 
 #resize-handle #inner-resize-handle {
@@ -96,9 +100,12 @@
 #bottom-sheet-heading {
     text-align: center;
     margin-inline: 10px;
-    margin-bottom: 25px; /*= padding pop-up-background*/
+    margin-block: 12.5px 15px; /*= padding pop-up-background*/
     font-size: var(--main-font-size-36);
     color: rgb(var(--border-color-1));
+}
+
+#bottom-sheet-heading:active {
 }
 
 /* content */

@@ -4,31 +4,36 @@
     display: inline-block;
 }
 
-.tooltip {
-    opacity: 0;
-    visibility: hidden;
-    transform-origin: bottom;
-    width: 100%; /* faudrait trouver une solution pour quand le component enfant est pas large pour que le tooltip reste assez large*/
-    max-width: 250px;
+.tooltip-container .tooltip {
     position: absolute;
-    bottom: 90%;
-    padding: 10px;
-    font-size: 1.4rem;
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    max-width: 250px;
+    height: auto;
+    
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    font-size: var(--font-size-14);
+    background-color: rgb(var(--background-color-1));
+    color: rgb(var(--text-color-main));
     text-align: center;
-    background-color: var(--main-background-color-1);
-    border: 1px solid var(--main-background-color-0-5);
+    padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .4);
-    z-index: 99;
-    cursor: help;
+    box-shadow: var(--box-shadow-element);
+    z-index: 999;
     transition: 0.25s ease-out;
-    transition-delay: 0.5s; /* delai d'apparition de la tooltip'*/
+    transition-delay: 0.5s;
+    cursor: pointer;
+    background-color: rgba(var(--background-color-2), 0.6);
+    backdrop-filter: blur(4px) brightness(1.5);
+    isolation: isolate;
 }
 
-/* .tooltip-container:active .tooltip, */
-.tooltip-container:hover .tooltip,
-.tooltip-container:focus-within .tooltip {
-    bottom: 125%; /* positionne au dessus du contenu*/
+.tooltip-container:hover .tooltip, .tooltip-container:focus .tooltip {
     visibility: visible;
-    opacity: 1;
+    bottom: 125%;
+    opacity: 1; 
 }

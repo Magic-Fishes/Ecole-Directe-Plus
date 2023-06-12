@@ -1,4 +1,4 @@
-header.header-menu {
+/* header.header-menu {
     position: sticky;
     top: 0;
     left: 0;
@@ -16,9 +16,8 @@ nav {
     flex-grow: 0.7;
 }
 
-img.logo {
-    margin: 10px;
-    height: 70px;
+.logo {
+    flex-grow: 0.2;
 }
 
 ul.pages {
@@ -101,6 +100,7 @@ ul.pages li.page span {
 }
 
 .active-account {
+    
     display: flex;
     margin: 5px;
     flex-flow: row nowrap;
@@ -109,6 +109,7 @@ ul.pages li.page span {
     cursor: pointer;
     transition: 0.1s;
     overflow: auto;
+    border: solid 2px rgb(var(--border-color-0));
 }
 
 address.account-infos {
@@ -147,27 +148,17 @@ address.account-infos sup {
     box-shadow: 0 20px 20px black; /* ça cancel le pb mais du coup il y a une énorme ombre en bas et c'est également immonde*/
     font-size: 1.5rem;
     transition: height 0.5s ease;
+    border: solid 2px rgb(var(--border-color-1));
+    border-top: none;
 }
 
 .drop-down-list li {
-    border-bottom: 3px solid #272664;
+    border-top: 3px solid #272664;
 }
 
 .drop-down-list li.account:hover {
     cursor: pointer;
     background-color: #272664;
-}
-
-.drop-down-list li:first-child {
-    border-top: 3px solid #272664;
-}
-
-.drop-down-list li:last-child {
-    border: none;
-/*     width: calc(100% + 10px);
-    transform: translateX(-5px); /* ouah ca c bien mangue tier*/
-    /* jsp ce qui c'est passé mais il y a plus besoin de ça */
-    /* get démanguised 🥭*/
 }
 
 .account-container {
@@ -183,11 +174,20 @@ address.account-infos sup {
     justify-content: space-between;
 }
 
+.profile-picture-container {
+    background-color: #FFFF0011;
+    border-radius: 15px;
+}
+
 .profile-picture {
     object-fit: cover; /*pour crop l'image au lieu de resize*/
     height: 90px;
     width: 90px;
     border-radius: 15px;
+    mix-blend-mode: darker;
+}
+
+.profile-picture {
 }
 
 .switch-arrow {
@@ -313,4 +313,4 @@ address.account-infos sup {
         overflow-y: scroll;
     }
 
-}
+} */

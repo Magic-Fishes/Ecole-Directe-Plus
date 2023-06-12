@@ -1,65 +1,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
-:root { /* les chads ils mettent les variables css dans la root donc on fait pareil; Pour être originla il faudrait réussir ne pas réussir */
-    /* colors */
-    --main-text-color: white;
-    --main-alt-text-color: #AAE;
-    /*--main-color-error: red;*/
-    --main-color-error: #FF4242;
-    --main-color-soft-error: #DF6262;
-    --main-color-soft-background-error: #DF62621D;
-    --main-color-success: lime;
-    --main-color-important: #67F;
-    --main-color-focus: #4B48D940;
-    --main-background-color-0: #181829;
-    --main-background-color-0-5: #323257;/*ca c du gris man pas du bleu foncé (enfin techniquement c du bleu prcq il y a plus de bleu que d'autre couleur mais ca se voit pas)*/
-    --main-background-color-1: #484866;
-    --main-border-color-0: #4B48D9;
-    --main-border-color-1: #6D6AFB;
-    --main-window-header-color: #323257;
-    --main-nav-bar-color: #39378f;
-    --main-window-box-shadow: 0 0 20px black;
-
-
-    
-    /* - - - Nouvelles variables - - - */
-    /* - NOMENCLATURE - */
-    /*
-        --attribut_lié-definition: valeur rgb sans le rgb();
-    */
-    
-    /* - Main (darker to lighter) - */
-    --text-color-main: 255, 255, 255;
-    --text-color-alt: 170 170 238;
-    --background-color-0: 24, 24, 41;
-    --background-color-1: 50, 50, 87;
-    --background-color-2: 72, 72, 102;
-    --background-color-69: 24, 24, 41;
-    --border-color-0: 75 72 217;
-    --border-color-1: 109 106 251;
-    --box-shadow-window: 0 0 20px black;
-    
-    
-    /* - Process states (errors ; success) - */
-    /* ToT */
-    --border-color-error: 255, 0, 0;
-
-    /* TOTK */
-    --color-soft-error: 223, 98, 98;
-    --border-color-soft-error: 223, 98, 98;
-    --background-color-soft-error: 223, 98, 98;
-    
-    /* UwU */
-    --background-color-success: 0, 255, 56;
-
-    --border-color-success: 98, 207, 122;
-
-    
-    /* - timing functions - */
-    --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
-
-    
+:root {
+    /* uru */
     /* - font - */
     --main-font-size-12: 1.2rem;
     --main-font-size-13: 1.3rem;
@@ -76,18 +19,137 @@
     --main-font-weight-semi-bold: 600;
     --main-font-weight-extra-bold: 800;
 
+
+    /* - timing functions - */
+    --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
+
+    /* - font - */
+    --font-size-12: 1.2rem;
+    --font-size-13: 1.3rem;
+    --font-size-14: 1.4rem;
+    --font-size-15: 1.5rem;
+    --font-size-16: 1.6rem;
+    --font-size-18: 1.8rem;
+    --font-size-20: 2rem; /* window content */
+    --font-size-24: 2.4rem; /* window header */
+    --font-size-32: 3.2rem;
+    --font-size-36: 3.6rem;
+    --font-size-42: 4.2rem;
+    --font-size-48: 4.8rem;
+    --font-weight-regular: 400;
+    --font-weight-semi-bold: 600;
+    --font-weight-extra-bold: 800;
+    
+
     font-size: 62.5%; /*pour que 1rem = 10px*/
 }
 
+:root.dark {
+    /* colors */
+    --main-text-color: white;
+    --main-alt-text-color: #AAE;
+    /*--main-color-error: red;*/
+    --main-color-error: #FF4242;
+    --main-color-soft-error: #DF6262;
+    --main-color-soft-background-error: #DF62621D;
+    --main-color-success: lime;
+    --main-color-important: #67F;
+    --main-color-focus: #4B48D940;
+    --main-background-color-0: #181829;
+    --main-background-color-0-5: #323257;
+    --main-background-color-1: #484866;
+    --main-border-color-0: #4B48D9;
+    --main-border-color-1: #6D6AFB;
+    --main-window-header-color: #323257;
+    --main-nav-bar-color: #39378f;
+    --main-window-box-shadow: 0 0 20px black;
 
-/* si light mode ajouter classe light à root*/
-:root.light { /* si on peut pas mettre de classe sur root on met sur body c'est pour écraser les variables du dark mode t'as la ref*/
+    /* - - - Nouvelles variables - - - */
+    /* - NOMENCLATURE - */
+    /*
+        --attribut_lié-definition-intensité: valeur fonctionnelle;
+    */
+    
+    /* - Main (darker to lighter) - */
+    --text-color-main: 255, 255, 255;
+    --text-color-alt: 170, 170, 238;
+    
+    --background-color-0: 24, 24, 41;
+    --background-color-1: 50, 50, 87;
+    --background-color-2: 72, 72, 102;
+    --background-color-focus: 75, 72, 217, 0.4;
+    
+    --border-color-0: 75, 72, 217;
+    --border-color-1: 109, 106, 251;
+    
+    --box-shadow-window: 0 0 20px black;
+    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    
+    
+    /* - Process states (errors ; warning ; success) - */
+    /* TOTK */
+    --text-color-error: 255, 66, 66;
+    --border-color-error: 255, 66, 66;
+    --background-color-error: 255, 66, 66;
+    
+    /* error */
+    
+    --text-color-soft-error: 223, 98, 98;
+    --border-color-soft-error: 223, 98, 98;
+    --background-color-soft-error: 223, 98, 98;
+
+    /* warning */
+    
+    --background-color-warning-0: 140, 45, 54;
+    --background-color-warning-1: 214, 63, 70;
+    --background-color-warning-2: 255, 51, 0;
+    
+    /* success */
+
+    --background-color-success: 0, 255, 56;
+    --border-color-success: 98, 207, 122;
+}
+
+
+/* si light mode activé, écrase les variables css */
+:root.light {
     --main-text-color: #000;
-    --main-background-color-0: #ffffff; /*valeurs totalement random à changer*/
-    --main-background-color-1: #c7c7ff;
+    --main-alt-text-color: rgb(76, 76, 184);
+    --main-background-color-0: #E4E4FF; /*valeurs totalement random à changer*/
+    --main-background-color-1: #BDBDFF;
     --main-window-header-color: #a8a8ff;
     --main-nav-bar-color: #8785ff;
     --main-window-box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    --box-shadow-window: 0 0 20px rgba(0, 0, 0, 0.4);
+    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.25);
+
+    --text-color-main: 0, 0, 0;
+    --text-color-alt: 76, 76, 184;
+    
+    --background-color-0: 228, 228, 255;
+    --background-color-1: 185, 185, 255;
+    --background-color-2: 170, 170, 220;
+    --background-color-focus: 75, 72, 217, 0.2;
+
+    --border-color-0: 109, 106, 251;
+    --border-color-1: 75, 72, 217;
+
+    /* error */
+    
+    --text-color-soft-error: 223, 98, 98;
+    --border-color-soft-error: 223, 98, 98;
+    --background-color-soft-error: 223, 98, 98;
+
+    /* warning */
+    
+    --background-color-warning-0: 140, 45, 54;
+    --background-color-warning-1: 214, 63, 70;
+    --background-color-warning-2: 255, 51, 0;
+    
+    /* success */
+
+    --background-color-success: 0, 255, 56;
+    --border-color-success: 98, 207, 122;
 }
 
 * {
@@ -95,6 +157,7 @@
     appearance: none;
     padding: 0;
     margin: 0;
+    transition: background-color 0.3s; /* pour une animation smooth de toggle light/dark mode (selecteur * détruit les perfs à changer pour un truc only quand on change de thème et pas tt le temps) */
 }
 
 
@@ -104,8 +167,8 @@ html {
 
 body {
     /* min-height: 100%; */
-    background-color: var(--main-background-color-0);
-    color: var(--main-text-color);
+    background-color: rgb(var(--background-color-0));
+    color: rgb(var(--text-color-main));
     font-weight: var(--main-font-weight-regular);
     font-size: var(--main-font-size-16);
     margin: 0;
@@ -116,11 +179,34 @@ body, input, button, textarea {
     font-family: Inter, sans-serif;
 }
 
+/* Button admin root.jsx */
+#admin-controls input, #admin-controls button {
+    padding: 2px;
+    color: #00c800;
+    font-weight: 600;
+    background-color: black;
+    border: 1px dashed #8f8f00;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+#admin-controls input:hover, #admin-controls button:hover {
+    background-color: #323232;
+}
+
+#admin-controls input:active, #admin-controls button:active {
+    background-color: #646464;
+}
 
 /* invalid inputs */
 .invalid {
     border-color: rgb(var(--border-color-soft-error)) !important;
     background-color: rgba(var(--background-color-soft-error), 0.1) !important;
+}
+
+.invalid:hover {
+    background-color: rgba(var(--background-color-soft-error), 0.15) !important;
 }
 
 .invalid:focus-within {
@@ -129,7 +215,7 @@ body, input, button, textarea {
 
 
 ::placeholder {
-    color: var(--main-alt-text-color);
+    color: rgb(var(--text-color-alt));
 }
 
 /* Textarea resizer */

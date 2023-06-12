@@ -22,14 +22,18 @@ export default function ScrollShadedDiv({ id, className, children }) {
         if (contentHeight > divHeight) {
             if (scrollTop > 0) {
                 topShadowRef.current.style.opacity = 1;
+                topShadowRef.current.style.transition = "0.3s";
             } else {
                 topShadowRef.current.style.opacity = 0;
+                topShadowRef.current.style.transition = "0.1s";
             }
             
             if (scrollBottom > 0) {
                 bottomShadowRef.current.style.opacity = 1;
+                bottomShadowRef.current.style.transition = "0.3s";
             } else {
                 bottomShadowRef.current.style.opacity = 0;
+                bottomShadowRef.current.style.transition = "0.1s";
             }            
         } else {
             topShadowRef.current.style.opacity = 0;

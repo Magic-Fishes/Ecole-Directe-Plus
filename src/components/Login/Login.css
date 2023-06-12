@@ -1,7 +1,7 @@
-/*1vh ~= 7.5px*/
 
-.error-message {
-    color: var(--main-color-error);
+p.error-message {
+    color: rgb(var(--text-color-error));
+    text-align: center;
 }
 
 p.policy {
@@ -9,7 +9,7 @@ p.policy {
     text-align: center;
     position: absolute;
     font-size: var(--main-font-size-14);
-    color: var(--main-alt-text-color);
+    color: rgb(var(--text-color-alt));
     z-index: -1;
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
@@ -19,6 +19,7 @@ p.policy {
 .policy-link {
     text-decoration: none;
     color: rgb(var(--border-color-1));
+    cursor: pointer;
 }
 
 .policy-link:hover {
@@ -29,6 +30,9 @@ p.policy {
     position: absolute;
     left: 15px;
     top: 15px;
+}
+
+.logo svg {
     width: 70px;
     height: auto;
 }
@@ -48,12 +52,14 @@ p.policy {
     width: 100vw;
     max-width: 480px;
     min-width: 0;
+    max-height: 100%;
+    overflow-y: auto;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid var(--main-border-color-0);
+    border: 1px solid rgb(var(--border-color-0));
     border-radius: 20px;
-    background-color: var(--main-window-header-color);
+    background-color: rgb(var(--background-color-1));
     box-shadow: var(--box-shadow-window);
 }
 
@@ -84,14 +90,14 @@ p.policy {
 .login-option #passwordForgottenLink {
     text-align: right;
     text-decoration: none;
-    color: var(--main-alt-text-color);
+    color: rgb(var(--text-color-alt));
     cursor: pointer;
 }
 
-@media only screen and (max-width: 410px) {
-    /* body {
-        background-color: #323257;
-    } */
+@media only screen and (max-width: 460px) {
+    body {
+        background-color: rgb(var(--background-color-1));
+    }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/
     .logo#outside-container {
@@ -103,14 +109,15 @@ p.policy {
         top: 0;
         left: 0;
         transform: none;
-        width: 100px;
-        height: auto;
         display: block;
         margin: 5dvh auto; /*dvh = dynamic vh -> prend en compte la barre de recherche sur mobile */
     }
+    .logo#inside-container svg {
+        width: 90px;
+        height: auto;
+    }
 
     .login-box {
-        /* background-color: transparent; */
         top: 0;
         left: 0;
         width: 100%;
@@ -119,12 +126,13 @@ p.policy {
         box-shadow: none;
         border: none;
         border-radius: 0;
-        background-color: var(--main-background-color-0-5);
+        /* background-color: transparent; */
+        background-color: rgb(var(--background-color-1));
         margin: 0;
         padding: 5px;
         min-width: 0;
         width: 100%;
-        z-index: -99;
+        z-index: -1;
     }
     
     .login-box h1 {
@@ -142,6 +150,7 @@ p.policy {
     }
 
     .policy-link {
-        font-size: min(var(--main-font-size-16), 4.5vmin);
+        font-size: min(var(--main-font-size-16), 4.5vw);
     }
 }
+

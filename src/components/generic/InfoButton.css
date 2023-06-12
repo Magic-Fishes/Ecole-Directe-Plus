@@ -1,0 +1,45 @@
+
+.info-button {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.info-button .tooltip {
+    transition-delay: 0s;
+}
+
+.info-button:hover .info-icon .fill {
+    animation: hover-color-fill 0.25s;
+    fill: rgb(var(--text-color-alt));
+    stroke: none !important;
+}
+
+.info-button:hover .info-icon .stroke {
+    animation: hover-color-stroke 0.25s;
+    stroke: rgb(var(--text-color-alt));
+    fill: none !important;
+}
+
+@keyframes hover-color-fill {
+  0% {
+    fill: #4B48D9;
+  }
+  100% {
+    fill: rgb(var(--text-color-alt));
+  }
+}
+
+@keyframes hover-color-stroke {
+  0% {
+    stroke: #4B48D9;
+  }
+  100% {
+    stroke: rgb(var(--text-color-alt));
+  }
+}

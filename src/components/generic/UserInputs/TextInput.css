@@ -1,17 +1,24 @@
 .input-container {
-    border: 2px solid var(--main-border-color-0);
+    border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
     padding: 0;
     display: flex;
     flex-flow: row nowrap;
-    align-content: center;
+    justify-content: space-between;
     width: 100%;
-    height: 2.8em;
+    /* ancienne height : 2.8em */
+    height: 3em;
     overflow: hidden;
+}
+
+
+.input-container:hover {
+    border-color: rgba(var(--border-color-1), 0.8);
 }
 
 .input-container:focus-within {
     background-color: #4B48D940;
+    border-color: rgb(var(--border-color-1));
 }
 
 .text-input {
@@ -20,9 +27,10 @@
     font-size: var(--main-font-size-18);
     padding: 10px;
     padding-right: 0;
-    width: 100%;
+    flex-grow: 1;
+    min-width: 0;
     background-color: transparent;
-    color: white;
+    color: rgb(var(--text-color-main));
     outline: none;
 }
 

@@ -6,18 +6,23 @@
     font-weight: var(--main-font-weight-semi-bold);
     padding: 10px 15px;
     min-width: 0;
-    border: 2px solid var(--main-border-color-0);
+    border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
     background-color: transparent;
-    color: white;
+    color: rgb(var(--text-color-main));
     outline: none;
     transition: 0.1s;
     cursor: pointer;
 }
 
 .button:hover, .button:focus-visible {
-    background-color:  var(--main-border-color-0);
-    border-color: var(--main-border-color-1);
+    color: rgb(var(--text-color-main));
+    background-color: rgba(var(--background-color-focus));
+    border-color: rgb(var(--border-color-1));
+}
+
+.button:active, .button.submitter.submitting {
+    background-color: rgb(var(--border-color-0));
 }
 
 .button.submitter::after {
@@ -28,9 +33,16 @@
     content: " -->";
 }
 
+/* submitting */
+/* preload */
+.button.submitter::before {
+    content: url('/public/images/loading-animation.svg');
+    display: none;
+}
+
 .button.submitter.submitting::after {
-    content:"";
-    background-image: url('./images/loading-animation.svg');
+    content: "";
+    background-image: url('/public/images/loading-animation.svg');
     background-size: cover;
     background-repeat: no-repeat;
     display: inline-block;
@@ -40,14 +52,30 @@
     transform: translateY(2px) scale(1.5);
 }
 
+/* Invalid */
+.button.submitter.invalid {
+    background-color: rgba(var(--background-color-error), 0.15);
+    background-color: red;
+    border-color: rgb(var(--border-color-error));
+}
+
+.button.submitter.invalid::after {
+    content: "✕";
+    font-size: 1em;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+
+/* Submitted */
 .button.submitter.submitted {
     background-color: rgba(var(--background-color-success), 0.15);
     border-color: rgb(var(--border-color-success));
 }
 
-.button.submitter.submitted:after {
+.button.submitter.submitted::after {
     content:"";
-    background-image: url('./images/checked-icon.svg');
+    background-image: url('/public/images/checked-icon.svg');
     background-size: cover;
     background-repeat: no-repeat;
     display: inline-block;

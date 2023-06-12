@@ -4,20 +4,23 @@ fieldset.segmented-control {
     flex-flow: row nowrap;
     width: 100%;
     min-width: 0;
-    border: 2px solid var(--main-border-color-0);
+    border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
     -webkit-user-select: none;
     user-select: none;
 }
 
+fieldset.segmented-control:focus-within {
+    border-color: rgb(var(--border-color-1));
+}
 
-label.option input {
+.segmented-control label.option input {
     position: absolute;
 }
 
-label.option {
+.segmented-control label.option {
     border: none;
-    border-inline: 1px solid var(--main-border-color-0);
+    border-inline: 1px solid rgb(var(--border-color-0));
     font-size: var(--main-font-size-18);
     padding: 0.5em;
     min-width: 0;
@@ -25,7 +28,7 @@ label.option {
     white-space: nowrap; /* enfer pour les utilisateurs mobile */
     overflow: hidden;
     text-overflow: ellipsis; /* cut un texte avec points de suspension*/
-    color: var(--main-alt-text-color); /* safari */
+    color: rgb(var(--text-color-alt)); /* safari */
     background-color: transparent;
     flex-grow: 1;
     outline: none;
@@ -33,27 +36,25 @@ label.option {
     cursor: pointer;
 }
 
-label.option:hover {
-    background-color: var(--main-color-focus);
+.segmented-control label.option:hover {
+    background-color: rgb(var(--background-color-focus));
 }
 
-label.option:first-child {
+.segmented-control label.option:first-child {
     border-left: none;
     border-top-left-radius: 13px;
     border-bottom-left-radius: 13px;
 }
-label.option:last-child {
+
+.segmented-control label.option:last-child {
     border-right: none;
     border-top-right-radius: 13px;
     border-bottom-right-radius: 13px;
 }
 
-label.option.selected {
-    background-color: var(--main-border-color-0);
+.segmented-control label.option.selected {
+    background-color: rgb(var(--border-color-0));
     flex-grow: 1.8;
-    color: var(--main-text-color); /* safari */
+    color: rgb(var(--text-color-main)); /* safari */
 }
 
-fieldset.segmented-control:focus-within {
-    border-color: var(--main-border-color-1);
-}

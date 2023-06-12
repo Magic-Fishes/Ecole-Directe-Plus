@@ -1,6 +1,6 @@
 .warning-message {
     text-align: left;
-    color: var(--main-color-soft-error);
+    color: rgb(var(--text-color-soft-error));
     font-size: var(--main-font-size-13);
     maring-top: 10px;
     margin-left: 8px;

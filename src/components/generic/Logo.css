@@ -1,0 +1,62 @@
+.logo {
+    height: auto;
+    justify-content: center;
+}
+
+.logo .paths {
+    fill: url(#gradient);
+}
+
+.light .start { 
+    stop-color: #1743B5;
+    animation: light-start-gradient 0.3s;
+}
+.light .stop { 
+    stop-color: #5B42F1;
+    animation: light-stop-gradient 0.3s;
+}
+
+.dark .start { 
+    stop-color: #B4C9FF;
+    animation: dark-start-gradient 0.3s;
+}
+.dark .stop { 
+    stop-color: #C1B7FF;
+    animation: dark-stop-gradient 0.3s;
+}
+
+@keyframes light-start-gradient {
+    0% {
+        stop-color: #B4C9FF;
+    }
+    100% {
+        stop-color: #1743B5;
+    }
+}
+
+@keyframes light-stop-gradient {
+    0% {
+        stop-color: #C1B7FF;
+    }
+    100% {
+        stop-color: #5B42F1;
+    }
+}
+
+@keyframes dark-start-gradient {
+    0% {
+        stop-color: #1743B5;
+    }
+    100% {
+        stop-color: #B4C9FF;
+    }
+}
+
+@keyframes dark-stop-gradient {
+    0% {
+        stop-color: #5B42F1;
+    }
+    100% {
+        stop-color: #C1B7FF;
+    }
+}

@@ -3,7 +3,7 @@ import { useState } from "react";
 import PopUp from "./PopUps/PopUp";
 import "./PatchNotes.css"
 
-export default function PatchNotes({ currentEDPVersion, onClose}) {
+export default function PatchNotes({ currentEDPVersion, onClose }) {
     const [patchNotesContent, setPatchNotesContent] = useState(
         <div>
             <hr />
@@ -39,7 +39,7 @@ export default function PatchNotes({ currentEDPVersion, onClose}) {
     
     return (
        <div id="patch-notes">
-           <PopUp header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"16 avril 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose}/>
+           <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"16 avril 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose}/>
        </div> 
     )
 }
