@@ -1,4 +1,3 @@
-// Patch notes (fr) : https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit
 
 import { useState, useEffect } from "react";
 import {
@@ -51,6 +50,7 @@ export default function App() {
     const [tokenState, setTokenState] = useState("");
     const [accountsListState, setAccountsListState] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [displayTheme, setDisplayTheme] = useState(localStorage.getItem("displayTheme") ? localStorage.getItem("displayTheme") : "dark");
     // récupère le token et les informations du compte depuis le localStorage
     useEffect(() => {
         // informations de connexion
@@ -61,8 +61,8 @@ export default function App() {
 
         // informations de configuration
         // Thème
-        // 
-    }, [])
+
+    }, []);
 
     const [preloadedImages, setPreloadedImages] = useState([]);
     useEffect(() => {
@@ -112,7 +112,7 @@ export default function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Root currentEDPVersion={currentEDPVersion} token={tokenState} accountsList={accountsListState} logIn={(logged) => setLoggedIn(logged)} loggedIn={loggedIn} />,
+            element: <Root currentEDPVersion={currentEDPVersion} token={tokenState} accountsList={accountsListState} logIn={(logged) => setLoggedIn(logged)} loggedIn={loggedIn} displayTheme={displayTheme} setDisplayTheme={setDisplayTheme} />,
             errorElement: <ErrorPage />,
             children: [
                 {

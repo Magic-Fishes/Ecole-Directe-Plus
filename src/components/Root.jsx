@@ -6,13 +6,12 @@ import PopUp from "./generic/PopUps/PopUp";
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 
-export default function Root({ currentEDPVersion, token, accountsList, logIn, loggedIn }) {
+export default function Root({ currentEDPVersion, token, accountsList, logIn, loggedIn, displayTheme, setDisplayTheme }) {
     const navigate = useNavigate();
     const [isNewUser, setIsNewUser] = useState(false);
     const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
     const [popUp, setPopUp] = useState(false);
     const [isAdmin, setIsAdmin] = useState(true);
-    const [displayTheme, setDisplayTheme] = useState("dark");
     
     function redirectToFeedback() {
         navigate("/feedback");
@@ -70,13 +69,39 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
     
     // Gestion du thème d'affichage
     useEffect(() => { // on met ca dans un useEffect et pas dans la fonction en dessous pour que ca s'active au premier chargement prcq sinn il y a pas de displayTheme et les couleurs FF  ; j'ai pas compri 🔞
+        // function addTransition(duration) {
+        //     console.log(document.documentElement)
+        //     console.log(document.documentElement.classList)
+        //     const rootClassList = Object.values(document.documentElement.classList);
+        //     console.log(rootClassList)
+        //     if (rootClassList.includes("light") || rootClassList.includes("dark")) {
+        //         console.log("root includes light/dark class")
+        //         const allElements = document.getElementsByTagName("*");
+        //         for (const element of allElements) {
+        //            // console.log(element);
+        //             element.style.backgroundColor = "red !important";
+        //             console.log("background-color changed to turbo red")
+        //            // console.log(element);
+        //         }
+        //     }
+        // }
+        
         if (displayTheme === "dark") {
-            document.documentElement.classList.add("dark")
+            document.documentElement.classList.add("dark");
             document.documentElement.classList.remove("light"); 
         } else {
-            document.documentElement.classList.add("light"); 
-            document.documentElement.classList.remove("dark")
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
         }
+        localStorage.setItem("displayTheme", displayTheme);
+
+        // addTransition("red !important");
+        // setTimeout(addTransition, 3000, "");
+
+        return () => {
+            // document.documentElement.classList.remove(displayTheme)
+            console.log("cleanup")
+        };
     }, [displayTheme]);
 
     const toggleTheme = () => {
@@ -89,7 +114,7 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
     
     return (
         <div id="root">
-            <div id="admin-controls" style={{position: "relative", zIndex: "99"}}>
+            <div id="admin-controls" style={{position: "fixed", zIndex: "999"}}>
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
                 {/*<input type="button" onClick={() => setLoggedIn(true)} value="LOGIN" />loggedIn c un prank, ca te log pas c juste que ca évite que le useState s'exite et redirect à l'infini */}
                 {isAdmin && <input type="button" onClick={() => console.log(token)} value="TOKEN STATE" />}

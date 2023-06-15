@@ -5,7 +5,7 @@ import DropDownMenu from "../generic/UserInputs/DropDownMenu";
 import Button from "../generic/UserInputs/Button";
 import ScrollShadedDiv from "../generic/ScrollShadedDiv";
 import PopUp from "../generic/PopUps/PopUp";
-import Logo from "../generic/Logo"
+import EDPLogo from "../graphics/EDPLogo"
 
 import "./Lab.css";
 
@@ -56,11 +56,17 @@ export default function Feedback() {
             </ScrollShadedDiv>
             <Button value="! DANGER !" onClick={() => {setIsOpen(true)}}></Button>
             {isOpen && <PopUp type="warning" header="Avertissement de sécurité" subHeader="Veuillez lire attentivement" contentTitle="Rester connecté, un danger ?" content={warningContent} onClose={() => {setIsOpen(false)}} />}
-            <Logo/>
+            <EDPLogo/>
             <div className={"theme-div " + theme}>
-                <p>
-                     Lorem ipsum dolor de tes morts fdp, allam niquer tamerum
+                <p id="test1">
+                     Juste test si al transition fonctionne sur le changement de couleur du txt
                 </p>
+                <div className="container-test">
+                    <div className="grower">qqqqqqqqqqqqq</div>
+                </div>
+                <div className="container-test1">
+                    <div className="grower1">qqqqqqqqqqqqq</div>
+                </div>
             </div>
         </div>
     )

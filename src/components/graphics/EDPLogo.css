@@ -1,31 +1,51 @@
-.logo {
+.edp-logo {
     height: auto;
     justify-content: center;
 }
 
-.logo .paths {
-    fill: url(#gradient);
+.edp-logo .paths {
+    fill: url("#gradient");
 }
 
-.light .start { 
+.start, .end {
+    transition: var(--transition-time-change-theme);
+}
+
+.light .start {
+    stop-color: #1743B5;
+}
+.light .end {
+    stop-color: #5B42F1;
+}
+
+.dark .start {
+    stop-color: #B4C9FF;
+}
+.dark .end {
+    stop-color: #C1B7FF;
+}
+
+
+/* .light .start {
     stop-color: #1743B5;
     animation: light-start-gradient 0.3s;
 }
-.light .stop { 
+.light .end {
     stop-color: #5B42F1;
-    animation: light-stop-gradient 0.3s;
+    animation: light-end-gradient 0.3s;
 }
 
-.dark .start { 
+.dark .start {
     stop-color: #B4C9FF;
     animation: dark-start-gradient 0.3s;
 }
-.dark .stop { 
+.dark .end {
     stop-color: #C1B7FF;
-    animation: dark-stop-gradient 0.3s;
-}
+    animation: dark-end-gradient 0.3s;
+} */
 
-@keyframes light-start-gradient {
+
+/* @keyframes light-start-gradient {
     0% {
         stop-color: #B4C9FF;
     }
@@ -34,7 +54,7 @@
     }
 }
 
-@keyframes light-stop-gradient {
+@keyframes light-end-gradient {
     0% {
         stop-color: #C1B7FF;
     }
@@ -52,11 +72,11 @@
     }
 }
 
-@keyframes dark-stop-gradient {
+@keyframes dark-end-gradient {
     0% {
         stop-color: #5B42F1;
     }
     100% {
         stop-color: #C1B7FF;
     }
-}
+} */

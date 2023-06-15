@@ -22,6 +22,7 @@
 
     /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
+    --transition-time-change-theme: 0.3s;
 
     /* - font - */
     --font-size-12: 1.2rem;
@@ -78,6 +79,7 @@
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
     --background-color-focus: 75, 72, 217, 0.4;
+    --background-color-header: 55, 57, 143;
     
     --border-color-0: 75, 72, 217;
     --border-color-1: 109, 106, 251;
@@ -157,7 +159,6 @@
     appearance: none;
     padding: 0;
     margin: 0;
-    transition: background-color 0.3s; /* pour une animation smooth de toggle light/dark mode (selecteur * détruit les perfs à changer pour un truc only quand on change de thème et pas tt le temps) */
 }
 
 

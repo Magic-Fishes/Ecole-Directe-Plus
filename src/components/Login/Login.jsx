@@ -8,7 +8,8 @@ import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import InfoButton from "../generic/InfoButton";
 import Policy from "../generic/Policy"
-import Logo from "../generic/Logo"
+import EDPLogo from "../graphics/EDPLogo"
+import EDPLogo2 from "../graphics/EDPLogo2"
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
     // Keeep logged in
@@ -176,10 +177,10 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     // JSX
     return (
         <div id="login">
-            {/* <Logo id="outside-container" alt="Logo Ecole Directe Plus" /> */}
-            <img id="outside-container" className="logo" src="/public/images/EDP-logo-full-width-white.svg" style={{height: "50px"}} alt="Logo Ecole Directe Plus" />
+            {/* <img id="outside-container" className="logo" src="/public/images/EDP-logo-full-width-white.svg" style={{height: "50px"}} alt="Logo Ecole Directe Plus" /> */}
+            <EDPLogo2 className="login-logo2" id="outside-container" alt="Logo Ecole Directe Plus" />
             <div className="login-box">
-                <Logo id="inside-container" alt="Logo Ecole Directe Plus" /> {/* c'est vrmt golémique mais flemme de javascript */}
+                <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>

@@ -26,22 +26,27 @@ p.policy {
     color: rgb(var(--border-color-0));    
 }
 
-.logo {
+.login-logo {
     position: absolute;
     left: 15px;
     top: 15px;
-}
-
-.logo svg {
     width: 70px;
     height: auto;
 }
 
-.logo#outside-container {
+.login-logo2 {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    width: 70px;
+    height: auto;
+}
+
+.login-logo2#outside-container {
     display: block;
 }
 
-.logo#inside-container {
+.login-logo#inside-container {
     display: none;
 }
 
@@ -100,19 +105,18 @@ p.policy {
     }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/
-    .logo#outside-container {
-        display: none;
+    .login-logo2#outside-container {
+        display: block;
+        background-color: red;
     }
     
-    .logo#inside-container {
+    .login-logo#inside-container {
+        display: block !important;
         position: static;
-        top: 0;
-        left: 0;
+        top: auto;
+        left: auto;
         transform: none;
-        display: block;
         margin: 5dvh auto; /*dvh = dynamic vh -> prend en compte la barre de recherche sur mobile */
-    }
-    .logo#inside-container svg {
         width: 90px;
         height: auto;
     }

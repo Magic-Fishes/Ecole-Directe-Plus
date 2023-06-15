@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 
-import Logo from "../generic/Logo"
+import EDPLogo from "../graphics/EDPLogo"
 
 import "./Header.css";
 
@@ -15,36 +15,36 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
     return (
         <div>
             {!(accountsList && token) ? <Navigate to="/login" /> : <header className="header-menu">
-                <Logo className="logo" />
+                {/* <EDPLogo className="logo" />
                 <nav>
                     <ul className="pages">
                         <li className="page">
                             <a href="#" className="header-page-text">
-                                <img src="/public/images/dashboard-icon.svg" className="icon" />
+                                <img src="/public/images/dashboard-icon.svg" className="icon" alt="icône tableau de bord"/>
                                 <span id="home">Accueil</span>
                             </a>
                         </li>
                         <li className="page">
                             <a href="#" className="header-page-text">
-                                <img src="/public/images/grades-icon.svg" className="icon" />
+                                <img src="/public/images/grades-icon.svg" className="icon" alt="icône notes"/>
                                 <span id=" grades">Notes</span>
                             </a>
                         </li>
                         <li className="page">
                             <a href="#" className="header-page-text">
-                                <img src="/public/images/homeworks-icon.svg" className="icon" />
+                                <img src="/public/images/homeworks-icon.svg" className="icon" alt="icône devoirs"/>
                                 <span id="homeworks">Devoirs</span>
                             </a>
                         </li>
                         <li className="page">
                             <a href="#" className="header-page-text">
-                                <img src="../public/images/planning-icon.svg" className="icon" />
+                                <img src="../public/images/planning-icon.svg" className="icon" alt="icône emploi du temps"/>
                                 <span id="planning">Planning</span>
                             </a>
                         </li>
                         <li className="page">
                             <a href="#" className="header-page-text">
-                                <img src="../public/images/messaging-icon.svg" className="icon" />
+                                <img src="../public/images/messaging-icon.svg" className="icon" alt="icône messagerie"/>
                                 <span id="messaging">Messagerie</span>
                             </a>
                         </li>
@@ -55,36 +55,36 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
                 <div className="account-selection" tabIndex="0">
                     <div className="active-account">
                         <div className="profile-picture-container">
-                            <img src={"https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + accountsList[0].picture} className="profile-picture" />
+                            <img src={"https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + accountsList[selectedAccount].picture} className="profile-picture" alt="photo de profile"/>
                         </div>
                         <address className="account-infos">
-                            <span className="establishment">Lycée Notre-Dame Ozanam</span>
-                            <span className="name-first-name">GIGA Chad</span>
-                            <span className="grade">1<sup>ère</sup>G4</span>
+                            <span className="establishment">{accountsList[selectedAccount].schoolName}</span>
+                            <span className="name-first-name">{accountsList[selectedAccount].lastName + " " + accountsList[selectedAccount].firstName}</span>
+                            <span className="grade">{accountsList[selectedAccount].class[1]}</span>
                         </address>
                     </div>
                     <div className="drop-down-list">
                         <ul>
-                            <li className="account">
-                                <div className="account-container">
-                                    <img src="../public/images/GIGACHADpp2.jpg" className="profile-picture" />
-                                    <address className="account-infos">
-                                        <span className="name-first-name">ZETA Chad</span>
-                                        <span className="grade">2<sup>nd</sup>5</span>
-                                    </address>
-                                </div>
-                                <img src="../public/images/switch-arrows.svg" className="switch-arrow" />
-                            </li>
-                            <li className="account">
-                                <div className="account-container">
-                                    <img src="../public/images/GIGACHADpp3.png" className="profile-picture" />
-                                    <address className="account-infos">
-                                        <span className="name-first-name">SIGMA Chad</span>
-                                        <span className="grade">6<sup>ème</sup>5</span>
-                                    </address>
-                                </div>
-                                <img src="/public/images/switch-arrows.svg" className="switch-arrow" />
-                            </li>
+                            {accountsList.map((account, id) => {
+                                if (id !== selectedAccount){
+                                    return (
+                                        <li className="account" onClick={() => setSelectedAccount(id)}>
+                                            {console.log(accountsList)}
+                                            {console.log(account)}
+                                            <div className="account-container">
+                                                <img src={"https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + account.picture} className="profile-picture" alt="photo de profile"/>
+                                                <address className="account-infos">
+                                                    <span className="name-first-name">{account.lastName + " " + account.firstName}</span>
+                                                    <span className="grade">{account.class[1]}</span>
+                                                </address>
+                                                <svg>
+                                                    
+                                                </svg>
+                                            </div>
+                                        </li>
+                                    )
+                                }
+                            })}
                             <li>
                                 <div id="settings">
                                     <a href="#" className="setting"><img src="/public/images/settings-icon.svg" />Paramètres</a>
@@ -96,13 +96,24 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
                             <li onClick={() => { disconnect(); setLogged(false) }}>
                                 <button id="logout-button">
                                     <span>Se déconnecter</span>
-                                    <img src="/public/images/logout.svg" />
+                                    <img src="/public/images/logout.svg" alt="icône déconnexion"/>
                                 </button>
                             </li>
                         </ul>
                     </div>
+                </div>*/}
+                <div className="header-logo-container">
+                    <EDPLogo id="header-logo"/>
                 </div>
-            </header>
+                
+                <div className="pages">
+                    
+                </div>
+                
+                <div className="account-selection">
+                    
+                </div>
+            </header> 
             }
         </div>
     )

@@ -39,12 +39,12 @@ ul.pages li.page {
 
 ul.pages li.page:hover {
     background-color: #32327b;
-/*     transform: scale(1.1); */
+/*     transform: scale(1.1); 
 }
 
 ul.pages li.page:active {
     background-color: #282867;
-/*     transform: scale(0.9); */
+/*     transform: scale(0.9); 
 }
 
 ul.pages li.page a {
@@ -54,7 +54,7 @@ ul.pages li.page a {
 
 ul.pages li.page a:visited {
     color: white;
-}/*ca en vrain je suis pas sur que ca soit utile ; probable mais pour être safe*/
+}/*ca en vrain je suis pas sur que ca soit utile ; probable mais pour être safe
 
 ul.pages li.page span {
     display: block;
@@ -63,7 +63,7 @@ ul.pages li.page span {
 }
 
 .icon {
-/*     background-color: lime; */
+/*     background-color: lime; 
     display: block;
     margin: 0 auto;
     margin-bottom: 8px;
@@ -72,11 +72,11 @@ ul.pages li.page span {
 }
 
 
-/* -- profile section -- */
+/* -- profile section -- 
 
 .account-selection {
     display: block;
-    position: relative; /* pour le positionnement absolute de la drop-down-list*/
+    position: relative; /* pour le positionnement absolute de la drop-down-list
     background-color: #39378f;
     max-width: 400px;
     margin: 10px 10px 10px 0;
@@ -86,7 +86,7 @@ ul.pages li.page span {
     transition: 0.1s;
 }
 
-.account-selection:not(:focus-within):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton*/
+.account-selection:not(:focus-within):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton
     background-color: #4c4aa5;
 }
 
@@ -96,7 +96,7 @@ ul.pages li.page span {
 
 .account-selection:focus-within .drop-down-list {
     display: block; 
-    height: auto; /* c'est pour essayer d'animer le déroulement de la drop-down-list mais sad ça marche pas*/
+    height: auto; /* c'est pour essayer d'animer le déroulement de la drop-down-list mais sad ça marche pas
 }
 
 .active-account {
@@ -116,7 +116,7 @@ address.account-infos {
     color: -webkit-linear-gradient(#eee, #333);;
     padding: 5px;
     font-size: 1rem;
-    font-style: initial; /* ça enleve italic*/
+    font-style: initial; /* ça enleve italic
     line-height: 1.25rem;
     text-align: left;
     white-space: nowrap;
@@ -144,8 +144,8 @@ address.account-infos sup {
     background-color: #39378f;
     width: 100%;
     border-radius: 0 0 20px 20px;
-/*     box-shadow: 0 0 20px black; */ /*ça donne un truc immonde vu que ça override le active profile aled*/
-    box-shadow: 0 20px 20px black; /* ça cancel le pb mais du coup il y a une énorme ombre en bas et c'est également immonde*/
+/*     box-shadow: 0 0 20px black; */ /*ça donne un truc immonde vu que ça override le active profile aled
+    box-shadow: 0 20px 20px black; /* ça cancel le pb mais du coup il y a une énorme ombre en bas et c'est également immonde
     font-size: 1.5rem;
     transition: height 0.5s ease;
     border: solid 2px rgb(var(--border-color-1));
@@ -180,7 +180,7 @@ address.account-infos sup {
 }
 
 .profile-picture {
-    object-fit: cover; /*pour crop l'image au lieu de resize*/
+    object-fit: cover; /*pour crop l'image au lieu de resize
     height: 90px;
     width: 90px;
     border-radius: 15px;
@@ -198,7 +198,7 @@ address.account-infos sup {
 #settings {
     display: flex;
     flex-flow: row wrap;
-/*     align-items: center; */
+/*     align-items: center; 
     justify-content: space-between;
 }
 
@@ -211,13 +211,13 @@ address.account-infos sup {
     color: white;
     background-color: #141338;
     border-radius: 10px;
-    flex-basis: calc(50% - 10px); /* 50% - 2*marginX */
+    flex-basis: calc(50% - 10px); /* 50% - 2*marginX 
     flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
     transition: 0.1s;
 }
-/*culture de mangue c'est ici ⬇️*/
+/*culture de mangue c'est ici 
 #settings a:nth-child(2) {margin: 5px 5px 2.5px 2.5px;}
 #settings a:nth-child(3) {margin: 2.5px 2.5px 5px 5px;}
 #settings a:nth-child(4) {margin: 2.5px 5px 5px 2.5px;}
@@ -259,7 +259,7 @@ address.account-infos sup {
 }
 
 
-/* -- media queries -- */
+/* -- media queries -- 
 
 @media only screen and (max-width: 1016px) {
     img.logo {
@@ -314,3 +314,36 @@ address.account-infos sup {
     }
 
 } */
+
+.header-menu {
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    height: 150px;
+    width: 100%;
+    background-color: rgb(var(--background-color-header));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 1);
+}
+
+.header-logo-container {
+    height: 100%;
+    flex-grow: 0.1;
+    background-color: red;
+}
+
+
+
+.pages {
+    height: 100%;
+    flex-grow: 0.7;
+    background-color: green;
+}
+
+.account-selection {
+    height: 100%;
+    flex-grow: 0.2;
+    background-color: blue;
+}
