@@ -1,15 +1,56 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 
-import EDPLogo from "../graphics/EDPLogo"
+import EDPLogo from "../../graphics/EDPLogo"
 
 import "./Header.css";
 
-export default function Header({ token, accountsList, disconnect, setLogged }) {
+export default function Header({ token, accountsList, logout, setLogged }) {
+
+    // l'id c'est pour la key et on aura juste à changer l'idx d'un élément de la liste pour changer l'ordre
+    // par exemple pour le layout mobile on met le dashboard au milieu
+    const headerNavigationButtons = [
+        {
+            id: 1,
+            name: "Accueil",
+            link: "/dashboard",
+            icon: <></>,
+            notifications: 0
+        },
+        {
+            id: 2,
+            name: "Notes",
+            link: "/grades",
+            icon: <></>,
+            notifications: 2
+        },
+        {
+            id: 3,
+            name: "Cahier de texte",
+            link: "/homeworks",
+            icon: <></>,
+            notifications: 0
+        },
+        {
+            id: 4,
+            name: "Emploi du temps",
+            link: "/timetable",
+            icon: <></>,
+            notifications: 0
+        },
+        {
+            id: 3,
+            name: "Messagerie",
+            link: "/messaging",
+            icon: <></>,
+            notifications: 3
+        }
+    ]
+        
     // States
     const [selectedAccount, setSelectedAccount] = useState(0);
-    // Behavior
 
+    // Behavior
 
     // JSX
     return (
@@ -65,7 +106,7 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
                     </div>
                     <div className="drop-down-list">
                         <ul>
-                            {accountsList.map((account, id) => {
+                            {accountsList.map((account, id="") => {
                                 if (id !== selectedAccount){
                                     return (
                                         <li className="account" onClick={() => setSelectedAccount(id)}>
@@ -93,7 +134,7 @@ export default function Header({ token, accountsList, disconnect, setLogged }) {
                                     <a href="#" className="setting"><img src="/public/images/legal-icon.svg" />Mentions légales</a>
                                 </div>
                             </li>
-                            <li onClick={() => { disconnect(); setLogged(false) }}>
+                            <li onClick={() => { logout(); setLogged(false) }}>
                                 <button id="logout-button">
                                     <span>Se déconnecter</span>
                                     <img src="/public/images/logout.svg" alt="icône déconnexion"/>

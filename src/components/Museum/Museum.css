@@ -1,0 +1,59 @@
+#museum h1 {
+    font-size: var(--font-size-42);
+    text-align: center;
+    margin: 20px;
+    color: rgb(var(--text-color-main));
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#museum .assets {
+    padding: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 40px;
+}
+
+#museum .asset {
+    padding: 0 20px 20px 20px;
+    height: 300px;
+    background-color: rgb(var(--background-color-2));
+    display: flex;
+    flex-flow: column nowrap;
+    border-radius: 15px;
+    flex-grow: 1;
+    min-width: 0;
+    cursor: grab;
+    transition: 0.2s;
+}
+
+
+#museum .asset:hover {
+    box-shadow: var(--box-shadow-window);
+    background-color: rgb(var(--background-color-2), 0.6);
+}
+
+#museum .asset:active {
+    cursor: grabbing;
+}
+
+#museum svg {
+    margin: 0 auto;
+    height: 100%;
+    
+    width: auto;
+    max-width: min(600px, calc(100vw - 80px));
+}
+
+#museum .asset h3 {
+    color: rgb(var(--text-color-main));
+    text-align: center;
+    margin: 5px;
+    margin-bottom: 10px;
+    line-height: 3rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

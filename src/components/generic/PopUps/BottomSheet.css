@@ -1,10 +1,7 @@
 
-#bottom-sheet { /*assombris l'arrière du pop-up */
+#bottom-sheet {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     
     background-color: rgba(0, 0, 0, 0.4);
     animation: 0.5s ease 0s fade-in;
@@ -29,12 +26,13 @@
     background-color: rgb(var(--background-color-0));
     padding: 0 25px;
     border-radius: 20px 20px 0 0;
-    box-shadow: var(--main-window-box-shadow);
+    box-shadow: var(--box-shadow-window);
     filter: none;
     animation: 0.5s ease-in-out 0s slide-in;
     animation-fill-mode: forwards;
     transition: 0.3s;
     transition-timing-function: var(--timing-function-spring-effect);
+    z-index: 99;
 }
 
 #bottom-sheet-box.closing {
@@ -52,10 +50,10 @@
 
 #bottom-sheet-container #close-button {
     position: absolute;
-    top: 10px; /*valeurs négatives pour counter le padding du pop-up-background*/
+    top: 10px;
     right: -10px;
     background: none;
-    line-height: 22px; /* vu que la croix est pas très haute ça faisait que l'origine y se trouvait vla haut par rapport à la croix alors que l'origine x était bonne dcp ça crashait à l'affichage*/
+    line-height: 22px;
     border: none;
     color: rgb(var(--background-color-2));
     font-size: var(--main-font-size-24);
@@ -86,13 +84,16 @@
     cursor: n-resize;
 }
 
-#resize-handle #inner-resize-handle:hover {
+#resize-handle:focus-visible {
+    outline: none;
+}
+
+#resize-handle:hover #inner-resize-handle,
+#resize-handle:focus-visible #inner-resize-handle {
     background-color: rgba(var(--background-color-2), 0.7);
 }
 
-#resize-handle #inner-resize-handle:active,
-#resize-handle:active  #inner-resize-handle
-{
+#resize-handle:active #inner-resize-handle {
     background-color: rgba(var(--background-color-2), 0.5);
 }
 
@@ -117,6 +118,19 @@
     text-align: justify;
 }
 
+#bottom-sheet-content .content {
+    height: 100%;
+}
+
+@media only screen and (max-width: 460px) {
+    #bottom-sheet-box {
+        padding: 0px 15px;
+    }
+    
+    #bottom-sheet-container #close-button {
+        right: 0px;
+    }
+}
 
 @keyframes slide-in {
   from {

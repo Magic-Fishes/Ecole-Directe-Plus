@@ -1,48 +1,12 @@
-
-p.error-message {
-    color: rgb(var(--text-color-error));
-    text-align: center;
-}
-
-p.policy {
-    width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
-    text-align: center;
-    position: absolute;
-    font-size: var(--main-font-size-14);
-    color: rgb(var(--text-color-alt));
-    z-index: -1;
-    left: 50%;
-    bottom: 10px; /* aligne avec la baseline du numéro de version */
-    transform: translateX(-50%);
-}
-
-.policy-link {
-    text-decoration: none;
-    color: rgb(var(--border-color-1));
-    cursor: pointer;
-}
-
-.policy-link:hover {
-    color: rgb(var(--border-color-0));    
-}
-
 .login-logo {
     position: absolute;
     left: 15px;
     top: 15px;
-    width: 70px;
-    height: auto;
+    height: 50px;
+    width: auto;
 }
 
-.login-logo2 {
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    width: 70px;
-    height: auto;
-}
-
-.login-logo2#outside-container {
+.login-logo#outside-container {
     display: block;
 }
 
@@ -69,15 +33,13 @@ p.policy {
 }
 
 .login-box h1 {
+    color: rgb(var(--text-color-main));
     font-size: var(--main-font-size-42);
     font-weight: var(--main-font-weight-extra-bold);
     margin: 3rem 0 3.5rem 0;
 }
 
-.login-box .login-input,
-.login-box #submit-login,
-.login-box .login-option,
-.login-box .error-message {
+.login-box :is(.login-input, #submit-login, .login-option) {
     margin-bottom: 20px;
 }
 
@@ -92,22 +54,47 @@ p.policy {
     gap: 10px;
 }
 
-.login-option #passwordForgottenLink {
+.login-option a#password-forgotten-link {
     text-align: right;
     text-decoration: none;
     color: rgb(var(--text-color-alt));
     cursor: pointer;
 }
+.login-option a#password-forgotten-link:hover {
+    color: rgba(var(--text-color-alt), 0.7);
+}
+
+p.policy {
+    width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
+    text-align: center;
+    position: absolute;
+    font-size: var(--main-font-size-14);
+    color: rgb(var(--text-color-alt));
+    z-index: -1;
+    left: 50%;
+    bottom: 10px; /* aligne avec la baseline du numéro de version */
+    transform: translateX(-50%);
+}
+
+ #login .policy-link {
+    text-decoration: none;
+    color: rgb(var(--border-color-1));
+    font-size: var(--main-font-size-14);
+    cursor: pointer;
+}
+
+#login .policy-link:hover {
+    color: rgb(var(--border-color-0));    
+}
 
 @media only screen and (max-width: 460px) {
-    body {
+    body :has(.login) {
         background-color: rgb(var(--background-color-1));
     }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/
-    .login-logo2#outside-container {
-        display: block;
-        background-color: red;
+    .login-logo#outside-container {
+        display: none;
     }
     
     .login-logo#inside-container {
@@ -149,12 +136,13 @@ p.policy {
         margin: 0 auto 20px auto;
     }
 
-    p.policy {
+    #login p.policy {
         font-size: 0;
     }
 
-    .policy-link {
-        font-size: min(var(--main-font-size-16), 4.5vw);
+    #login .policy-link {
+        /*font-size: min(var(--main-font-size-16), 4.5vw);*/
+        font-size: var(--main-font-size-16);
     }
 }
 

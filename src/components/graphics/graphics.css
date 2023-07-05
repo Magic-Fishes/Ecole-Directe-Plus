@@ -1,0 +1,32 @@
+.fill-text-main {
+    fill: rgb(var(--text-color-main));
+}
+
+.stroke-text-main {
+    stroke: rgb(var(--text-color-main));
+}
+
+.fill-background-0 {
+    fill: rgb(var(--background-color-0));
+}
+
+.stroke-border-1 {
+    stroke: rgb(var(--border-color-1));
+}
+
+.fill-background-header {
+    fill: rgb(var(--background-color-header));
+}
+
+.stroke-border-0 {
+    stroke: rgb(var(--border-color-0));
+}
+
+.fill-border-0 {
+    fill: rgb(var(--border-color-0));
+}
+
+.fill-141338 {
+    fill: #141338;
+}
+

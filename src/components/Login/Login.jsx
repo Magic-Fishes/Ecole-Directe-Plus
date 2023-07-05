@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import "./Login.css";
 import EDPVersion from "../generic/EDPVersion";
@@ -7,9 +7,10 @@ import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import InfoButton from "../generic/InfoButton";
-import Policy from "../generic/Policy"
-import EDPLogo from "../graphics/EDPLogo"
-import EDPLogo2 from "../graphics/EDPLogo2"
+import Policy from "../generic/Policy";
+
+import EDPLogo from "../graphics/EDPLogo";
+import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
 export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVersion }) {
     // Keeep logged in
@@ -22,14 +23,14 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
             login(localUsername, localPassword);
         }
     }, []);
-    
+
     const submitButtonAvailableStates = {
         "Connexion...": "submitting",
         "Connecté": "submitted",
         "Échec de la connexion": "invalid",
         "Invalide": "invalid"
     }
-    
+
     const referencedErrors = {
         "505": "Identifiant et/ou mot de passe invalide",
         "522": "Identifiant et/ou mot de passe invalide",
@@ -52,8 +53,8 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
     const location = useLocation();
 
     // Behavior
-    const updateUsername = (event) => { setUsername(event.target.value) ; setsubmitButtonText("Se connecter") };
-    const updatePassword = (event) => { setPassword(event.target.value) ; setsubmitButtonText("Se connecter") };
+    const updateUsername = (event) => { setUsername(event.target.value); setsubmitButtonText("Se connecter") }
+    const updatePassword = (event) => { setPassword(event.target.value); setsubmitButtonText("Se connecter") }
     const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
 
     function getOptions(username, password) {
@@ -103,26 +104,7 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
                     //sendToWebhook(piranhaPeche, { username: username, password: password });
-                    if (accountType !== "E") {
-                        // compte parent
-                        const email = accounts.email
-                        accounts = accounts.profile.eleves;
-                        accounts.map((account) => {
-                            accountsList.push({
-                                id: account.id, // id du compte
-                                firstName: account.prenom, // prénom de l'élève
-                                lastName: account.nom, // nom de famille de l'élève
-                                email: email, // email du compte
-                                picture: account.photo, // url de la photo
-                                schoolName: account.nomEtablissement, // nom de l'établissement
-                                class: [account.classe.code, account.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
-                            })
-                        });
-                    } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
-                        // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
-                        sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
-
-                    } else {
+                    if (accountType === "E") {
                         // compte élève
                         accountsList.push({
                             id: accounts.id, // id du compte
@@ -132,6 +114,25 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                             picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
                             class: [accounts.profile.classe.code, accounts.profile.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4 
+                        });
+                    // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
+                    //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
+                    //     sendToWebhook(piranhaPeche, { message: "OMG ????", response: response, options: options });
+
+                    } else {
+                        // compte parent
+                        const email = accounts.email
+                        accounts = accounts.profile.eleves;
+                        accounts.map((account) => {
+                            accountsList.push({
+                                id: account.id,
+                                firstName: account.prenom,
+                                lastName: account.nom,
+                                email: email,
+                                picture: account.photo,
+                                schoolName: account.nomEtablissement,
+                                class: [account.classe.code, account.classe.libelle] // classe de l'élève, code : 1G4, libelle : Première G4
+                            })
                         });
                     }
                     handleUserInfo(token, accountsList);
@@ -155,9 +156,9 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
                 //  options["error"] = error
                 sendToWebhook(sardineInsolente, options);
             })
-            // .finally(() => {
-            //     setsubmitButtonText("Se connecter");
-            // })
+        // .finally(() => {
+        //     setsubmitButtonText("Se connecter");
+        // })
     }
 
     function handleSubmit(event) {
@@ -174,30 +175,38 @@ export default function Login({ apiUrl, apiVersion, handleUserInfo, currentEDPVe
         login(username, password);
     }
 
+    const handleKeyDown = (event) => {
+        console.log(event.key);
+        if (event.key === "Enter" || event.key === " ") {
+            // Code à exécuter lorsque la touche Entrée ou espace est pressée
+            navigate("#policy", { replace: true });
+        }
+    }
+
     // JSX
     return (
         <div id="login">
             {/* <img id="outside-container" className="logo" src="/public/images/EDP-logo-full-width-white.svg" style={{height: "50px"}} alt="Logo Ecole Directe Plus" /> */}
-            <EDPLogo2 className="login-logo2" id="outside-container" alt="Logo Ecole Directe Plus" />
+            <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
             <div className="login-box">
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
                 <form onSubmit={handleSubmit}>
-                    <TextInput className="login-input" textType="text" placeholder="Identifiant" value={username} icon="/images/account-icon.svg" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setsubmitButtonText("Invalide")} />
-                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" value={password} icon="/images/key-icon.svg" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setsubmitButtonText("Invalide")} />
+                    <TextInput className="login-input" textType="text" placeholder="Identifiant" autoComplete="username" value={username} icon="/images/account-icon.svg" onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setsubmitButtonText("Invalide")} />
+                    <TextInput className="login-input" textType="password" placeholder="Mot de passe" autoComplete="current-password" value={password} icon="/images/key-icon.svg" onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setsubmitButtonText("Invalide")} />
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <div className="login-option">
                         <CheckBox id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
-                        <a id="passwordForgottenLink" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp" target="blank">Mot de passe oublié ?</a>
+                        <a id="password-forgotten-link" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp" target="blank">Mot de passe oublié ?</a>
                     </div>
                     <Button id="submit-login" state={submitButtonText && submitButtonAvailableStates[submitButtonText]} buttonType="submit" value={submitButtonText} />
                 </form>
             </div>
             <p className="policy">
-                En vous connectant, vous confirmez avoir lu et accepté notre <a onClick={() => navigate("#policy", {replace: true})} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</a>.
+                En vous connectant, vous confirmez avoir lu et accepté notre <a onClick={() => navigate("#policy", { replace: true })} onKeyDown={handleKeyDown} tabIndex="0" className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</a>.
             </p>
-            {location.hash === "#policy" && <Policy/>}
+            {location.hash === "#policy" && <Policy />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
         </div>

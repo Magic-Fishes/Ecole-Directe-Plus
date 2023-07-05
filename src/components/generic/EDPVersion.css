@@ -1,6 +1,6 @@
 
 #edp-version {
-    background: rgba(255, 255, 255, 0);
+    background: rgba(var(--text-color-main), 0);
     font-size: var(--main-font-size-14);
     color: rgb(var(--text-color-alt));
     position: absolute;
@@ -14,6 +14,6 @@
 }
 
 #edp-version:hover, #edp-version:focus, #edp-version:active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(var(--text-color-main), 0.2);
     color: rgb(var(--text-color-main));
 }

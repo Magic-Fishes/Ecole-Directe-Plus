@@ -1,45 +1,36 @@
 
 .info-button {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     position: absolute;
     top: 8px;
     right: 8px;
     cursor: pointer;
-    padding: 3px;
+    margin: 3px;
     border-radius: 5px;
+    outline: none;
 }
 
-.info-button .tooltip {
-    transition-delay: 0s;
+.info-button .info-icon:focus-within {
+    outline: none;
 }
 
-.info-button:hover .info-icon .fill {
-    animation: hover-color-fill 0.25s;
+.info-button .info-icon :is(.fill, .stroke) {
+    transition: 0.2s;
+}
+
+.info-button .info-icon .fill {
+    fill: rgb(var(--border-color-0));
+}
+.info-button .info-icon .stroke {
+    stroke: rgb(var(--border-color-0));
+}
+
+.info-button:hover .info-icon .fill,
+.info-button:focus-within .info-icon .fill {
     fill: rgb(var(--text-color-alt));
-    stroke: none !important;
 }
-
-.info-button:hover .info-icon .stroke {
-    animation: hover-color-stroke 0.25s;
+.info-button:hover .info-icon .stroke,
+.info-button:focus-within .info-icon .stroke {
     stroke: rgb(var(--text-color-alt));
-    fill: none !important;
-}
-
-@keyframes hover-color-fill {
-  0% {
-    fill: #4B48D9;
-  }
-  100% {
-    fill: rgb(var(--text-color-alt));
-  }
-}
-
-@keyframes hover-color-stroke {
-  0% {
-    stroke: #4B48D9;
-  }
-  100% {
-    stroke: rgb(var(--text-color-alt));
-  }
 }

@@ -2,7 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
 :root {
-    /* uru */
+    /* - - - Nouvelles variables - - - */
+    /* - NOMENCLATURE - */
+    /*
+        --attribut_lié-definition-intensité: valeur fonctionnelle;
+    */
+    
     /* - font - */
     --main-font-size-12: 1.2rem;
     --main-font-size-13: 1.3rem;
@@ -22,7 +27,6 @@
 
     /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
-    --transition-time-change-theme: 0.3s;
 
     /* - font - */
     --font-size-12: 1.2rem;
@@ -31,7 +35,7 @@
     --font-size-15: 1.5rem;
     --font-size-16: 1.6rem;
     --font-size-18: 1.8rem;
-    --font-size-20: 2rem; /* window content */
+    --font-size-20: 2.0rem; /* window content */
     --font-size-24: 2.4rem; /* window header */
     --font-size-32: 3.2rem;
     --font-size-36: 3.6rem;
@@ -46,31 +50,6 @@
 }
 
 :root.dark {
-    /* colors */
-    --main-text-color: white;
-    --main-alt-text-color: #AAE;
-    /*--main-color-error: red;*/
-    --main-color-error: #FF4242;
-    --main-color-soft-error: #DF6262;
-    --main-color-soft-background-error: #DF62621D;
-    --main-color-success: lime;
-    --main-color-important: #67F;
-    --main-color-focus: #4B48D940;
-    --main-background-color-0: #181829;
-    --main-background-color-0-5: #323257;
-    --main-background-color-1: #484866;
-    --main-border-color-0: #4B48D9;
-    --main-border-color-1: #6D6AFB;
-    --main-window-header-color: #323257;
-    --main-nav-bar-color: #39378f;
-    --main-window-box-shadow: 0 0 20px black;
-
-    /* - - - Nouvelles variables - - - */
-    /* - NOMENCLATURE - */
-    /*
-        --attribut_lié-definition-intensité: valeur fonctionnelle;
-    */
-    
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
     --text-color-alt: 170, 170, 238;
@@ -78,7 +57,7 @@
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
-    --background-color-focus: 75, 72, 217, 0.4;
+    --background-color-focus: 75, 72, 217, 0.3;
     --background-color-header: 55, 57, 143;
     
     --border-color-0: 75, 72, 217;
@@ -96,10 +75,11 @@
     
     /* error */
     
-    --text-color-soft-error: 223, 98, 98;
+    --text-color-soft-error-main: 223, 200, 200;
+    --text-color-soft-error-alt: 223, 98, 98;
     --border-color-soft-error: 223, 98, 98;
     --background-color-soft-error: 223, 98, 98;
-
+    
     /* warning */
     
     --background-color-warning-0: 140, 45, 54;
@@ -110,34 +90,38 @@
 
     --background-color-success: 0, 255, 56;
     --border-color-success: 98, 207, 122;
+
+    /* - Others - */
+    --text-color-selection: 0, 0, 0;
+    --background-color-selection: 4, 98, 210;
+    /* ajouter couleur scrollbar pour light / dark */
+    --alpha-shadow-color-scroll-shaded-div: 0.5;
 }
 
-
-/* si light mode activé, écrase les variables css */
 :root.light {
-    --main-text-color: #000;
-    --main-alt-text-color: rgb(76, 76, 184);
-    --main-background-color-0: #E4E4FF; /*valeurs totalement random à changer*/
-    --main-background-color-1: #BDBDFF;
-    --main-window-header-color: #a8a8ff;
-    --main-nav-bar-color: #8785ff;
-    --main-window-box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-    --box-shadow-window: 0 0 20px rgba(0, 0, 0, 0.4);
-    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.25);
+    --box-shadow-window: 0 0 15px rgba(0, 0, 0, 0.4);
+    --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
     --text-color-alt: 76, 76, 184;
     
+    /* --background-color-0: 228, 228, 255; */
     --background-color-0: 228, 228, 255;
-    --background-color-1: 185, 185, 255;
-    --background-color-2: 170, 170, 220;
-    --background-color-focus: 75, 72, 217, 0.2;
+    /* --background-color-1: 185, 185, 255; */
+    --background-color-1: 210, 210, 255;
+    /* --background-color-2: 170, 170, 220; */
+    --background-color-2: 180, 180, 220;
+    --background-color-focus: 75, 72, 217, 0.1;
 
     --border-color-0: 109, 106, 251;
     --border-color-1: 75, 72, 217;
 
     /* error */
     
+    --text-color-error: 255, 66, 66;
+    --border-color-error: 255, 66, 66;
+    --background-color-error: 255, 66, 66;
+    
     --text-color-soft-error: 223, 98, 98;
     --border-color-soft-error: 223, 98, 98;
     --background-color-soft-error: 223, 98, 98;
@@ -152,6 +136,29 @@
 
     --background-color-success: 0, 255, 56;
     --border-color-success: 98, 207, 122;
+
+    /* - Others - */
+    --text-color-selection: 255, 255, 255;
+    /* --background-color-selection: 143, 141, 185; */
+    --background-color-selection: 4, 98, 210;
+    --alpha-shadow-color-scroll-shaded-div: 0.3;
+}
+
+:root.balanced * {
+    animation-duration: 0s !important;
+    transition: 0s !important;
+}
+:root.performance * {
+    animation-duration: 0s !important;
+    transition: 0s !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+}
+
+.switching-theme *, .switching-theme ::placeholder {
+    transition: all 0.5s !important;
 }
 
 * {
@@ -170,10 +177,8 @@ body {
     /* min-height: 100%; */
     background-color: rgb(var(--background-color-0));
     color: rgb(var(--text-color-main));
-    font-weight: var(--main-font-weight-regular);
     font-size: var(--main-font-size-16);
-    margin: 0;
-    padding: 0;
+    font-weight: var(--main-font-weight-regular);
 }
 
 body, input, button, textarea {
@@ -181,7 +186,7 @@ body, input, button, textarea {
 }
 
 /* Button admin root.jsx */
-#admin-controls input, #admin-controls button {
+#admin-controls input, #admin-controls button, #admin-controls select {
     padding: 2px;
     color: #00c800;
     font-weight: 600;
@@ -201,6 +206,12 @@ body, input, button, textarea {
 }
 
 /* invalid inputs */
+p.error-message {
+    margin-bottom: 20px;
+    color: rgb(var(--text-color-error));
+    text-align: center;
+}
+
 .invalid {
     border-color: rgb(var(--border-color-soft-error)) !important;
     background-color: rgba(var(--background-color-soft-error), 0.1) !important;
@@ -214,9 +225,31 @@ body, input, button, textarea {
     background-color: rgba(var(--background-color-soft-error), 0.2) !important;
 }
 
-
 ::placeholder {
     color: rgb(var(--text-color-alt));
+}
+
+.invalid ::placeholder, .invalid::placeholder {
+    color: rgba(var(--text-color-soft-error-alt), 0.7);
+}
+
+
+.dark ::-ms-reveal {
+    /* bouton de reveal du mdp (ms edge only) */
+    filter: invert(100%);
+}
+
+::selection {
+    /* color: rgb(var(--text-color-selection)); */
+    background-color: rgba(var(--background-color-selection), 0.4);
+}
+
+:focus-visible {
+    /* outline: none; */
+    /* backdrop-filter: brightness(1.5); */
+    /* padding: 2px; */
+    outline: 2px solid currentcolor;
+    border-radius: 4px;
 }
 
 /* Textarea resizer */

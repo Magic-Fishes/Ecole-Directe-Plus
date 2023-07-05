@@ -2,13 +2,13 @@ import { useState } from "react"
 import "./TextInput.css"
 import WarningMessage from "../WarningMessage"
 
-export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, canAutoComplete, icon, onWarning, className, id }) {
+export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon, onWarning, className="", id="", ...props }) {
     const [warningMessageState, setWarningMessageState] = useState("");
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
     if (!allowedTextTypes.includes(textType)) {
         textType = "text";
     }
-
+    
     function handleInvalid(event) {
         event.preventDefault();
         setWarningMessageState(warningMessage);
@@ -32,7 +32,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     disabled={disabled}
                     required={isRequired}
                     onInvalid={handleInvalid}
-                    autoComplete={canAutoComplete}
+                    {...props}
                 />
                 {icon && <img src={icon} className="input-icon" alt="Icône"/>}
             </div>

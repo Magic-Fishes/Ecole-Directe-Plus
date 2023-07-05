@@ -12,7 +12,7 @@ export default function EDPVersion({ currentEDPVersion }) {
     }
 
     // Pour accessibilité et conformité à WCAG : ça permet de cliquer sur une div avec la touche entrée parce que c'est pas auto avec un onClick
-    const handleEnterPressed = (event) => {
+    const handleKeyDown = (event) => {
         // Si touche pressée est "entrer" ou "espace"
         if (event.keyCode === 13 || event.keyCode === 32) {
             handleClick();
@@ -25,7 +25,7 @@ export default function EDPVersion({ currentEDPVersion }) {
         )
     } else {
         return (
-           <div id="edp-version" onClick={handleClick} tabIndex="0" role="button" onKeyDown={handleEnterPressed}>
+           <div id="edp-version" onClick={handleClick} tabIndex="0" role="button" onKeyDown={handleKeyDown}>
                v{currentEDPVersion}
            </div>
     )

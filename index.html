@@ -2,31 +2,69 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="./images/EDP-logo-black.svg" type="image/png" />
-    <link rel="icon" type="image/svg+xml" href="./images/EDP-logo-black.svg" />
-
-    <!-- Icône pour le thème sombre -->
-    <link rel="icon" type="image/png" href="./images/EDP-logo-white.png" media="(prefers-color-scheme: dark)" />
-    <link rel="icon" type="image/svg+xml" href="./images/EDP-logo-white.svg" media="(prefers-color-scheme: dark)" />
-
-    <!-- Preload des images essentielles -->
-    <!-- <link rel="preload" href="./images/checked-icon.svg" as="image"/>
-    <link rel="preload" href="./images/loading-animation.svg" as="image"/>
-     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.webmanifest">
+    
+    <link rel="icon" href="/public/images/EDP-logo-favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/public/images/EDP-logo-favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
+    
+    <!-- <link rel="prefetch" href="/public/images/checked-icon-light.svg" fetchpriority="low"> -->
+    <!-- <link rel="prefetch" href="/public/images/checked-icon-dark.svg" fetchpriority="low"> -->
+    
+    <!-- <link rel="icon" id="favicon" href="/public/images/EDP-logo-favicon-dark.ico" type="image/x-icon"> -->
+    <!-- <link rel="icon" href="/public/images/copyleft-white.png?v=2" type="image/png"> -->
+    
+    <!-- <link rel="icon" id="favicon" href="/public/images/EDP-logo-favicon-light.ico" type="image/x-icon" > -->
+    <!-- <script>
+        // Détecter le thème du navigateur
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        // fcontion qui met à jour l'icône en fonction du thème
+        
+        function handleThemeChange() {
+            const isDarkMode = window.matchMedia && prefersDarkMode.matches;
+            const iconElement = document.getElementById('favicon');
+            if (isDarkMode) {
+                iconElement.href = '/public/images/EDP-logo-favicon-dark.ico';
+            } else {
+                iconElement.href = '/public/images/EDP-logo-favicon-light.ico';
+            }
+        }
+        handleThemeChange();
+        prefersDarkMode.addEventListener('change', () => {handleThemeChange()});
+    </script> -->
+
+    <!-- embed preview -->
+    <meta name="theme-color" content="#181829">
+    <meta name="description" content="description">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://https://ecole-directe-plus.magicfish.repl.co/">
+    <meta property="og:site_name" content="ecole-directe-plus.fr">
+    <meta property="og:title" content="Ecole Directe Plus">
+    <meta property="og:description" content="Ecole Directe Plus est une version améliorée d'EcoleDirecte, offrant une expérience exceptionnelle avec une interface moderne et intuitive, facilitant l'accès aux résultats scolaires, devoirs, emploi du temps, accompagné d'autres fonctionnalités exclusives, le tout gratuitement.">
+    <meta property="og:image" content="https://i.ibb.co/rM10bSb/Cover-2.png">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Ecole Directe Plus">
+    <meta property="twitter:description" content="Ecole Directe Plus est une version améliorée d'EcoleDirecte, offrant une expérience exceptionnelle avec une interface moderne et intuitive, facilitant l'accès aux résultats scolaires, devoirs, emploi du temps, accompagné d'autres fonctionnalités exclusives, le tout gratuitement.">
+    <meta property="twitter:image" content="https://i.ibb.co/rM10bSb/Cover-2.png">
     <title>Ecole Directe Plus</title>
 </head>
 <body>
-    <div id="ecole-directe-plus"></div>
+    <div id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
     <script>
         // indian script (removes 000webhost watermark)
-        document.addEventListener('DOMContentLoaded', () => {
-            var disclaimer = document.querySelector("img[alt='www.000webhost.com']");
-            if(disclaimer) {
-               disclaimer.remove();
+        const removeWebhostWatermark = () => {
+            const watermark = document.querySelector("img[alt='www.000webhost.com']");
+            if(watermark) {
+               watermark.remove();
             }
-         });
+            document.removeEventListener("DOMContentLoaded", removeWebhostWatermark);
+        }
+        
+        document.addEventListener('DOMContentLoaded', removeWebhostWatermark);
     </script>
 </body>
 </html>

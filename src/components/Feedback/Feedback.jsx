@@ -67,19 +67,19 @@ export default function Feedback({ activeUser }) {
     const fileInputRef = useRef(null);
 
     // update la valeur de la largeur du viewport pour savoir si afficher dropdown ou segmentedcontrol
- 
+
     useEffect(() => {
         function handleResize() {
             setWindowInnerWidth(window.innerWidth)
         }
-        
+
         window.addEventListener("resize", handleResize);
 
-        return () => { 
+        return () => {
             window.removeEventListener("resize", handleResize)
         }
     }, []);
-    
+
     const [isFileInputHovered, setIsFileInputHovered] = useState(false);
     function handleDragOver() {
         setIsFileInputHovered(true);
@@ -92,13 +92,16 @@ export default function Feedback({ activeUser }) {
     // réinitialise le texte dans le submit input quand le contenu du feedback change (pour quand le feedback a déjà été envoyé et que le submit est en "Envoyé")
     useEffect(() => {
         setSubmitButtonText("Envoyer");
-    }, [selectedFeedbackType, subject, feedbackContent, attachedFile, userEmail]);
+    }, [selectedFeedbackType, subject, feedbackContent, attachedFile, isAnonymous, userEmail]);
 
     // Behavior
     const updateSubject = (event) => { setSubject(event.target.value) }
-    const udpateFeedbackContent = (event) => { setFeedbackContent(event.target.value); setFeedbackContentWarningMessage("") }
-    const updateIsAnonymous = (event) => { setIsAnonymous(event.target.checked) };
-    const updateUserEmail = (event) => { setUserEmail(event.target.value) };
+    const udpateFeedbackContent = (event) => {
+        setFeedbackContent(event.target.value);
+        setFeedbackContentWarningMessage("");
+    }
+    const updateIsAnonymous = (event) => { setIsAnonymous(event.target.checked) }
+    const updateUserEmail = (event) => { setUserEmail(event.target.value) }
     const handleFeedbackTypeChange = (feedbackType) => {
         setSelectedFeedbackType(feedbackType);
         if (feedbackTips.includes(feedbackContent) || feedbackContent === "") {
@@ -106,12 +109,24 @@ export default function Feedback({ activeUser }) {
         }
     }
 
+    // Si le content est vide (triggered sur onInvalid de la textarea)
     const handleInvalidFeedbackContent = (event) => {
         event.preventDefault();
-        setFeedbackContentWarningMessage("Veuillez décrire avec exhaustivité votre problème");
+        setFeedbackContentWarningMessage("Veuillez décrire avec exhaustivité votre retour");
         setSubmitButtonText("Invalide");
     }
 
+    // Si le content est plein (donc assigné au onInvalid du form et au onSubmit du form pour détecter si il est invalid dans le cas ou les autres inputs sont bon ou non) Si vous ne comprenez pas contactzer le developpeur que vous n'êtes pas (si vous êtes Saumon_brulé par exemple contactez Truite_séchée)
+    const detectInvalidFeedBackContent = () => {
+        if (feedbackTips.includes(feedbackContent)) {
+            setFeedbackContentWarningMessage("Veuillez décrire avec exhaustivité votre retour");
+            setSubmitButtonText("Invalide");
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     // ----------------
     // https://pipedream.com/workflows
     async function imageToURL(file) {
@@ -121,7 +136,7 @@ export default function Feedback({ activeUser }) {
         // const apiURL = "http://bit.ly/43iQj4d";
 
         // pourquoi ça marche plus 
-        
+
         let body = new FormData();
         body.append('image', file);
 
@@ -181,7 +196,7 @@ export default function Feedback({ activeUser }) {
             setWarningMessage("Votre navigateur ne supporte pas la lecture du presse-papiers");
             throw new Error("Could not write to clipboard.");
         }
-        
+
         try {
             try {
                 const permission = await navigator.permissions.query({
@@ -203,7 +218,7 @@ export default function Feedback({ activeUser }) {
                 const blob = await item.getType(item.types);
 
                 const file = new File([blob], "attached-file.png");
-                
+
                 const event = {
                     target: {
                         files: [file]
@@ -229,7 +244,11 @@ export default function Feedback({ activeUser }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         // empêche le renvoi si déjà envoyé et le contenu n'a pas changé ou formulaire invalide
-        if (submitButtonText === "Envoyé" || submitButtonAvailableStates[submitButtonText] === "Invalid") {
+        if (submitButtonText === "Envoyé" || submitButtonAvailableStates[submitButtonText] === "invalid") {
+            return 0;
+        }
+        // empêche l'envoi si le contenu est un tip non modifié
+        if (detectInvalidFeedBackContent()) {
             return 0;
         }
         setSubmitButtonText("Envoi...");
@@ -237,7 +256,7 @@ export default function Feedback({ activeUser }) {
 
         // Envoyer to webhook
         const date = new Date();
-        const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: "numeric" };
+        const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: "numeric" }
         const readableDate = date.toLocaleDateString('fr-FR', options);
         const colors = {
             "Signaler un bug": "FF0000",
@@ -256,7 +275,7 @@ export default function Feedback({ activeUser }) {
                         {
                             color: parseInt("0x" + color),
                             author: {
-                                name: (activeUser ? activeUser.firstName + " " + activeUser.lastName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "*/*" : (userEmail ? userEmail : (activeUser ? activeUser.email : ""))) + ")",
+                                name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "*/*" : (userEmail ? userEmail : (activeUser ? activeUser.email : ""))) + ")",
                                 icon_url: "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg"
                             },
                             title: "**__" + selectedFeedbackType + "__ : " + subject + "**",
@@ -284,13 +303,13 @@ export default function Feedback({ activeUser }) {
     return (
         <div id="feedback">
             <div id="feedback-box">
-                <form onSubmit={handleSubmit} autoComplete="off">
+                <form onSubmit={handleSubmit} autoComplete="off" onInvalid={detectInvalidFeedBackContent}>
                     <h1>Faire un retour</h1>
-                    {window.innerWidth <= 500 ?
-                    <DropDownMenu id="SC-feedback-type" name="feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} /> :
-                    <SegmentedControl fieldsetName="feedback-type" id="SC-feedback-type" segments={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} />}
-                    <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" onWarning={() => {setSubmitButtonText("Invalide")}}/>
-                    <textarea required={true} className={`text-area ${feedbackContentWarningMessage && "invalid"}`} id="feedback-content" value={feedbackContent} onInvalid={handleInvalidFeedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown)"></textarea>
+                    {windowInnerWidth <= 500 ?
+                        <DropDownMenu id="SC-feedback-type" name="feedback-type" options={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} /> :
+                        <SegmentedControl fieldsetName="feedback-type" id="SC-feedback-type" segments={feedbackTypes} selected={selectedFeedbackType} onChange={handleFeedbackTypeChange} />}
+                    <TextInput id="feedback-subject" isRequired={true} textType="text" placeholder="Objet" value={subject} onChange={updateSubject} warningMessage="Veuillez entrer un objet qui résume votre requête" onWarning={() => { setSubmitButtonText("Invalide") }} />
+                    <textarea required className={`text-area${feedbackContentWarningMessage && " invalid"}`} id="feedback-content" value={feedbackContent} onInvalid={handleInvalidFeedbackContent} onChange={udpateFeedbackContent} placeholder="Décrire le problème (supporte la syntaxe markdown)"></textarea>
                     <WarningMessage condition={feedbackContentWarningMessage} >{feedbackContentWarningMessage}</WarningMessage>
                     <div className="file-input">
                         <div id="drop-zone-container">
@@ -310,7 +329,7 @@ export default function Feedback({ activeUser }) {
                     <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
                     <div id="contact">
                         <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                        <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon="/public/images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => {setSubmitButtonText("Invalide")}}/>
+                        <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon="/public/images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
                     </div>
                     <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}

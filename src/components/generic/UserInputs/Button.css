@@ -34,12 +34,6 @@
 }
 
 /* submitting */
-/* preload */
-.button.submitter::before {
-    content: url('/public/images/loading-animation.svg');
-    display: none;
-}
-
 .button.submitter.submitting::after {
     content: "";
     background-image: url('/public/images/loading-animation.svg');
@@ -54,9 +48,7 @@
 
 /* Invalid */
 .button.submitter.invalid {
-    background-color: rgba(var(--background-color-error), 0.15);
-    background-color: red;
-    border-color: rgb(var(--border-color-error));
+    color: rgb(var(--text-color-soft-error-alt));
 }
 
 .button.submitter.invalid::after {
@@ -75,7 +67,7 @@
 
 .button.submitter.submitted::after {
     content:"";
-    background-image: url('/public/images/checked-icon.svg');
+    background-image: url('/public/images/checked-icon-dark.svg');
     background-size: cover;
     background-repeat: no-repeat;
     display: inline-block;

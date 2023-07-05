@@ -20,6 +20,7 @@
 #feedback-box h1 {
     text-align: center;
     margin-top: 15px;
+    color: rgb(var(--text-color-main));
     margin-bottom: 35px;
 }
 
@@ -58,6 +59,10 @@ textarea#feedback-content:focus {
     background-color: rgba(var(--background-color-focus));
 }
 
+/* textarea#feedback-content.invalid::placeholder{ 
+    color: rgba(var(--text-color-soft-error-alt), 0.7);
+} */
+/*ct juste les espaces entre les sélecteur que css il aimait pas (jsp pk il faut un espace pour les textInputs et pas les textarea mais en sah g un hypothèe mais flemme d'expliquer) et dcp g mis dans app avec l'autre mais juste pour que tu lises c ici quand t'as lu tu supprime*/
 
 /* file input */
 .file-input {
@@ -79,33 +84,23 @@ textarea#feedback-content:focus {
     flex-grow: 1;
     flex-basis: 100%;
     font-size: 20px;
-    user-drag: none;
     -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
+    user-drag: none;
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+    -webkit-touch-callout: none; /* Safari */
 }
 
 .file-input #file-controls Button img {
     vertical-align: middle;
     height: 25px;
-    user-drag: none;
     -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
+    user-drag: none;
     -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */ /* aled */ 
+    -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+    -webkit-touch-callout: none; /* Safari */
 }
 
 input::-webkit-file-upload-button{
@@ -152,6 +147,9 @@ div.drop-zone:focus-within {
 
 #preview-container label {
     color: rgb(var(--text-color-alt));
+}
+.invalid #preview-container label {
+    color: rgb(var(--text-color-soft-error-alt));
 }
 
 #preview-container img#file-preview {

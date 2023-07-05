@@ -1,0 +1,17 @@
+{
+    "dir": "ltr",
+    "lang": "fr",
+    "name": "Ecole Directe Plus",
+    "short_name": "ED+",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#323257",
+    "background_color": "#181829",
+    "icons": [
+        {
+            "src": "/public/images/EDP-Logo-light-manifest.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+  ]
+}

@@ -6,7 +6,7 @@ import "./SegmentedControl.css";
 
 // exemple avec slider :
 // https://codesandbox.io/s/react-segmented-control-krgq5?file=/src/SegmentedControl.jsx
-export default function SegmentedControl({ segments, selected, fieldsetName, onChange, id, className }) {
+export default function SegmentedControl({ segments, selected, fieldsetName, onChange, id="", className="" }) {
 
     const [segmentsState, setSegmentsState] = useState(segments);
 

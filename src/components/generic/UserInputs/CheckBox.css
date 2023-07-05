@@ -23,17 +23,24 @@
 .check-box input[type="checkbox"]:hover:not(:checked), .check-box input[type="checkbox"]:focus-visible {
     border-color: rgb(var(--border-color-1));
 }
+
+.light .check-box input[type="checkbox"]:checked {
+    background-image: url("/public/images/checked-icon-light.svg");
+}
+
+.dark .check-box input[type="checkbox"]:checked {
+    background-image: url("/public/images/checked-icon-dark.svg");
+}
     
 .check-box input[type="checkbox"]:checked {
     background-color: rgba(var(--background-color-focus));
-    background-image: url("/public/images/checked-icon.svg");
-    /* background-image: url("../../../../public/images/checked-icon.svg"); */
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 90%;
+    background-size: 80%;
     transition: 0s;
 }
 
 .check-box label {
+    color: rgb(var(--text-color-main));
     cursor: pointer;
 }

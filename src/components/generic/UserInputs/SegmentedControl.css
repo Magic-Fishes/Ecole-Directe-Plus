@@ -14,8 +14,8 @@ fieldset.segmented-control:focus-within {
     border-color: rgb(var(--border-color-1));
 }
 
-.segmented-control label.option input {
-    position: absolute;
+.segmented-control label.option input:focus {
+    outline: none;
 }
 
 .segmented-control label.option {

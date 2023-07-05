@@ -4,11 +4,13 @@ h3.part-header {
     font-size: var(--main-font-size-20);
     font-weight: var(--main-font-weight-semi-bold);
     list-style-type: none;
+    color: rgb(var(--text-color-main));
 }
 
 #legal-notice h4.sub-header {
     font-weight: var(--main-font-weight-semi-bold);
     margin-bottom: 10px;
+    color: rgb(var(--text-color-main));
 }
 
 li.legal-content {
@@ -28,6 +30,7 @@ a.external-link:hover {
 
 
 li#copyleft-container {
+    color: rgb(var(--text-color-main));
     text-align: center;
     list-style: none;
     /* font-style: italic; */

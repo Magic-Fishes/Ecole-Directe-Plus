@@ -1,4 +1,5 @@
 #pop-up-content li {
+    color: rgb(var(--text-color-main));
     margin-bottom: 8px;
 }
 
@@ -7,4 +8,4 @@
     background-color: rgb(var(--background-color-2));
     border-color: rgb(var(--background-color-2));
     border-style: solid;
-};
+}

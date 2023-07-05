@@ -14,6 +14,11 @@ Enjoy the most-requested features and a ton of small but game changer improvemen
 - Upcoming assignments
 - And so much more...
 
+## Getting started
+- Visit the [Ecole Directe Plus](https://ecole-directe-plus.magicfish.repl.co/login) website
+- Use your EcoleDirecte credentials to login
+- That's it, enjoy!
+
 ## FAQ
 - A release date?<br>When it's ready.
 - My data?<br>We don't and will never collect any data about you.

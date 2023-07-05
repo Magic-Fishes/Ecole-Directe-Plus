@@ -17,3 +17,6 @@ replit.nix
 *.mjs
 tsconfig.json
 vite.config.js
+
+# other
+build_history

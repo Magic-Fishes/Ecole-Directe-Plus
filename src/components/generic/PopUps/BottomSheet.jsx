@@ -1,39 +1,86 @@
-import { useState, useRef, useEffect } from "react"
+
+import { useState, useRef, useEffect } from "react";
 
 import ScrollShadedDiv from "../ScrollShadedDiv";
 
-import "./BottomSheet.css"
+import "./BottomSheet.css";
 
-let grabPosition = null;
-let oldClosestResizingBreakpointIdx = 0; // temp
-
-export default function BottomSheet({ heading, content, onClose }) {
+export default function BottomSheet({ heading, children, onClose }) {
 
     const closingCooldown = 500; // milliseconds
-    const resizingBreakpoints = [0, 60, 95]; // chaque "cran" de redimensionnement (croissant)
-    const [targetSheetHeight, setTargetSheetHeight] = useState(resizingBreakpoints[resizingBreakpoints.length - 1]); // taille par défaut
-    const [resizingSpeed, setResizingSpeed] = useState(0);
+    const resizingBreakpoints = [0, 60, 95]; // ascendant order
+    // const resizingBreakpoints = [0, 15, 30, 45, 60, 75,  95]; // ascendant order
+    // const resizingBreakpoints = [0, 10, 20, 30, 40, 50,  60, 70, 80, 90, 100]; // ascendant order
+    const [targetSheetHeight, setTargetSheetHeight] = useState(resizingBreakpoints[resizingBreakpoints.length - 1]);
     const [isResizing, setIsResizing] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const [oldHeight, setOldHeight] = useState(resizingBreakpoints[resizingBreakpoints.length - 1]);
-    const [currentHeight, setCurrentHeight] = useState(resizingBreakpoints[resizingBreakpoints.length - 1]);
+    const [isOpen, setIsOpen] = useState(false)
+    const [oldHeight, setOldHeight] = useState(targetSheetHeight);
+    const [currentHeight, setCurrentHeight] = useState(targetSheetHeight);
+    
+    const targetSheetHeightVar = useRef(false);
 
     const bottomSheetRef = useRef(null);
+    const resizeHandlerRef = useRef(null);
+    const contentRef = useRef(null);
+
+    const grabPosition = useRef(null);
+    const oldClosestResizingBreakpointIdx = useRef(0);
+    const firstYPosition = useRef(0);
+    const maxDistanceFromPointer = useRef(999);
+    const oldEventClientY = useRef(null);
 
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
-        document.body.style.overflow = "hidden"; /* empêche le scrolling */
+        targetSheetHeightVar.current = targetSheetHeight;
+    }, [targetSheetHeight]);
+    
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            console.log("event.key:", event.key);
+            if (event.key === "Escape") {
+                handleClose();
+            } else {
+                if (event.target !== contentRef.current &&  !contentRef.current.contains(event.target)) {
+                    if (event.key === "Home") {
+                        resizeBottomSheetHeight(resizingBreakpoints[resizingBreakpoints.length-1]);                    
+                    } else if (event.key === "End") {
+                        resizeBottomSheetHeight(resizingBreakpoints[1]);                        
+                    } else {
+                        let nextResizingBreakpointIdx = resizingBreakpoints.indexOf(targetSheetHeightVar.current);
+                        if (nextResizingBreakpointIdx > 0) {
+                            // si targetSheetHeight est à une valeur existante (= n'est pas en train d'être redimensionnée)
+                            nextResizingBreakpointIdx += (event.key === "ArrowUp") * 1 + (event.key === "ArrowDown") * -1 + (event.key === "PageUp") * 2 + (event.key === "PageDown") * -2;
+                            if (nextResizingBreakpointIdx <= 0) {
+                                nextResizingBreakpointIdx = 1;
+                            } else if (nextResizingBreakpointIdx >= resizingBreakpoints.length) {
+                                nextResizingBreakpointIdx = resizingBreakpoints.length-1;
+                            }
+                            resizeBottomSheetHeight(resizingBreakpoints[nextResizingBreakpointIdx]);
+                        }                    
+                    }
+                }                
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = "hidden";
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.body.style.overflow = "auto";
-        };
+        }
     }, []);
 
+    
     useEffect(() => {
-        // stick au cran le plus proche
-        if (!isResizing) {
-            fitToClosestResizingBreakpoint();
+        const FAST_RESIZE_TRIGGERING_SHIFT = 8; // décalage avec la souris pour que ce soit considéré comme un clic et donc déclencher un fast resize
+        if (!isResizing && !isClosing) {
+            if (maxDistanceFromPointer.current < FAST_RESIZE_TRIGGERING_SHIFT) {
+                fastResize();
+            } else {
+                fitToClosestResizingBreakpoint();
+            }
+            maxDistanceFromPointer.current = 999;
         }
     }, [isResizing])
 
@@ -43,63 +90,47 @@ export default function BottomSheet({ heading, content, onClose }) {
         setTimeout(onClose, closingCooldown);
     }
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            handleClose();
-        }
-    }
+    // enlève le tabIndex des éléments hors de la BottomSheet pour empêcher la navigation clavier
+    useEffect(() => {
+        const elements = document.body.querySelectorAll("*");
+        const defaultTabIndex = [];
+        elements.forEach((element) => {
+            if (element !== bottomSheetRef.current && !bottomSheetRef.current.contains(element) && element.tabIndex !== -1) {
+                defaultTabIndex.push(element.tabIndex);
+                // tout tabIndex négatif empêche le focus, on utilise le -2 pour reconnaître les items dont le focus est désactivé
+                element.tabIndex = -2;
+            }
+        });
 
+        return () => {
+            // rétablit le focus
+            elements.forEach((element, index) => {
+                if (element.tabIndex === -2) {
+                    console.log(index, element);
+                    element.tabIndex = defaultTabIndex[index];
+                }
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log("isOpen", isOpen)
+    }, [isOpen])
+    
     // resizing
     function fitToClosestResizingBreakpoint() {
-        // // init
-        // let closestResizingBreakpointIdx = 0;
-        // let minDistance = Math.abs(targetSheetHeight - resizingBreakpoints[0]);
-        // const speed = oldHeight - targetSheetHeight;
-        // let speedHeight = targetSheetHeight + speed * -16
-
-        // // limitation de vitesse (sinon elle se fait flasher ou quoi là ???)
-        // // la vitesse en Tmax alcoolisée jsp g pas la ref pas c pas grave moi nn plus
-        // if (speedHeight > 100) {
-        //     speedHeight = 100
-        // }
-
-        // // dcp ça ce serait en prenant en compte only la position (dcp il faut changer speedHeight par TSH (trop sw@g l'acronyme))
-        // for (let i = 1; i < resizingBreakpoints.length; i++) {
-        //     let dist = Math.abs(speedHeight - resizingBreakpoints[i]);
-        //     if (dist < minDistance) {
-        //         minDistance = dist;
-        //         closestResizingBreakpointIdx = i;
-        //     }
-        // }
-
-        // // et là copy paste en changeant les distances par des vitesses
-        // // bah fais le tamer
-        // // => History :
-        // // 06/06/2023 00:04 ; 11300
-        // // j'ai pas envie de casser ton code
-        // // t'es sur pc crtl + / tt s'il vous plait 
-        // const height = resizingBreakpoints[closestResizingBreakpointIdx];
-        // // ferme si pas assez haut
-        // if (height === 0) {
-        //     handleClose();
-        // }
-        // setCurrentHeight(height);
-        // setOldHeight(height);
-        // resizeBottomSheetHeight(height);
-        // init
-        
         let closestResizingBreakpointIdx = 0;
-        const speed = (oldHeight - targetSheetHeight)*-10;
+        const speed = (oldHeight - targetSheetHeight) * -10;
         const SPEED_FLOOR = 10;
         if (Math.abs(speed) >= SPEED_FLOOR) {
             // Ajuste selon la vitesse
-            closestResizingBreakpointIdx = oldClosestResizingBreakpointIdx;
-            const speedSign = speed/Math.abs(speed);
+            closestResizingBreakpointIdx = oldClosestResizingBreakpointIdx.current;
+            const speedSign = speed / Math.abs(speed);
             if (closestResizingBreakpointIdx > 0) {
                 if (speedSign < 0) {
                     closestResizingBreakpointIdx -= 1;
                 } else {
-                    if (closestResizingBreakpointIdx < resizingBreakpoints.length-1) {
+                    if (closestResizingBreakpointIdx < resizingBreakpoints.length - 1) {
                         closestResizingBreakpointIdx += 1;
                     }
                 }
@@ -109,19 +140,18 @@ export default function BottomSheet({ heading, content, onClose }) {
                 }
             }
 
-            // distance tier je commenterais après
             const TRIGGERING_SHIFT = 5;
-            const diff = oldClosestResizingBreakpointIdx - closestResizingBreakpointIdx;
+            const diff = oldClosestResizingBreakpointIdx.current - closestResizingBreakpointIdx;
             if (diff > 0 && targetSheetHeight < resizingBreakpoints[closestResizingBreakpointIdx] + TRIGGERING_SHIFT && closestResizingBreakpointIdx > 0) {
                 closestResizingBreakpointIdx -= 1;
-            } else if (diff < 0 && targetSheetHeight > resizingBreakpoints[closestResizingBreakpointIdx] - TRIGGERING_SHIFT && closestResizingBreakpointIdx < resizingBreakpoints.length-1) {
+            } else if (diff < 0 && targetSheetHeight > resizingBreakpoints[closestResizingBreakpointIdx] - TRIGGERING_SHIFT && closestResizingBreakpointIdx < resizingBreakpoints.length - 1) {
                 closestResizingBreakpointIdx += 1;
             }
         } else {
             // Ajuste selon la distance
             closestResizingBreakpointIdx = 0;
             let minDistance = Math.abs(targetSheetHeight - resizingBreakpoints[0]);
-    
+
             for (let i = 1; i < resizingBreakpoints.length; i++) {
                 let dist = Math.abs(targetSheetHeight - resizingBreakpoints[i]);
                 if (dist < minDistance) {
@@ -130,15 +160,8 @@ export default function BottomSheet({ heading, content, onClose }) {
                 }
             }
         }
-            
-        // Mais moi je trouve la BS de discord pertinent :
-        // Sauf pour la supprimer, 
-        // ca resize au dessus quand la position de ton doigt est au dessus de la
-        // position de départ et ca resize en dessous quand c l'opposé
-        // je peux pas test mais ça semble similaire à apple tier
-        // genre tu peux pas fermer instant à part situ fait un turbo geste vers le bas
-        // OUI
-        
+
+
         const height = resizingBreakpoints[closestResizingBreakpointIdx];
         // ferme si pas assez haut
         if (height === 0) {
@@ -154,12 +177,20 @@ export default function BottomSheet({ heading, content, onClose }) {
     }
 
     const handleMouseResize = (event) => {
-        const newHeight = (window.innerHeight - event.clientY + grabPosition) / window.innerHeight * 100;
+        const newHeight = (window.innerHeight - event.clientY + grabPosition.current) / window.innerHeight * 100;
+        let distance = Math.abs(firstYPosition.current - event.clientY);
+        if (distance > maxDistanceFromPointer.current) {
+            maxDistanceFromPointer.current = distance;
+        }
         resizeBottomSheetHeight(newHeight);
     }
 
     const handleTouchResize = (event) => {
-        const newHeight = (window.innerHeight - event.touches[0].clientY + grabPosition) / window.innerHeight * 100;
+        const newHeight = (window.innerHeight - event.touches[0].clientY + grabPosition.current) / window.innerHeight * 100;
+        let distance = Math.abs(firstYPosition.current - event.touches[0].clientY);
+        if (distance > maxDistanceFromPointer.current) {
+            maxDistanceFromPointer.current = distance;
+        }
         resizeBottomSheetHeight(newHeight);
     }
 
@@ -179,22 +210,29 @@ export default function BottomSheet({ heading, content, onClose }) {
         window.removeEventListener('touchmove', handleTouchResize);
         setTimeout(setIsResizing, 0, false); // timeout pour éviter fermeture si le curseur est hors de la bottomSheet après resize
         bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche
+        oldEventClientY.current = undefined;
+        contentRef.current.style.overflow = "";
         window.removeEventListener('touchend', handleTouchEnd);
     }
 
     const handleGrab = (event) => {
-        event.preventDefault(); // empêche la sélection de text
+        if (!bottomSheetRef.current) {
+            return 0;
+        }
+        event.preventDefault(); // empêche la sélection de texte
         const topPosition = bottomSheetRef.current.getBoundingClientRect().top;
-        grabPosition = (event.touches ? (window.innerHeight - topPosition - (window.innerHeight - event.touches[0].clientY)) : (window.innerHeight - topPosition - (window.innerHeight - event.clientY)));
+        grabPosition.current = (event.touches ? (window.innerHeight - topPosition - (window.innerHeight - event.touches[0].clientY)) : (window.innerHeight - topPosition - (window.innerHeight - event.clientY)));
+        firstYPosition.current = (event.touches ? event.touches[0].clientY : event.clientY);
+        maxDistanceFromPointer.current = 0;
 
         // Calcul du resizing breakpoint actuel
         let minDistance = Math.abs(targetSheetHeight - resizingBreakpoints[0]);
-    
+
         for (let i = 1; i < resizingBreakpoints.length; i++) {
             let dist = Math.abs(targetSheetHeight - resizingBreakpoints[i]);
             if (dist < minDistance) {
                 minDistance = dist;
-                oldClosestResizingBreakpointIdx = i;
+                oldClosestResizingBreakpointIdx.current = i;
             }
         }
 
@@ -208,17 +246,57 @@ export default function BottomSheet({ heading, content, onClose }) {
         window.addEventListener('touchend', handleTouchEnd);
     }
 
+    const fastResize = () => {
+        let i;
+        const length = resizingBreakpoints.length;
+        // détermine l'extrême bas différent de 0
+        for (i = 0; i < length; i++) {
+            if (resizingBreakpoints[i] > 0) {
+                break;
+            }
+        }
+        if (oldClosestResizingBreakpointIdx.current === i) {
+            resizeBottomSheetHeight(resizingBreakpoints[length - 1]);
+        } else {
+            resizeBottomSheetHeight(resizingBreakpoints[i]);
+        }
+    }
+
+    // resizing avec le scroll
+    const handleContentGrab = (event) => {
+        oldEventClientY.current = event.touches[0].clientY;
+        document.addEventListener("touchmove", handleTouchMove);
+    }
+
+    const handleTouchMove = (event) => {
+        const scrollHeight = contentRef.current.scrollHeight; // hauteur du contenu réel
+        const bottomSheetMaxHeight = resizingBreakpoints[resizingBreakpoints.length - 1] * window.innerHeight * 0.01;
+        const contentMaxHeight = bottomSheetMaxHeight - resizeHandlerRef.current.getBoundingClientRect().height; // hauteur de la div de contenu
+
+        const divHeight = contentRef.current.offsetHeight;
+        const scrollTop = contentRef.current.scrollTop;
+        const scrollBottom = (scrollHeight - divHeight) - scrollTop;
+
+        const canResizeTop = (oldEventClientY.current < event.touches[0].clientY && scrollTop === 0);
+        const canResizeBottom = (oldEventClientY.current > event.touches[0].clientY && scrollBottom === 0);
+        if ((scrollHeight <= contentMaxHeight) || canResizeTop || canResizeBottom) {
+            contentRef.current.style.overflow = "hidden"; // désactive le scrolling pendant le resizing
+            handleGrab(event);
+        }
+        document.removeEventListener("touchmove", handleTouchMove);
+    }
+
     return (
         <div className={isClosing ? "closing" : ""} id="bottom-sheet" onClick={(!isResizing ? handleClose : undefined)}>
             <div ref={bottomSheetRef} style={{ height: targetSheetHeight.toString() + "%" }} className={isClosing ? "closing" : ""} id="bottom-sheet-box" onClick={(event) => event.stopPropagation()}>
                 <div id="bottom-sheet-container">
-                    <div id="resize-handle" onMouseDown={handleGrab} onTouchStart={handleGrab} >
+                    <div id="resize-handle" tabIndex="0" ref={resizeHandlerRef} onMouseDown={handleGrab} onTouchStart={handleGrab}>
                         <div id="inner-resize-handle" ></div>
                         <button id="close-button" onClick={handleClose}>✕</button>
                         <h1 id="bottom-sheet-heading">{heading}</h1>
                     </div>
-                    <ScrollShadedDiv id="bottom-sheet-content">
-                        {content}
+                    <ScrollShadedDiv setRef={(ref) => { contentRef.current = ref.current }} id="bottom-sheet-content" onTouchStart={handleContentGrab} onTouchEnd={document.removeEventListener("touchmove", handleTouchMove)}>
+                        {children}
                     </ScrollShadedDiv>
                 </div>
             </div>

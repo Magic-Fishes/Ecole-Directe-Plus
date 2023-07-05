@@ -1,10 +1,8 @@
 
 #pop-up {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    
     background-color: rgba(0, 0, 0, 0.4);
     animation: 0.3s ease 0s fade-in;
     animation-fill-mode: forwards;
@@ -26,7 +24,9 @@
     border-radius: 20px;
     width: 100%;
     max-width: 400px;
-    box-shadow: var(--main-window-box-shadow);
+    max-height: 100%;
+    overflow-y: auto;
+    box-shadow: var(--box-shadow-window);
     filter: none;
     /* cubic-bezier(.31,1.83,.53,.63) */
     animation: 0.3s ease-out 0s blur-in;
@@ -40,10 +40,12 @@
 
 #pop-up-background.warning {
     background-color: rgb(var(--background-color-warning-1));
+    box-shadow: rgb(var(--background-color-warning-1))
 }
 
 #pop-up-background.error {
     background-color: rgb(var(--background-color-error));
+    box-shadow: rgb(var(--background-color-error))
 }
 
 #pop-up-background.closing {
@@ -95,11 +97,13 @@
 
 #pop-up h2 {
     font-size: var(--main-font-size-20);
+    color: rgb(var(--text-color-main));
     margin-right: 20px; /*laisse de l'espace à la croix*/
 }
 
 #pop-up h4 {
-    font-size: 14px;
+    font-size: var(--font-size-14);
+    color: rgb(var(--text-color-main));
     font-weight: var(--main-font-weight-regular);
 }
 
@@ -112,6 +116,7 @@
     margin: 0;
     font-weight: var(--main-font-weight-extra-bold);
     font-size: var(--main-font-size-18);
+    color: rgb(var(--text-color-main));
     background-color: rgb(var(--background-color-0));
     /* opacity: .90; */
     box-shadow: 0 0 8px rgb(var(--background-color-0));
@@ -120,18 +125,18 @@
 #pop-up-background.warning #pop-up-content h3 {
     /* background-color: rgb(var(--background-color-warning-0)); */
     background-color: rgb(var(--background-color-warning-0));
-    box-shadow: 0 0 8px rgb(var(--background-color-warning-0));
+    /* box-shadow: 0 0 8px rgb(var(--background-color-warning-0)); */
     box-shadow: 0 0 10px rgba(var(--background-color-error), 0.5),
                 0 0 10px rgba(var(--background-color-0), 0.5);
 }
 
 #pop-up-background #pop-up-content {
-    position: relative; /* pour le sticky header */
+    position: relative;
     margin: 0 auto;
     background-color: rgb(var(--background-color-0));
     border-radius: 20px;
     padding: 15px;
-    padding-top: 0; /* remplacé par le padding du h3 */
+    padding-top: 0;
     max-height: 300px;
     overflow-y: auto;
     list-style-position: inside;
@@ -141,21 +146,39 @@
     background-color: rgb(var(--background-color-warning-0));
 }
 
+@media only screen and (max-width: 400px) {
+    #pop-up-background {
+        padding-inline: 15px;
+    }
+    
+    #pop-up-header {
+        margin-inline: 10px;
+    }
+    
+    #pop-up-background .close-button {
+        right: 0;
+    }
+}
+
 @keyframes fade-in {
     from {
         background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
     }
     to {
         background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
     }
 }
 
 @keyframes fade-out {
     from {
         background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(14px);
     }
     to {
         background-color: rgba(0, 0, 0, 0);
+        backdrop-filter: blur(0px);
     }
 }
 

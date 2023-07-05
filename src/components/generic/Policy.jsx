@@ -27,7 +27,7 @@ export default function Policy() {
         <li className="legal-content">Le responsable du traitement de ces données est l’établissement scolaire qui a procédé à leur saisie. Le responsable de leur sécurisation sur notre plateforme EcoleDirecte en qualité de sous-traitant est : Société Aplim ZA Les Côtes 73190 Saint Jeoire Prieuré, rgpd@aplim.fr.</li>
         <li className="legal-content">En application des articles 15, 16, 17 et 18 du Règlement du Parlement européen et du Conseil du 27 avril 2016, et de la Loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés, vous disposez d'un droit d'accès, de rectification, d'effacement des données collectées, et d'un droit de limitation du traitement des données personnelles que vous pouvez exercer auprès du responsable du traitement (à savoir l’établissement scolaire responsable du traitement) qui nous répercutera votre demande à fins d’exécution sur le site EcoleDirecte.</li>
         <li className="legal-content">En toute hypothèse, il vous est possible d'introduire une réclamation auprès de la Commission Nationale de l'Informatique et des Libertés si vous vous estimez lésé par le traitement de vos données personnelles par l’établissement scolaire.</li>
-        <li className="legal-content">L'activation de l'amélioration de l'accessibilité des personnes déficientes visuelles utilise la police de caractères <a className="external-link" href="https://luciole-vision.com/">Luciole</a>. Cette police de caractères est distribuée gratuitement sous Licence publique <a className="external-link" href="https://creativecommons.org/licenses/by/4.0/legalcode.fr"> Creative Commons Attribution 4.0 International </a> : Luciole © Laurent Bourcellier & Jonathan Perez</li>
+        <li className="legal-content">L'activation de l'amélioration de l'accessibilité des personnes déficientes visuelles utilise la police de caractères <a className="external-link" href="https://luciole-vision.com/">Luciole</a>. Cette police de caractères est distribuée gratuitement sous Licence publique <a className="external-link" href="https://creativecommons.org/licenses/by/4.0/legalcode.fr">Creative Commons Attribution 4.0 International</a> : Luciole © Laurent Bourcellier & Jonathan Perez</li>
         <hr />
         <h3 className="part-header" >Conditions d'utilisations</h3>
         <h4 className="sub-header">1. Général</h4>
@@ -42,7 +42,7 @@ export default function Policy() {
         <li className="legal-content">La page de retour permet aux utilisateurs de signaler des dysfonctionnements, faire des suggestions, partager un retour d'expérience ou un avis général. Cette page nous permet d'améliorer notre service, le bénéficiaire étant l'utilisateur final. En soumettant le formulaire de retour, vous acceptez de partager une partie de vos informations avec Ecole Directe Plus.</li>
         <hr />
         <h3 className="part-header">Crédits</h3>
-        <li className="legal-content">Ecole Directe Plus est l'initiative du groupuscule Magic-Fish :<br />
+        <li className="legal-content">Ecole Directe Plus est l'initiative du groupuscule Magic-Fish :<br /><br />
             Développeurs principaux :<br />
             - {leadDeveloppers[firstLeadDeveloppersDisplayedIdx]}<br />
             - {leadDeveloppers[leadDeveloppers.length-firstLeadDeveloppersDisplayedIdx-1]}<br /><br />
@@ -50,26 +50,28 @@ export default function Policy() {
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - EcoleDirecte Neptunium<br />
-            - IMGBB<br />
+            - ImgBB<br />
             - Discord Webhooks<br />
+            - Pipedream<br />
+            - Netlify<br />
             - 000webhost<br /><br />
 
             Dépendances :<br />
-            - React ; react-router-dom<br />
+            - React<br />
+            - React Router<br />
             - Floating UI<br />
             - content-loader<br /><br />
 
             Testeurs de pré-lancement :<br />
             - Thon Humide<br />
-            - XxSigmaChadxX<br /><br />
+            - Jackp0t<br />
+            - Nickro_01290<br /><br />
 
             Remerciements spéciaux :<br />
-            - Thon Humide<br />
-            - Jésus Christ<br />
+            - Cthyllax<br />
             - Internet<br />
-            - ChatGPT<br />
         </li>
-        <li className="legal-content">Curieux et motivé ? Rejoignez nous : signalez des bugs, partagez vos retours utilisateurs, et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
+        <li className="legal-content">Curieux et motivé ? Rejoignez nous et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
         <hr />
         <h3 className="part-header">License (MIT)</h3>
         <li className="legal-content">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -86,6 +88,6 @@ export default function Policy() {
     }
 
     return (
-        <BottomSheet heading="Mentions légales" content={legalNotice} onClose={handleClose} />
+        <BottomSheet heading="Mentions légales" onClose={handleClose} >{legalNotice}</BottomSheet>
     )
 }
