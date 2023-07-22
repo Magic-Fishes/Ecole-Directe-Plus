@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./Button.css";
 
-export default function Button({ buttonType, value, onClick, state="", className="", id="" }) {
+export default function Button({ buttonType="button", children, value, onClick, state="", className="", id="" }) {
     const allowedButtonTypes = ["button", "submit"];
     if (!allowedButtonTypes.includes(buttonType)) {
         buttonType = "button";

@@ -41,6 +41,7 @@ export default function BottomSheet({ heading, children, onClose }) {
                 handleClose();
             } else {
                 if (event.target !== contentRef.current &&  !contentRef.current.contains(event.target)) {
+                    // event.preventDefault();
                     if (event.key === "Home") {
                         resizeBottomSheetHeight(resizingBreakpoints[resizingBreakpoints.length-1]);                    
                     } else if (event.key === "End") {
@@ -106,7 +107,6 @@ export default function BottomSheet({ heading, children, onClose }) {
             // rétablit le focus
             elements.forEach((element, index) => {
                 if (element.tabIndex === -2) {
-                    console.log(index, element);
                     element.tabIndex = defaultTabIndex[index];
                 }
             });

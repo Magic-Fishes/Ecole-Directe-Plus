@@ -38,7 +38,6 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
             // rétablit le focus
             elements.forEach((element, index) => {
                 if (element.tabIndex === -2) {
-                    console.log(index, element);
                     element.tabIndex = defaultTabIndex[index];
                 }
             });

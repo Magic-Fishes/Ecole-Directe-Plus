@@ -1,6 +1,10 @@
 
 import { useState, useEffect, useRef } from "react";
 
+import DropDownArrow from "../../graphics/DropDownArrow";
+import SelectedArrow from "../../graphics/SelectedArrow";
+import NotSelectedOption from "../../graphics/NotSelectedOption";
+
 import "./DropDownMenu.css";
 
 export default function DropDownMenu({ name, options, selected, onChange, id="", className="" }) {
@@ -15,7 +19,7 @@ export default function DropDownMenu({ name, options, selected, onChange, id="",
         if (!selected) {
             onChange(optionsState[0]);
         }
-    });
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -69,13 +73,13 @@ export default function DropDownMenu({ name, options, selected, onChange, id="",
             <div className="main-container">
                 <button type="button" className="selected" onClick={handleClick} ref={dropDownMenuRef}>
                     <span id="selected-option-value">{selected}</span>
-                    <img src="/public/images/drop-down-arrow.svg" alt="Icône flèche" />
+                    <DropDownArrow/>
                 </button>
                 <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className="options-container">
                     {optionsState.map((option) => <div key={option} name={name} className="option-container" >
-                        <hr />
+                        <hr /> 
                         <label htmlFor={option} onKeyDown={handleKeyDown} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
-                            {option === selected ? <img src="/public/images/selected-arrow.svg" className="selected-arrow" /> : <img src="/public/images/not-selected-option.svg" className="not-selected-option" />}
+                            {option === selected ? <SelectedArrow className="selected-arrow" /> : <NotSelectedOption className="not-selected-option" />}
                             <input type="radio" id={option} name={name} value={option} onClick={onChoose} defaultChecked={option === selected} />
                             <span className="option-content">{option}</span>
                         </label>

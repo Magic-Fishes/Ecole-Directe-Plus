@@ -79,7 +79,7 @@ export default function Policy() {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li id="copyleft-container">Copyleft <img src="/images/copyleft-white.png" id="copyleft" alt="Copyleft" /> {new Date().getFullYear()} Ecole Directe Plus</li>
+        <li id="copyleft-container">Copyleft <img src="/images/copyleft-white.png" id="copyleft" alt="Copyleft" width="18" height="18" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 
 

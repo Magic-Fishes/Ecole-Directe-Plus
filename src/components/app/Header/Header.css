@@ -1,0 +1,466 @@
+
+/* - - - header - - - */
+
+#app {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+}
+
+.header-container {
+    position: sticky;
+    width: 100%;
+    height: inherit;
+    max-height: 100px;
+    max-width: 2400px;
+    display: block;
+    margin: 0 auto;
+}
+
+.header-menu {
+    display: flex;
+    height: inherit;
+    flex-flow: row wrap; /* TODO: à switch en nowrap après les tests */
+    /* overflow: auto; /* TODO: à enlever quand nowrap (mm si en vrai ça gêne pas) */
+    justify-content: space-between;
+    background-color: rgb(var(--background-color-header));
+    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 1); */
+    box-shadow: var(--box-shadow-window);
+}
+
+/* - - - EDP Logo - - - */
+
+.header-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0.125;
+    flex-grow: 0.2;
+    flex-grow: 0.25;
+    width: 100px;
+    
+    /* background-color: red; */
+}
+
+.header-logo-container #header-logo {
+    height: 60px;
+    width: auto;
+    transition: 0.2s;
+}
+.header-logo-container #header-logo:hover {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+}
+
+/* - - - navbar - - - */
+
+.navbar {
+    height: inherit;
+    flex-grow: 1;
+}
+
+.navbar ul.header-button-list {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    list-style-type: none;
+    height: inherit;
+}
+
+.navbar .header-button-list li.header-button-container {
+    flex-grow: 1;
+    max-width: 150px;
+    flex-basis: 150px;
+    height: inherit;
+}
+
+li#dashboard.header-button-container { order: 1; }
+li#grades.header-button-container { order: 2; }
+li#homeworks.header-button-container { order: 3; }
+li#timetable.header-button-container { order: 4; }
+li#messaging.header-button-container { order: 5; }
+
+
+/* - - - account-selection - - - */
+
+.account-selection {
+    height: inherit;
+    width: 400px;
+    /* padding: 5px; */
+}
+
+.account-selection .drop-down-menu  {
+    height: 55px; /* temp tier */
+    max-width: 100%;
+}
+.account-selection .button  {
+    width: 100%;
+}
+
+/* - - - main content - - - */
+
+main.content {
+    height: 100%;
+    overflow: auto;
+}
+
+@media only screen and (max-width: 969px) {
+    .header-logo-container {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 869px) {
+    .header-container {
+        order: 1;
+    } 
+
+    .header-menu {
+        border-radius: 20px 20px 0 0;
+        overflow: hidden;
+    }
+
+    li#dashboard.header-button-container {
+        order: 4;
+    }
+
+    .header-button-title {
+        display: none;
+    }
+
+    .account-selection {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .header-container {
+        max-height: 70px;
+    }
+    .header-button .icon-container svg {
+        height: 45px
+    }
+    .header-button .notifications {
+        left: 35px;
+    }
+}
+
+/* header.header-menu {
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: #39378F;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 1);
+    transition: 0.1s;
+}
+
+nav {
+    flex-grow: 0.7;
+}
+
+.logo {
+    flex-grow: 0.2;
+}
+
+ul.pages {
+    list-style: none;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+ul.pages li.page {
+    top: 0;
+    margin: 10px 5px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.1s ease-out;
+} 
+
+ul.pages li.page:hover {
+    background-color: #32327b;
+/*     transform: scale(1.1); 
+}
+
+ul.pages li.page:active {
+    background-color: #282867;
+/*     transform: scale(0.9); 
+}
+
+ul.pages li.page a {
+    text-decoration: none;
+    color: white;
+}
+
+ul.pages li.page a:visited {
+    color: white;
+}/*ca en vrain je suis pas sur que ca soit utile ; probable mais pour être safe
+
+ul.pages li.page span {
+    display: block;
+    text-align: center;
+    overflow-wrap: none;
+}
+
+.icon {
+/*     background-color: lime; 
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 8px;
+    height: 50px;
+    max-width: 50px;
+}
+
+
+/* -- profile section -- 
+
+.account-selection {
+    display: block;
+    position: relative; /* pour le positionnement absolute de la drop-down-list
+    background-color: #39378f;
+    max-width: 400px;
+    margin: 10px 10px 10px 0;
+    box-shadow: 0 0 20px black;
+    border-radius: 20px;
+    color: white;
+    transition: 0.1s;
+}
+
+.account-selection:not(:focus-within):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton
+    background-color: #4c4aa5;
+}
+
+.account-selection:focus-within {
+    border-radius: 20px 20px 0 0;
+}
+
+.account-selection:focus-within .drop-down-list {
+    display: block; 
+    height: auto; /* c'est pour essayer d'animer le déroulement de la drop-down-list mais sad ça marche pas
+}
+
+.active-account {
+    
+    display: flex;
+    margin: 5px;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.1s;
+    overflow: auto;
+    border: solid 2px rgb(var(--border-color-0));
+}
+
+address.account-infos {
+    color: -webkit-linear-gradient(#eee, #333);;
+    padding: 5px;
+    font-size: 1rem;
+    font-style: initial; /* ça enleve italic
+    line-height: 1.25rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-flex;
+    flex-flow: column nowrap;
+}
+
+address.account-infos .name-first-name {
+    font-weight: 600;
+}
+
+address.account-infos sup {
+    display: inline;
+    font-size: 0.6rem;
+}
+
+
+.drop-down-list {
+    display: none;
+    height: 0px;
+    overflow: auto;
+    position: absolute;
+    left: 0;
+    background-color: #39378f;
+    width: 100%;
+    border-radius: 0 0 20px 20px;
+/*     box-shadow: 0 0 20px black; */ /*ça donne un truc immonde vu que ça override le active profile aled
+    box-shadow: 0 20px 20px black; /* ça cancel le pb mais du coup il y a une énorme ombre en bas et c'est également immonde
+    font-size: 1.5rem;
+    transition: height 0.5s ease;
+    border: solid 2px rgb(var(--border-color-1));
+    border-top: none;
+}
+
+.drop-down-list li {
+    border-top: 3px solid #272664;
+}
+
+.drop-down-list li.account:hover {
+    cursor: pointer;
+    background-color: #272664;
+}
+
+.account-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.account {
+    display: flex;
+    padding: 5px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-picture-container {
+    background-color: #FFFF0011;
+    border-radius: 15px;
+}
+
+.profile-picture {
+    object-fit: cover; /*pour crop l'image au lieu de resize
+    height: 90px;
+    width: 90px;
+    border-radius: 15px;
+    mix-blend-mode: darker;
+}
+
+.profile-picture {
+}
+
+.switch-arrow {
+    height: 40px;
+    margin: 0 10px;
+}
+
+#settings {
+    display: flex;
+    flex-flow: row wrap;
+/*     align-items: center; 
+    justify-content: space-between;
+}
+
+#settings a {
+    box-sizing: border-box;
+    text-decoration: none;
+    font-size: 0.8rem;
+    margin: 5px 2.5px 2.5px 5px;
+    padding: 10px;
+    color: white;
+    background-color: #141338;
+    border-radius: 10px;
+    flex-basis: calc(50% - 10px); /* 50% - 2*marginX 
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.1s;
+}
+/*culture de mangue c'est ici 
+#settings a:nth-child(2) {margin: 5px 5px 2.5px 2.5px;}
+#settings a:nth-child(3) {margin: 2.5px 2.5px 5px 5px;}
+#settings a:nth-child(4) {margin: 2.5px 5px 5px 2.5px;}
+
+#settings a:hover {
+    background-color: #242348;
+}
+
+#settings img {
+    display: inline-block;
+    margin-right: 10px;
+    height: 12px;
+    width: auto;
+}
+
+#logout-button {
+    font-size: 1.2rem;
+    font-weight: 900;
+    padding: 15px 20px;
+    width: 100%;
+    background-color: #643763;
+    color: red;
+    border: none;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+#logout-button:hover {
+    background-color: #742753;
+}
+
+#logout-button img {
+    width: 35px;
+    height: auto;
+}
+
+
+/* -- media queries -- 
+
+@media only screen and (max-width: 1016px) {
+    img.logo {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 926px) {
+    header.header-menu {
+        position: fixed;
+        top: auto;
+        left: auto;
+        bottom: 0;
+        border-radius: 20px 20px 0 0;
+    } 
+
+    nav {
+        width: 100%;
+    }
+
+    ul.pages {
+        height: 90px;
+        padding: 0 5px;
+        justify-content: space-evenly;
+    }
+
+    ul.pages li.page {
+        padding: 7px;
+        margin: 0;
+        min-width: 0;
+    }
+    
+    ul.pages li.page span {
+        display: none;
+    }
+    
+    .icon {
+        margin-bottom: 0;
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .account-selection {
+        display: none;
+    }
+
+    .windows-container {
+        max-height: calc(100vh - 90px);
+        overflow-y: scroll;
+    }
+
+} */

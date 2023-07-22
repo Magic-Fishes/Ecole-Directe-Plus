@@ -11,6 +11,10 @@
     padding: 10px;
     border-radius: 10px;
     width: max-content;
-    max-width: 250px;
+    max-width: min(250px, calc(100% - 20px));
     cursor: help;
+}
+
+svg.floating-arrow {
+    fill: rgba(var(--background-color-2), 0.6);
 }

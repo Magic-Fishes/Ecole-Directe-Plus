@@ -35,7 +35,7 @@
     </script> -->
 
     <!-- embed preview -->
-    <meta name="theme-color" content="#181829">
+    <!-- <meta name="theme-color" content="#181829"> -->
     <meta name="description" content="description">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -52,19 +52,76 @@
     <title>Ecole Directe Plus</title>
 </head>
 <body>
+    <div id="loading-start" >
+        <style>
+            body {
+                background-color: rgb(24, 24, 41);
+            }
+            
+            #loading-start {
+                position: absolute;
+                inset: 0;
+                background-color: rgba(24, 24, 41, 1);
+                z-index: 999;
+            }
+            #loading-start.fade-out {
+                animation: blur-fade-out 0.4s ease-in-out forwards;
+            }
+            
+            svg#loading-logo {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                height: 80px;
+                animation: shine 1.5s ease-in-out infinite alternate;
+            }
+
+            #loading-start.fade-out svg#loading-logo {
+                animation: fade-out 0.25s ease-out forwards;
+            }
+            
+            @keyframes shine {
+                from {
+                    -webkit-filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4));
+                    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4));
+                }
+                to {
+                    -webkit-filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+                    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+                }
+            }
+            @keyframes fade-out {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+            @keyframes blur-fade-out {
+                0% {
+                    background-color: rgba(24, 24, 41, 1);
+                    backdrop-filter: blur(8px);
+                }
+                100% {
+                    background-color: rgba(24, 24, 41, 0);                
+                    backdrop-filter: blur(0px);
+                }
+            }
+        </style>
+        <svg id="loading-logo" viewBox="0 0 91 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M89.9985 24V0H31.9985C21.3319 0.833333 0 7.3 0 38.5C5.50049 26.5 17.499 24 21.4985 24H89.9985Z" fill="url(#paint0_linear_740_7)"/>
+            <path d="M90.0017 55V31.5H27.0016C-9.00047 31.5 -9.00055 86 27.0016 86H90.0017V62.5H27.0016C22.0011 62.5 22.0013 55 27.0016 55H90.0017Z" fill="url(#paint0_linear_740_7)"/>
+            <defs>
+                <linearGradient id="paint0_linear_740_7" x1="0" y1="18.5785" x2="86.6385" y2="18.5785" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#B4C9FF"/>
+                    <stop offset="1" stop-color="#C1B7FF"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
-    <script>
-        // indian script (removes 000webhost watermark)
-        const removeWebhostWatermark = () => {
-            const watermark = document.querySelector("img[alt='www.000webhost.com']");
-            if(watermark) {
-               watermark.remove();
-            }
-            document.removeEventListener("DOMContentLoaded", removeWebhostWatermark);
-        }
-        
-        document.addEventListener('DOMContentLoaded', removeWebhostWatermark);
-    </script>
 </body>
 </html>

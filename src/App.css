@@ -92,9 +92,12 @@
     --border-color-success: 98, 207, 122;
 
     /* - Others - */
-    --text-color-selection: 0, 0, 0;
     --background-color-selection: 4, 98, 210;
-    /* ajouter couleur scrollbar pour light / dark */
+    
+    --box-shadow-color-scrollbar-track: 199, 199, 255, 0.133;
+    --box-shadow-color-scrollbar-thumb: 118, 118, 162;
+    --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
+    
     --alpha-shadow-color-scroll-shaded-div: 0.5;
 }
 
@@ -112,6 +115,7 @@
     /* --background-color-2: 170, 170, 220; */
     --background-color-2: 180, 180, 220;
     --background-color-focus: 75, 72, 217, 0.1;
+    --background-color-header: 187, 187, 255;
 
     --border-color-0: 109, 106, 251;
     --border-color-1: 75, 72, 217;
@@ -122,9 +126,10 @@
     --border-color-error: 255, 66, 66;
     --background-color-error: 255, 66, 66;
     
-    --text-color-soft-error: 223, 98, 98;
-    --border-color-soft-error: 223, 98, 98;
-    --background-color-soft-error: 223, 98, 98;
+    --text-color-soft-error-main: 83, 55, 55;
+    --text-color-soft-error-alt: 200, 80, 80;
+    --border-color-soft-error: 200, 80, 80;
+    --background-color-soft-error: 200, 80, 80;
 
     /* warning */
     
@@ -134,21 +139,28 @@
     
     /* success */
 
-    --background-color-success: 0, 255, 56;
-    --border-color-success: 98, 207, 122;
+    --background-color-success: 0, 200, 25;
+    --border-color-success: 78, 187, 100;
 
     /* - Others - */
-    --text-color-selection: 255, 255, 255;
-    /* --background-color-selection: 143, 141, 185; */
     --background-color-selection: 4, 98, 210;
+    
+    --box-shadow-color-scrollbar-track: 10, 10, 55, 0.13;
+    --box-shadow-color-scrollbar-thumb: 136, 136, 184;
+    --box-shadow-color-scrollbar-thumb-on-hover: 116, 116, 164;
+    
     --alpha-shadow-color-scroll-shaded-div: 0.3;
 }
 
-:root.balanced * {
+:root.balanced *,
+:root.balanced ::placeholder,
+:root.balanced ::after {
     animation-duration: 0s !important;
     transition: 0s !important;
 }
-:root.performance * {
+:root.performance *,
+:root.performance ::placeholder,
+:root.performance ::after {
     animation-duration: 0s !important;
     transition: 0s !important;
     border-radius: 0 !important;
@@ -157,17 +169,23 @@
     backdrop-filter: none !important;
 }
 
-.switching-theme *, .switching-theme ::placeholder {
+/* .switching-theme :is(*, ::placeholder, ::-webkit-scrollbar, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb), */
+.switching-theme *,
+.switching-theme ::-webkit-scrollbar,
+.switching-theme ::-webkit-scrollbar-track,
+.switching-theme ::-webkit-scrollbar-thumb,
+.switching-theme ::placeholder,
+.switching-theme ::after {
     transition: all 0.5s !important;
 }
 
-* {
+*, ::after {
+    color: rgb(var(--text-color-main));
     box-sizing: border-box;
     appearance: none;
     padding: 0;
     margin: 0;
 }
-
 
 html {
     height: 100%;
@@ -176,7 +194,7 @@ html {
 body {
     /* min-height: 100%; */
     background-color: rgb(var(--background-color-0));
-    color: rgb(var(--text-color-main));
+    /* color: rgb(var(--text-color-main)); */
     font-size: var(--main-font-size-16);
     font-weight: var(--main-font-weight-regular);
 }
@@ -233,6 +251,10 @@ p.error-message {
     color: rgba(var(--text-color-soft-error-alt), 0.7);
 }
 
+.invalid::after {
+    color: rgba(var(--text-color-soft-error-alt), 0.7);
+}
+
 
 .dark ::-ms-reveal {
     /* bouton de reveal du mdp (ms edge only) */
@@ -240,7 +262,6 @@ p.error-message {
 }
 
 ::selection {
-    /* color: rgb(var(--text-color-selection)); */
     background-color: rgba(var(--background-color-selection), 0.4);
 }
 
@@ -273,19 +294,22 @@ p.error-message {
     /* background-color: transparent; */
     border-radius: 30px;
     margin: 10px;
-    box-shadow: inset 0 0 10px 10px #c7c7ff22;
+    /* box-shadow: inset 0 0 10px 10px #c7c7ff22; */
+    box-shadow: inset 0 0 10px 10px rgba(var(--box-shadow-color-scrollbar-track));
     border: solid 5px transparent;
+    transition: 0.5s;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
     /* background-color: #7676a2; */
-    box-shadow: inset 0 0 10px 10px #7676a2;
+    box-shadow: inset 0 0 10px 10px rgb(var(--box-shadow-color-scrollbar-thumb));
     border: solid 5px transparent;
     border-radius: 30px;
+    transition: 0.5s;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    box-shadow: inset 0 0 10px 10px #8f8db9;
+    box-shadow: inset 0 0 10px 10px rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
 }

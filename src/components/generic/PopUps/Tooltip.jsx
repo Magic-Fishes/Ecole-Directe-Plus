@@ -1,5 +1,5 @@
 
-import { useState, createContext, useContext, forwardRef, isValidElement, cloneElement } from "react";
+import { useState, useRef, createContext, useContext, forwardRef, isValidElement, cloneElement } from "react";
 import {
     useFloating,
     useHover,
@@ -10,6 +10,8 @@ import {
     useInteractions,
     useTransitionStyles,
     autoUpdate,
+    arrow,
+    FloatingArrow,
     offset,
     flip,
     shift,
@@ -22,14 +24,15 @@ import {
 import './Tooltip.css'
 
 
-
 function useTooltip({ ...options }) {
     // available options:
     // isOpen (bool) ; placement (str: "top" ; "right" ; ...) ; animationDuration (int: ms) ; delay (int: ms) ;
     // restDuration (int: ms) ; restFallbackDuration (int: ms) ; disableSafePolygon (bool)
     // disableHover (bool) ; disableFocus (bool) ; disableClick (bool) ; disableDismiss (bool)
+    
+    const [isOpen, setIsOpen] = useState(options.isOpen ?? false); 
 
-    const [isOpen, setIsOpen] = useState(options.isOpen ?? false);
+    const arrowRef = useRef(null);
 
     // - - Floating properties - -
     const data = useFloating({
@@ -42,7 +45,7 @@ function useTooltip({ ...options }) {
         //     return cleanup;
         // },
         placement: (options.placement ?? "top"),
-        middleware: [offset(10), flip(), shift({ padding: 10 })],
+        middleware: [offset(10), flip(), shift({ padding: 10 }), arrow({ element: arrowRef })],
     });
 
     const context = data.context;
@@ -100,6 +103,7 @@ function useTooltip({ ...options }) {
     return ({
         isOpen,
         setIsOpen,
+        arrowRef,
         ...interactions,
         ...transition,
         ...data
@@ -184,6 +188,7 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
                 }}
                 {...context.getFloatingProps(props)}
             >
+                <FloatingArrow className="floating-arrow" ref={context.arrowRef} context={context} tipRadius={2} width={16} height={8} />
                 {children}
             </div>
         </FloatingPortal>

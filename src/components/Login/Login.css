@@ -1,7 +1,7 @@
 .login-logo {
     position: absolute;
-    left: 15px;
-    top: 15px;
+    left: 20px;
+    top: 20px;
     height: 50px;
     width: auto;
 }
@@ -26,7 +26,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid rgb(var(--border-color-0));
+    /* border: 1px solid rgb(var(--border-color-0)); */
     border-radius: 20px;
     background-color: rgb(var(--background-color-1));
     box-shadow: var(--box-shadow-window);
@@ -89,7 +89,7 @@ p.policy {
 
 @media only screen and (max-width: 460px) {
     body :has(.login) {
-        background-color: rgb(var(--background-color-1));
+        background-color: rgb(var(--background-color-1)) !important;
     }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/

@@ -45,7 +45,7 @@ input.text-input:disabled {
     cursor: not-allowed;
 }
 
-img.input-icon {
+.input-container svg {
     height: 100%;
     width: auto;
     max-width: 50px;

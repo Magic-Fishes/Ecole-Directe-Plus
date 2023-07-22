@@ -16,6 +16,7 @@
     gap: 40px;
 }
 
+
 #museum .asset {
     padding: 0 20px 20px 20px;
     height: 300px;
@@ -29,10 +30,11 @@
     transition: 0.2s;
 }
 
-
 #museum .asset:hover {
     box-shadow: var(--box-shadow-window);
     background-color: rgb(var(--background-color-2), 0.6);
+    flex-grow: 1.2;
+    /* height: 600px; */
 }
 
 #museum .asset:active {

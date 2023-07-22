@@ -7,6 +7,9 @@ import Button from "../generic/UserInputs/Button";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import WarningMessage from "../generic/WarningMessage";
 
+import PasteIconWhite from "../graphics/PasteIconWhite"
+import AtWhite from "../graphics/AtWhite"
+
 import "./Feedback.css";
 
 
@@ -16,8 +19,6 @@ export default function Feedback({ activeUser }) {
         `### Description du problème :
 
 ### Comportement attendu :
-
-### Comportement réel :
 
 ### Étapes pour reproduire :
 
@@ -322,14 +323,14 @@ export default function Feedback({ activeUser }) {
                             </div>
                         </div>
                         <div id="file-controls">
-                            <Button type="button" value={<img src="/public/images/paste-icon-white.svg" />} onClick={handlePaste} />
+                            <Button type="button" value={<PasteIconWhite id="paste-button-icon" />} onClick={handlePaste} />
                             {attachedFile && <Button type="button" value="✕" onClick={handleImageRemoving} />}
                         </div>
                     </div>
                     <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
                     <div id="contact">
                         <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                        <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon="/public/images/at-white.svg" value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
+                        <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
                     </div>
                     <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
                     {errorMessage && <p className="error-message">{errorMessage}</p>}

@@ -3,12 +3,23 @@ import { useState, useEffect, useRef } from "react";
 
 import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
-import AccountIcon from "../graphics/inline/AccountIcon";
-import GradesIcon from "../graphics/inline/GradesIcon";
-import AtWhite from "../graphics/inline/AtWhite";
-import CheckedIcon from "../graphics/inline/CheckedIcon";
-import ConfusedCanardman from "../graphics/inline/ConfusedCanardman";
-import DashboardIcon from "../graphics/inline/DashboardIcon";
+import AccountIcon from "../graphics/AccountIcon";
+import GradesIcon from "../graphics/GradesIcon";
+import AtWhite from "../graphics/AtWhite";
+import CheckedIcon from "../graphics/CheckedIcon";
+import ConfusedCanardman from "../graphics/ConfusedCanardman";
+import DashboardIcon from "../graphics/DashboardIcon";
+import FeedbackIcon from "../graphics/FeedbackIcon";
+import HomeworksIcon from "../graphics/HomeworksIcon";
+import InfoIcon from "../graphics/InfoIcon";
+import KeyIcon from "../graphics/KeyIcon";
+import LoadingAnimation from "../graphics/LoadingAnimation";
+import MessagingIcon from "../graphics/MessagingIcon";
+import PlanningIcon from "../graphics/PlanningIcon";
+import SelectedArrow from "../graphics/SelectedArrow";
+import SettingsIcon from "../graphics/SettingsIcon";
+import SwitchArrows from "../graphics/SwitchArrows";
+import TimetableIcon from "../graphics/TimetableIcon";
 
 
 import "./Museum.css";
@@ -51,6 +62,50 @@ export default function Museum() {
                 <div className="asset">
                     <h3>DashboardIcon</h3>
                     <DashboardIcon />
+                </div>
+                <div className="asset">
+                    <h3>HomeworksIcon</h3>
+                    <HomeworksIcon />
+                </div>
+                <div className="asset">
+                    <h3>InfoIcon</h3>
+                    <InfoIcon />
+                </div>
+                <div className="asset">
+                    <h3>FeedbackIcon</h3>
+                    <FeedbackIcon />
+                </div>
+                <div className="asset">
+                    <h3>KeyIcon</h3>
+                    <KeyIcon />
+                </div>
+                <div className="asset">
+                    <h3>LoadingAnimation</h3>
+                    <LoadingAnimation />
+                </div>
+                <div className="asset">
+                    <h3>MessagingIcon</h3>
+                    <MessagingIcon />
+                </div>
+                <div className="asset">
+                    <h3>PlanningIcon</h3>
+                    <PlanningIcon />
+                </div>
+                <div className="asset">
+                    <h3>SelectedArrow</h3>
+                    <SelectedArrow />
+                </div>
+                <div className="asset">
+                    <h3>SettingsIcon</h3>
+                    <SettingsIcon />
+                </div>
+                <div className="asset">
+                    <h3>SwitchArrows</h3>
+                    <SwitchArrows />
+                </div>
+                <div className="asset">
+                    <h3>TimetableIcon</h3>
+                    <TimetableIcon />
                 </div>
             </div>
         </div>

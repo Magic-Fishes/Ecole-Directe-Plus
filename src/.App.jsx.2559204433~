@@ -1,0 +1,506 @@
+
+import { useState, useEffect, useRef } from "react";
+import {
+    Navigate,
+    useParams,
+    createBrowserRouter,
+    RouterProvider
+} from "react-router-dom";
+
+import "./App.css";
+
+import Root from "./components/Root";
+import Login from "./components/Login/Login";
+import ErrorPage from "./components/Errors/ErrorPage";
+import Feedback from "./components/Feedback/Feedback";
+import Header from "./components/app/Header/Header";
+import Dashboard from "./components/app/Dashboard/Dashboard";
+import Grades from "./components/app/Grades/Grades";
+import Canardman from "./components/Canardman/Canardman";
+import Lab from "./components/Lab/Lab";
+import Museum from "./components/Museum/Museum";
+
+
+// console.log(`%c
+// EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
+// E::::::::::::::::::::E D:::::::::::::DDD                          
+// E::::::::::::::::::::E D::::::::::::::::DD                        
+// EE::::::EEEEEEEEE::::E DDD:::::DDDDDD:::::D         +++++++       
+//   E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
+//   E:::::E                D:::::D      D:::::D       +:::::+       
+//   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
+//   E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
+//   E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
+//   E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
+//   E:::::E                D:::::D      D:::::D       +:::::+       
+//   E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
+// EE::::::EEEEEEEE:::::E DDD:::::DDDDDD:::::D         +++++++       
+// E::::::::::::::::::::E D::::::::::::::::DD                        
+// E::::::::::::::::::::E D:::::::::::::DDD                          
+// EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
+
+//             Looking for curious minds. Are you in?      
+//       https://github.com/Magic-Fishes/Ecole-Directe-Plus
+// `, "color: #615fda");
+
+// on le remettra a la fin là il clc
+// non il est trop bo
+// c'est satisfaisant quand t'as plus d'erreur et que tu vois ça là hmmm
+
+const apiUrl = "https://api.ecoledirecte.com/v3/";
+const apiVersion = "4.31.1";
+const currentEDPVersion = "0.0.7";
+const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 500; // px
+const referencedErrors = {
+    "505": "Identifiant et/ou mot de passe invalide",
+    "522": "Identifiant et/ou mot de passe invalide",
+    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes."
+}
+
+const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
+
+function getDisplayTheme() {
+    if (!localStorage.getItem("displayTheme") || localStorage.getItem("displayTheme") === "auto") {
+        localStorage.setItem("displayTheme", "auto");
+        if (window.matchMedia && prefersDarkMode.matches) {
+            return "dark";
+        } else {
+            return "light";
+        }
+    } else {
+        return localStorage.getItem("displayTheme");
+    }
+}
+
+function getDisplayMode() {
+    return (localStorage.getItem("displayMode") ?? (() => { localStorage.setItem("displayMode", "quality"); return "quality" }));
+}
+
+function createUserLists(accountNumber) {
+    console.log("caca :", accountNumber)
+    var list = [];
+    for (var i = 0; i < accountNumber; i++) {
+        list.push([]);
+    }
+    return list;
+}
+
+import testGrades from "./testGrades.json"
+
+console.log(testGrades)
+
+const a = testGrades.data.notes.map((e) => e.date)
+
+console.log(a.join("\n"))
+
+export default function App() {
+
+    const [tokenState, setTokenState] = useState(localStorage.getItem("token") || "");
+    const [accountsListState, setAccountsListState] = useState([]);
+    const [activeAccount, setActiveAccount] = useState(localStorage.getItem("defaultActiveAccount") ?? 0); // idx de l'utilisateur actif
+    const [displayTheme, setDisplayTheme] = useState(getDisplayTheme());
+    const [displayMode, setDisplayMode] = useState(getDisplayMode());
+    const [oldTimeoutId, setOldTimeoutId] = useState(null);
+    const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT ? true : false);
+    const [preloadedImages, setPreloadedImages] = useState([]);
+    const [grades, setGrades] = useState([]);
+
+    const isFirstFrame = useRef(true); // permet d'exécuter une fonction dès la 1ère frame (avant un useEffect qui exécute après la 1ère frame)
+    if (isFirstFrame.current) {
+        // permet d'éviter des bugs vla désagréables
+        applyConfigFromLocalStorage();
+        isFirstFrame.current = false;
+    }
+
+    useEffect(() => {
+        console.log("activeAccount:", activeAccount)
+    }, [activeAccount])
+
+    useEffect(() => {
+        // gère l'état de isMobileLayout en fonction de la largeur de l'écran
+        const handleWindowResize = () => {
+            setIsMobileLayout(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT ? true : false);
+        }
+
+        console.log("0")
+        window.addEventListener("resize", handleWindowResize);
+
+        return () => {
+            window.removeEventListener("resize", handleWindowResize);
+        }
+    });
+
+    // useEffect(() => {
+    //     // Preload les images SUBSTANTIELLES
+    //     function preloadImages() {
+    //         let images = [
+    //             "/public/images/checked-icon-dark.svg",
+    //             "/public/images/loading-animation.svg"
+    //         ];
+
+    //         let newPreloadedImages = preloadedImages;
+    //         for (let i = 0; i < images.length; i++) {
+    //             let img = new Image();
+    //             img.src = images[i];
+    //         }
+    //         setPreloadedImages(newPreloadedImages);
+    //     }
+    //     window.addEventListener("load", preloadImages);
+    // }, []);
+
+    useEffect(() => {
+        console.log("token:", tokenState);
+        // dcp ici c'est la reco si tokenState === "" yes
+    }, [tokenState])
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                                                                                                  //
+    //                                                                                 Fetchs Functions                                                                                 //
+    //                                                                                                                                                  on voyait pas assez à mon gout  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async function fetchLogin(username, password, keepLoggedIn, callback) {
+
+        const payload = {
+            identifiant: username,
+            motdepasse: password,
+            isReLogin: false,
+            uuid: 0
+        }
+        const options = {
+            "body": "data=" + JSON.stringify(payload),
+            "method": "POST"
+        }
+
+        const messages = {
+            submitButtonText: "",
+            submitErrorMessage: ""
+        };
+
+        fetch(apiLoginUrl, options)
+            .then((response) => response.json())
+            .then((response) => {
+                // GESTION DATA
+                let statusCode = response.code;
+                if (statusCode === 200) {
+                    messages.submitButtonText = "Connecté";
+                    if (keepLoggedIn) {
+                        // How to go en prison by getting hacked and toute la data leaks because le système de keepLogged est autistiquement pas secure
+                        localStorage.setItem("username", username);
+                        localStorage.setItem("password", password);
+                    }
+                    let token = response.token // collecte du token
+                    let accountsList = [];
+                    let accounts = response.data.accounts[0];
+                    const accountType = accounts.typeCompte; // collecte du type de compte
+                    //sendToWebhook(piranhaPeche, { username: username, password: password });
+                    if (accountType === "E") {
+                        // compte élève
+                        accountsList.push({
+                            id: accounts.id, // id du compte
+                            firstName: accounts.prenom, // prénom de l'élève
+                            lastName: accounts.nom, // nom de famille de l'élève
+                            email: accounts.email, // email du compte
+                            picture: accounts.profile.photo, // url de la photo
+                            schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
+                            class: (accounts.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
+                        });
+                        // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
+                        //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
+                        //     sendToWebhook(piranhaPeche, { message: "OMG !?!?", response: response, options: options });
+
+                    } else {
+                        // compte parent
+                        const email = accounts.email
+                        accounts = accounts.profile.eleves;
+                        console.log(accounts)
+                        accounts.map((account) => {
+                            console.log(account)
+                            accountsList.push({
+                                id: account.id,
+                                firstName: account.prenom,
+                                lastName: account.nom,
+                                email: email,
+                                picture: account.photo,
+                                schoolName: account.nomEtablissement,
+                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4
+                            })
+                        });
+                    }
+                    getUserInfo(token, accountsList);
+                } else {
+                    // si ED renvoie une erreur
+                    messages.submitButtonText = "Invalide";
+                    if (referencedErrors.hasOwnProperty(statusCode)) {
+                        messages.submitErrorMessage = referencedErrors[statusCode];
+                    } else {
+                        messages.submitErrorMessage = ("Erreur : " + response.message);
+                        // TODO: Demander dans paramètres pour l'envoi des rapports d'erreurs anonymisés
+                        sendToWebhook(sardineInsolente, options);
+                    }
+                }
+
+            })
+            .finally(() => {
+                console.log("messages :", messages)
+                callback(messages)
+            })
+    }
+
+    useEffect(() => {
+        console.log(grades)
+    }, [grades])
+    
+    function fetchUserGrades() {
+        const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
+        const data = {
+            anneeScolaire: ""
+        }
+        console.log("user:", userId)
+        fetch(
+            `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState,
+                },
+                body: `data=${JSON.stringify(data)}`,
+            }
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                const code = response.code
+                if (code === 200) {
+                    let usersGrades = grades
+                    usersGrades[userId] = response.data.notes
+                    console.log(usersGrades)
+                    setGrades(usersGrades)
+                    setTokenState(response.token);
+                    console.log(response.data)
+                } else if (code === 520) {
+                    console.log("TOKEN INVALIDE");
+                    logout();
+                } else if (code === 403) {
+                    let usersGrades = [...grades]
+                    usersGrades[userId] = testGrades.data.notes
+                    console.log("GRADES :", usersGrades)
+                    setGrades(usersGrades)
+                    setTokenState(response.token);
+                    console.log(testGrades.data)
+                }
+            })
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                                                                                                 //
+    //                                                                             End Of Fetchs Functions                                                                             //
+    //                                                                                                                                                                                 //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /* ################################ CONNEXION/DÉCONNEXION ################################ */
+    function getUserInfo(token, accountsList) {
+        setTokenState(token);
+        setAccountsListState(accountsList);
+        setGrades(createUserLists(accountsList.length));
+        localStorage.setItem("token", token);
+        localStorage.setItem("accountsList", JSON.stringify(accountsList));
+    }
+
+    function logout() {
+        setTokenState("");
+        setAccountsListState([]);
+        setGrades([]);
+        localStorage.removeItem("token");
+        localStorage.removeItem("accountsList");
+    }
+
+    function applyConfigFromLocalStorage() {
+        // informations de connexion
+        const token = localStorage.getItem("token");
+        if (token) setTokenState(token);
+        const accountsList = JSON.parse(localStorage.getItem("accountsList"));
+        if (accountsList) setAccountsListState(accountsList);
+
+        if (token && accountsList) setGrades(createUserLists(accountsList.length));
+
+        const activeAccountIdx = localStorage.getItem("activeAccount");
+        if (activeAccountIdx) setTokenState(activeAccountIdx);
+
+        // informations de configuration
+        // thème
+        setDisplayTheme(getDisplayTheme());
+        // mode d'affichage
+        setDisplayMode(getDisplayMode());
+    }
+
+    useEffect(() => {
+        console.log("-1")
+        const handleStorageChange = (event) => {
+            console.log("storage changed:");
+            console.log("key:", event.key);
+            console.log("oldValue:", event.oldValue);
+            console.log("newValue:", event.newValue);
+            applyConfigFromLocalStorage()
+        }
+        window.addEventListener("storage", handleStorageChange)
+        applyConfigFromLocalStorage();
+        // Thème
+        const handleOSThemeChange = () => {
+            setDisplayTheme(getDisplayTheme());
+            toggleThemeTransitionAnimation();
+        }
+        prefersDarkMode.addEventListener('change', handleOSThemeChange);
+        return (() => {
+            window.removeEventListener("storage", handleStorageChange);
+            prefersDarkMode.removeEventListener('change', handleOSThemeChange);
+        });
+    }, []);
+
+
+    /* ################################ THEME ################################ */
+
+    // Gestion du thème d'affichage
+    useEffect(() => {
+        if (displayTheme === "dark") {
+            document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
+        } else {
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
+        }
+
+        if (localStorage.getItem("displayTheme") !== "auto") {
+            localStorage.setItem("displayTheme", displayTheme);
+        }
+    }, [displayTheme]);
+
+    function toggleThemeTransitionAnimation() {cfgdtr
+        if (displayMode === "balanced" || displayMode === "performance") {
+            return 0;
+        }
+        //  vérifie l'existence d'un timeout actif
+        if (oldTimeoutId) {
+            // un timeout était déjà en cours, on le supprime
+            clearTimeout(oldTimeoutId);
+        }
+        document.documentElement.classList.add("switching-theme");
+        const timeoutId = setTimeout(() => { document.documentElement.classList.remove("switching-theme"); console.log("removed") }, 500);
+        setOldTimeoutId(timeoutId);
+    }
+
+    /* ################################ MODE D'AFFICHAGE ################################ */
+
+    useEffect(() => {
+        document.documentElement.classList.remove("quality");
+        document.documentElement.classList.remove("balanced");
+        document.documentElement.classList.remove("performance");
+
+        document.documentElement.classList.add(displayMode);
+        localStorage.setItem("displayMode", displayMode);
+    }, [displayMode]);
+
+    /* ################################################################################### */
+
+    // routing system
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            element: <Root
+                currentEDPVersion={currentEDPVersion}
+                token={tokenState}
+                accountsList={accountsListState}
+                setDisplayTheme={setDisplayTheme}
+                getDisplayTheme={getDisplayTheme}
+                toggleThemeTransitionAnimation={toggleThemeTransitionAnimation}
+                setDisplayMode={setDisplayMode}
+                activeAccount={activeAccount}
+                logout={logout} />,
+            errorElement: <ErrorPage />,
+            children: [
+                {
+                    element: <Navigate to="/login" />,
+                    path: "/"
+                },
+                {
+                    element: <Feedback activeUser={(accountsListState && accountsListState[activeAccount])} />,
+                    path: "feedback"
+                },
+                {
+                    element: <Canardman />,
+                    path: "quackquack"
+                    // path: "coincoin",
+                },
+                {
+                    element: <Lab fetchGrades={fetchUserGrades} />,
+                    path: "lab"
+                },
+                {
+                    element: <Museum />,
+                    path: "museum"
+                },
+                {
+                    element: <Login fetchLogin={fetchLogin} currentEDPVersion={currentEDPVersion} />,
+                    path: "login"
+                },
+                {
+                    element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                    path: "app",
+                },
+                {
+                    element: (!(tokenState && accountsListState)
+                        ? <Navigate to="/login" />
+                        : <Header
+                            token={tokenState}
+                            accountsList={accountsListState}
+                            setActiveAccount={setActiveAccount}
+                            activeAccount={activeAccount}
+                            logout={logout}
+                        />),
+                    path: "app",
+                    children: [
+                        {
+                            element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                            path: "dashboard",
+                        },
+                        {
+                            element: <Dashboard setActiveAccount={setActiveAccount} activeAccount={activeAccount} />,
+                            path: ":userId/dashboard"
+                        },
+                        {
+                            element: <Navigate to={`/app/${activeAccount}/grades`} />,
+                            path: "grades"
+                        },
+                        {
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
+                            path: ":userId/grades"
+                        },
+                        // mais aps besoin de refetch la actuellemtn un a une liste de toutes lesnotes de tous les users et elles sont séparés par utilisateurs
+                        // typiquement là moi j'ai une liste de 2 liste, la première qui correspond aux notes de clémence vu qu'elle a l'index 0 et la 2eme pour moi
+                        // c pou ca que je pouvais pas juste faire setState(response.data)
+                        // et donc que je devais utiliser une varible intermédiaire
+                        // mais une seule liste pour tout c useless un peu ; dcp oui mais si on avait pu faire un truc charismatique python tier ça pourrait être bienn
+                        // oui mais les states cancer nous mettent des batons dans les roues
+                        // mais dcp c a ca qu'elle sert la fonction createUserLists c pour génerer une liste d'autant de listes vides qu'il y a d'utilisateurs
+                        // ok dcp tu l'utilise pour initialiser toutes les listes notes devoirs 
+                        // oui dans le setuser ou un truc du style
+                        // comment ça
+                        // genre là pour grades pourquoi c'est initialisé à [] dcp ?
+                        // prcq au tout début on sait pas cbn il y a de users
+                        // je les set(createUserLists) dans let getUserInfo et dans apply from ls
+                        // g wp d'avoir compris
+                        // oui c'est reel
+                    ]
+                },
+            ],
+        },
+    ]);
+
+    return (
+        <>
+            <RouterProvider router={router} />
+        </>
+    );
+}

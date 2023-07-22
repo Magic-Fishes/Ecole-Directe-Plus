@@ -1,13 +1,16 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 
-export default function Root({ currentEDPVersion, token, accountsList, logIn, loggedIn, setDisplayTheme, getDisplayTheme, toggleThemeTransitionAnimation, setDisplayMode, getDisplayMode }) {
+
+export default function Root({ currentEDPVersion, token, accountsList, setDisplayThemeState, getDisplayTheme, toggleThemeTransitionAnimation, setDisplayModeState, getDisplayMode, activeAccount, logout, getIsTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+
     const [isNewUser, setIsNewUser] = useState(false);
     const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
     const [popUp, setPopUp] = useState(false);
@@ -16,12 +19,14 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
     const [localStorageDisplayThemeMirror, setLocalStorageDisplayThemeMirror] = useState(localStorage.getItem("displayTheme"));
     const [localStorageDisplayModeMirror, setLocalStorageDisplayModeMirror] = useState(localStorage.getItem("displayMode"));
 
+    const commandInputs = useRef([]);
+
     function redirectToFeedback() {
         navigate("/feedback");
     }
 
     function redirectToApp() {
-        navigate("/app");
+        navigate(`/app/${activeAccount}/dashboard`);
     }
 
     function redirectToLab() {
@@ -36,6 +41,7 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
         navigate("/login");
     }
 
+
     // welcome pop-up
     useEffect(() => {
         // localStorage.clear();
@@ -43,7 +49,7 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
             if (localStorage.getItem("EDPVersion") === null) {
                 setIsNewUser(true);
             } else {
-                setIsNewEDPVersion(true);                
+                setIsNewEDPVersion(true);
             }
         }
     }, [])
@@ -70,25 +76,126 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
     // }, [token, accountsList, loggedIn]);
 
     useEffect(() => {
-        console.log("location:", location);
         if ((location.pathname === "/login" || location.pathname === "/") && (token && accountsList)) {
             redirectToApp();
+            console.log("redirected to app")
         }
-    }, [location, token, accountsList])
+    }, [location, token, accountsList, activeAccount])
+
+
+    // - - - - - - - - - - - - - - - - - - - - //
+    //               Raccourcis                //
+    // - - - - - - - - - - - - - - - - - - - - //
+    useEffect(() => {
+        const commandPattern = ["Control", "Alt"];
+        const shortcuts = [
+            { keys: ["t", "T"], trigger: switchDisplayTheme, message: "Le thème a été changé avec succès" },
+            { keys: ["d", "D"], trigger: switchDisplayMode, message: "Le mode d'affichage a été changé avec succès" },
+            { keys: ["ArrowLeft"], trigger: () => changePageIdBy(-1) },
+            { keys: ["ArrowRight"], trigger: () => changePageIdBy(1) }
+        ]
+
+        function handleKeyDown(event) {
+            function isAskingForShortcut() {
+                for (let element of commandPattern) {
+                    if (!commandInputs.current.includes(element)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            if (commandPattern.includes(event.key) && !commandInputs.current.includes(event.key)) {
+                commandInputs.current.push(event.key);
+            } else if (isAskingForShortcut()) {
+                console.log(event.key)
+                for (let shortcut of shortcuts) {
+                    if (shortcut.keys.includes(event.key)) {
+                        (shortcut.message && console.log(shortcut.message));
+                        shortcut.trigger();
+                    }
+                }
+            }
+        }
+
+        function handleKeyUp(event) {
+            if (commandInputs.current.includes(event.key)) {
+                const keyIndex = commandInputs.current.indexOf(event.key)
+                commandInputs.current.splice(keyIndex, 1);
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("keyup", handleKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+        }
+    }, []);
+
+    // changement de page
+    const changePageIdBy = (delta) => {
+        console.log("Root")
+        console.log(location)
+        let siteMap;
+        if (getIsTabletLayout()) {
+            siteMap = ["grades", "homeworks", "dashboard", "timetable", "messaging"];
+        } else {
+            siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging"];
+        }
+        const currentLocation = location?.pathname.split("/");
+        const activePage = currentLocation[currentLocation.length - 1];
+        let pageId = siteMap.indexOf(activePage);
+        pageId += delta;
+        if (pageId < 0) {
+            pageId = 0;
+        } else if (pageId >= siteMap.length) {
+            pageId = siteMap.length - 1;
+        }
+        navigate(`/app/${activeAccount}/${siteMap[pageId]}`);
+    }
 
     // thème
-    const updateDisplayTheme = (event) => {
-        localStorage.setItem("displayTheme", event.target.value);
-        setLocalStorageDisplayThemeMirror(event.target.value);
-        setDisplayTheme(getDisplayTheme());
+    const setDisplayTheme = (value) => {
+        localStorage.setItem("displayTheme", value);
+        setLocalStorageDisplayThemeMirror(value);
+        setDisplayThemeState(getDisplayTheme());
         toggleThemeTransitionAnimation();
+        console.log(localStorage.getItem("displayTheme"));
+    }
+
+    const switchDisplayTheme = () => {
+        if (getDisplayTheme() === "dark") {
+            setDisplayTheme("light");
+        } else {
+            setDisplayTheme("dark");
+        }
+    }
+
+    const updateDisplayTheme = (event) => {
+        setDisplayTheme(event.target.value);
     }
 
     // display mode
+    const setDisplayMode = (value) => {
+        localStorage.setItem("displayMode", value);
+        setDisplayModeState(value);
+        setLocalStorageDisplayModeMirror(value);
+    }
+
+    const switchDisplayMode = () => {
+        if (getDisplayMode() === "quality") {
+            setDisplayMode("performance");
+        } else if (getDisplayMode() === "performance") {
+            setDisplayMode("balanced");
+        } else {
+            setDisplayMode("quality");
+        }
+    }
+
     const updateDisplayMode = (event) => {
-        localStorage.setItem("displayMode", event.target.value);
         setDisplayMode(event.target.value);
-        setLocalStorageDisplayModeMirror(event.target.value);
     }
 
     return (
@@ -99,6 +206,8 @@ export default function Root({ currentEDPVersion, token, accountsList, logIn, lo
                 {/*<input type="button" onClick={() => setLoggedIn(true)} value="LOGIN" />loggedIn c un prank, ca te log pas c juste que ca évite que le useState s'exite et redirect à l'infini */}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
+                {isAdmin && <input type="button" onClick={() => { navigate("/app/dashboard") }} value="DASHBOARD" />}
+                {isAdmin && <input type="button" onClick={() => { navigate("/app/grades") }} value="GRADES" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
                 {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
                 {isAdmin && <select title="Display theme" value={localStorageDisplayThemeMirror} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>

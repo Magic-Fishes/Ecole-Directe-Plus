@@ -14,6 +14,10 @@ fieldset.segmented-control:focus-within {
     border-color: rgb(var(--border-color-1));
 }
 
+.segmented-control label.option input {
+    /* retire l'input du stacking-context */
+    position: absolute;
+}
 .segmented-control label.option input:focus {
     outline: none;
 }
@@ -57,4 +61,3 @@ fieldset.segmented-control:focus-within {
     flex-grow: 1.8;
     color: rgb(var(--text-color-main)); /* safari */
 }
-

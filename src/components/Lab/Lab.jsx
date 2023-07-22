@@ -7,13 +7,14 @@ import ScrollShadedDiv from "../generic/ScrollShadedDiv";
 import PopUp from "../generic/PopUps/PopUp";
 import EDPLogo from "../graphics/EDPLogo"
 import BottomSheet from "../generic/PopUps/BottomSheet";
-import HeaderNavigateButton from "../generic/HeaderNavigateButton";
-import AccountIcon from "../graphics/inline/AccountIcon";
+import HeaderNavigationButton from "../app/Header/HeaderNavigationButton";
+import AccountIcon from "../graphics/AccountIcon";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../generic/PopUps/Tooltip";
+import AppLoading from "../generic/Loading/AppLoading";
 
 import "./Lab.css";
 
-export default function Lab() {
+export default function Lab({ fetchGrades }) {
     // States
     const [test, setTest] = useState(["Signaler un bug", "Suggestion", "Retour d'expérience", "Autre", "Celui qui ne se souvient pas du passé est condamné à le répéter.", "option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option10 OH non j'ai oublié option9"]);
     const [test2, setTest2] = useState("");
@@ -33,9 +34,9 @@ export default function Lab() {
 
     // Behavior
     useEffect(() => {
-        // document.title = "Ecole Directe Plus - Lab";
+        // document.title = "Ecole Directe Plus • Lab";
         // document.title = "EDP Lab";
-        document.title = "Lab - Ecole Directe Plus";
+        document.title = "Lab • Ecole Directe Plus";
     }, [])
     function testOnChange(a) {
         setTest2(a)
@@ -129,10 +130,12 @@ export default function Lab() {
                     </TooltipContent>
                 </Tooltip>
             </div>
-            <h2>HeaderNavigateButton</h2>
-            <HeaderNavigateButton link="/login" label="login" icon={<AccountIcon/>} />
-            <h2>ALED</h2>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/m7l7455MLzw?clip=Ugkxww2pe89a3fm9hHTS4zknE2I1-F2Wbzwc&amp;clipt=EPFGGPlt" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+            <h3>HeaderNavigationButton</h3>
+            <HeaderNavigationButton link="/login" label="login" icon={<AccountIcon />} />
+            <h3>Fetch function</h3>
+            <Button value="Grades" onClick={fetchGrades} />
+            <h3 id="lab-app-loading">AppLoading</h3>
+            <AppLoading />
         </div>
     )
 }

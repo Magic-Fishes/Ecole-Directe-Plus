@@ -12,7 +12,7 @@
     overflow-y: auto;
 
     background-color: rgb(var(--background-color-1));
-    border: 1px solid rgb(var(--border-color-0));
+    /* border: 1px solid rgb(var(--border-color-0)); */
     border-radius: 20px;
     box-shadow: var(--box-shadow-window)
 }
@@ -92,7 +92,7 @@ textarea#feedback-content:focus {
     -webkit-touch-callout: none; /* Safari */
 }
 
-.file-input #file-controls Button img {
+.file-input #file-controls Button #paste-button-icon {
     vertical-align: middle;
     height: 25px;
     -webkit-user-drag: none;
@@ -165,7 +165,6 @@ div.drop-zone:focus-within {
     opacity: 0;
     cursor: pointer;
 }
-
 
 /* rester anonyme + email */
 #contact {
