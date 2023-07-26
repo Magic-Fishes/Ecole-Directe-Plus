@@ -1,37 +1,81 @@
 
 import { useState } from "react";
 
+import EDPLogoFullWidth from "../../graphics/EDPLogoFullWidth";
+// import WalkingCanardman from "../../graphics/WalkingCanardman";
+import EDPVersion from "../EDPVersion";
+
 import "./AppLoading.css";
 
+const loadingScreenTips = [
+    { message: "Vous n'aimez pas votre emploi du temps ? Ne vous inquiétez pas, il changera bientôt", weight: 1 },
+    { message: "Chargement... mais ne vous inquiétez pas, ça vaut le coup d'attendre", weight: 1 },
+    { message: "Chargement... Ce processus peut être long. Heureusement, ce canard plein d'empathie est là pour vous", weight: 1 },
+    { message: "Chargement... Canardman vous invite à profiter de ces précieux instants d'ennui", weight: 1 },
+    { message: "Nous savons que le chargement est ennuyeux, mais c'est toujours mieux que de faire un exposé sur les cailloux", weight: 1 },
+    { message: "Attendez-vous à quelque chose de spectaculaire. C'est pour ça que ça prend un peu plus de temps", weight: 1 },
+    { message: "Nous sommes désolés pour l'attente, mais il y a un prix à payer pour la perfection", weight: 1 },
+    { message: "Apprendre, c'est bien. Mais avez-vous essayé de ne rien faire ? C'est aussi assez cool", weight: 1 },
+    { message: "Le chargement est plus long que prévu. Profitez de cette pause pour faire 10 pompes", weight: 1 },
+    { message: "Citation pseudo-motivante : \"Le chargement est le commencement de la sagesse numérique.\" - Peut-être que quelqu'un l'a dit un jour", weight: 1 },
+    { message: "Citation inspirante : \"La mort est un vêtement que tout le monde portera\" - Proverbe africain", weight: 1 },
+    { message: "Citation inspirante : \"Je sais que je ne sais rien\" - Socrate. Soyez humble", weight: 1 },
+    { message: "Canardman est de tout cœur avec vous pendant ce chargement. Il sait à quel point c'est long", weight: 1 },
+    { message: "Canardman vous suggère de méditer sur l'absurdité de l'existence pendant cette attente", weight: 1 },
+    { message: "Rafraichissez cette page, vous verrez peut-être un Canardman sauvage apparaître", weight: 1 },
+    { message: "Le chargement vous rappelle que le temps est relatif, surtout quand on attend quelque chose d'important", weight: 1 },
+    { message: "Le chargement rapide n'existe que dans les contes de fées. Nous sommes dans la réalité, désolé", weight: 1 },
+    { message: "Si vous avez le temps de lire ceci, alors le chargement est plutôt lent. Nous sommes désolés pour vous", weight: 1 },
+    { message: "Souvenez-vous, étudier est l'art subtil de tout savoir... du moins jusqu'à l'examen", weight: 1 },
+    { message: "Développez-vous, impressionnez-vous. Chaque jour est une opportunité d'être meilleur", weight: 1 },
+    { message: "L'apprentissage n'a pas de mode d'emploi. Essayez, échouez, recommencez jusqu'à ce que ça marche", weight: 1 },
+    { message: "Les échecs ne sont pas des fins, mais des départs pour des réussites futures", weight: 1 },
+    { message: "La véritable sagesse réside dans la reconnaissance de notre ignorance", weight: 1 },
+    { message: "La connaissance est le trésor le plus précieux que l'on puisse acquérir, et il n'y a pas de limite à son expansion", weight: 1 },
+    { message: "L'éducation est un voyage sans fin", weight: 1 },
+    // tah le cynisme :
+    { message: "Si vous pensez que l'éducation coûte cher, essayez l'ignorance", weight: 1 },
+    { message: "L'éducation vous donne des connaissances, mais ça ne garantit pas l'intelligence", weight: 1 },
+];
+
 export default function AppLoading({  }) {
+    function getRandomInt(min, max) {
+        return min + Math.floor(Math.random()*(max - min));
+    }
     // States
+
+    const [randomSentence, setRandomSentence] = useState(loadingScreenTips[getRandomInt(0, loadingScreenTips.length - 1)].message);
     
     // Behavior
 
     // JSX DISCODO
     return (
         <div id="app-loading">
+            <EDPLogoFullWidth />
             <div id="loading-box">
                 <div id="walking-canardman">
-                    <img src="public/images/canardman-walking-animation.svg" alt="Walking Canardman" />
+                    <img src="/images/walking-canardman.svg" alt="Walking Canardman" />
+                    {/* <WalkingCanardman alt="Canardman qui marche"/> */}
                 </div>
                 <h1>Chargement en cours...</h1>
-                <p id="random-sentence">
-                    Vous n'aimez pas votre emploi du temps ? Ne vous inquiétez pas, il changera bientôt
+                <p id="loading-screen-tip">
+                    {randomSentence}
                 </p>
             </div>
+            <EDPVersion currentEDPVersion={"0.0.7"} />
         </div>
     )
 }
 
 
 
+// Il y a plusieurs pattern de phrases : Astuce du jour ; Citation inspirante ; Le saviez-vous ? ; et les autres
 
 /* faire liste d'objet avec message + condition pour les msg avec condition (genre is compte parent, l'heure qu'il est...)*/
 /*
-Conseil de pro : utilisez le raccourcis Crtl + Alt + Flèches droite/gauche pour changer rapidement de page
-# Conseil de pro : changer de thème entre clair et sombre directement depuis le menu de sélection du compte
-Conseil de pro : un site web, c'est bien. Une application, c'est mieux. Accédez aux paramètres pour installer Ecole Directe Plus comme application
+Astuce du jour : utilisez le raccourcis Crtl + Alt + Flèches droite/gauche pour changer rapidement de page
+# Astuce du jour : changer de thème entre clair et sombre directement depuis le menu de sélection du compte
+Astuce du jour : un site web, c'est bien. Une application, c'est mieux. Accédez aux paramètres pour installer Ecole Directe Plus comme application
 
 Vous accédez à Ecole Directe Plus depuis un grille-pain ? Aidez-le un peu et diminuez la qualité de l'affichage dans les paramètres
 
@@ -41,9 +85,13 @@ Un avis, une suggestion ? Partager votre experience à travers la page de retour
 Vous n'avez pas les mots pour décrire l'élégance d'Ecole Directe Plus ? Partagez nous ces non-mots à travers la page de retour
 # Appel à tous les extravertis, et les autres aussi : nous serions ravis de connaitre votre avis : partagez vos commentaires à travers la page de retours.
 
-EcoleDirecte ? tki
+EcoleDirecte ? tki (insolence)
 
 Nous avons pensé Ecole Directe Plus pour qu'il fonctionne sur tous les appareils, même votre réfrigérateur connecté
+
+Apprendre, c'est bien. Mais avez-vous essayé de ne rien faire ? C'est aussi assez cool.
+
+Le chargement est plus long que prévu. Profitez de cette pause pour faire 10 pompes.
 
 Le brevet/bac approche et vous êtes encore dans le déni ? Et bien bon courage car nous sommes incapables de vous aider
 
@@ -63,7 +111,7 @@ Nous avons pensé à ceux qui ont un petit forfait. Accédez aux paramètres et 
 
 Rafraichissez cette page, vous verrez peut-être un Canardman sauvage apparaître
 
-Chargement... Ce processus peut être long. Heureusement ce canard plein d'empathie est là pour vous.
+Chargement... Ce processus peut être long. Heureusement, ce canard plein d'empathie est là pour vous.
 
 Vous trouvez ce chargement excitant ? Attendez de voir la suite
 
@@ -71,7 +119,27 @@ Le saviez-vous : rien n'est plus insupportable que de développer avec react et 
 
 Le saviez-vous : nous possédons un compte twitter, instagram, youtube, et un serveur discord
 
-Le saviez-vous : Ces mots ont été crée pendant une nuit blanche
+Le saviez-vous : Ces mots ont été écrit lors d'une nuit blanche
+
+Le saviez-vous : En moyenne, une personne passe 6 mois de sa vie à attendre que les pages chargent. Profitez de ces moments précieux.
+
+Le saviez-vous : Les dauphins dorment d'un seul œil à la fois. Essayez de faire ça pendant que vous attendez ici
+
+Citation pseudo-motivante : "Le chargement est le commencement de la sagesse numérique." - Peut-être que quelqu'un l'a dit un jour.
+
+Canardman est de tout cœur avec vous pendant ce chargement. Il sait à quel point c'est long.
+
+Canardman vous encourage à prendre une profonde respiration pendant ce chargement. Inspirez... Expirez...
+
+Canardman veut vous rappeler que les bonnes choses prennent du temps
+
+Prenez un moment pour apprécier à quel point Canardman est mignon pendant que vous attendez patiemment
+
+Canardman a un secret : il rêve de voyager dans le temps pour voir si le chargement sera terminé un jour
+
+Saviez-vous que le temps d'attente pour le chargement est directement proportionnel à l'impatience ressentie ?
+
+Le chargement peut sembler éternel, mais rappelez-vous qu'il y a des trous noirs dans l'espace qui attendent depuis des milliards d'années.
 
 Nous avons une histoire. On a un background 
 
@@ -95,7 +163,7 @@ Le saviez-vous ? Le nom de notre mascotte est “Canardman”, qui signifie dans
 # Zénon est à l’origine du courant philosophique du stoïcisme.
 Vous avez eu une mauvaise note ? Faites de cette frustration la motivation de demain.
 Il est {heure}, tu devrais déjà être couché jeune voyageur./tu devrais travailler./tu devrais te lever
-Il demeure différence entre un élève qui travaille par contrainte, et un élève qui travaille par volonté
+Il demeure une gargantuesque différence entre un élève qui travaille par contrainte, et un élève qui travaille par volonté
 
 
 

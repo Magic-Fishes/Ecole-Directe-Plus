@@ -1,12 +1,12 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Link, useLocation, useNavigate, useParams, useMatch, useMatches, Outlet } from "react-router-dom";
 
 import HeaderNavigationButton from "./HeaderNavigationButton";
 
 import EDPLogo from "../../graphics/EDPLogo";
 import DashboardIcon from "../../graphics/DashboardIcon";
-import HomeworksIcon from "../../graphics/HomeworksIcon";
+// import HomeworksIcon from "../../graphics/HomeworksIcon";
 import HomeworksIconOfficial from "../../graphics/HomeworksIconOfficial";
 import GradesIcon from "../../graphics/GradesIcon";
 // import PlanningIcon from "../../graphics/PlanningIcon"
@@ -14,7 +14,6 @@ import TimetableIcon from "../../graphics/TimetableIcon";
 import MessagingIcon from "../../graphics/MessagingIcon";
 import Button from "../../generic/UserInputs/Button";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-
 
 import "./Header.css";
 
@@ -25,6 +24,11 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
     const location = useLocation();
 
     const { userId } = useParams();
+
+    const [easterEggCounter, setEasterEggCounter] = useState(0);
+    const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
+
+    const headerLogoRef = useRef(null);
     const isFirstFrame = useRef(true);
 
 
@@ -47,15 +51,40 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
         } else {
             setActiveAccount(localStorage.getItem("defaultActiveAccount") || 0);
         }
-    }, [])
+    }, [userId]);
     // if (isFirstFrame.current) {
     //     isFirstFrame.current = false;
     // }
+
+    // - - - Discodo easter egg - - -
+    const handleClick = () => {
+        if (easterEggTimeoutId !== null) {
+            clearTimeout(easterEggTimeoutId);
+        }
+        setEasterEggCounter((lastValue) => lastValue + 1);
+        const REQUIRED_CPS = 2;
+        const timeoutId = setTimeout(setEasterEggCounter, 1/REQUIRED_CPS*1000, 0);
+        setEasterEggTimeoutId(timeoutId);
+    }
+
+    useEffect(() => {
+        console.log("Discodo incoming:", easterEggCounter + "/16");
+        let audio;
+        if (easterEggCounter >= 8) {
+            // preload the audio to prevent the ping
+            const audios = ["/sfx/quick-fart-reverb.mp3", "/sfx/heavy-fart-reverb.mp3"]
+            audio = new Audio(audios[Math.floor(Math.random()*2)]);
+        }
+        if (easterEggCounter >= 16) {
+            setEasterEggCounter(0);
+            audio.play();
+        }
+    }, [easterEggCounter]);
     
     
     useEffect(() => {
         console.log("accountsList", accountsList)
-        console.log(accountsList.map((compte, index) => compte.firstName + " " + compte.lastName.toUpperCase()))
+        console.log(accountsList.map((compte, index) => compte?.firstName + " " + compte?.lastName.toUpperCase()))
     }, [])
 
     
@@ -116,7 +145,7 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
             <div className="header-container">
                 <header className="header-menu">
                     <div className="header-logo-container">
-                        <Link to="dashboard" tabIndex="-1">
+                        <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
                         </Link>
                     </div>
@@ -132,7 +161,7 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
                     </nav>
     
                     <div className="account-selection">
-                        <DropDownMenu options={accountsList.map((compte, index) => index.toString() + " : " + compte.firstName + " " + compte.lastName.toUpperCase())} selected={accountsList[activeAccount].firstName + " " + accountsList[activeAccount].lastName.toUpperCase()} name="account-selection"  onChange={(value) => {console.log(value) ; switchAccount(Number(value.toString().slice(0, 1)))}}/>
+                        <DropDownMenu options={accountsList.map((compte, index) => index.toString() + " : " + compte?.firstName + " " + compte?.lastName.toUpperCase())} selected={accountsList[activeAccount]?.firstName + " " + accountsList[activeAccount]?.lastName.toUpperCase()} name="account-selection"  onChange={(value) => {console.log(value) ; switchAccount(Number(value.toString().slice(0, 1)))}}/>
                         
                         <Button onClick={logout} value="Déconnexion" />
                     </div>
@@ -218,9 +247,11 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
             </div>
             
             <main className="content">
-                {/* TODO: si mobileLayout mettre selectAccount ici */}
-                ActiveAccount: {activeAccount}
-                <Outlet />
+                {/* TODO: si mobileLayout ou tabletLayout mettre selectAccount ici */}
+                {/* ActiveAccount: {activeAccount} */}
+                <Suspense>
+                    <Outlet />
+                </Suspense>
             </main>
         </div>
     )

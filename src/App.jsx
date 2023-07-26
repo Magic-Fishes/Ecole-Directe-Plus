@@ -1,7 +1,7 @@
 // npm run build
 // zip -r build_history/build-<année>-<mois>-<jour>.zip dist/
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import {
     Navigate,
     useParams,
@@ -19,13 +19,86 @@ import Canardman from "./components/Canardman/Canardman";
 import Lab from "./components/Lab/Lab";
 import Museum from "./components/Museum/Museum";
 
+import AppLoading from "./components/generic/Loading/AppLoading";
+
+const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
+const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
+const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
+const Homeworks = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Homeworks } }));
+const Timetable = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Timetable } }));
+const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
+
+
+// import CoreApp from "./components/app/CoreApp"
+// const CoreApp = lazy(() => import("./components/app/CoreApp"));
+
 // lazy loaded routes
-import Header from "./components/app/Header/Header";
-import Dashboard from "./components/app/Dashboard/Dashboard";
-import Grades from "./components/app/Grades/Grades";
-import Homeworks from "./components/app/Homeworks/Homeworks";
-import Timetable from "./components/app/Timetable/Timetable";
-import Messaging from "./components/app/Messaging/Messaging";
+// const Test = import("./components/app/CoreApp")
+//     .then((module) => {
+//         console.log("module", module)
+//         return module
+//     })
+
+// const Header = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module}
+//     })
+// );
+// const Dashboard = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module.Dashboard}
+//     })
+// );
+// const Grades = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module.Grades}
+//     })
+// );
+// const Homeworks = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module.Homeworks}
+//     })
+// );
+// const Timetable = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module.Timetable}
+//     })
+// );
+// const Messaging = lazy(
+//     () => import("./components/app/CoreApp")
+//     .then((module) => {
+//         return {default: module.Messaging}
+//     })
+// );
+
+// import {
+//     Dashboard,
+//     Grades,
+//     Homeworks,
+//     Timetable,
+//     Messaging
+// } from "./components/app/CoreApp"
+
+// const Header = lazy(() => import(/* @vite-ignore */ "./components/app/Header/Header"));
+// const Dashboard = lazy(() => import(/* @vite-ignore */ "./components/app/Dashboard/Dashboard"));
+// const Grades = lazy(() => import(/* @vite-ignore */ "./components/app/Grades/Grades"));
+// const Homeworks = lazy(() => import(/* @vite-ignore */ "./components/app/Homeworks/Homeworks"));
+// const Timetable = lazy(() => import(/* @vite-ignore */ "./components/app/Timetable/Timetable"));
+// const Messaging = lazy(() => import(/* @vite-ignore */ "./components/app/Messaging/Messaging"));
+
+// import Header from "./components/app/Header/Header";
+// import Dashboard from "./components/app/Dashboard/Dashboard";
+// import Grades from "./components/app/Grades/Grades";
+// import Homeworks from "./components/app/Homeworks/Homeworks";
+// import Timetable from "./components/app/Timetable/Timetable";
+// import Messaging from "./components/app/Messaging/Messaging";
+
+
 
 console.log(`%c
 EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
@@ -49,9 +122,10 @@ EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD
       https://github.com/Magic-Fishes/Ecole-Directe-Plus
 `, "color: #615fda");
 
-const apiUrl = "https://api.ecoledirecte.com/v3/";
-const apiVersion = "4.31.1";
 const currentEDPVersion = "0.0.7";
+const apiVersion = "4.31.1";
+const apiUrl = "https://api.ecoledirecte.com/v3/";
+const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
@@ -61,7 +135,6 @@ const referencedErrors = {
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
 
 function getDisplayTheme() {
     if (!localStorage.getItem("displayTheme") || localStorage.getItem("displayTheme") === "auto") {
@@ -81,21 +154,19 @@ function getDisplayMode() {
 }
 
 function createUserLists(accountNumber) {
-    console.log("caca :", accountNumber)
-    var list = [];
-    for (var i = 0; i < accountNumber; i++) {
+    const list = [];
+    for (let i = 0; i < accountNumber; i++) {
         list.push([]);
     }
     return list;
 }
 
+
 import testGrades from "./testGrades.json"
-
-console.log(testGrades)
-
-const a = testGrades.data.notes.map((e) => e.date)
-
+// console.log(testGrades)
+// const a = testGrades.data.notes.map((e) => e.date)
 // console.log(a.join("\n"))
+
 
 export default function App() {
 
@@ -145,8 +216,8 @@ export default function App() {
     //     // Preload les images SUBSTANTIELLES
     //     function preloadImages() {
     //         let images = [
-    //             "/public/images/checked-icon-dark.svg",
-    //             "/public/images/loading-animation.svg"
+    //             "/images/checked-icon-dark.svg",
+    //             "/images/loading-animation.svg"
     //         ];
 
     //         let newPreloadedImages = preloadedImages;
@@ -270,6 +341,7 @@ export default function App() {
 
     function fetchUserGrades() {
         const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
+        // bah enft si le mec change de compte il faudrait juste abort ce fetch tah l'avortement
         const data = {
             anneeScolaire: ""
         }
@@ -317,6 +389,7 @@ export default function App() {
 
 
     /* ################################ CONNEXION/DÉCONNEXION ################################ */
+    
     function getUserInfo(token, accountsList) {
         setTokenState(token);
         setAccountsListState(accountsList);
@@ -429,6 +502,7 @@ export default function App() {
                          currentEDPVersion={currentEDPVersion}
                          token={tokenState}
                          accountsList={accountsListState}
+                         getUserInfo={getUserInfo}
                          
                          setDisplayThemeState={setDisplayThemeState}
                          getDisplayTheme={getDisplayTheme}
@@ -474,15 +548,32 @@ export default function App() {
                     path: "app",
                 },
                 {
+                    // async lazy() {
+                    //     const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
+                    //     // const { Dashboard } = await import("./components/app/CoreApp");
+                    //     return { element: (!(tokenState && accountsListState)
+                    //         ? <Navigate to="/login" />
+                    //         : <Suspense fallback={<AppLoading />}>
+                    //             <Header
+                    //                 token={tokenState}
+                    //                 accountsList={accountsListState}
+                    //                 setActiveAccount={setActiveAccount}
+                    //                 activeAccount={activeAccount}
+                    //                 logout={logout}
+                    //                 />
+                    //         </Suspense>) };
+                    // },
                     element: (!(tokenState && accountsListState)
-                        ? <Navigate to="/login" />
-                        : <Header
-                            token={tokenState}
-                            accountsList={accountsListState}
-                            setActiveAccount={setActiveAccount}
-                            activeAccount={activeAccount}
-                            logout={logout}
-                        />),
+                              ? <Navigate to="/login" />
+                              : <Suspense fallback={<AppLoading />}>
+                                  <Header
+                                      token={tokenState}
+                                      accountsList={accountsListState}
+                                      setActiveAccount={setActiveAccount}
+                                      activeAccount={activeAccount}
+                                      logout={logout}
+                                      />
+                            </Suspense>),
                     path: "app",
                     children: [
                         {
@@ -494,7 +585,13 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard setActiveAccount={setActiveAccount} activeAccount={activeAccount} />,
+                            element: <Dashboard />,
+                            // lazy: () => import("./components/app/Header/Header"),
+                            // async lazy() {
+                            //     const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
+                            //     // const { Dashboard } = await import("./components/app/CoreApp");
+                            //     return { element: <Dashboard setActiveAccount={setActiveAccount} activeAccount={activeAccount} /> };
+                            // },
                             path: ":userId/dashboard"
                         },
                         {
@@ -503,6 +600,11 @@ export default function App() {
                         },
                         {
                             element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
+                            // async lazy() {
+                            //     const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
+                            //     // const { Grades } = await import("./components/app/CoreApp");
+                            //     return { element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} /> };
+                            // },
                             path: ":userId/grades"
                         },
                         {
@@ -510,7 +612,12 @@ export default function App() {
                             path: "homeworks"
                         },
                         {
-                            element: <Homeworks fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
+                            element: <Homeworks />,
+                            // async lazy() {
+                            //     const Homeworks = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Homeworks } }));
+                            //     // const { Homeworks } = await import("./components/app/CoreApp");
+                            //     return { element: <Homeworks /> };
+                            // },
                             path: ":userId/homeworks"
                         },
                         {
@@ -518,7 +625,12 @@ export default function App() {
                             path: "timetable"
                         },
                         {
-                            element: <Timetable fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
+                            element: <Timetable />,
+                            // async lazy() {
+                            //     const Timetable = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Timetable } }));
+                            //     // const { Timetable } = await import("./components/app/CoreApp");
+                            //     return { element: <Timetable /> };
+                            // },
                             path: ":userId/timetable"
                         },
                         {
@@ -526,7 +638,12 @@ export default function App() {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
+                            element: <Messaging />,
+                            // async lazy() {
+                            //     const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
+                            //     // const { Messaging } = await import("./components/app/CoreApp");
+                            //     return { element: <Messaging /> };
+                            // },
                             path: ":userId/messaging"
                         },
                     ]

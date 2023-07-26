@@ -59,10 +59,6 @@ textarea#feedback-content:focus {
     background-color: rgba(var(--background-color-focus));
 }
 
-/* textarea#feedback-content.invalid::placeholder{ 
-    color: rgba(var(--text-color-soft-error-alt), 0.7);
-} */
-/*ct juste les espaces entre les sélecteur que css il aimait pas (jsp pk il faut un espace pour les textInputs et pas les textarea mais en sah g un hypothèe mais flemme d'expliquer) et dcp g mis dans app avec l'autre mais juste pour que tu lises c ici quand t'as lu tu supprime*/
 
 /* file input */
 .file-input {

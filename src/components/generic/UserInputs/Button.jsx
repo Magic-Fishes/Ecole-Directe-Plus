@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./Button.css";
 
-export default function Button({ buttonType="button", children, value, onClick, state="", className="", id="" }) {
+export default function Button({ buttonType="button", children, value, onClick, state="", className="", id="", ...props }) {
     const allowedButtonTypes = ["button", "submit"];
     if (!allowedButtonTypes.includes(buttonType)) {
         buttonType = "button";
@@ -15,8 +15,10 @@ export default function Button({ buttonType="button", children, value, onClick, 
             onClick={onClick}
             className={`button ${className} ${(buttonType === "submit" && "submitter")} ${state}`}
             id={id}
+            {...props}
         >
-            {value}
+            {value && value}
+            {children && children}
         </button>
     )
 }

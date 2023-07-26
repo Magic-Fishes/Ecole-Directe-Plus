@@ -44,7 +44,11 @@
     --font-weight-regular: 400;
     --font-weight-semi-bold: 600;
     --font-weight-extra-bold: 800;
-    
+
+    /* responsive */
+    --max-width-mobile: 450px;
+    --max-width-tablet: 869px;
+    --min-width-wide-screen: 2361px;
 
     font-size: 62.5%; /*pour que 1rem = 10px*/
 }
@@ -113,7 +117,9 @@
     /* --background-color-1: 185, 185, 255; */
     --background-color-1: 210, 210, 255;
     /* --background-color-2: 170, 170, 220; */
-    --background-color-2: 180, 180, 220;
+    /* 200, 200, 240 */
+    /* --background-color-2: 180, 180, 220; */
+    --background-color-2: 200, 200, 240;
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;
 
@@ -162,7 +168,9 @@
 :root.performance ::placeholder,
 :root.performance ::after {
     animation-duration: 0s !important;
+    animation-delay: 0s !important;
     transition: 0s !important;
+    transition-delay: 0s !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     filter: none !important;

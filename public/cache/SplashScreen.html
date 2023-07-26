@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/public/images/EDP-logo-favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/public/images/EDP-logo-favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
     <title>Ecole Directe Plus</title>
 </head>
 <body>
     <style>
         body {
-            background-color: blue;
+            background-color: rgb(24, 24, 41);
         }
         
         svg#loading-logo {
@@ -20,29 +22,7 @@
         }
     </style>
 
-    <svg id="loading-logo" viewBox="0 0 91 86" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M89.9985 24V0H31.9985C21.3319 0.833333 0 7.3 0 38.5C5.50049 26.5 17.499 24 21.4985 24H89.9985Z" fill="url(#paint0_linear_740_7)"/>
-        <path d="M90.0017 55V31.5H27.0016C-9.00047 31.5 -9.00055 86 27.0016 86H90.0017V62.5H27.0016C22.0011 62.5 22.0013 55 27.0016 55H90.0017Z" fill="url(#paint0_linear_740_7)"/>
-        <defs>
-            <linearGradient id="paint0_linear_740_7" x1="0" y1="18.5785" x2="86.6385" y2="18.5785" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#B4C9FF"/>
-                <stop offset="1" stop-color="#C1B7FF"/>
-            </linearGradient>
-        </defs>
-    </svg>
     <script>
-        console.log("splash screen")
-        const loadingAnimation = document.getElementById("loading-logo");
-        function getAnimationProgress(element) {
-            const computedStyle = window.getComputedStyle(element);
-            const animationDuration = parseFloat(computedStyle.animationDuration);
-            const currentTime = parseFloat(computedStyle.animationPlayState === 'running' ? computedStyle.animationCurrentTime : 0);
-            console.log("time", computedStyle.animationCurrentTime)
-            console.log("animation", animationDuration)
-            const progress = (currentTime / animationDuration) * 100;
-            return progress;
-        }
-        
         const url = '/index.html';
         const init = {
             method: 'GET',
@@ -52,7 +32,6 @@
 
         const request = new Request(url, init);
         
-        console.log("aled")
         fetch(request)
             .then((reponse) => reponse.text())
             .then((html) => {

@@ -1,16 +1,16 @@
 
 
 import "./graphics.css"
-export default function TimetableIcon ({ className, id, alt }) {
+export default function TimetableIcon ({ alt, ...props }) {
     return (
-<svg viewBox="0 0 81 73" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M26.3016 3V59.89" className="stroke-text-main" strokeWidth="4"/>
-<path d="M3 41H73" className="stroke-text-main" strokeWidth="4"/>
-<path d="M50 49L50 3" className="stroke-text-main" strokeWidth="4"/>
-<path d="M72.9049 22H3" className="stroke-text-main" strokeWidth="4"/>
-<path d="M63.6756 40.9264H62.9185H62.1613C54.3065 40.9264 47.9388 47.294 47.9388 55.1489C47.9388 63.0038 54.3065 69.3714 62.1614 69.3714H63.6756C71.5305 69.3714 77.8981 63.0038 77.8981 55.1489C77.8981 47.294 71.5305 40.9264 63.6756 40.9264Z" className="stroke-text-main" strokeWidth="4"/>
-<path d="M64.5829 55.7716V47.332C64.5829 46.4128 63.8377 45.6676 62.9185 45.6676C61.9993 45.6676 61.2541 46.4128 61.2541 47.332V54.3591L56.8011 57.6811C56.0615 58.2329 55.9494 59.2982 56.5582 59.9918C57.097 60.6057 58.0148 60.7082 58.6758 60.2283L64.4472 56.038C64.5324 55.9761 64.5829 55.877 64.5829 55.7716Z" className="fill-text-main"/>
-<path d="M48.7711 59.89H15C8.37257 59.89 3 54.5174 3 47.89V15C3 8.37258 8.37258 3 15 3H60.9049C67.5323 3 72.9049 8.37258 72.9049 15V44.8774" className="stroke-text-main" strokeWidth="4"/>
+<svg aria-label={alt} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+<path d="M33.4443 16V80.5628" className="stroke-text-main" strokeWidth="6"/>
+<path d="M7 59.1252H86.4409" className="stroke-text-main" strokeWidth="6"/>
+<path d="M59.8286 67.65L59.8286 16" className="stroke-text-main" strokeWidth="6"/>
+<path d="M86.333 37.5625H7" className="stroke-text-main" strokeWidth="6"/>
+<path d="M75.8597 59.0415H75.0004H74.1412C65.2269 59.0415 58.0005 66.2679 58.0005 75.1822C58.0005 84.0965 65.2269 91.3229 74.1412 91.3229H75.8596C84.7739 91.3229 92.0003 84.0965 92.0003 75.1822C92.0003 66.2679 84.7739 59.0415 75.8597 59.0415Z" className="stroke-text-main" strokeWidth="6"/>
+<path d="M77.0437 76.1122V67.6492C77.0437 66.4606 76.0802 65.4971 74.8917 65.4971C73.7031 65.4971 72.7396 66.4606 72.7396 67.6492V74.1054L68.8855 77.5741C68.0334 78.341 67.9399 79.6442 68.6738 80.5248C69.4319 81.4346 70.7859 81.5525 71.6899 80.7876L76.9328 76.3513C77.0032 76.2918 77.0437 76.2043 77.0437 76.1122Z" className="fill-text-main"/>
+<path d="M58.9442 80.5628H19C12.3726 80.5628 7 75.1902 7 68.5628V28C7 21.3726 12.3726 16 19 16H74.333C80.9604 16 86.333 21.3726 86.333 28V63.5254"className="stroke-text-main" strokeWidth="6"/>
 </svg>
 
 	)

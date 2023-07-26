@@ -1,0 +1,134 @@
+
+
+#windows-container  {
+    /* height: 100%; */
+    display: flex;
+    min-height: 100%;
+    padding: 30px;
+}
+
+#windows-container #floating-portal {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+.windows-layout {
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: 100%;
+    
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(20px, 3vw, 50px);
+}
+.windows-layout .d-row {
+    flex-direction: row;
+}
+.windows-layout .d-column {
+    flex-direction: column;
+}
+
+.window {
+    background-color: rgb(var(--background-color-2));
+    border-radius: 15px;
+    flex-grow: 1;
+    flex-basis: 0;
+    /* min-height: 300px; */
+
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: hidden;
+    box-shadow: var(--box-shadow-window);
+
+    opacity: 0;
+    scale: 0.85;
+    animation: go-in 0.5s ease forwards;
+    /* transition: 0.1s; */
+}
+.window.moving {
+    background-color: rgba(135, 207, 235, 0.26);
+    outline: 2px dashed skyblue;
+    box-shadow: none;
+}
+.window.moving * {
+    visibility: hidden
+}
+
+#floating-portal .window {
+    max-width: none; /* pour l'affichage mobile */
+    opacity: 1;
+    scale: 1;
+    transition: scale 0.1s ease;
+    animation: none;
+    cursor: grabbing;
+}
+#floating-portal .window * {
+    cursor: grabbing;
+}
+#floating-portal .window:hover {
+    scale: 1.05;
+}
+
+.window .window-header {
+    background-color: rgb(var(--background-color-1));
+    min-height: 50px;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow-window);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: grab;
+}
+.window .window-header h2 {
+    text-align: center;
+    font-size: var(--font-size-20);
+}
+.window .window-header:active {
+    cursor: grabbing;
+}
+.window .window-header * {
+    pointer-events: none;
+}
+
+.window .window-content {
+    flex-grow: 1;
+    /* temp pour centrer le numéro de window */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+@media only screen and (max-width: 869px) {
+    #windows-container {
+        min-height: 0;
+    }
+    
+    .windows-layout {
+        flex-flow: column nowrap !important;
+        flex-basis: auto;
+        width: 100%;
+        gap: 40px;
+    }
+    .window {
+        max-width: 100%;
+        overflow: visible;
+    }
+}
+
+
+@keyframes go-in {
+    from {
+        opacity: 0;
+        scale: 0.85;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+

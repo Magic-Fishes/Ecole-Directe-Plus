@@ -1,6 +1,6 @@
-import { useState } from "react"
-import "./TextInput.css"
-import WarningMessage from "../WarningMessage"
+import { useState } from "react";
+import "./TextInput.css";
+import WarningMessage from "../WarningMessage";
 
 export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon="", onWarning, className="", id="", ...props }) {
     const [warningMessageState, setWarningMessageState] = useState("");

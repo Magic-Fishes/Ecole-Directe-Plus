@@ -5,6 +5,14 @@
     height: 100vh;
 }
 
+#app-loading .edp-logo-full-width {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    height: 50px;
+    width: auto;
+}
+
 #loading-box {
     width: 75%;
     position: absolute;
@@ -29,7 +37,11 @@
     font-size: 24px;
 }
 
-#loading-box #random-sentence {
+#loading-box #loading-screen-tip {
     margin-top: 25px;
     color: rgb(var(--text-color-alt))
+}
+
+#app-loading #edp-version {
+    z-index: 0;
 }

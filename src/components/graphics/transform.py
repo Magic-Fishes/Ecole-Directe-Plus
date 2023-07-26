@@ -113,17 +113,16 @@ export default function """ + fileName + """ ({ className, id, alt }) {
         root = [tree.getroot()]
         modifyChildren(root)
         root = root[0] # g pas envie de parler de ça tllmt g fait n'imp là dessus mais aled
-        title = ET.Element("title")
-        title.text = "{alt}"
-        root.insert(0, title)
+        # title = ET.Element("title")
+        # title.text = "{alt}"
+        # root.insert(0, title)
 
         # convert as a str
         svgFile = ET.tostring(root, encoding="utf-8", method="xml").decode()
 
         # average text modifications to add jsx specifications
         svgFile = svgFile.replace("ns0:", "").replace(":ns0", "")
-        svgFile = svgFile.replace("<svg", "<svg className={className} id={id}")
-        svgFile = svgFile.replace("</title>", "</title>\n")
+        svgFile = svgFile.replace("<svg", "<svg className={className} id={id} aria-label={alt}")
 
         with open("./src/inline/" + fileName + ".jsx", "w") as f:
             f.write(inlineFile + svgFile + "\n\t)\n}")

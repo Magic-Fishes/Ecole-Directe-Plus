@@ -6,7 +6,7 @@ import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 
 
-export default function Root({ currentEDPVersion, token, accountsList, setDisplayThemeState, getDisplayTheme, toggleThemeTransitionAnimation, setDisplayModeState, getDisplayMode, activeAccount, logout, getIsTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, setDisplayThemeState, getDisplayTheme, toggleThemeTransitionAnimation, setDisplayModeState, getDisplayMode, activeAccount, logout, getIsTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -39,6 +39,24 @@ export default function Root({ currentEDPVersion, token, accountsList, setDispla
 
     function redirectToLogin() {
         navigate("/login");
+    }
+
+    const fakeLogin = () => {
+        const fakeToken = "thisisafaketoken";
+        const fakeAccountsList = [
+            {
+                accountType: "E",
+                id: "0001",
+                firstName: "Guest",
+                lastName: "",
+                email: "ecole.directe.plus@gmail.com",
+                picture: "",
+                schoolName: "École de la République",
+                class: ["1G4", "Première G4"]
+            }
+        ];
+
+        getUserInfo(fakeToken, fakeAccountsList)
     }
 
 
@@ -80,7 +98,7 @@ export default function Root({ currentEDPVersion, token, accountsList, setDispla
             redirectToApp();
             console.log("redirected to app")
         }
-    }, [location, token, accountsList, activeAccount])
+    }, [location, token, accountsList])
 
 
     // - - - - - - - - - - - - - - - - - - - - //
@@ -91,8 +109,8 @@ export default function Root({ currentEDPVersion, token, accountsList, setDispla
         const shortcuts = [
             { keys: ["t", "T"], trigger: switchDisplayTheme, message: "Le thème a été changé avec succès" },
             { keys: ["d", "D"], trigger: switchDisplayMode, message: "Le mode d'affichage a été changé avec succès" },
-            { keys: ["ArrowLeft"], trigger: () => changePageIdBy(-1) },
-            { keys: ["ArrowRight"], trigger: () => changePageIdBy(1) }
+            { keys: ["ArrowLeft"], trigger: () => changePageIdBy(-1, location, navigate) },
+            { keys: ["ArrowRight"], trigger: () => changePageIdBy(1, location, navigate) }
         ]
 
         function handleKeyDown(event) {
@@ -132,10 +150,10 @@ export default function Root({ currentEDPVersion, token, accountsList, setDispla
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
         }
-    }, []);
+    }, [location, navigate]);
 
     // changement de page
-    const changePageIdBy = (delta) => {
+    const changePageIdBy = (delta, location, navigate) => {
         console.log("Root")
         console.log(location)
         let siteMap;
@@ -209,6 +227,7 @@ export default function Root({ currentEDPVersion, token, accountsList, setDispla
                 {isAdmin && <input type="button" onClick={() => { navigate("/app/dashboard") }} value="DASHBOARD" />}
                 {isAdmin && <input type="button" onClick={() => { navigate("/app/grades") }} value="GRADES" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
+                {isAdmin && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST" />}
                 {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
                 {isAdmin && <select title="Display theme" value={localStorageDisplayThemeMirror} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
                     <option value="auto">THEME: AUTO</option>

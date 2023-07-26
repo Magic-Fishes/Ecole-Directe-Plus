@@ -14,7 +14,7 @@ export default function Error404() {
 
     const location = useLocation()
 
-    console.log("erreur 404:", location)
+    console.log("Erreur 404:", location)
 
     return (
         <div id="error-404">

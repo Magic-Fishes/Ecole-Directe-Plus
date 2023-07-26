@@ -17,8 +17,10 @@
     background-color: rgba(var(--text-color-main), 0.10);
 }
 .header-button:hover, .header-button:focus-visible {
-    /* background-color: #FFF5 */
     background-color: rgba(var(--text-color-main), 0.15);
+}
+.header-button:active {
+    background-color: rgba(var(--text-color-main), 0.20);
 }
 
 .header-button svg {

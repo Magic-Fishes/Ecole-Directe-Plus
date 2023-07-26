@@ -15,9 +15,10 @@
     width: 100%;
     height: inherit;
     max-height: 100px;
-    max-width: 2400px;
+    max-width: 2360px;
     display: block;
     margin: 0 auto;
+    z-index: 1;
 }
 
 .header-menu {
@@ -44,6 +45,9 @@
     
     /* background-color: red; */
 }
+.header-logo-container a {
+    outline: none;
+}
 
 .header-logo-container #header-logo {
     height: 60px;
@@ -52,6 +56,9 @@
 }
 .header-logo-container #header-logo:hover {
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+}
+.header-logo-container #header-logo:active {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
 }
 
 /* - - - navbar - - - */
@@ -105,6 +112,9 @@ li#messaging.header-button-container { order: 5; }
 main.content {
     height: 100%;
     overflow: auto;
+    width: 100%;
+    max-width: 2360px;
+    margin: 0 auto;
 }
 
 @media only screen and (max-width: 969px) {
@@ -137,6 +147,25 @@ main.content {
 }
 
 @media only screen and (max-width: 450px) {
+    .header-menu {
+        padding-bottom: 25px;
+    }
+    
+    .header-button .icon-container svg {
+        height: 45px
+    }
+    .header-button .notifications {
+        left: 35px;
+    }
+}
+
+@media only screen and (min-width: 2361px) {
+    .header-menu {
+        border-radius: 0 0 20px 20px;
+    }
+}
+
+/* @media only screen and (max-width: 450px) {
     .header-container {
         max-height: 70px;
     }
@@ -146,7 +175,7 @@ main.content {
     .header-button .notifications {
         left: 35px;
     }
-}
+} */
 
 /* header.header-menu {
     position: sticky;

@@ -1,7 +1,7 @@
-serviceWorkerVersion = "V1"
+serviceWorkerVersion = "V2"
 const CACHED_FILES = [
-    "/public/cache/NetworkError.html",
-    "/public/cache/SplashScreen.html"
+    "/cache/NetworkError.html",
+    "/cache/SplashScreen.html"
 ]
 
 self.addEventListener("install", (event) => {
@@ -33,8 +33,8 @@ self.addEventListener("fetch", (event) => {
         event.respondWith(
             (async () => {
                 try {
-                    const SplashScreen = await caches.match("/public/cache/SplashScreen.html")
-                    const mainPage = await fetch(event.request); // ici pour que s'il y a pas de co, il attende pas comme un autiste
+                    const SplashScreen = await caches.match("/cache/SplashScreen.html");
+                    const mainPage = await fetch(event.request, { redirect: 'follow' });
                     if (SplashScreen) {
                         return SplashScreen;
                         // return mainPage;
@@ -43,7 +43,7 @@ self.addEventListener("fetch", (event) => {
                 } catch (error) {
                     console.error("error while fetching main files");
                     console.error(error.message);
-                    return await caches.match("/public/cache/NetworkError.html");
+                    return await caches.match("/cache/NetworkError.html");
                 }
             })()
         )

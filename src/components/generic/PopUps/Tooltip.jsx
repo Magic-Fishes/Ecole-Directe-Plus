@@ -18,19 +18,19 @@ import {
     safePolygon,
     useMergeRefs,
     FloatingPortal
-} from '@floating-ui/react';
+} from "@floating-ui/react";
 // Check out the FloatingUI docs for more information : https://floating-ui.com/docs/react
 
 import './Tooltip.css'
 
 
-function useTooltip({ ...options }) {
+function useTooltip(options) {
     // available options:
     // isOpen (bool) ; placement (str: "top" ; "right" ; ...) ; animationDuration (int: ms) ; delay (int: ms) ;
     // restDuration (int: ms) ; restFallbackDuration (int: ms) ; disableSafePolygon (bool)
     // disableHover (bool) ; disableFocus (bool) ; disableClick (bool) ; disableDismiss (bool)
     
-    const [isOpen, setIsOpen] = useState(options.isOpen ?? false); 
+    const [isOpen, setIsOpen] = useState(options.isOpen ?? false);
 
     const arrowRef = useRef(null);
 
@@ -54,7 +54,7 @@ function useTooltip({ ...options }) {
     const hover = useHover(context, {
         enabled: (options.disableHover ?? true),
         restMs: (options.restDuration ?? 0),
-        delay: (options.restDuration ? {open: options.restFallbackDuration} : (options.delay ?? 0)),
+        delay: (options.restDuration ? {open: options.restFallbackDuration} : {open: (options.delay ?? 0)}),
         handleClose: ((options.disableSafePolygon === undefined || options.disableSafePolygon) ? safePolygon() : null)
     });
 
@@ -113,7 +113,7 @@ function useTooltip({ ...options }) {
 const TooltipContext = createContext(null);
 
 function useTooltipContext() {
-    // Fonction sécurisée pour récupérer le context
+    // Fonction pour sécuriser la récupération du context
     const context = useContext(TooltipContext);
 
     if (context === null) {

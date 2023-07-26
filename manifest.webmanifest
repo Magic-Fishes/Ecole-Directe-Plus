@@ -9,7 +9,7 @@
     "background_color": "#181829",
     "icons": [
         {
-            "src": "/public/images/EDP-Logo-light-manifest.png",
+            "src": "/images/EDP-Logo-light-manifest.png",
             "sizes": "144x144",
             "type": "image/png"
         }

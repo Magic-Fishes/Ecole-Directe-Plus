@@ -1,13 +1,12 @@
 
 import "./graphics.css"
-export default function MessagingIcon ({ className, id, alt }) {
+export default function MessagingIcon ({ alt, ...props }) {
     return (
-<svg className={className} id={id} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-<title>{alt}</title>
-<path d="M90.7662 21H10C6.68629 21 4 23.6863 4 27V73.5492C4 76.8629 6.6863 79.5492 10 79.5492H90.7662C94.0799 79.5492 96.7662 76.8629 96.7662 73.5492V27C96.7662 23.6863 94.0799 21 90.7662 21Z" className="stroke-text-main" strokeWidth="6" />
-<path d="M5.96289 22.4512L46.4414 57.8529C48.6998 59.828 52.07 59.8314 54.3323 57.8607L94.9828 22.4512" className="stroke-text-main" strokeWidth="6" />
-<path d="M94.0906 78.0533L66.3511 48.3735" className="stroke-text-main" strokeWidth="6" />
-<path d="M5.24805 79.1811L34.415 48.3735" className="stroke-text-main" strokeWidth="6" />
+<svg aria-label={alt} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+<path d="M87.1429 23H12C8.68629 23 6 25.6863 6 29V72C6 75.3137 8.68629 78 12 78H87.1429C90.4566 78 93.1429 75.3137 93.1429 72V29C93.1429 25.6863 90.4566 23 87.1429 23Z" className="stroke-text-main" strokeWidth="6"/>
+<path d="M7.84375 24.3633L45.6295 57.41C47.8879 59.3851 51.2581 59.3885 53.5204 57.4178L91.4674 24.3633" className="stroke-text-main" strokeWidth="6"/>
+<path d="M90.6293 76.595L64.5713 48.7144" className="stroke-text-main" strokeWidth="6"/>
+<path d="M7.17236 77.6544L34.5712 48.7144" className="stroke-text-main" strokeWidth="6"/>
 </svg>
 	)
 }
