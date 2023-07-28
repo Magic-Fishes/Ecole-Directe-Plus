@@ -60,7 +60,7 @@ export default function ScrollShadedDiv({ id, className = "", children, onScroll
     return (
         <div className={`scroll-shaded-div ${className}`} id={id}>
             <div className="top-shadow" ref={topShadowRef}></div>
-            <div className="content" ref={bufferRef} onScroll={() => { handleScroll(); if(onScroll){onScroll(event)} }} {...props}>
+            <div className="content" ref={bufferRef} onScroll={(event) => { handleScroll(); if(onScroll) { onScroll(event) } }} {...props}>
                 {children}
             </div>
             <div className="bottom-shadow" ref={bottomShadowRef}></div>

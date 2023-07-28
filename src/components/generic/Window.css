@@ -44,12 +44,13 @@
 
     opacity: 0;
     scale: 0.85;
-    animation: go-in 0.5s ease forwards;
+    /* animation: go-in 0.5s ease forwards; */
+    animation: go-in 0.5s var(--timing-function-spring-effect) forwards;
     /* transition: 0.1s; */
 }
 .window.moving {
-    background-color: rgba(135, 207, 235, 0.26);
-    outline: 2px dashed skyblue;
+    background-color: rgba(0, 240, 255, 0.14);
+    outline: 2px dashed rgb(98, 194, 207);
     box-shadow: none;
 }
 .window.moving * {
@@ -57,9 +58,11 @@
 }
 
 #floating-portal .window {
+    /* display: none; */
     max-width: none; /* pour l'affichage mobile */
     opacity: 1;
     scale: 1;
+    /* transition: scale 0.1s var(--timing-function-spring-effect); */
     transition: scale 0.1s ease;
     animation: none;
     cursor: grabbing;
@@ -70,10 +73,17 @@
 #floating-portal .window:hover {
     scale: 1.05;
 }
+#floating-portal .window.unfloating {
+    scale: 1;
+}
+#floating-portal .window.unfloating * {
+    cursor: grab;
+}
 
 .window .window-header {
     background-color: rgb(var(--background-color-1));
-    min-height: 50px;
+    /* min-height: 50px; */
+    min-height: 45px;
     border-radius: 15px;
     box-shadow: var(--box-shadow-window);
     display: flex;

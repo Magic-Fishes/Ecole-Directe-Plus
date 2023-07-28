@@ -27,6 +27,8 @@ const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { 
 const Homeworks = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Homeworks } }));
 const Timetable = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Timetable } }));
 const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
+const Settings = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Settings } }));
+const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
 
 
 // import CoreApp from "./components/app/CoreApp"
@@ -122,7 +124,7 @@ EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD
       https://github.com/Magic-Fishes/Ecole-Directe-Plus
 `, "color: #615fda");
 
-const currentEDPVersion = "0.0.7";
+const currentEDPVersion = "0.1.5";
 const apiVersion = "4.31.1";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
@@ -565,17 +567,24 @@ export default function App() {
                     // },
                     element: (!(tokenState && accountsListState)
                               ? <Navigate to="/login" />
-                              : <Suspense fallback={<AppLoading />}>
-                                  <Header
-                                      token={tokenState}
-                                      accountsList={accountsListState}
-                                      setActiveAccount={setActiveAccount}
-                                      activeAccount={activeAccount}
-                                      logout={logout}
-                                      />
-                            </Suspense>),
+                              : <Header
+                                    currentEDPVersion={currentEDPVersion}
+                                    token={tokenState}
+                                    accountsList={accountsListState}
+                                    setActiveAccount={setActiveAccount}
+                                    activeAccount={activeAccount}
+                                    logout={logout}
+                                    />),
                     path: "app",
                     children: [
+                        {
+                            element: <Settings />,
+                            path: "settings"
+                        },
+                        {
+                            element: <Account />,
+                            path: "account"
+                        },
                         {
                             element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
                             path: ":userId",
@@ -654,7 +663,9 @@ export default function App() {
 
     return (
         <>
-            <RouterProvider router={router} />
+            <Suspense fallback={<AppLoading />}>
+                <RouterProvider router={router} />
+            </Suspense>
         </>
     );
 }

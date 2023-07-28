@@ -18,7 +18,7 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import "./Header.css";
 
 
-export default function Header({ token, accountsList, setActiveAccount, activeAccount, logout }) {
+export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, logout }) {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -147,6 +147,7 @@ export default function Header({ token, accountsList, setActiveAccount, activeAc
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
+                            <div id="version-tag">{currentEDPVersion}</div>
                         </Link>
                     </div>
     

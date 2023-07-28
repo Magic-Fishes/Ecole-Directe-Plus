@@ -13,6 +13,7 @@ import {
 import "./Dashboard.css";
 
 export default function Dashboard({ }) {
+    const navigate = useNavigate();
     // States
 
     // Behavior
@@ -20,12 +21,12 @@ export default function Dashboard({ }) {
     // JSX DISCODO
     return (
         <div id="dashboard">
-            <WindowsContainer>
+            <WindowsContainer allowWindowsManagement={true}>
                 <WindowsLayout direction="row">
                     <WindowsLayout direction="column" growthFactor={2.5}>
                         <WindowsLayout direction="row">
                             <Window>
-                                <WindowHeader>
+                                <WindowHeader onClick={() => {navigate("../grades"); console.log("clicked!")}}>
                                     <h2>Dernière notes</h2>
                                 </WindowHeader>
                                 <WindowContent>

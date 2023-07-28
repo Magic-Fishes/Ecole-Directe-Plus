@@ -47,6 +47,20 @@
 }
 .header-logo-container a {
     outline: none;
+    position: relative;
+}
+.header-logo-container #version-tag {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translate(55%, 50%);
+    background-color: rgb(var(--background-color-1));
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-12);
+    padding: 4px 7px;
+    border-radius: 5px;
+    pointer-events: none;
+    
 }
 
 .header-logo-container #header-logo {

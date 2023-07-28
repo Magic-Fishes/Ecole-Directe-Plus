@@ -56,7 +56,8 @@
 :root.dark {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
-    --text-color-alt: 170, 170, 238;
+    /* --text-color-alt: 170, 170, 238; */
+    --text-color-alt: 180, 180, 240;
     
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
@@ -110,6 +111,7 @@
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
+    /* --text-color-alt: 76, 76, 184; */
     --text-color-alt: 76, 76, 184;
     
     /* --background-color-0: 228, 228, 255; */
@@ -278,6 +280,7 @@ p.error-message {
     /* backdrop-filter: brightness(1.5); */
     /* padding: 2px; */
     outline: 2px solid currentcolor;
+    /* outline-offset: 5px; */
     border-radius: 4px;
 }
 
