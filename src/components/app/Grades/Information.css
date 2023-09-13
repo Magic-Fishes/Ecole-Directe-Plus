@@ -1,0 +1,110 @@
+
+.information .element-informations {
+    padding: 10px;
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.information .element-informations hr {
+    height: 2px;
+    width: 100%;
+    background-color: rgba(var(--text-color-alt), .5);
+    border: none;
+}
+.information .selected-coefficient {
+    text-align: center;
+    font-size: var(--font-size-14);
+    color: rgb(var(--text-color-alt));
+    margin-bottom: 5px;
+}
+
+.information .grade-zone {
+    width: 100%;
+    /* min-height: 70px; */
+    margin-block: 5px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.information .grade-zone > div {
+    text-align: center;
+    flex-basis: 24%;
+    max-width: 85px;
+}
+
+.information .number-name {
+    margin-bottom: 5px;
+    /* font-size: var(--font-size-18); */
+}
+
+.information .number-value {
+    padding: 5px 0px;
+    background-color: rgb(var(--border-color-0));
+    border-radius: 10px;
+    width: 100%;
+}
+
+.information .info-zone {
+    padding: 10px;
+    display: flex;
+    flex-grow: 1;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.information .text {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 5px;
+}
+
+.information .files {
+    padding-block: 10px;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    gap: 5px;
+}
+
+.information .badges-zone {
+    padding-bottom: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.information .badges-zone .badge {
+    vertical-align: middle;
+}
+
+.information .element-informations .appreciation {
+    margin-top: 5px;
+    padding-left: 7px;
+    border-left: 3px solid rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt));
+}
+
+.information .no-selected-grades {
+    padding-block: 10px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.information .no-selected-grades svg {
+    min-height: 70px;
+    max-height: 120px;
+    height: 60%;
+}
+
+.information .no-selected-grades p {
+    text-align: center;
+    width: 70%;
+    color: rgb(var(--text-color-alt));
+}

@@ -1,0 +1,118 @@
+
+a.grade {
+    text-decoration: none;
+    /* padding-inline: 10px; */
+    height: 2.5em;
+    outline: none;
+    -webkit-user-drag: none;
+    cursor: default;
+}
+
+a.grade.selectable {
+    margin-right: 10px;
+    border: 2px solid transparent;
+    border-radius: 50px;
+    transition: all 0s, border-color .15s, background-color .15s;
+    cursor: pointer;
+}
+
+a.grade.not-significant {
+    opacity: .5 !important;
+}
+
+a.grade.selectable:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-main), 0.10);
+}
+a.grade.selectable:active {
+    background-color: rgba(var(--text-color-main), 0.15);
+}
+
+
+a.grade.selectable.selected {
+    border-color: rgba(var(--text-color-main), 0.7);
+}
+
+a.grade.selectable .grade-container {
+    height: 100%;
+    width: 100%;
+    padding-inline: 10px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* streak */
+a.grade.streak-grade {
+    border: 2px solid #FFEACC;
+    border-inline-width: 0px;
+    padding-block: 3px;
+    border-radius: 0;
+}
+a.grade.streak-grade.selectable:is(:hover, :focus-visible):not(.selected, .maybe-streak, :active) {
+    background-color: #FFEACC77;
+}
+a.grade.streak-grade.selectable.selected {
+    border-color: #FF9600;
+}
+
+a.grade.streak-grade.selectable:active {
+    border-color: #c77400;
+}
+a.grade.streak-grade .grade-container {
+    background-color: #FF9600;
+}
+
+/* début de row */
+/* a.grade:not(.streak-grade) + a.grade.streak-grade, */
+a.grade.streak-grade.start-row {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    /* border-left: 2px solid #FFEACC !important; */
+    border-left-width: 2px !important;
+    padding-left: 3px;
+    /* border-right: none; */
+    border-right-width: 0px;
+    margin: 0;
+}
+/* a.grade:not(.streak-grade) + a.grade.streak-grade .grade-container, */
+a.grade.streak-grade.start-row .grade-container {
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+}
+
+/* milieu de row */
+/* a.grade.streak-grade + a.grade.streak-grade:has(+ a.grade.streak-grade), */
+a.grade.streak-grade.mid-row {
+    border-inline: none;
+    margin: 0;
+}
+
+/* fin de row */
+/* a.grade.streak-grade:not(:has(+ a.grade.streak-grade)), */
+a.grade.streak-grade.end-row {
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    /* border-right: 2px solid #FFEACC !important; */
+    border-right-width: 2px !important;
+    /* border-left: none; */
+    border-left-width: 0px;
+    padding-right: 3px;
+    margin-right: 10px;
+}
+/* a.grade.streak-grade:not(:has(+ a.grade.streak-grade)) .grade-container, */
+a.grade.streak-grade.end-row .grade-container {
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+
+/* note de streak qui n'up plus la streak car passée */
+a.grade.streak-grade.maybe-streak {
+    border-color: #FFEACC3F;
+    filter: grayscale(1);
+}
+a.grade.streak-grade.maybe-streak .grade-container {
+    background-color: #FF96003F;
+}

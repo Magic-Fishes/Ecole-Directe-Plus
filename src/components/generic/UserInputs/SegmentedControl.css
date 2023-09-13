@@ -6,8 +6,8 @@ fieldset.segmented-control {
     min-width: 0;
     border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
-    -webkit-user-select: none;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 fieldset.segmented-control:focus-within {
@@ -17,8 +17,6 @@ fieldset.segmented-control:focus-within {
 .segmented-control label.option input {
     /* retire l'input du stacking-context */
     position: absolute;
-}
-.segmented-control label.option input:focus {
     outline: none;
 }
 
@@ -36,7 +34,7 @@ fieldset.segmented-control:focus-within {
     background-color: transparent;
     flex-grow: 1;
     outline: none;
-    transition: 0.1s;
+    transition: 0.2s;
     cursor: pointer;
 }
 
@@ -58,6 +56,6 @@ fieldset.segmented-control:focus-within {
 
 .segmented-control label.option.selected {
     background-color: rgb(var(--border-color-0));
-    flex-grow: 1.8;
+    flex-grow: 1.2;
     color: rgb(var(--text-color-main)); /* safari */
 }

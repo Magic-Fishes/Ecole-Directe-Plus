@@ -18,7 +18,7 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
         // Utilise la fonction de nettoyage de useEffect pour supprimer le gestionnaire d'événements lorsque le composant est démonté
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = "";
         }
     }, [])
 

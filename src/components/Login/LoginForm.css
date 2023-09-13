@@ -1,0 +1,39 @@
+
+#login-form :is(.login-input, #submit-login, .login-option) {
+    margin-bottom: 20px;
+}
+
+#login-form .login-option {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+#login-form .text-input-container svg {
+    padding: 6px;
+}
+
+#login-form .login-option a#password-forgotten-link {
+    text-align: right;
+    text-decoration: none;
+    color: rgb(var(--text-color-alt));
+    cursor: pointer;
+}
+
+#login-form .login-option a#password-forgotten-link:hover {
+    color: rgba(var(--text-color-alt), 0.7);
+}
+
+
+.tooltip-content.disclaimer {
+    background-color: rgba(var(--background-color-soft-error), 0.3) !important;
+}
+.tooltip-content.disclaimer svg.floating-arrow {
+    fill: rgba(var(--background-color-soft-error), 0.3);
+}
+

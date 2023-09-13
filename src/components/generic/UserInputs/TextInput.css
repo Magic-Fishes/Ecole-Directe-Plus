@@ -1,5 +1,5 @@
 
-.input-container {
+.text-input-container {
     border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
     padding: 0;
@@ -14,11 +14,11 @@
 }
 
 
-.input-container:hover {
+.text-input-container:hover {
     border-color: rgba(var(--border-color-1), 0.8);
 }
 
-.input-container:focus-within {
+.text-input-container:focus-within {
     background-color: rgba(var(--background-color-focus));
     border-color: rgb(var(--border-color-1));
 }
@@ -36,7 +36,7 @@
     outline: none;
 }
 
-div.input-container:has(:disabled) {
+div.text-input-container:has(:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -45,7 +45,7 @@ input.text-input:disabled {
     cursor: not-allowed;
 }
 
-.input-container svg {
+.text-input-container svg {
     height: 100%;
     width: auto;
     max-width: 50px;

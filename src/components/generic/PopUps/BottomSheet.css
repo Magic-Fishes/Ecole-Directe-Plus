@@ -1,3 +1,6 @@
+body:has(#bottom-sheet) {
+    overflow: hidden;
+}
 
 #bottom-sheet {
     position: fixed;
@@ -6,6 +9,8 @@
     background-color: rgba(0, 0, 0, 0.4);
     animation: 0.5s ease 0s fade-in;
     animation-fill-mode: forwards;
+    z-index: 99;
+    overscroll-behavior: none;
 }
 
 #bottom-sheet.closing {
@@ -22,6 +27,7 @@
     max-width: 800px;
     min-height: 0%;
     max-height: 100%;
+    overscroll-behavior: none;
     
     background-color: rgb(var(--background-color-0));
     padding: 0 25px;
@@ -32,7 +38,6 @@
     animation-fill-mode: forwards;
     transition: 0.3s;
     transition-timing-function: var(--timing-function-spring-effect);
-    z-index: 99;
 }
 
 #bottom-sheet-box.closing {

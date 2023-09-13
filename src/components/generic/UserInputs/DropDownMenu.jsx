@@ -7,36 +7,41 @@ import NotSelectedOption from "../../graphics/NotSelectedOption";
 
 import "./DropDownMenu.css";
 
-export default function DropDownMenu({ name, options, selected, onChange, id="", className="" }) {
+export default function DropDownMenu({ name, options, displayedOptions=options, selected, onChange, id="", className="", ...props }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [optionsState, setOptionsState] = useState(options);
 
-    // Refs
     const dropDownMenuRef = useRef(null);
 
-    /* sélectionne le 1er élément si rien n'est sélectionné */
     useEffect(() => {
         if (!selected) {
-            onChange(optionsState[0]);
+            onChange(options[0]);
         }
     }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            // détecte si la cible du clic appartient au DropDownMenu
             if (event.target !== dropDownMenuRef.current && !dropDownMenuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
                 setIsOpen(false);
             }
         }
 
         if (isOpen) {
             document.addEventListener("click", handleClickOutside);
+            document.addEventListener("keydown", handleKeyDown);
         } else {
             document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("keydown", handleKeyDown);
         }
 
         return () => {
             document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("keydown", handleKeyDown);
         }
     }, [isOpen]);
 
@@ -64,24 +69,24 @@ export default function DropDownMenu({ name, options, selected, onChange, id="",
 
     const handleMiddleMouseButtonDown = (event) => {
         if (event.button === 1) {
-            event.preventDefault();
+            event.preventDefault()
         }
     }
-
+    
     return (
         <div className={`drop-down-menu ${className}` + (isOpen ? " focus" : "")} id={id}>
             <div className="main-container">
                 <button type="button" className="selected" onClick={handleClick} ref={dropDownMenuRef}>
-                    <span id="selected-option-value">{selected}</span>
-                    <DropDownArrow/>
+                    <span id="selected-option-value">{displayedOptions[options.indexOf(selected)]}</span>
+                    <DropDownArrow />
                 </button>
                 <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className="options-container">
-                    {optionsState.map((option) => <div key={option} name={name} className="option-container" >
+                    {options.map((option) => <div key={option} name={name} className="option-container" >
                         <hr /> 
                         <label htmlFor={option} onKeyDown={handleKeyDown} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
                             {option === selected ? <SelectedArrow className="selected-arrow" /> : <NotSelectedOption className="not-selected-option" />}
                             <input type="radio" id={option} name={name} value={option} onClick={onChoose} defaultChecked={option === selected} />
-                            <span className="option-content">{option}</span>
+                            <span className="option-content">{displayedOptions[options.indexOf(option)]}</span>
                         </label>
                     </div>
                     )}

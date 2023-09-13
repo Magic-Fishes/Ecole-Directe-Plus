@@ -1,13 +1,10 @@
 
 import "./graphics.css"
-export default function KeyIcon({ className, id, alt }) {
+export default function KeyIcon ({ className="", id="", alt, ...props }) {
     return (
-        <svg className={className} id={id} xmlns="http://www.w3.org/2000/svg" viewBox="0,0,256,256" fillRule="nonzero">
-            <g stroke="none" fillRule="nonzero" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none">
-                <g transform="scale(10.66667,10.66667)">
-                    <path className="fill-text-main" d="M6.5625,5.01367c-4.10293,0.25319 -7.24977,4.03997 -6.43164,8.35547c0.522,2.755 2.744,4.978 5.5,5.5c3.74715,0.71038 7.08927,-1.57035 8.07227,-4.86914h4.29688v1c0,1.105 0.895,2 2,2c1.105,0 2,-0.895 2,-2v-1c1.105,0 2,-0.895 2,-2c0,-1.105 -0.895,-2 -2,-2h-8.30078c-0.71979,-2.45675 -2.78972,-4.38798 -5.33008,-4.86914c-0.61637,-0.11688 -1.22051,-0.15336 -1.80664,-0.11719zM7,9c1.657,0 3,1.343 3,3c0,1.657 -1.343,3 -3,3c-1.657,0 -3,-1.343 -3,-3c0,-1.657 1.343,-3 3,-3z" />
-                </g>
-            </g>
-        </svg>
-    )
+<svg aria-label={alt} className={className} id={id} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" fill="none" {...props}>
+<path d="M21.6408 20.4103C25.5672 20.4103 28.75 17.2403 28.75 13.3301C28.75 9.41988 25.5672 6.25 21.6408 6.25C17.7145 6.25 14.5317 9.41988 14.5317 13.3301C14.5317 15.1413 15.3583 16.4586 15.3583 16.4586L6.76121 25.0205C6.37544 25.4047 5.83536 26.4036 6.76121 27.3256L7.75318 28.3136C8.13893 28.6429 9.10884 29.1039 9.90243 28.3136L11.0597 27.1611C12.217 28.3136 13.5397 27.655 14.0357 26.9964C14.8623 25.8438 13.8703 24.6912 13.8703 24.6912L14.201 24.3619C15.7881 25.9426 17.1769 25.0205 17.6729 24.3619C18.4996 23.2094 17.6729 22.0568 17.6729 22.0568C17.3423 21.3981 16.681 21.3981 17.5075 20.575L18.4996 19.587C19.2931 20.2456 20.9244 20.4103 21.6408 20.4103Z" className="stroke-text-main" strokeWidth="2" strokeLinejoin="round" />
+<path d="M24.121 13.3302C24.121 14.6942 23.0107 15.8 21.6411 15.8C20.2715 15.8 19.1612 14.6942 19.1612 13.3302C19.1612 11.9661 20.2715 10.8604 21.6411 10.8604C23.0107 10.8604 24.121 11.9661 24.121 13.3302Z" className="stroke-text-main" strokeWidth="2" />
+</svg>
+	)
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    <url>
+        <loc>https://ecole-directe.plus/</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/login</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/login#policy</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/feedback</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/museum</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/account</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/settings</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/dashboard</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/grades</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/homeworks</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/timetable</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/app/messaging</loc>
+    </url>
+</urlset>

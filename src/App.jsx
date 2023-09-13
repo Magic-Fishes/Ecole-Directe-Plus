@@ -1,10 +1,9 @@
 // npm run build
-// zip -r build_history/build-<année>-<mois>-<jour>.zip dist/
+// zip -r build_history/build-<année>-<mois>-<jour>.zip dist
 
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
-    useParams,
     createBrowserRouter,
     RouterProvider
 } from "react-router-dom";
@@ -17,9 +16,10 @@ import ErrorPage from "./components/Errors/ErrorPage";
 import Feedback from "./components/Feedback/Feedback";
 import Canardman from "./components/Canardman/Canardman";
 import Lab from "./components/Lab/Lab";
-import Museum from "./components/Museum/Museum";
+const Museum = lazy(() => import("./components/Museum/Museum"));
 
 import AppLoading from "./components/generic/Loading/AppLoading";
+import { DOMNotification } from "./components/generic/PopUps/Notification";
 
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
@@ -29,103 +29,39 @@ const Timetable = lazy(() => import("./components/app/CoreApp").then((module) =>
 const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
 const Settings = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Settings } }));
 const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
+const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
 
-// import CoreApp from "./components/app/CoreApp"
-// const CoreApp = lazy(() => import("./components/app/CoreApp"));
-
-// lazy loaded routes
-// const Test = import("./components/app/CoreApp")
-//     .then((module) => {
-//         console.log("module", module)
-//         return module
-//     })
-
-// const Header = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module}
-//     })
-// );
-// const Dashboard = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module.Dashboard}
-//     })
-// );
-// const Grades = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module.Grades}
-//     })
-// );
-// const Homeworks = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module.Homeworks}
-//     })
-// );
-// const Timetable = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module.Timetable}
-//     })
-// );
-// const Messaging = lazy(
-//     () => import("./components/app/CoreApp")
-//     .then((module) => {
-//         return {default: module.Messaging}
-//     })
-// );
-
-// import {
-//     Dashboard,
-//     Grades,
-//     Homeworks,
-//     Timetable,
-//     Messaging
-// } from "./components/app/CoreApp"
-
-// const Header = lazy(() => import(/* @vite-ignore */ "./components/app/Header/Header"));
-// const Dashboard = lazy(() => import(/* @vite-ignore */ "./components/app/Dashboard/Dashboard"));
-// const Grades = lazy(() => import(/* @vite-ignore */ "./components/app/Grades/Grades"));
-// const Homeworks = lazy(() => import(/* @vite-ignore */ "./components/app/Homeworks/Homeworks"));
-// const Timetable = lazy(() => import(/* @vite-ignore */ "./components/app/Timetable/Timetable"));
-// const Messaging = lazy(() => import(/* @vite-ignore */ "./components/app/Messaging/Messaging"));
-
-// import Header from "./components/app/Header/Header";
-// import Dashboard from "./components/app/Dashboard/Dashboard";
-// import Grades from "./components/app/Grades/Grades";
-// import Homeworks from "./components/app/Homeworks/Homeworks";
-// import Timetable from "./components/app/Timetable/Timetable";
-// import Messaging from "./components/app/Messaging/Messaging";
-
-
-
-console.log(`%c
-EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
-E::::::::::::::::::::E D:::::::::::::DDD                          
-E::::::::::::::::::::E D::::::::::::::::DD                        
-EE::::::EEEEEEEEE::::E DDD:::::DDDDDD:::::D         +++++++       
-  E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
-  E:::::E                D:::::D      D:::::D       +:::::+       
-  E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
-  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
-  E:::::::::::::::E      D:::::D      D:::::D +:::::::::::::::::+ 
-  E::::::EEEEEEEEEE      D:::::D      D:::::D +++++++:::::+++++++ 
-  E:::::E                D:::::D      D:::::D       +:::::+       
-  E:::::E       EEEEEE   D:::::D     D:::::D        +:::::+       
-EE::::::EEEEEEEE:::::E DDD:::::DDDDDD:::::D         +++++++       
-E::::::::::::::::::::E D::::::::::::::::DD                        
-E::::::::::::::::::::E D:::::::::::::DDD                          
-EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDDD                             
-
-            Looking for curious minds. Are you in?      
-      https://github.com/Magic-Fishes/Ecole-Directe-Plus
-`, "color: #615fda");
+function consoleLogEDPLogo() {
+    console.log(`%c
+                   /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+               #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+            /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+         /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+         %&&&&%/                                            
+        /&&/                                                
+        %/    /#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+           /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+        &&&&&&&&&&&&/                                       
+        &&&&&&&&&&&&\\                                       
+        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+           \\&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+              \\%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
+    
+                Looking for curious minds. Are you in?      
+          https://github.com/Magic-Fishes/Ecole-Directe-Plus 
+`, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
+}
+consoleLogEDPLogo();
 
 const currentEDPVersion = "0.1.5";
-const apiVersion = "4.31.1";
+const apiVersion = "4.38.0";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
@@ -133,115 +69,435 @@ const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
     "505": "Identifiant et/ou mot de passe invalide",
     "522": "Identifiant et/ou mot de passe invalide",
-    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes."
+    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes"
+}
+const defaultSettings = {
+    keepLoggedIn: false,
+    displayTheme: "auto",
+    displayMode: "quality",
+    gradeScale: 20,
+    isGradeScaleEnabled: false,
+    lucioleFont: false,
+    windowArrangement: [],
+    toggleAnimatedWindowApparition: true,
+    dynamicLoading: true,
+    shareSettings: true,
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
-function getDisplayTheme() {
-    if (!localStorage.getItem("displayTheme") || localStorage.getItem("displayTheme") === "auto") {
-        localStorage.setItem("displayTheme", "auto");
-        if (window.matchMedia && prefersDarkMode.matches) {
-            return "dark";
-        } else {
-            return "light";
-        }
-    } else {
-        return localStorage.getItem("displayTheme");
-    }
-}
-
-function getDisplayMode() {
-    return (localStorage.getItem("displayMode") ?? (() => { localStorage.setItem("displayMode", "quality"); return "quality" }));
-}
 
 function createUserLists(accountNumber) {
     const list = [];
     for (let i = 0; i < accountNumber; i++) {
-        list.push([]);
+        list.push(undefined);
     }
     return list;
 }
 
 
-import testGrades from "./testGrades.json"
-// console.log(testGrades)
-// const a = testGrades.data.notes.map((e) => e.date)
-// console.log(a.join("\n"))
+import testGrades from "./testGrades.json";
+import testGrades2 from "./testGrades2.json";
 
+const tokenFromLs = localStorage.getItem("token") ?? "";
+const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
+const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
+let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+
+
+function getSetting(setting, accountIdx, isGlobal=false) {
+    if (isGlobal) {
+        const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
+        return globalSettingsFromLs[setting] ?? defaultSettings[setting];
+    } else if (userSettingsFromLs[accountIdx]) {
+        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+        return userSettingsFromLs[accountIdx][setting] ?? defaultSettings[setting];
+    }
+    return defaultSettings[setting];
+}
+
+function areOccurenciesEqual(obj1, obj2) {
+    if (typeof obj1 !== "object" || typeof obj2 !== "object") {
+        return obj1 === obj2;
+    }
+    if (obj1.length !== obj2.length) {
+        return false;
+    }
+    for (const i in obj1) {
+        if (obj2.hasOwnProperty(i)) {
+            if (!areOccurenciesEqual(obj1[i], obj2[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function initSettings(accountList) {
+    // comment ajouter un setting :
+    // userSettings ici ; defaultSettings
+    const userSettings = [];
+    for (let i = 0; i < (accountList.length || 1); i++) {//Si au login, il y a aucun compte d'enregistré 'ce qui arrive souvent sur la page login bah on considère qu'il y a un seul compte pour pas que les displayTheme et compagnie fasse un AVC et donc soit il y a accountList.length soit il y a 1
+        userSettings.push({
+            displayTheme: {
+                value: getSetting("displayTheme", i),
+                values: ["light", "auto", "dark"]
+            },
+            displayMode: {
+                value: getSetting("displayMode", i),
+                values: ["quality", "balanced", "performance"]
+            },
+            gradeScale: {
+                value: getSetting("gradeScale", i),
+                min: 1,
+                max: 100,
+            },
+            isGradeScaleEnabled: {
+                value: getSetting("isGradeScaleEnabled", i),
+            },
+            lucioleFont: {
+                value: getSetting("lucioleFont", i),
+            },
+            windowArrangement: {
+                value: getSetting("windowArrangement", i),
+            },
+            toggleAnimatedWindowApparition: {
+                value: getSetting("toggleAnimatedWindowApparition", i),
+            },
+            dynamicLoading: {
+                value: getSetting("dynamicLoading", i),
+            },
+        })
+    }
+    return userSettings;
+}
+
+
+const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
+let userIdsFromLs;
+if (keepLoggedInFromLs) {
+    userIdsFromLs = (JSON.parse(localStorage.getItem("userIds")) ?? "{}");
+} else {
+    userIdsFromLs = {};
+}
+
+// optimisation possible avec useCallback
+export const AppContext = createContext(null);
 
 export default function App() {
 
-    const [tokenState, setTokenState] = useState(localStorage.getItem("token") || "");
-    const [accountsListState, setAccountsListState] = useState([]);
-    const [activeAccount, setActiveAccount] = useState(localStorage.getItem("defaultActiveAccount") ?? 0); // idx de l'utilisateur actif
-    const [displayTheme, setDisplayThemeState] = useState(getDisplayTheme());
-    const [displayMode, setDisplayModeState] = useState(getDisplayMode());
-    const [oldTimeoutId, setOldTimeoutId] = useState(null);
-    const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT ? true : false);
-    const [isTabletLayout, setIsTabletLayout] = useState(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT ? true : false);
-    const [preloadedImages, setPreloadedImages] = useState([]);
+    // global account data
+    const [tokenState, setTokenState] = useState(tokenFromLs);
+    const [accountsListState, setAccountsListState] = useState(accountListFromLs);
+    const [userIds, setUserIds] = useState(userIdsFromLs);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
+    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedInFromLs", activeAccount, true));
+
+    // user settings
+    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
+    const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
+
+    // user data
     const [grades, setGrades] = useState([]);
+    const [userData, setUserData] = useState([]);
 
+    // utils
+    const [oldTimeoutId, setOldTimeoutId] = useState(null);
+    const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
+    const [isTabletLayout, setIsTabletLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
-    function getIsTabletLayout() {
-        return isTabletLayout;
+    
+    const lastActiveAccount = useRef(activeAccount);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                                                                                                  //
+    //                                                                                  Gestion Storage                                                                                 //
+    //                                                                                                                                                                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // fonctions pour modifier le userData
+    function changeUserData(data, value) {
+        setUserData((oldData) => {
+            const newData = [...oldData];
+            newData[activeAccount][data] = value;
+            return newData;
+        })
     }
 
-    const isFirstFrame = useRef(true); // permet d'exécuter une fonction dès la 1ère frame (avant un useEffect qui exécute après la 1ère frame)
+    function getUserData(data) {
+        return userData[activeAccount][data]
+    }
+
+    function syncSettings() {
+        console.log("cacacacacaca")
+        setUserSettings((oldSettings) => {
+            const newSettings = [];
+            for (const i in oldSettings) {
+                newSettings[i] = oldSettings[activeAccount];
+            }
+            return newSettings;
+        })
+    }
+    
+    const useUserData = [changeUserData, getUserData,]
+
+    function changeUserSettings(setting, value) { 
+        setUserSettings((oldSettings) => {
+            const newSettings = [...oldSettings];
+            newSettings[activeAccount][setting].value = value;
+            return newSettings;
+        })
+        if (shareSettings) {
+            console.log(shareSettings)
+            syncSettings();
+        }
+    }
+    
+    function defaultChangeUserSettings(setFunction) { 
+        setUserSettings(setFunction)    
+    }
+    
+    function getUserSettingValue(setting) {
+        if (userSettings[activeAccount][setting]) {
+            return userSettings[activeAccount][setting].value;            
+        } else {
+            return undefined;
+        }
+    }
+    
+    function getUserSettingObject(setting) {
+        return userSettings[activeAccount][setting]
+    }
+
+    function useUserSettings(setting="") { 
+        if (setting === "") {
+            return {
+                set: changeUserSettings, // dcp ça c'est la fonction de set qui marche avec les setState((oldState) => newState) (vu que c'est un objet pas trop le choix)
+                get: getUserSettingValue, // ça c'est la fonction pour get la value (tu peux l'utiliser dans les useEffect en mode useEffet(() => {}, [setting.get(settingName)]) et franchement les useEffect avaient l'air assez restreint sur ce qu'on pouvait mettre à la fin donc bonne surprise sinon ca aurait été un enfer)
+                object: getUserSettingObject, // Et ça c'est pour get tout l'objet du setting prcq desfois tu peux avoir besoin des autres caractéristiques du setting(surtout dans Setting.jsx pour les min max et les différent choix de displayMode par exemple)
+            }
+        } else {
+            return {
+                set: (value) => {changeUserSettings(setting, value)},
+                get: () => getUserSettingValue(setting),
+                object: () => getUserSettingObject(setting),
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+
+    useEffect(() => {
+        if (!keepLoggedIn) {
+            localStorage.removeItem("userIds");
+        } else if (userIds.username && userIds.password) {
+            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [keepLoggedIn]);
+
+
+    useEffect(() => {
+        if (!userIds.username || !userIds.password) {
+            setKeepLoggedIn(false);
+        }
+    }, [userIds])
+
+
+    /////////// SETTINGS ///////////
+
+    const globalSettings = {
+        keepLoggedIn: {
+            value: keepLoggedIn,
+            set: setKeepLoggedIn,
+        },
+        shareSettings: {
+            value: shareSettings,
+            set: setShareSettings,
+        },
+    }
+    
+    useEffect(() => {
+        const lsGlobalSettings = {};
+        for (const i in globalSettings) {
+            lsGlobalSettings[i] = globalSettings[i].value;
+        }
+        localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
+        
+        const handleStorageChange = () => {
+            const newLsGlobalSettings = localstorage.getItem("globalSettings")
+            if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
+                for (i in globalSettings) {
+                    globalSettings[i].set(newLsGlobalSettings[i])
+                }
+            }
+        }
+        window.addEventListener("storage", handleStorageChange)
+        
+        return (() => {
+            window.removeEventListener("storage", handleStorageChange);
+        });
+    }, [keepLoggedIn,
+       shareSettings])
+    
+    useEffect(() => {
+        if (shareSettings) {
+            syncSettings();
+        }
+    }, [shareSettings])
+    
+    // useEffect(() => {
+    //     if (isLoggedIn) {
+    //         setUserSettings(initSettings(accountsListState))
+    //     }
+    // }, [isLoggedIn])
+
+    useEffect(() => {
+
+    // handle storing into localStorage
+        
+        const lsUserSettings = []
+        for (let i = 0; i < accountsListState.length; i++) {
+            lsUserSettings[i] = {}
+            for (let n in userSettings[i]) {
+                lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n])
+            }
+        }
+        localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
+
+    // handle getting from localStorage if it changes
+        
+        const handleStorageChange = () => {
+            applyConfigFromLocalStorage();
+            const newLsSettings = initSettings(accountsListState)
+            if (!areOccurenciesEqual(newLsSettings, userSettings)) {
+                setUserSettings(() => newLsSettings)
+            }
+        }
+        window.addEventListener("storage", handleStorageChange)
+
+        return (() => {
+            window.removeEventListener("storage", handleStorageChange);
+        });
+    }, [userSettings]);
+
+    useEffect(() => {
+        localStorage.setItem("oldActiveAccount", activeAccount)
+    }, [activeAccount]);
+
+    function applyConfigFromLocalStorage() {
+        // informations de connexion
+        const token = localStorage.getItem("token");
+        if (token && token !== "none") setTokenState(token);
+        const accountsList = JSON.parse(localStorage.getItem("accountsList"));
+        if (accountsList && accountsList.length > 0) setAccountsListState(accountsList);
+    }
+    
+    useEffect(() => {
+        // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
+        applyConfigFromLocalStorage();
+
+        // Thème
+        const handleOSThemeChange = () => {
+            console.clear();
+            consoleLogEDPLogo();
+            if (getUserSettingValue("displayTheme") === "auto") {
+                document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
+                document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
+                toggleThemeTransitionAnimation();
+            }
+        }
+        prefersDarkMode.addEventListener('change', handleOSThemeChange);
+
+        return (() => {
+            prefersDarkMode.removeEventListener('change', handleOSThemeChange);
+        });
+    }, []);
+
+    const isFirstFrame = useRef(true);
     if (isFirstFrame.current) {
-        // permet d'éviter des bugs vla désagréables
         applyConfigFromLocalStorage();
         isFirstFrame.current = false;
     }
 
-    useEffect(() => {
-        console.log("activeAccount:", activeAccount);
-    }, [activeAccount])
 
-    
+    // TABLET / MOBILE LAYOUT
+
+    function useIsTabletLayout() {
+        return isTabletLayout;
+    }
+    function useIsMobileLayout() {
+        return isMobileLayout;
+    }
+
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
         const handleWindowResize = () => {
-            setIsMobileLayout(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT ? true : false);
-            setIsTabletLayout(window.innerWidth < WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT ? true : false);
+            setIsMobileLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
+            setIsTabletLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+            
+            
+            // dezoom
+            // const computedStyle = getComputedStyle(document.documentElement);
+            // if (window.innerWidth > 869 && window.innerWidth < 1496) {
+            //     document.documentElement.style.zoom = window.innerWidth / 1496;                    
+            // } else {
+            //     document.documentElement.style.zoom = "";                    
+            // }
+            
+            // const newFontSize = ((15/848)*window.innerWidth + 28.5)/100*16;
+            // if (newFontSize < 8) {
+            //     document.documentElement.style.fontSize = "8px";
+            // } else if (newFontSize > 10) {
+            //     document.documentElement.style.fontSize = "";                
+            // } else {
+            //     document.documentElement.style.fontSize = newFontSize;
+            // }
         }
 
         window.addEventListener("resize", handleWindowResize);
+        handleWindowResize()
 
         return () => {
             window.removeEventListener("resize", handleWindowResize);
         }
     }, []);
 
-    // useEffect(() => {
-    //     // Preload les images SUBSTANTIELLES
-    //     function preloadImages() {
-    //         let images = [
-    //             "/images/checked-icon-dark.svg",
-    //             "/images/loading-animation.svg"
-    //         ];
-
-    //         let newPreloadedImages = preloadedImages;
-    //         for (let i = 0; i < images.length; i++) {
-    //             let img = new Image();
-    //             img.src = images[i];
-    //         }
-    //         setPreloadedImages(newPreloadedImages);
-    //     }
-    //     window.addEventListener("load", preloadImages);
-    // }, []);
-
-    useEffect(() => {
-        console.log("token:", tokenState);
-        // dcp ici c'est la reco si tokenState === "" yes
-    }, [tokenState])
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Fetch Functions                                                                                 //
-    //                                                                                                                                                  on voyait pas assez à mon gout  //
+    //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function requireLogin() {
+        setIsLoggedIn(false);
+        localStorage.setItem("token", "none");
+    }
+
+    function loginFromOldAuthInfo(token, accountsList) {
+        if (!!token && token !== "none" && accountsList.length > 0) {
+            console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
+            getUserInfo(token, accountsList);
+            setIsLoggedIn(true);
+        } else {
+            console.log("NO ACCOUNTSLIST: LOGGED OUT");
+            logout();
+        }
+    }
 
     async function fetchLogin(username, password, keepLoggedIn, callback) {
 
@@ -268,11 +524,12 @@ export default function App() {
                 let statusCode = response.code;
                 if (statusCode === 200) {
                     messages.submitButtonText = "Connecté";
+                    setUserIds({ username: username, password: password })
                     if (keepLoggedIn) {
-                        localStorage.setItem("username", username);
-                        localStorage.setItem("password", password);
+                        localStorage.setItem("userIds", JSON.stringify({ username: username, password: password }))
                     }
                     let token = response.token // collecte du token
+                    console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
@@ -289,17 +546,15 @@ export default function App() {
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
                             class: (accounts.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
-                    // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
-                    //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
-                    //     sendToWebhook(piranhaPeche, { message: "OMG !?!?", response: response, options: options });
+                        // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
+                        //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
+                        //     sendToWebhook(piranhaPeche, { message: "OMG !?!?", response: response, options: options });
 
                     } else {
                         // compte parent
                         const email = accounts.email
                         accounts = accounts.profile.eleves;
-                        console.log(accounts)
                         accounts.map((account) => {
-                            console.log(account)
                             accountsList.push({
                                 accountType: "P",
                                 id: account.id,
@@ -312,8 +567,13 @@ export default function App() {
                             })
                         });
                     }
-                    setActiveAccount(localStorage.getItem("defaultActiveAccount") ?? 0);
+                    // - - /!\ : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo - - //
+                    if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
+                        // (JSON.stringify(accountsListState) !== JSON.stringify(accountsList))
+                        resetUserData();
+                    }
                     getUserInfo(token, accountsList);
+                    setIsLoggedIn(true);
                 } else {
                     // si ED renvoie une erreur
                     messages.submitButtonText = "Invalide";
@@ -322,34 +582,47 @@ export default function App() {
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
                         // TODO: Demander dans paramètres pour l'envoi des rapports d'erreurs anonymisés
-                        sendToWebhook(sardineInsolente, options);
+                        function sendToWebhook(targetWebhook, data) {
+                            console.log("data", data);
+                            fetch(
+                                targetWebhook,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "user-agent": navigator.userAgent,
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ content: JSON.stringify(data) })
+                                }
+                            );
+                        }
+                        const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
+                        const error = {
+                            errorMessage: response,
+                        };
+                        sendToWebhook(sardineInsolente, error);
                     }
                 }
-
             })
             .catch((error) => {
                 messages.submitButtonText = "Échec de la connexion";
                 messages.submitErrorMessage = "Error: " + error.message;
             })
             .finally(() => {
-                console.log("messages :", messages)
                 callback(messages)
             })
     }
 
-    useEffect(() => {
-        console.log(grades)
-    }, [grades])
-
-    function fetchUserGrades() {
+    async function fetchUserGrades(controller=(new AbortController())) {
         const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
         // bah enft si le mec change de compte il faudrait juste abort ce fetch tah l'avortement
         const data = {
             anneeScolaire: ""
         }
-        console.log("user:", userId)
+        await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
-            `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get%26v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -357,28 +630,39 @@ export default function App() {
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,
-            }
+                signal: controller.signal
+            },
         )
             .then((response) => response.json())
             .then((response) => {
-                const code = response.code
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 403;
+                } else {
+                    code = response.code;
+                }
+                // const code = response.code;
+                console.log("OH LALA NON:", response);
                 if (code === 200) {
-                    let usersGrades = grades
-                    usersGrades[userId] = response.data.notes
-                    console.log(usersGrades)
-                    setGrades(usersGrades)
+                    console.log("UWU");
+                    let usersGrades = [...grades];
+                    usersGrades[userId] = response.data;
+                    // usersGrades[userId] = testGrades.data;
+                    setGrades(usersGrades);
                     setTokenState(response.token);
-                    console.log(response.data)
-                } else if (code === 520) {
-                    console.log("TOKEN INVALIDE");
-                    logout();
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                    // setTokenState("");
+                    // logout();
                 } else if (code === 403) {
-                    let usersGrades = [...grades]
-                    usersGrades[userId] = testGrades.data.notes
-                    console.log("GRADES :", usersGrades)
-                    setGrades(usersGrades)
-                    setTokenState(response.token);
-                    console.log(testGrades.data)
+                    let usersGrades = [...grades];
+                    usersGrades[userId] = testGrades.data;
+                    // console.log("data:", testGrades2.data)
+                    // usersGrades[userId] = testGrades2.data;
+                    setGrades(usersGrades);
+                    setTokenState((old) => (response.token || old));
                 }
             })
     }
@@ -391,86 +675,67 @@ export default function App() {
 
 
     /* ################################ CONNEXION/DÉCONNEXION ################################ */
-    
+
     function getUserInfo(token, accountsList) {
+        console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
+        console.log("token:", token);
+        console.log("accountsList:", accountsList);
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
-        localStorage.setItem("token", token);
-        localStorage.setItem("accountsList", JSON.stringify(accountsList));
+        setUserData(createUserLists(accountsList.length));
+        // localStorage.setItem("token", token);
+        // localStorage.setItem("accountsList", JSON.stringify(accountsList));
+    }
+
+    function resetUserData() {
+        setUserIds({});
+        setActiveAccount(0);
+        // setKeepLoggedIn(false);
+        setGrades([]);
     }
 
     function logout() {
-        setTokenState("");
-        setAccountsListState([]);
-        setGrades([]);
+        // suppression des informations de connexion
         localStorage.removeItem("token");
         localStorage.removeItem("accountsList");
+        localStorage.removeItem("username");
+        localStorage.removeItem("password");
+        localStorage.removeItem("oldActiveAccount");
+        // suppression des paramètres locaux et globaux
+        localStorage.removeItem("userSettings");
+        localStorage.removeItem("keepLoggedIn");
+        localStorage.removeItem("userIds");
+        setTokenState(() => "");
+        setAccountsListState(() => []);
+        resetUserData();
+        setKeepLoggedIn(false);
+        setIsLoggedIn(false);
     }
-
-    function applyConfigFromLocalStorage() {
-        // informations de connexion
-        const token = localStorage.getItem("token");
-        if (token) setTokenState(token);
-        const accountsList = JSON.parse(localStorage.getItem("accountsList"));
-        if (accountsList) setAccountsListState(accountsList);
-
-        if (token && accountsList) setGrades(createUserLists(accountsList.length));
-
-        const activeAccountIdx = localStorage.getItem("activeAccount");
-        if (activeAccountIdx) setTokenState(activeAccountIdx);
-
-        // informations de configuration
-        // thème
-        setDisplayThemeState(getDisplayTheme());
-        // mode d'affichage
-        setDisplayModeState(getDisplayMode());
-    }
-
-    useEffect(() => {
-        
-        const handleStorageChange = (event) => {
-            console.log("storage changed:");
-            console.log("key:", event.key);
-            console.log("oldValue:", event.oldValue);
-            console.log("newValue:", event.newValue);
-            applyConfigFromLocalStorage()
-        }
-        window.addEventListener("storage", handleStorageChange)
-        applyConfigFromLocalStorage();
-        // Thème
-        const handleOSThemeChange = () => {
-            setDisplayThemeState(getDisplayTheme());
-            toggleThemeTransitionAnimation();
-        }
-        prefersDarkMode.addEventListener('change', handleOSThemeChange);
-        return (() => {
-            window.removeEventListener("storage", handleStorageChange);
-            prefersDarkMode.removeEventListener('change', handleOSThemeChange);
-        });
-    }, []);
 
 
     /* ################################ THEME ################################ */
 
-    // Gestion du thème d'affichage
     useEffect(() => {
-        if (displayTheme === "dark") {
+        const metaThemeColor = document.getElementById("theme-color");
+        if (getUserSettingValue("displayTheme") === "dark") {
             document.documentElement.classList.add("dark");
             document.documentElement.classList.remove("light");
-        } else {
+            metaThemeColor.content = "#181829";
+        } else if (getUserSettingValue("displayTheme") === "light") {
             document.documentElement.classList.add("light");
             document.documentElement.classList.remove("dark");
+            metaThemeColor.content = "#e4e4ff";
+        } else {
+            document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
+            document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
+            metaThemeColor.content = (window.matchMedia('(prefers-color-scheme: dark)').matches ? "#181829" : "#e4e4ff");
         }
-
-        if (localStorage.getItem("displayTheme") !== "auto") {
-            localStorage.setItem("displayTheme", displayTheme);
-        }
-    }, [displayTheme]);
+        toggleThemeTransitionAnimation();
+    }, [getUserSettingValue("displayTheme")]);
 
     function toggleThemeTransitionAnimation() {
-        console.log("displayMode", getDisplayMode())
-        if (getDisplayMode() === "balanced" || getDisplayMode() === "performance") {
+        if (getUserSettingValue("displayMode") === "balanced" || getUserSettingValue("displayMode") === "performance") {
             return 0;
         }
         //  vérifie l'existence d'un timeout actif
@@ -490,9 +755,8 @@ export default function App() {
         document.documentElement.classList.remove("balanced");
         document.documentElement.classList.remove("performance");
 
-        document.documentElement.classList.add(displayMode);
-        localStorage.setItem("displayMode", displayMode);
-    }, [displayMode]);
+        document.documentElement.classList.add(getUserSettingValue("displayMode"));
+    }, [getUserSettingValue("displayMode")]);
 
     /* ################################################################################### */
 
@@ -500,24 +764,31 @@ export default function App() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Root
-                         currentEDPVersion={currentEDPVersion}
-                         token={tokenState}
-                         accountsList={accountsListState}
-                         getUserInfo={getUserInfo}
-                         
-                         setDisplayThemeState={setDisplayThemeState}
-                         getDisplayTheme={getDisplayTheme}
-                         displayTheme={displayTheme} 
-                         toggleThemeTransitionAnimation={toggleThemeTransitionAnimation}
-                         
-                         setDisplayModeState={setDisplayModeState}
-                         displayMode={displayMode}
-                         getDisplayMode={getDisplayMode}
-                         
-                         activeAccount={activeAccount}
-                         logout={logout}
-                         getIsTabletLayout={getIsTabletLayout} />,
+            element:
+                <Root
+                    currentEDPVersion={currentEDPVersion}
+                    token={tokenState}
+                    accountsList={accountsListState}
+                    getUserInfo={getUserInfo}
+                    resetUserData={resetUserData}
+
+                    setDisplayTheme={(value) =>  {changeUserSettings("displayTheme", value)}}
+                    displayTheme={getUserSettingValue("displayTheme")}
+
+                    setDisplayModeState={(value) =>  {changeUserSettings("displayMode", value)}}
+                    displayMode={getUserSettingValue("displayMode")}
+
+                    activeAccount={activeAccount}
+                    setActiveAccount={setActiveAccount}
+                    logout={logout}
+                    useIsTabletLayout={useIsTabletLayout}
+                    
+                    setIsFullScreen={setIsFullScreen}
+                    setting={userSettings}
+                    syncSettings={syncSettings}
+                />
+            ,
+
             errorElement: <ErrorPage />,
             children: [
                 {
@@ -525,7 +796,7 @@ export default function App() {
                     path: "/"
                 },
                 {
-                    element: <Feedback activeUser={(accountsListState && accountsListState[activeAccount])} />,
+                    element: <Feedback activeUser={(accountsListState && accountsListState[activeAccount])} isTabletLayout={isTabletLayout} />,
                     path: "feedback"
                 },
                 {
@@ -542,7 +813,7 @@ export default function App() {
                     path: "museum"
                 },
                 {
-                    element: <Login fetchLogin={fetchLogin} currentEDPVersion={currentEDPVersion} />,
+                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
                     path: "login"
                 },
                 {
@@ -550,40 +821,39 @@ export default function App() {
                     path: "app",
                 },
                 {
-                    // async lazy() {
-                    //     const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
-                    //     // const { Dashboard } = await import("./components/app/CoreApp");
-                    //     return { element: (!(tokenState && accountsListState)
-                    //         ? <Navigate to="/login" />
-                    //         : <Suspense fallback={<AppLoading />}>
-                    //             <Header
-                    //                 token={tokenState}
-                    //                 accountsList={accountsListState}
-                    //                 setActiveAccount={setActiveAccount}
-                    //                 activeAccount={activeAccount}
-                    //                 logout={logout}
-                    //                 />
-                    //         </Suspense>) };
-                    // },
-                    element: (!(tokenState && accountsListState)
-                              ? <Navigate to="/login" />
-                              : <Header
+                    element: ((!tokenState || accountsListState.length < 1)
+                        ? <Navigate to="/login" replace={true} />
+                        : <>
+                            
+                                <Header
                                     currentEDPVersion={currentEDPVersion}
                                     token={tokenState}
                                     accountsList={accountsListState}
                                     setActiveAccount={setActiveAccount}
                                     activeAccount={activeAccount}
+                                    useIsTabletLayout={useIsTabletLayout}
+                                    isFullScreen={isFullScreen}
                                     logout={logout}
-                                    />),
+                                />
+                                {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={userIds.username && userIds.password} />)}
+                        </>),
                     path: "app",
                     children: [
                         {
-                            element: <Settings />,
-                            path: "settings"
+                            element: <Navigate to={`/app/${activeAccount}/account`} />,
+                            path: "account",
                         },
                         {
                             element: <Account />,
-                            path: "account"
+                            path: ":userId/account"
+                        },
+                        {
+                            element: <Navigate to={`/app/${activeAccount}/settings`} />,
+                            path: "settings",
+                        },
+                        {
+                            element: <Settings usersSettings={userSettings[activeAccount]} globalSettings={globalSettings} accountsList={accountsListState} />,
+                            path: ":userId/settings"
                         },
                         {
                             element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
@@ -595,12 +865,6 @@ export default function App() {
                         },
                         {
                             element: <Dashboard />,
-                            // lazy: () => import("./components/app/Header/Header"),
-                            // async lazy() {
-                            //     const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
-                            //     // const { Dashboard } = await import("./components/app/CoreApp");
-                            //     return { element: <Dashboard setActiveAccount={setActiveAccount} activeAccount={activeAccount} /> };
-                            // },
                             path: ":userId/dashboard"
                         },
                         {
@@ -608,12 +872,7 @@ export default function App() {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} />,
-                            // async lazy() {
-                            //     const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
-                            //     // const { Grades } = await import("./components/app/CoreApp");
-                            //     return { element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} /> };
-                            // },
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} />,
                             path: ":userId/grades"
                         },
                         {
@@ -622,11 +881,6 @@ export default function App() {
                         },
                         {
                             element: <Homeworks />,
-                            // async lazy() {
-                            //     const Homeworks = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Homeworks } }));
-                            //     // const { Homeworks } = await import("./components/app/CoreApp");
-                            //     return { element: <Homeworks /> };
-                            // },
                             path: ":userId/homeworks"
                         },
                         {
@@ -635,11 +889,6 @@ export default function App() {
                         },
                         {
                             element: <Timetable />,
-                            // async lazy() {
-                            //     const Timetable = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Timetable } }));
-                            //     // const { Timetable } = await import("./components/app/CoreApp");
-                            //     return { element: <Timetable /> };
-                            // },
                             path: ":userId/timetable"
                         },
                         {
@@ -648,24 +897,35 @@ export default function App() {
                         },
                         {
                             element: <Messaging />,
-                            // async lazy() {
-                            //     const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
-                            //     // const { Messaging } = await import("./components/app/CoreApp");
-                            //     return { element: <Messaging /> };
-                            // },
                             path: ":userId/messaging"
                         },
-                    ]
+                    ],
                 },
             ],
         },
     ]);
 
+    const appContextValue = useMemo(() => ({
+        activeAccount,
+        isLoggedIn,
+        isMobileLayout,
+        isTabletLayout,
+        useUserData,
+        useUserSettings
+    }), [activeAccount,
+        isLoggedIn,
+        isMobileLayout,
+        isTabletLayout,
+        userData, 
+        useUserSettings]);
+
     return (
-        <>
-            <Suspense fallback={<AppLoading />}>
-                <RouterProvider router={router} />
+        <AppContext.Provider value={appContextValue}>
+            <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
+                <DOMNotification>
+                    <RouterProvider router={router} />
+                </DOMNotification>
             </Suspense>
-        </>
+        </AppContext.Provider>
     );
 }

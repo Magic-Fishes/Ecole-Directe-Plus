@@ -1,0 +1,12 @@
+.badge-container {
+    transition: .3s;
+    display: inline-block;
+}
+
+.badge {
+    height: 20px;
+}
+
+.inactivated {
+    opacity: .25;
+}

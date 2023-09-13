@@ -5,19 +5,18 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 
+import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, setDisplayThemeState, getDisplayTheme, toggleThemeTransitionAnimation, setDisplayModeState, getDisplayMode, activeAccount, logout, getIsTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, useIsTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-
+    const createNotification = useCreateNotification();
+    
     const [isNewUser, setIsNewUser] = useState(false);
     const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
     const [popUp, setPopUp] = useState(false);
-    const [isAdmin, setIsAdmin] = useState((!process.env.NODE_ENV || process.env.NODE_ENV === 'development'));
-    // toujours égal à la valeur du displayTheme du local storage -> le but c'est juste d'avoir un state pour permettre au select de se refresh sur onChange (c'est juste visuel)
-    const [localStorageDisplayThemeMirror, setLocalStorageDisplayThemeMirror] = useState(localStorage.getItem("displayTheme"));
-    const [localStorageDisplayModeMirror, setLocalStorageDisplayModeMirror] = useState(localStorage.getItem("displayMode"));
+    const [isAdmin, setIsAdmin] = useState((!process.env.NODE_ENV || process.env.NODE_ENV === "development"));
 
     const commandInputs = useRef([]);
 
@@ -26,7 +25,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     }
 
     function redirectToApp() {
-        navigate(`/app/${activeAccount}/dashboard`);
+        navigate(`/app/${activeAccount}/dashboard`, { replace: true });
     }
 
     function redirectToLab() {
@@ -50,24 +49,52 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 firstName: "Guest",
                 lastName: "",
                 email: "ecole.directe.plus@gmail.com",
-                picture: "",
+                picture: "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
                 schoolName: "École de la République",
-                class: ["1G4", "Première G4"]
-            }
+                class: ["Pcpt", "Précepteur d'exception"]
+            },
         ];
-
+        resetUserData()
         getUserInfo(fakeToken, fakeAccountsList)
     }
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                setIsAdmin(false);
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown);
+        
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);            
+        }
+    }, [])
 
 
     // welcome pop-up
     useEffect(() => {
+        function necessaryResets(oldVersion) {
+            if (oldVersion === "0.0.7") {
+                resetUserData();
+            } else if (oldVersion === "0.1.5") {
+                return 0;
+            } else if (oldVersion === "0.2.1") {
+                return 0;                
+            } else {
+                localStorage.clear();
+            }
+            
+        }
+        
         // localStorage.clear();
         if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
                 setIsNewUser(true);
             } else {
                 setIsNewEDPVersion(true);
+                necessaryResets(localStorage.getItem("EDPVersion"));
             }
         }
     }, [])
@@ -85,16 +112,8 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
     // re-login
 
-    // useEffect(() => {
-    //     if (token && accountsList && !loggedIn) {
-    //         redirectToApp();
-    //         logIn(true);
-    //         console.log("Already logged in, redirected to app");
-    //     }
-    // }, [token, accountsList, loggedIn]);
-
     useEffect(() => {
-        if ((location.pathname === "/login" || location.pathname === "/") && (token && accountsList)) {
+        if ((location.pathname === "/login" || location.pathname === "/") && (!!token && accountsList.length > 0)) {
             redirectToApp();
             console.log("redirected to app")
         }
@@ -107,10 +126,20 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     useEffect(() => {
         const commandPattern = ["Control", "Alt"];
         const shortcuts = [
-            { keys: ["t", "T"], trigger: switchDisplayTheme, message: "Le thème a été changé avec succès" },
-            { keys: ["d", "D"], trigger: switchDisplayMode, message: "Le mode d'affichage a été changé avec succès" },
+            { keys: ["t", "T"], trigger: switchDisplayTheme },
+            { keys: ["d", "D"], trigger: switchDisplayMode, message: (insert) => <span>Le mode d'affichage a basculé sur <span className="emphasis">{insert}</span> avec succès</span> },
+            { keys: ["f", "F"], trigger: toggleFullScreen, message: (insert) => <span>Plein écran <span className="emphasis">{insert ? "activé" : "désactivé"}</span> avec succès</span> },
+            { keys: ["ArrowRight"], trigger: () => changePageIdBy(1, location, navigate) },
             { keys: ["ArrowLeft"], trigger: () => changePageIdBy(-1, location, navigate) },
-            { keys: ["ArrowRight"], trigger: () => changePageIdBy(1, location, navigate) }
+            { keys: ["ArrowUp"], trigger: () => changeAccountIdxBy(-1, location, navigate) },
+            { keys: ["ArrowDown"], trigger: () => changeAccountIdxBy(1, location, navigate) },
+            { keys: ["1", "&"], trigger: () => navigate(`/app/${activeAccount}/dashboard`) },
+            { keys: ["2", "é", "~"], trigger: () => navigate(`/app/${activeAccount}/grades`) },
+            { keys: ["3", "#", "\""], trigger: () => navigate(`/app/${activeAccount}/homeworks`) },
+            { keys: ["4", "{", "'"], trigger: () => navigate(`/app/${activeAccount}/timetable`) },
+            { keys: ["5", "[", "("], trigger: () => navigate(`/app/${activeAccount}/messaging`) },
+            { keys: ["6", "|", "-"], trigger: () => navigate(`/app/${activeAccount}/settings`) },
+            { keys: ["7", "`", "è"], trigger: () => navigate(`/app/${activeAccount}/account`) },
         ]
 
         function handleKeyDown(event) {
@@ -129,8 +158,13 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 console.log(event.key)
                 for (let shortcut of shortcuts) {
                     if (shortcut.keys.includes(event.key)) {
-                        (shortcut.message && console.log(shortcut.message));
-                        shortcut.trigger();
+                        event.preventDefault();
+                        const value = shortcut.trigger();
+                        if (shortcut.message) {
+                            console.log(shortcut.message().innerHTML);
+                            (shortcut.message && console.log(shortcut.message(value ?? "")));
+                            createNotification(shortcut.message(value ?? ""))
+                        }
                     }
                 }
             }
@@ -143,29 +177,73 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             }
         }
 
+        function handleUnfocusing() {
+            commandInputs.current = []; // malheureusement j'ai l'impression qu'on peut pas get les touches appuyées à un moment présent dcp je pense que clear c'est le mieux
+        }
+
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("keyup", handleKeyUp);
-
+        window.addEventListener("blur", handleUnfocusing)
+        
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
+            window.removeEventListener("blur", handleUnfocusing)
         }
-    }, [location, navigate]);
+    }, [location, navigate, activeAccount]);
 
-    // changement de page
-    const changePageIdBy = (delta, location, navigate) => {
-        console.log("Root")
-        console.log(location)
+    const getSiteMap = (extended) => {
         let siteMap;
-        if (getIsTabletLayout()) {
+        if (useIsTabletLayout()) {
             siteMap = ["grades", "homeworks", "dashboard", "timetable", "messaging"];
         } else {
             siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging"];
         }
+
+        if (extended ?? false) {
+            siteMap = siteMap.concat(["settings", "account"]);
+        }
+
+        return siteMap
+    }
+
+    // changement de compte
+    const changeAccountIdxBy = (delta, location, navigate) => {
+        let newActiveAccount = activeAccount;
+        newActiveAccount += delta;
+        if (newActiveAccount < 0) {
+            newActiveAccount = 0;
+        } else if (newActiveAccount > accountsList.length - 1) {
+            newActiveAccount = accountsList.length - 1;
+        }
+        switchAccount(newActiveAccount, location, navigate)
+    }
+
+    const switchAccount = (value, location, navigate) => {
+        const account = value;
+        const siteMap = getSiteMap(true);
         const currentLocation = location?.pathname.split("/");
         const activePage = currentLocation[currentLocation.length - 1];
         let pageId = siteMap.indexOf(activePage);
-        pageId += delta;
+        if (pageId !== -1) {
+            // l'utilisateur est pas sur une page du header
+            navigate(`/app/${account}/${activePage}`);
+        }
+        setActiveAccount(account);
+    }
+
+    // changement de page
+    const changePageIdBy = (delta, location, navigate) => {
+        const siteMap = getSiteMap();
+        const currentLocation = location?.pathname.split("/");
+        const activePage = currentLocation[currentLocation.length - 1];
+        let pageId = siteMap.indexOf(activePage);
+        if (pageId === -1) {
+            // l'utilisateur n'est pas sur une page du header
+            pageId = siteMap.indexOf("dashboard");
+        } else {
+            pageId += delta;            
+        }
         if (pageId < 0) {
             pageId = 0;
         } else if (pageId >= siteMap.length) {
@@ -175,19 +253,21 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     }
 
     // thème
-    const setDisplayTheme = (value) => {
-        localStorage.setItem("displayTheme", value);
-        setLocalStorageDisplayThemeMirror(value);
-        setDisplayThemeState(getDisplayTheme());
-        toggleThemeTransitionAnimation();
-        console.log(localStorage.getItem("displayTheme"));
-    }
-
     const switchDisplayTheme = () => {
-        if (getDisplayTheme() === "dark") {
+        if (displayTheme === "dark") {
             setDisplayTheme("light");
-        } else {
+            return "clair";
+        } else if (displayTheme === "light") {
             setDisplayTheme("dark");
+            return "sombre";
+        } else {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                setDisplayTheme("light");
+                return "clair";
+            } else {
+                setDisplayTheme("dark");
+                return "sombre";
+            }
         }
     }
 
@@ -197,18 +277,19 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
     // display mode
     const setDisplayMode = (value) => {
-        localStorage.setItem("displayMode", value);
         setDisplayModeState(value);
-        setLocalStorageDisplayModeMirror(value);
     }
 
     const switchDisplayMode = () => {
-        if (getDisplayMode() === "quality") {
+        if (displayMode === "quality") {
             setDisplayMode("performance");
-        } else if (getDisplayMode() === "performance") {
+            return "performance";
+        } else if (displayMode === "performance") {
             setDisplayMode("balanced");
+            return "équilibré";
         } else {
             setDisplayMode("quality");
+            return "qualité";
         }
     }
 
@@ -216,25 +297,35 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
         setDisplayMode(event.target.value);
     }
 
+    // full screen
+    const toggleFullScreen = () => {
+        let fullScreenState;
+        setIsFullScreen(oldValue => { fullScreenState = !oldValue ; return !oldValue});
+        if (fullScreenState) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+        return fullScreenState;
+    }
+    
+
     return (
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
                 {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
-                {/*<input type="button" onClick={() => setLoggedIn(true)} value="LOGIN" />loggedIn c un prank, ca te log pas c juste que ca évite que le useState s'exite et redirect à l'infini */}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
-                {isAdmin && <input type="button" onClick={() => { navigate("/app/dashboard") }} value="DASHBOARD" />}
-                {isAdmin && <input type="button" onClick={() => { navigate("/app/grades") }} value="GRADES" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
-                {isAdmin && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST" />}
+                {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
                 {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
-                {isAdmin && <select title="Display theme" value={localStorageDisplayThemeMirror} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
+                {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
                     <option value="auto">THEME: AUTO</option>
                     <option value="dark">THEME: DARK</option>
                     <option value="light">THEME: LIGHT</option>
                 </select>}
-                {isAdmin && <select title="Display mode" value={localStorageDisplayModeMirror} name="display-mode" id="display-mode-select" onChange={updateDisplayMode}>
+                {isAdmin && <select title="Display mode" value={displayMode} name="display-mode" id="display-mode-select" onChange={updateDisplayMode}>
                     <option value="quality">DISPLAY: QUALITY</option>
                     <option value="balanced">DISPLAY: BALANCED</option>
                     <option value="performance">DISPLAY: PERF</option>
@@ -242,6 +333,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 {isAdmin && <form action="https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
+                {isAdmin && <input type="button" onClick={syncSettings} value="SYNC SETTINGS" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}

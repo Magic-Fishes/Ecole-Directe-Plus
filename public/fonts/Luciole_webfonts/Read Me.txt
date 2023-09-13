@@ -1,0 +1,17 @@
+// globalement je pense qu'il faut les mettre dans les mentions légales ou jsp quoi
+
+
+il y a déjà une mention comme ça dans la politique de confidentialité d'ED
+genre dernier paragraphe
+
+Ces fontes sont distribuées gratuitement sous Licence publique Creative Commons Attribution 4.0 International :
+https://creativecommons.org/licenses/by/4.0/legalcode.fr
+
+
+
+These fonts are freely available under Creative Commons Attribution 4.0 International Public License:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+
+
+Luciole © Laurent Bourcellier & Jonathan Perez

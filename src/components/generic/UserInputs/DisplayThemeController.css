@@ -1,0 +1,100 @@
+
+fieldset.display-theme-controller {
+    background-color: rgb(var(--background-color-0));
+    width: 100%;
+    min-width: 0;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    padding: 5px;
+
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    /* user-select: none;
+    -webkit-user-select: none; */
+    transition: 0.1s;
+}
+fieldset.display-theme-controller:hover {
+    background-color: rgba(var(--background-color-0), 0.8);
+}
+
+fieldset.display-theme-controller:has(:focus-visible) {
+    outline: 2px solid rgb(var(--text-color-alt))
+}
+
+.display-theme-controller .slider {
+    position: absolute;
+    background-color: rgb(var(--background-color-header));
+    border-radius: 50px;
+}
+.quality .display-theme-controller .slider {
+    transition: transform 0.2s, inset 0.2s, width 0.2s, background-color 0.5s !important;    
+}
+
+
+.display-theme-controller label.option input {
+    /* retire l'input du stacking-context */
+    position: absolute;
+    outline: none;
+}
+
+.display-theme-controller label.option {
+    border: none;
+    font-size: var(--main-font-size-16);
+    font-weight: var(--font-weight-semi-bold);
+    min-width: 0;
+    padding: 6px 12px;
+    text-align: center;
+    white-space: nowrap; /* enfer pour les utilisateurs mobile */
+    overflow: hidden;
+    text-overflow: ellipsis; /* cut un texte avec points de suspension*/
+    color: rgb(var(--text-color-alt));
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    z-index: 0; /* pour passer devant le slider */
+    transition: color 0.2s !important;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+.display-theme-controller label.option:hover {
+    color: rgb(var(--text-color-main))
+}
+.display-theme-controller label.option:active {
+    color: rgba(var(--text-color-alt), 0.8)
+}
+
+.display-theme-controller label.option.selected {
+    color: rgb(var(--text-color-main));
+}
+
+.display-theme-controller label.option:has(svg) {
+    padding: 6px;
+}
+
+.display-theme-controller label.option svg {
+    height: 20px;
+}
+
+.display-theme-controller label.option path {
+    stroke: rgb(var(--text-color-alt));
+}
+.display-theme-controller label.option:hover path {
+    stroke: rgb(var(--text-color-main));
+}
+.display-theme-controller label.option:active path {
+    stroke: rgba(var(--text-color-alt), 0.8);
+}
+
+.quality .display-theme-controller label.option path {
+    transition: stroke 0.2s !important;    
+}
+
+.display-theme-controller label.option.selected path {
+    stroke: rgb(var(--text-color-main));    
+}

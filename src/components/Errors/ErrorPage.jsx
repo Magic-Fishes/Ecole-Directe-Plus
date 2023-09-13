@@ -6,7 +6,15 @@ import "./ErrorPage.css";
 
 export default function ErrorPage() {
     const error = useRouteError();
-    console.error(error);
+
+    function safetyFunction() {
+        console.log("safety function | reset")
+        localStorage.clear()
+    }
+    
+    if (process.env.NODE_ENV !== "development") {
+        safetyFunction();
+    }
 
     if (error.status === 404) {
         return (
@@ -19,7 +27,7 @@ export default function ErrorPage() {
                 <h1>Oops!</h1>
                 <p>Sorry, an unexpected error has occurred.</p>
                 <p>
-                    <i>{error.status} : {error.statusText || error.message}</i>
+                    <i>{error.toString()}</i>
                 </p>
             </div>
         );

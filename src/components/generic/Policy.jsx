@@ -8,7 +8,7 @@ import BottomSheet from "./PopUps/BottomSheet";
 import "./Policy.css";
 
 
-export default function Policy() {
+export default function Policy({ onCloseNavigateURL }) {
     const navigate = useNavigate();
 
     const leadDeveloppers = ["Saumon Brulé", "Truite Séchée"];
@@ -35,7 +35,7 @@ export default function Policy() {
         <h4 className="sub-header">2. Description du site et du service</h4>
         <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du service, temporairement ou définitivement.</li>
         <h4 className="sub-header">3. Usages acceptables du service</h4>
-        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe qu'elle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillant pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'ED+. Par ailleurs, bien que nous ayons pour objectif d'offrir à nos utilisateurs un service toujours plus complet et fiable, l'usage d'Ecole Directe Plus ne se substitue en aucun cas entièrement à celui d'EcoleDirecte, notemment en ce qui concerne des fonctionnalités avancées telles que les QCM, les visio-conférences, la vie de la classe, et toute autre fonctionnalité encore indisponible sur ED+. Il est ainsi déconseillé de faire usage exclusivement d'Ecole Directe Plus.</li>
+        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe quelle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillant pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'ED+. Par ailleurs, bien que nous ayons pour objectif d'offrir à nos utilisateurs un service toujours plus complet et fiable, l'usage d'Ecole Directe Plus ne se substitue en aucun cas entièrement à celui d'EcoleDirecte, notamment en ce qui concerne des fonctionnalités avancées telles que les QCM, les visio-conférences, la vie de la classe, et toute autre fonctionnalité encore indisponible sur ED+. Il est ainsi déconseillé de faire usage exclusivement d'Ecole Directe Plus.</li>
         <h4 className="sub-header">4. Connexion</h4>
         <li className="legal-content">En vous connectant à Ecole Directe Plus avec votre compte EcoleDirecte, vous acceptez de nous fournir des informations précises, actuelles, et complètes à propos de vous et votre établissement. Pour garantir la confidentialité de vos informations, nous ne partageons à des fins commerciales ni ne stockons dans des serveurs vos données personnelles. En outre, vous êtes le seul responsable de l'usage qu'il est fait de vos données.</li>
         <h4 className="sub-header">5. Retour utilisateur</h4>
@@ -85,16 +85,16 @@ export default function Policy() {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px"}}>Dernière révision le 27 juillet 2023</li>
+        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px"}}>Dernière révision le 14 août 2023</li>
         <li id="copyleft-container">Copyleft <img src="/images/copyleft-white.png" id="copyleft" alt="Copyleft" width="18" height="18" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 
 
-    const handleClose = () => {
-        navigate("", { replace: true });
+    const handleClose = (navigateURL) => {
+        navigate(navigateURL, { replace: true });
     }
 
     return (
-        <BottomSheet heading="Mentions légales" onClose={handleClose} >{legalNotice}</BottomSheet>
+        <BottomSheet heading="Mentions légales" onClose={() => handleClose(onCloseNavigateURL)} >{legalNotice}</BottomSheet>
     )
 }

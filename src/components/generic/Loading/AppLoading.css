@@ -15,11 +15,15 @@
 
 #loading-box {
     width: 75%;
+    max-width: 475px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+    /* à ajouter stv trigger toutes les citations de manière pas trop dégueu pour toutes les voir */
+    /* height: 500px;
+    overflow: auto; */
 }
 
 #loading-box #walking-canardman {
@@ -29,6 +33,7 @@
     /* background-color: rgb(var(--background-color-2)); */
     border-radius: 20px;
     margin: 0 auto;
+    margin-bottom: 15px;
 }
 
 
@@ -39,8 +44,13 @@
 
 #loading-box #loading-screen-tip {
     margin-top: 25px;
+}
+#loading-box #loading-screen-tip *,
+#loading-box #loading-screen-tip ::before,
+#loading-box #loading-screen-tip ::after {
     color: rgb(var(--text-color-alt))
 }
+
 
 #app-loading #edp-version {
     z-index: 0;

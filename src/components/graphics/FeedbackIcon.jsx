@@ -1,10 +1,9 @@
 
 import "./graphics.css"
-export default function Feedback ({ className, id, alt }) {
+export default function FeedbackIcon ({ className="", id="", alt, ...props }) {
     return (
-<svg className={className} id={id} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 15" fill="none">
-<title>{alt}</title>
-<path d="M2.8 0H1.17895C0.527833 0 0 0.527832 0 1.17895C0 6.71342 4.48658 11.2 10.0211 11.2H14.4V13.5858C14.4 14.4767 15.4771 14.9229 16.1071 14.2929L20.2929 10.1071C20.6834 9.71658 20.6834 9.08342 20.2929 8.69289L16.1071 4.50711C15.4771 3.87714 14.4 4.32331 14.4 5.21421V7.6H10.4C6.64446 7.6 3.6 4.55554 3.6 0.8C3.6 0.358172 3.24183 0 2.8 0Z" className="fill-background-header" />
+<svg aria-label={alt} className={className} id={id} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" fill="none" {...props}>
+<path d="M10.54 11H9.03158C8.46185 11 8 11.4619 8 12.0316C8 16.8742 11.9258 20.8 16.7684 20.8H20.96V22.6331C20.96 23.5172 22.0232 23.9664 22.6571 23.3501L26.1625 19.942C26.5664 19.5493 26.5664 18.9007 26.1625 18.508L22.6571 15.0999C22.0232 14.4836 20.96 14.9328 20.96 15.8169V17.65H17.19C13.9039 17.65 11.24 14.9861 11.24 11.7C11.24 11.3134 10.9266 11 10.54 11Z" className="fill-text-alt" />
 </svg>
 	)
 }

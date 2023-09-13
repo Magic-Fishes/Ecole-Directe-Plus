@@ -1,0 +1,261 @@
+
+#account-selector {
+    height: 100%;
+    /* max-height: 80px; */
+    /* padding: 12px;  */
+    padding: 10px;
+    isolation: isolate;
+}
+[data-state="open"]#account-selector {
+    isolation: isolate;
+    position: relative;
+    z-index: 1;
+}
+
+#account-selector #options-wrapper {
+    height: 100%;
+    background-color: rgb(var(--background-color-header));
+    box-shadow: var(--box-shadow-element);
+    border-radius: 15px;
+    overflow: hidden;
+}
+:root.performance #account-selector #options-wrapper {
+    border: 1px solid rgb(var(--border-color-0));
+}
+[data-state="open"] #options-wrapper {
+    height: auto !important;
+}
+
+#account-selector #active-account {
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+#account-selector #active-account:hover,
+#account-selector #active-account:focus-visible {
+    border-radius: 0;
+    background-color: rgba(var(--text-color-main), 0.10);
+}
+
+[data-state="open"] #active-account {
+    padding-bottom: 5px;
+}
+
+#account-selector .drop-down-arrow {
+    /* height: 10px; */
+    width: 20px;
+    flex-basis: auto;
+    align-self: center;
+    margin-inline: 10px;
+    rotate: none;
+    transition: 0.2s var(--timing-function-spring-effect);
+    transition-delay: 0.1s;
+}
+
+#account-selector #active-account:active .drop-down-arrow {
+    transform: translateY(5px);
+}
+
+[data-state="open"]#account-selector #active-account .drop-down-arrow {
+    rotate: -180deg;
+}
+
+#account-selector .account {
+    padding: 5px;
+    flex: 1 1 0;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+    outline: none;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+#account-selector .alt-accounts .alt-account {
+    transition: 0.1s;
+    cursor: pointer;
+    outline: none;
+}
+#account-selector .alt-accounts .alt-account:hover,
+#account-selector .alt-accounts .alt-account:focus-within {
+    background-color: rgba(var(--text-color-main), 0.10);
+}
+#account-selector .alt-accounts .alt-account:active {
+    background-color: rgba(var(--text-color-main), 0.15);    
+}
+
+#account-selector .alt-accounts .account {
+    border-top: 2px solid rgba(var(--background-color-0), 0.5);
+    margin-inline: 10px;
+    padding-inline: 0;
+    padding-block: 10px;
+    /* margin-top: 10px; */
+    /* border-radius: 10px; */
+}
+
+#account-selector .alt-accounts .switch-arrows {
+    height: 30px;
+    margin-right: 20px;
+}
+
+
+#account-selector .pp-container {
+    height: 70px;
+    width: 70px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+#account-selector .profile-picture {
+    flex-basis: auto;
+    object-fit: cover;
+    object-position: 0 35%;
+    height: 100%;
+    width: 100%; /*= height*/
+    scale: 1.02; /* permet de masquer les traits sur les bords de la pp*/
+    transition: .5s ease;
+    opacity: 0;
+    filter: blur(10px);
+}
+
+#account-selector .profile-picture.loaded {
+    filter: none;
+    opacity: 1;
+}
+
+
+#account-selector .account-info {
+    flex: 1;
+    align-self: stretch;
+    /* height: 100%; */ /* pour une raison indéterminée quand on met height 100% ça crash à l'ouverture et quand on le met pas ça fait comme mais ça crash pas */
+    display: flex;
+    flex-flow: column nowrap;
+    font-style: normal;
+    justify-content: space-evenly;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+#account-selector address.account-info,
+#account-selector .account-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#account-selector .account-info span.name {
+    font-weight: 600;
+}
+
+.options-container .links {
+    border-top: 2px solid rgba(var(--background-color-0), 0.5);
+    margin-inline: 10px;
+    padding-block: 10px;
+    display: grid;
+    /* width: 100%; */
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.options-container .links a {
+    background-color: rgb(var(--background-color-0));
+    padding: 7px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.1s, outline 0s, outline-offset 0s;
+    overflow: hidden;
+    
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.options-container .links a:hover,
+.options-container .links a:focus-visible {
+    background-color: rgba(var(--background-color-0), 0.8);
+}
+
+.options-container .links a:active {
+    background-color: rgba(var(--background-color-0), 0.6);
+}
+.options-container .links span.link-text {
+    color: rgb(var(--text-color-alt));
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.options-container .links svg {
+    height: 20px;
+    margin-right: 5px;
+    /* scale: 1.2; */
+}
+.options-container .links #settings-page svg { scale: 1.1 }
+.options-container .links #account-page svg { scale: 1.2 }
+.options-container .links #feedback svg { scale: 1.3 }
+.options-container .links #patch-notes svg { scale: 1.3 }
+
+.options-container .links #account-page path {
+    fill: rgb(var(--text-color-alt));
+}
+
+#account-selector .change-display-theme-shortcut {
+    border-block: 2px solid rgba(var(--background-color-0), 0.5);
+    margin-inline: 10px;
+    padding-block: 10px;
+}
+
+
+.logout {
+    /* border-top: 2px solid rgba(var(--background-color-0), 0.5);
+    margin-inline: 10px;
+    padding-block: 10px 5px; */
+    /* width: 100%; */
+}
+
+#account-selector button#logout-button {
+    background-color: rgba(var(--background-color-soft-error), 0.3);
+    width: 100%;
+    height: 65px;
+    border: none;
+    outline: none;
+    transition: 0.1s;
+    cursor: pointer;
+
+    padding-inline: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#account-selector button#logout-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-soft-error), 0.4);
+}
+
+#account-selector button#logout-button:active {
+    background-color: rgba(var(--background-color-soft-error), 0.5);
+}
+
+#account-selector #logout-button span {
+    color: rgb(var(--text-color-soft-error-main));
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-semi-bold);
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#account-selector #logout-button .logout-icon {
+    height: 50%;
+    flex-basis: auto;
+}

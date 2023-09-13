@@ -32,6 +32,13 @@
     box-shadow: var(--box-shadow-window);
 }
 
+.login-box .info-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    margin: 3px;
+}
+
 .login-box h1 {
     color: rgb(var(--text-color-main));
     font-size: var(--main-font-size-42);
@@ -39,11 +46,11 @@
     margin: 3rem 0 3.5rem 0;
 }
 
-.login-box :is(.login-input, #submit-login, .login-option) {
+/* .login-box :is(.login-input, #submit-login, .login-option) {
     margin-bottom: 20px;
-}
+} */
 
-.login-option {
+/* .login-option {
     width: 100%;
     margin-bottom: 20px;
     text-align: center;
@@ -52,17 +59,17 @@
     align-items: center;
     justify-content: space-around;
     gap: 10px;
-}
+} */
 
-.login-option a#password-forgotten-link {
+/* .login-option a#password-forgotten-link {
     text-align: right;
     text-decoration: none;
     color: rgb(var(--text-color-alt));
     cursor: pointer;
-}
-.login-option a#password-forgotten-link:hover {
+} */
+/* .login-option a#password-forgotten-link:hover {
     color: rgba(var(--text-color-alt), 0.7);
-}
+} */
 
 p.policy {
     width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
@@ -120,7 +127,8 @@ p.policy {
         /* background-color: transparent; */
         background-color: rgb(var(--background-color-1));
         margin: 0;
-        padding: 5px;
+        /* padding: 5px; */
+        padding: 6px 28px;
         min-width: 0;
         width: 100%;
         z-index: -1;
@@ -131,10 +139,6 @@ p.policy {
         margin-top: 0;
     }
 
-    .login-box .login-input, .login-box .login-option {
-        width: 90%;
-        margin: 0 auto 20px auto;
-    }
 
     #login p.policy {
         font-size: 0;

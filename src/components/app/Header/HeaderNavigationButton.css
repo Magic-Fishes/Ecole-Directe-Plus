@@ -15,6 +15,7 @@
 
 .header-button.selected {
     background-color: rgba(var(--text-color-main), 0.10);
+    color: white;
 }
 .header-button:hover, .header-button:focus-visible {
     background-color: rgba(var(--text-color-main), 0.15);
@@ -27,6 +28,20 @@
     height: 60px;
 }
 
+.header-button svg [class="fill-text-main"] {
+    transition: fill 0.2s;
+}
+.header-button:not(.selected) svg [class="fill-text-main"] {
+    fill: rgb(var(--text-color-alt));
+}
+
+.header-button svg [class="stroke-text-main"] {
+    transition: stroke 0.2s;
+}
+.header-button:not(.selected) svg [class="stroke-text-main"] {
+    stroke: rgb(var(--text-color-alt));
+}
+
 .header-button .icon-container {
     position: relative;
 }
@@ -34,24 +49,34 @@
 .header-button .notifications {
     position: absolute;
     top: 0;
-    left: 45px;
+    left: 42px;
     /* right: -5px; */
     color: white;
     background-color: red;
     border-radius: 50px;
-    min-width: 22px;
-    height: 22px;
-    padding-inline: 3px;
-    
+    height: 24px;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding-inline: 3px; */
+
     text-align: center;
-    font-weight: 600;
-    z-index: 50
+    font-weight: var(--font-weight-semi-bold);
+    z-index: 50;
+    
 }
 
-.header-button-title {
+.header-button .header-button-title {
     text-align: center;
-    color: rgb(var(--text-color-main));
+    font-weight: var(--font-weight-semi-bold);
+    color: rgb(var(--text-color-alt));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: 0.2s;
+}
+
+.header-button.selected .header-button-title {
+    color: rgb(var(--text-color-main));    
 }

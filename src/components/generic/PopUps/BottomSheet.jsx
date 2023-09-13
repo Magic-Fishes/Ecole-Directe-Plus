@@ -1,20 +1,19 @@
 
 import { useState, useRef, useEffect } from "react";
 
-import ScrollShadedDiv from "../ScrollShadedDiv";
+import ScrollShadedDiv from "../CustomDivs/ScrollShadedDiv";
 
 import "./BottomSheet.css";
 
-export default function BottomSheet({ heading, children, onClose }) {
-
+export default function BottomSheet({ heading, children, onClose, resizingBreakpointsProps, firstResizingBreakpoint, close=false, className="", id="", ...props }) {
     const closingCooldown = 500; // milliseconds
-    const resizingBreakpoints = [0, 60, 95]; // ascendant order
+    const resizingBreakpoints = resizingBreakpointsProps ?? [0, 60, 95]; // ascendant order
     // const resizingBreakpoints = [0, 15, 30, 45, 60, 75,  95]; // ascendant order
     // const resizingBreakpoints = [0, 10, 20, 30, 40, 50,  60, 70, 80, 90, 100]; // ascendant order
-    const [targetSheetHeight, setTargetSheetHeight] = useState(resizingBreakpoints[resizingBreakpoints.length - 1]);
+    const [targetSheetHeight, setTargetSheetHeight] = useState(resizingBreakpoints[firstResizingBreakpoint] ?? resizingBreakpoints[resizingBreakpoints.length - 1]);
     const [isResizing, setIsResizing] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(true);
     const [oldHeight, setOldHeight] = useState(targetSheetHeight);
     const [currentHeight, setCurrentHeight] = useState(targetSheetHeight);
     
@@ -26,6 +25,7 @@ export default function BottomSheet({ heading, children, onClose }) {
 
     const grabPosition = useRef(null);
     const oldClosestResizingBreakpointIdx = useRef(0);
+    const clickedInsideBottomSheet = useRef(false);
     const firstYPosition = useRef(0);
     const maxDistanceFromPointer = useRef(999);
     const oldEventClientY = useRef(null);
@@ -33,10 +33,15 @@ export default function BottomSheet({ heading, children, onClose }) {
     useEffect(() => {
         targetSheetHeightVar.current = targetSheetHeight;
     }, [targetSheetHeight]);
+
+    useEffect(() => {
+        if (close) {
+            handleClose();
+        }
+    }, [close])
     
     useEffect(() => {
         const handleKeyDown = (event) => {
-            console.log("event.key:", event.key);
             if (event.key === "Escape") {
                 handleClose();
             } else {
@@ -68,7 +73,7 @@ export default function BottomSheet({ heading, children, onClose }) {
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = "";
         }
     }, []);
 
@@ -89,6 +94,7 @@ export default function BottomSheet({ heading, children, onClose }) {
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(onClose, closingCooldown);
+        setTimeout(setIsOpen, closingCooldown, false);
     }
 
     // enlève le tabIndex des éléments hors de la BottomSheet pour empêcher la navigation clavier
@@ -96,7 +102,7 @@ export default function BottomSheet({ heading, children, onClose }) {
         const elements = document.body.querySelectorAll("*");
         const defaultTabIndex = [];
         elements.forEach((element) => {
-            if (element !== bottomSheetRef.current && !bottomSheetRef.current.contains(element) && element.tabIndex !== -1) {
+            if (element !== bottomSheetRef.current && !bottomSheetRef.current?.contains(element) && element.tabIndex !== -1) {
                 defaultTabIndex.push(element.tabIndex);
                 // tout tabIndex négatif empêche le focus, on utilise le -2 pour reconnaître les items dont le focus est désactivé
                 element.tabIndex = -2;
@@ -113,10 +119,6 @@ export default function BottomSheet({ heading, children, onClose }) {
         }
     }, []);
 
-    useEffect(() => {
-        console.log("isOpen", isOpen)
-    }, [isOpen])
-    
     // resizing
     function fitToClosestResizingBreakpoint() {
         let closestResizingBreakpointIdx = 0;
@@ -202,14 +204,18 @@ export default function BottomSheet({ heading, children, onClose }) {
     const handleMouseUp = () => {
         window.removeEventListener('mousemove', handleMouseResize);
         setTimeout(setIsResizing, 0, false); // timeout pour éviter fermeture si le curseur est hors de la bottomSheet après resize
-        bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche
+        if (bottomSheetRef.current) {
+            bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche            
+        }
         window.removeEventListener('mouseup', handleMouseUp);
     }
 
     const handleTouchEnd = () => {
         window.removeEventListener('touchmove', handleTouchResize);
         setTimeout(setIsResizing, 0, false); // timeout pour éviter fermeture si le curseur est hors de la bottomSheet après resize
-        bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche
+        if (bottomSheetRef.current) {
+            bottomSheetRef.current.style.transition = ""; // réactive l'animation pour atteindre le cran le plus proche            
+        }
         oldEventClientY.current = undefined;
         contentRef.current.style.overflow = "";
         window.removeEventListener('touchend', handleTouchEnd);
@@ -219,8 +225,7 @@ export default function BottomSheet({ heading, children, onClose }) {
         if (!bottomSheetRef.current) {
             return 0;
         }
-        event.preventDefault(); // empêche la sélection de texte
-        const topPosition = bottomSheetRef.current.getBoundingClientRect().top;
+        const topPosition = bottomSheetRef.current?.getBoundingClientRect().top;
         grabPosition.current = (event.touches ? (window.innerHeight - topPosition - (window.innerHeight - event.touches[0].clientY)) : (window.innerHeight - topPosition - (window.innerHeight - event.clientY)));
         firstYPosition.current = (event.touches ? event.touches[0].clientY : event.clientY);
         maxDistanceFromPointer.current = 0;
@@ -247,6 +252,7 @@ export default function BottomSheet({ heading, children, onClose }) {
     }
 
     const fastResize = () => {
+        return;
         let i;
         const length = resizingBreakpoints.length;
         // détermine l'extrême bas différent de 0
@@ -286,14 +292,14 @@ export default function BottomSheet({ heading, children, onClose }) {
         document.removeEventListener("touchmove", handleTouchMove);
     }
 
-    return (
-        <div className={isClosing ? "closing" : ""} id="bottom-sheet" onClick={(!isResizing ? handleClose : undefined)}>
-            <div ref={bottomSheetRef} style={{ height: targetSheetHeight.toString() + "%" }} className={isClosing ? "closing" : ""} id="bottom-sheet-box" onClick={(event) => event.stopPropagation()}>
+    return (isOpen &&
+        <div className={(isClosing ? "closing " : "") + className} id="bottom-sheet" onPointerDown={(event) => !isResizing && !clickedInsideBottomSheet.current ? handleClose() : undefined} {...props}>
+            <div ref={bottomSheetRef} style={{ height: targetSheetHeight.toString() + "%" }} className={isClosing ? "closing" : ""} id="bottom-sheet-box" onPointerDown={() => clickedInsideBottomSheet.current = true} onPointerUp={() => setTimeout(() => clickedInsideBottomSheet.current = false, 0)} >
                 <div id="bottom-sheet-container">
                     <div id="resize-handle" tabIndex="0" ref={resizeHandlerRef} onMouseDown={handleGrab} onTouchStart={handleGrab}>
                         <div id="inner-resize-handle" ></div>
                         <button id="close-button" onClick={handleClose}>✕</button>
-                        <h1 id="bottom-sheet-heading">{heading}</h1>
+                        {heading && <h1 id="bottom-sheet-heading">{heading}</h1>}
                     </div>
                     <ScrollShadedDiv setRef={(ref) => { contentRef.current = ref.current }} id="bottom-sheet-content" onTouchStart={handleContentGrab} onTouchEnd={document.removeEventListener("touchmove", handleTouchMove)}>
                         {children}

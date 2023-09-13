@@ -7,6 +7,7 @@ import Timetable from "./Timetable/Timetable";
 import Messaging from "./Messaging/Messaging";
 import Settings from "./Settings/Settings";
 import Account from "./Account/Account";
+import LoginBottomSheet from "../Login/LoginBottomSheet";
 
 
 export { Header };
@@ -17,5 +18,6 @@ export { Timetable };
 export { Messaging };
 export { Settings };
 export { Account };
+export { LoginBottomSheet };
 
 // export default { Header, Dashboard, Grades, Homeworks, Timetable, Messaging }

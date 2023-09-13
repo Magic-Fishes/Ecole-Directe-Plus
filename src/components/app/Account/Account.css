@@ -1,0 +1,51 @@
+
+body:has(#account) {
+    background-color: rgb(var(--background-color-1));
+}
+
+#account {
+    height: 100%;
+    padding: 30px clamp(10px, calc(4vw), 30px);
+    
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    gap: clamp(20px, 3vw, 50px);;
+}
+
+#account .frame {
+    background-color: rgba(var(--border-color-0), 0.2);
+    border: 1px solid rgb(var(--border-color-0));
+    border-radius: 10px;
+    padding: 15px;
+}
+#account .frame .frame-heading {
+    text-align: center;
+    font-size: var(--font-size-20);
+}
+
+#account #profile {
+    
+}
+
+#account #documents {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+}
+
+#account #behavior {
+    
+}
+
+@media only screen and (max-width: 869px) {
+    #account {
+        height: auto;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+    }
+
+    #account #documents {
+        grid-column: auto;
+        grid-row: 3 / 4;
+    }
+}

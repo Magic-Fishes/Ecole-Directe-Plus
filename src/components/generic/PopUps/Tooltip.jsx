@@ -23,13 +23,15 @@ import {
 
 import './Tooltip.css'
 
+const ARROW_WIDTH = 16;
+const ARROW_HEIGHT = 8;
 
 function useTooltip(options) {
     // available options:
     // isOpen (bool) ; placement (str: "top" ; "right" ; ...) ; animationDuration (int: ms) ; delay (int: ms) ;
     // restDuration (int: ms) ; restFallbackDuration (int: ms) ; disableSafePolygon (bool)
     // disableHover (bool) ; disableFocus (bool) ; disableClick (bool) ; disableDismiss (bool)
-    
+
     const [isOpen, setIsOpen] = useState(options.isOpen ?? false);
 
     const arrowRef = useRef(null);
@@ -40,21 +42,28 @@ function useTooltip(options) {
         onOpenChange: setIsOpen,
         // AutoUpdate position :
         // whileElementsMounted(...args) {
-        //     const cleanup = autoUpdate(...args, {animationFrame: true});
+        //     const cleanup = autoUpdate(...args, { animationFrame: true });
         //     // Important! Always return the cleanup function.
         //     return cleanup;
         // },
+        whileElementsMounted: autoUpdate,
         placement: (options.placement ?? "top"),
-        middleware: [offset(10), flip(), shift({ padding: 10 }), arrow({ element: arrowRef })],
+        middleware: [offset(ARROW_HEIGHT + 2), flip(), shift({ padding: 10 }), arrow({ element: arrowRef })],
     });
 
     const context = data.context;
+    const middlewareData = data.middlewareData;
+
+    const arrowX = middlewareData.arrow?.x ?? 0;
+    const arrowY = middlewareData.arrow?.y ?? 0;
+    const transformX = arrowX + ARROW_WIDTH / 2;
+    const transformY = arrowY + ARROW_HEIGHT;
 
     // - - Interactions - -
     const hover = useHover(context, {
         enabled: (options.disableHover ?? true),
         restMs: (options.restDuration ?? 0),
-        delay: (options.restDuration ? {open: options.restFallbackDuration} : {open: (options.delay ?? 0)}),
+        delay: (options.restDuration ? { open: options.restFallbackDuration } : { open: (options.delay ?? 0) }),
         handleClose: ((options.disableSafePolygon === undefined || options.disableSafePolygon) ? safePolygon() : null)
     });
 
@@ -89,15 +98,28 @@ function useTooltip(options) {
 
         initial: ({ side }) => ({
             opacity: 0,
+            // transform: "scale(0)",
+            // scale: 0
             translate: side === 'top'
                 ? "0px 8px"
                 : "0px -8px",
+            // scale: "0",
         }),
 
-        open: {
-            opacity: 1,
-            translate: "none",
-        },
+        common: ({ side }) => ({
+            transformOrigin: {
+                top: `${transformX}px calc(100% + ${ARROW_HEIGHT}px)`,
+                bottom: `${transformX}px ${-ARROW_HEIGHT}px`,
+                left: `calc(100% + ${ARROW_HEIGHT}px) ${transformY}px`,
+                right: `${-ARROW_HEIGHT}px ${transformY}px`
+            }[side]
+        }),
+
+        // open: {
+        //     // opacity: 1,
+        //     // transform: "scale(1)",
+        //     // translate: "none",
+        // },
     });
 
     return ({
@@ -123,7 +145,7 @@ function useTooltipContext() {
     return context;
 };
 
-export function Tooltip({ children, className="", id="", ...options }) {
+export function Tooltip({ children, className = "", id = "", ...options }) {
     const tooltip = useTooltip(options)
 
     return (
@@ -169,7 +191,7 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger({ children, ...
     );
 });
 
-export const TooltipContent = forwardRef(function TooltipContent({ children, style, className="", ...props }, propRef) {
+export const TooltipContent = forwardRef(function TooltipContent({ children, style, className = "", ...props }, propRef) {
     const context = useTooltipContext();
     const ref = useMergeRefs([context.refs.setFloating, children.ref, propRef]);
 
@@ -188,7 +210,7 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
                 }}
                 {...context.getFloatingProps(props)}
             >
-                <FloatingArrow className="floating-arrow" ref={context.arrowRef} context={context} tipRadius={2} width={16} height={8} />
+                <FloatingArrow className="floating-arrow" ref={context.arrowRef} context={context} tipRadius={2} width={ARROW_WIDTH} height={ARROW_HEIGHT} />
                 {children}
             </div>
         </FloatingPortal>

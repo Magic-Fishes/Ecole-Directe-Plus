@@ -18,6 +18,17 @@
     outline: none;
     cursor: pointer;
     transition: 0.1s;
+    flex-basis: auto;
+}
+.check-box:has(:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.check-box input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+.check-box input[type="checkbox"]:disabled ~ label {
+    cursor: not-allowed;
 }
 
 .check-box input[type="checkbox"]:hover:not(:checked), .check-box input[type="checkbox"]:focus-visible {
@@ -37,10 +48,11 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: 75%;
-    transition: 0s;
+    transition: 0s !important;
 }
 
 .check-box label {
     color: rgb(var(--text-color-main));
     cursor: pointer;
+    flex: 1;
 }

@@ -1,3 +1,6 @@
+body:has(#bottom-sheet) {
+    overflow: hidden;
+}
 
 #pop-up {
     position: fixed;

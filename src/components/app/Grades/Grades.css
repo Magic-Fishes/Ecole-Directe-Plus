@@ -3,3 +3,236 @@
     height: 100%;
     min-height: 100%;
 }
+
+/* Results header */
+
+#grades .results-header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding-inline: 15px 6px;
+    gap: 15px;
+}
+
+#grades .results-title {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#grades .results-title h2 {
+    flex: 1;
+    pointer-events: none;
+}
+
+#grades .results-legend * {
+    pointer-events: auto;
+}
+#grades .results-legend [class="fill"] {
+    fill: rgb(var(--border-color-1));
+}
+#grades .results-legend [class="stroke"] {
+    stroke: rgb(var(--border-color-1));
+}
+#grades .results-legend:is(:hover, :has(:focus-visible)) [class="fill"] {
+    fill: rgb(var(--text-color-alt));
+}
+#grades .results-legend:is(:hover, :has(:focus-visible)) [class="stroke"] {
+    stroke: rgb(var(--text-color-alt));
+}
+
+#grades .general-average {
+    font-weight: var(--font-weight-semi-bold);
+    font-size: var(--font-size-20);
+    /* flex-basis: 0; */
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    /* width: auto; */
+}
+#grades .general-average > span:not(.grade) {
+    flex: 1;
+    font-weight: var(--font-weight-extra-bold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#grades .general-average .grade {
+    display: block;
+    height: auto;
+    width: auto;
+    background: none !important;
+}
+#grades .general-average .grade > span {
+    font-size: var(--font-size-20);
+    padding: 4px 16px;
+    border-radius: 10px;
+    /* background-color: #4B48D9; */
+    background-color: rgb(var(--border-color-0));
+    pointer-events: auto;
+    transition: 0.1s;
+    cursor: default;
+}
+#grades .general-average .grade > span:hover {
+    background-color: rgba(var(--border-color-0), .8);
+}
+#grades .general-average .grade > span:active {
+    background-color: rgba(var(--border-color-0), .6);
+}
+
+/* Grades table */
+
+.results {
+    padding: 0;
+    display: block; 
+}
+
+.grades-table {
+    position: relative;
+    width: 100%;
+    border-spacing: 20px 0;
+    top: 0;
+    min-height: 100%;
+}
+
+.moyennes-col {
+    background-color: rgb(var(--background-color-3));
+    /* background: linear-gradient(180deg, rgb(var(--background-color-1)) 0%, transparent 200%); */
+    max-width: 10px;
+}
+
+.grades-table :last-child :last-child .moyenne-cell {
+    border-radius: 0px 0px 10px 10px;
+}
+
+.grades-table thead th {
+    padding: 25px 10px;
+    letter-spacing: 2px;
+}
+
+#subject-head {
+    /* max-width: 250px; */
+    /* width: 30%; */
+}
+
+@media only screen and (max-width: 869px) {
+    .grades-table thead th  {
+        letter-spacing: 0;
+    }
+}
+
+#moyenne-head {
+    min-width: 100px;
+    width: 15%;
+}
+
+#grades-head {
+    min-width: 300px;
+}
+
+.head-cell {
+    /* border-top: solid 2px #C9C8F988; */
+    border-top: solid 2px rgb(var(--background-color-3));
+    min-width: 0;
+    width: 20%;
+    text-align: right;
+}
+
+.category-row .head-cell {
+    overflow: hidden;
+    white-space: wrap;
+}
+
+.head-name {
+    /* width: max-content; /* j'arrive je vois ça je suis intrigué ; wtf  jsp je voulais mettre un truc pour que ca puisse wrap jsp si max-content ca untrigger ca et je suis tombé sur fantasy*/
+    display: inline-block;
+    text-decoration: none;
+    min-width: 0;
+    width: auto;
+    min-width: 0;
+    /* position: absolute; */
+    margin-left: auto;
+    outline: none;
+    border: 2px solid transparent;
+    padding: 8px;
+    margin-block: 10px;
+    border-radius: 10px;
+    -webkit-user-drag: none;
+    transition: 0.15s;
+}
+.category-row .head-name {
+    margin-block: 0;
+}
+
+.subject-row .head-name:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-main), 0.10);
+}
+.subject-row .head-name:active {
+    background-color: rgba(var(--text-color-main), 0.15);
+}
+.head-name.selected {
+    border-color: rgba(var(--text-color-main), 0.7);
+}
+
+.subject-row * {
+    color: rgb(var(--text-color-main));
+}
+
+.subject-row .head-name {
+    font-weight: var(--font-weight-regular);
+    text-align: right;
+}
+
+.category-row td, .category-row th {
+    border: none;
+    padding-bottom: 3px;
+    font-weight: var(--font-weight-extra-bold);
+}
+
+.category-row:not(:first-child) td, .category-row:not(:first-child) th {
+    padding-top: 10px;    
+}
+
+
+
+.category-row .head-name {
+    text-align: right;
+    letter-spacing: 1px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+.category-info {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+}
+
+.moyenne-cell {
+    /* font-weight: var(--font-weight-semi-bold); */
+    text-align: center;
+}
+
+.grades-cell {
+    border-top: solid 2px rgb(var(--background-color-3));
+}
+
+.grades-values {
+    text-align: left;
+    padding: 10px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    row-gap: 10px;
+}
+
+#results .grades-values .grade {
+    margin-right: 10px;
+}

@@ -24,9 +24,10 @@ export default function Error404() {
                 <h1>
                     Erreur 404 :
                 </h1>
-                <h2>
-                    On dirait que Canardman a dérobé la page que vous cherchez...
-                </h2>
+                <p className="funny-explanation">
+                    {/* On dirait que Canardman a dérobé la page que vous cherchez... */}
+                    On dirait que Canardman n'a pas trouvé la page que vous cherchez...
+                </p>
                 <Link to="/login" className="button">Retourner à l'accueil</Link>
             </div>
             {/* Canardman le VOYOU */}

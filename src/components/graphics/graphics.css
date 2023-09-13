@@ -1,3 +1,10 @@
+.fill-text-alt {
+    fill: rgb(var(--text-color-alt));
+}
+
+.stroke-text-alt {
+    stroke: rgb(var(--text-color-alt));
+}
 
 .fill-text-main {
     fill: rgb(var(--text-color-main));
@@ -7,16 +14,72 @@
     stroke: rgb(var(--text-color-main));
 }
 
+.fill-text-soft-error-main {
+    fill: rgb(var(--text-color-soft-error-main));;
+}
+
+.stroke-text-soft-error-main {
+    stroke: rgb(var(--text-color-soft-error-main));;
+}
+
+.fill-03A981 {
+    fill: #03A981;
+}
+
+.fill-00D3A0 {
+    fill: #00D3A0;
+}
+
+.fill-AFB5C7 {
+    fill: #AFB5C7;
+}
+
+.fill-F5F6FF {
+    fill: #F5F6FF;
+}
+
+.fill-09D504 {
+    fill: #09D504;
+}
+
+.fill-0A8300 {
+    fill: #0A8300;
+}
+
+.fill-FFE600 {
+    fill: #FFE600;
+}
+
+.fill-FCB500 {
+    fill: #FCB500;
+}
+
+.fill-61FF5E {
+    fill: #61FF5E;
+}
+
+.fill-13A90F {
+    fill: #13A90F;
+}
+
+.fill-FF9900 {
+    fill: #FF9900;
+}
+
+.stroke-D15800 {
+    stroke: #D15800;
+}
+
 .fill-background-0 {
     fill: rgb(var(--background-color-0));
 }
 
-.stroke-border-1 {
-    stroke: rgb(var(--border-color-1));
+.stroke-background-0 {
+    stroke: rgb(var(--background-color-0));
 }
 
-.fill-background-header {
-    fill: rgb(var(--background-color-header));
+.stroke-border-1 {
+    stroke: rgb(var(--border-color-1));
 }
 
 .stroke-border-0 {
@@ -27,6 +90,30 @@
     fill: rgb(var(--border-color-0));
 }
 
-.fill-141338 {
-    fill: #141338;
+.fill-E42626 {
+    fill: #E42626;
+}
+
+.fill-star {
+    fill: #FFF;
+}
+
+.fill-3CFFDC {
+    fill: #3CFFDC;
+}
+
+.stroke-canardman-background-0 {
+    stroke: #181829
+}
+
+.fill-canardman-background-0 {
+    fill: #181829
+}
+
+.fill-canardman-background-1 {
+    fill: #323257
+}
+
+.fill-white {
+    fill: white;
 }

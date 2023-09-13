@@ -1,0 +1,81 @@
+
+.grade-scale-toggle * {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+.grade-scale-toggle {
+    background-color: rgb(var(--background-color-1), .5);
+    font-weight: var(--font-weight-semi-bold);
+    box-shadow: var(--box-shadow-window);
+    border: none;
+    border-radius: 15px;
+    height: 44px;
+    text-align: center;
+    outline: none;
+    overflow: hidden;
+    overscroll-behavior: none;
+
+    transition: all 0.1s, outline 0s;
+    cursor: pointer;
+    scale: 0;
+    opacity: 0;
+    animation: grade-scale-toggle-pop-in 0.3s ease forwards;
+}
+
+.grade-scale-toggle:hover {
+    background-color: rgba(var(--background-color-1), .7);
+}
+
+.grade-scale-toggle:focus-visible{
+    outline: 2px solid rgba(var(--background-color-2));
+}
+
+.grade-scale-toggle:active {
+    background-color: rgba(var(--background-color-1), .8);
+}
+
+.grade-scale-toggle.active {
+    background-color: rgb(var(--background-color-1));
+}
+
+
+.grade-scale-toggle .top {
+    width: min-content;
+    margin: auto;
+    padding-bottom: 2px;
+    font-family: auto;
+    font-size: var(--font-size-14) !important;/*il est l'heure d'aller mimir bonne nuit amen*/
+    /* font-weight: 1000; */
+    font-style: italic;
+    
+    /* transform: translateY(3px) scale(1.6); */
+}
+
+.grade-scale-toggle .bottom {
+    border-top: 1px solid white;
+    margin-inline: 11px;
+    padding-top: 2px;
+}
+
+.grade-scale-toggle :is(.top, .bottom) {
+    color: rgb(var(--text-color-alt));
+    border-color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-12);
+}
+
+.grade-scale-toggle.active :is(.top, .bottom) {
+    color: rgb(var(--text-color-main));
+    border-color: rgb(var(--text-color-main));
+}
+
+@keyframes grade-scale-toggle-pop-in {
+    from {
+        scale: 0;
+        opacity: 0;
+    }
+    to {
+        scale: 1;
+        opacity: 1;
+    }
+}

@@ -1,0 +1,108 @@
+.number-input-container {
+    min-width: 50px;
+    border: 2px solid rgb(var(--border-color-0));
+    border-radius: 15px;
+    padding: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100px;
+    /* ancienne height : 2.8em */
+    height: 2.5em;
+    overflow: hidden;
+    transition: 0.1s;
+}
+
+/* hover */
+.number-input-container:hover {
+    border-color: rgba(var(--border-color-1), 0.8);
+}
+.number-input-container:hover .number-input-buttons {
+    border-color: rgba(var(--border-color-1), 0.8);
+}
+.number-input-container:hover .number-input-buttons .increase-button {
+    border-color: rgba(var(--border-color-1), 0.8);
+}
+
+/* focus-within */
+.number-input-container:focus-within {
+    background-color: rgba(var(--background-color-focus));
+    border-color: rgb(var(--border-color-1));
+}
+.number-input-container:focus-within .number-input-buttons {
+    border-color: rgb(var(--border-color-1));
+}
+.number-input-container:focus-within .number-input-buttons .increase-button {
+    border-color: rgb(var(--border-color-1));
+}
+
+.number-input-container:has(:disabled),
+.number-input-container.inactive {
+    opacity: 0.5;
+}
+
+.number-input::-webkit-inner-spin-button {
+    display: none;
+}
+
+.number-input {
+    appearance: textfield;
+    border: none;
+    display: block;
+    font-size: var(--main-font-size-18);
+    padding: 10px;
+    padding-right: 0;
+    flex-grow: 1;
+    min-width: 0;
+    background-color: transparent;
+    color: rgb(var(--text-color-main));
+    outline: none;
+}
+
+.number-input-buttons {
+    border-left: 2px solid rgb(var(--border-color-0));
+    display: flex;
+    width: 40%;
+    min-width: 35px;
+    max-width: 50px;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.number-input-buttons button {
+    flex-grow: 1;
+    display: flex;
+    border: none;
+    background-color: transparent;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0;
+    outline: none;
+}
+.number-input-buttons button:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-focus));
+}
+
+.number-input-buttons button.increase-button {
+    border-bottom: solid 2px rgb(var(--border-color-0));
+}
+
+.number-input-buttons button.increase-button svg {
+    rotate: 180deg;
+}
+
+
+.number-input-buttons svg {
+    height: 7px;
+    transition: 0.1s;
+}
+.number-input-buttons button:is(:hover, :focus-visible) svg {
+    transform: translateY(-2px);
+}
+.number-input-buttons button:active svg {
+    transform: translateY(2px);
+}
+

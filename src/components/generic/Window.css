@@ -1,9 +1,11 @@
 
 
 #windows-container  {
-    /* height: 100%; */
+    /* height: max(100%, auto); */
+    height: 100%;
     display: flex;
-    min-height: 100%;
+    /* min-height: 100%;
+    max-height: 100%; */
     padding: 30px;
 }
 
@@ -15,77 +17,117 @@
 
 
 .windows-layout {
-    flex-grow: 1;
-    flex-basis: 0;
+    flex: 1;
+    flex-shrink: 0;
+    min-height: 0;
     max-width: 100%;
     
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: clamp(20px, 3vw, 50px);
+    justify-content: space-between;
+    align-items: stretch;
 }
-.windows-layout .d-row {
+.windows-layout.d-row {
     flex-direction: row;
 }
-.windows-layout .d-column {
+.windows-layout.d-column {
     flex-direction: column;
+}
+
+.windows-layout *, .windows-layout {
+    min-width: 0;
 }
 
 .window {
     background-color: rgb(var(--background-color-2));
     border-radius: 15px;
-    flex-grow: 1;
-    flex-basis: 0;
-    /* min-height: 300px; */
+    flex: 1;
+    flex-shrink: 0;
+    
+    /* min-height: 150px; */
 
     display: flex;
     flex-flow: column nowrap;
     overflow: hidden;
     box-shadow: var(--box-shadow-window);
 
+    outline: none;
     opacity: 0;
     scale: 0.85;
     /* animation: go-in 0.5s ease forwards; */
     animation: go-in 0.5s var(--timing-function-spring-effect) forwards;
     /* transition: 0.1s; */
 }
+.window:focus-visible {
+    box-shadow: 0 0 20px rgb(var(--background-color-1));
+}
+
+.window.appeared {
+    animation: none;
+    opacity: 1;
+    scale: 1;
+    transition: scale 0.1s;
+}
+.window.grabbing {
+    scale: 0.95;
+}
+
 .window.moving {
-    background-color: rgba(0, 240, 255, 0.14);
+    position: relative;
+    background: rgba(0, 240, 255, 0.14) !important;
     outline: 2px dashed rgb(98, 194, 207);
     box-shadow: none;
 }
+/* pour safari car il ne supporte pas le border-radius sur les outline (tt carré tier)*/
+/* .window.moving::after {
+    inset: -2px;
+    top: -2px;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    border: 2px dashed rgb(98, 194, 207);
+    border-radius: 15px;
+} */
 .window.moving * {
-    visibility: hidden
+    transition: 0s !important;
+    visibility: hidden !important;
+    /* opacity: 0 !important;
+    pointer-events: none !important; */
+    /* display: none !important; */
 }
 
+
 #floating-portal .window {
-    /* display: none; */
-    max-width: none; /* pour l'affichage mobile */
+    max-width: none;
+    min-width: 0;
     opacity: 1;
     scale: 1;
-    /* transition: scale 0.1s var(--timing-function-spring-effect); */
-    transition: scale 0.1s ease;
+    transition: scale 0.2s ease;
     animation: none;
     cursor: grabbing;
 }
 #floating-portal .window * {
+    min-width: 0;
     cursor: grabbing;
+    animation-delay: 0s;
+    animation-duration: 0s;
+    transition: 0s;
+    transition-delay: 0s;
 }
-#floating-portal .window:hover {
-    scale: 1.05;
-}
-#floating-portal .window.unfloating {
-    scale: 1;
-}
+
 #floating-portal .window.unfloating * {
     cursor: grab;
 }
 
 .window .window-header {
     background-color: rgb(var(--background-color-1));
-    /* min-height: 50px; */
     min-height: 45px;
     border-radius: 15px;
     box-shadow: var(--box-shadow-window);
+    isolation: isolate;
+    z-index: 1;
+    position: relative;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -94,6 +136,9 @@
 .window .window-header h2 {
     text-align: center;
     font-size: var(--font-size-20);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .window .window-header:active {
     cursor: grabbing;
@@ -103,30 +148,33 @@
 }
 
 .window .window-content {
-    flex-grow: 1;
-    /* temp pour centrer le numéro de window */
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
 }
 
 
 @media only screen and (max-width: 869px) {
     #windows-container {
         min-height: 0;
+        height: auto;
+        max-height: initial;
+        padding: clamp(30px, 7vw, 40px) clamp(15px, 3.5vw, 30px);
+        padding-bottom: 30px;
     }
     
     .windows-layout {
         flex-flow: column nowrap !important;
         flex-basis: auto;
         width: 100%;
-        gap: 40px;
+        gap: clamp(30px, 7vw, 40px);
     }
     .window {
         max-width: 100%;
+        min-height: 100px;
+        max-height: calc(80vh - 100px); /*= 80% hauteur du viewport - hauteur du header */
         overflow: visible;
+        /* overflow: auto; */
     }
 }
 

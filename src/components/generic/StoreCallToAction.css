@@ -1,0 +1,48 @@
+
+.install-as-application {
+    text-decoration: none;
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 11px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.1s;
+    
+    display: inline-flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+    
+}
+.install-as-application:hover {
+    background-color: #141414;
+}
+.install-as-application:active {
+    background-color: #232323;
+}
+
+.install-as-application .company-logo {
+    flex-basis: auto;
+    height: 33px;
+    /* margin-left: 5px; */
+}
+
+.install-as-application .text {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.install-as-application .install-as {
+    font-size: var(--font-size-12);
+    color: white;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.install-as-application .application {
+    color: white;
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-semi-bold);
+}

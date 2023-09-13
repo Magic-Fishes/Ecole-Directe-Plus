@@ -24,10 +24,15 @@
 .header-menu {
     display: flex;
     height: inherit;
-    flex-flow: row wrap; /* TODO: à switch en nowrap après les tests */
-    /* overflow: auto; /* TODO: à enlever quand nowrap (mm si en vrai ça gêne pas) */
+    flex-flow: row nowrap;
     justify-content: space-between;
     background-color: rgb(var(--background-color-header));
+    /* background: linear-gradient(135deg, #FE0000 16.66%,
+		#FD8C00 16.66%, 33.32%,
+		#FFE500 33.32%, 49.98%,
+		#119F0B 49.98%, 66.64%,
+		#0644B3 66.64%, 83.3%,
+		#C22EDC 83.3%); */
     /* box-shadow: 0 4px 20px rgba(0, 0, 0, 1); */
     box-shadow: var(--box-shadow-window);
 }
@@ -38,8 +43,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-grow: 0.125;
-    flex-grow: 0.2;
+    /* flex-grow: 0.125;
+    flex-grow: 0.2; */
     flex-grow: 0.25;
     width: 100px;
     
@@ -50,6 +55,7 @@
     position: relative;
 }
 .header-logo-container #version-tag {
+    width: max-content;
     position: absolute;
     right: 0;
     bottom: 0;
@@ -58,21 +64,22 @@
     color: rgb(var(--text-color-alt));
     font-size: var(--font-size-12);
     padding: 4px 7px;
-    border-radius: 5px;
+    border-radius: 7px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     pointer-events: none;
     
 }
 
 .header-logo-container #header-logo {
-    height: 60px;
+    height: 55px;
     width: auto;
     transition: 0.2s;
 }
 .header-logo-container #header-logo:hover {
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+    filter: drop-shadow(0 0 20px rgba(var(--text-color-main), 0.2));
 }
 .header-logo-container #header-logo:active {
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+    filter: drop-shadow(0 0 20px rgba(var(--text-color-main), 0.4));
 }
 
 /* - - - navbar - - - */
@@ -107,25 +114,25 @@ li#messaging.header-button-container { order: 5; }
 
 /* - - - account-selection - - - */
 
-.account-selection {
+.header-menu .account-selection {
     height: inherit;
-    width: 400px;
+    flex-grow: 0.10;
+    /* width: 400px; */
     /* padding: 5px; */
 }
-
-.account-selection .drop-down-menu  {
-    height: 55px; /* temp tier */
-    max-width: 100%;
-}
-.account-selection .button  {
+.header-menu .account-selection #account-selector {
     width: 100%;
+    width: 400px;
+    margin-inline: auto 0;
 }
+
 
 /* - - - main content - - - */
 
 main.content {
     height: 100%;
     overflow: auto;
+    /* overscroll-behavior: contain; */
     width: 100%;
     max-width: 2360px;
     margin: 0 auto;
@@ -155,8 +162,27 @@ main.content {
         display: none;
     }
 
-    .account-selection {
-        display: none;
+    main.content .account-selection {
+        padding: 30px clamp(15px, 3.5vw, 30px);
+        padding-bottom: 0;
+    }
+    main.content #account-selector {
+        max-height: 80px;
+        padding: 0;
+    }
+    main.content #account-selector #options-wrapper {
+        background-color: rgb(var(--background-color-1));
+        box-shadow: var(--box-shadow-window);
+    }
+}
+
+@media only screen and (max-width: 869px) and (min-height: 750px) {
+    main.content .account-selection {
+        display: block;
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 1;
     }
 }
 
@@ -178,332 +204,3 @@ main.content {
         border-radius: 0 0 20px 20px;
     }
 }
-
-/* @media only screen and (max-width: 450px) {
-    .header-container {
-        max-height: 70px;
-    }
-    .header-button .icon-container svg {
-        height: 45px
-    }
-    .header-button .notifications {
-        left: 35px;
-    }
-} */
-
-/* header.header-menu {
-    position: sticky;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    background-color: #39378F;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 1);
-    transition: 0.1s;
-}
-
-nav {
-    flex-grow: 0.7;
-}
-
-.logo {
-    flex-grow: 0.2;
-}
-
-ul.pages {
-    list-style: none;
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-ul.pages li.page {
-    top: 0;
-    margin: 10px 5px;
-    padding: 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.1s ease-out;
-} 
-
-ul.pages li.page:hover {
-    background-color: #32327b;
-/*     transform: scale(1.1); 
-}
-
-ul.pages li.page:active {
-    background-color: #282867;
-/*     transform: scale(0.9); 
-}
-
-ul.pages li.page a {
-    text-decoration: none;
-    color: white;
-}
-
-ul.pages li.page a:visited {
-    color: white;
-}/*ca en vrain je suis pas sur que ca soit utile ; probable mais pour être safe
-
-ul.pages li.page span {
-    display: block;
-    text-align: center;
-    overflow-wrap: none;
-}
-
-.icon {
-/*     background-color: lime; 
-    display: block;
-    margin: 0 auto;
-    margin-bottom: 8px;
-    height: 50px;
-    max-width: 50px;
-}
-
-
-/* -- profile section -- 
-
-.account-selection {
-    display: block;
-    position: relative; /* pour le positionnement absolute de la drop-down-list
-    background-color: #39378f;
-    max-width: 400px;
-    margin: 10px 10px 10px 0;
-    box-shadow: 0 0 20px black;
-    border-radius: 20px;
-    color: white;
-    transition: 0.1s;
-}
-
-.account-selection:not(:focus-within):hover { /*ca c pour pas que ca acive l'effet de hover quand on appuie sur le bouton
-    background-color: #4c4aa5;
-}
-
-.account-selection:focus-within {
-    border-radius: 20px 20px 0 0;
-}
-
-.account-selection:focus-within .drop-down-list {
-    display: block; 
-    height: auto; /* c'est pour essayer d'animer le déroulement de la drop-down-list mais sad ça marche pas
-}
-
-.active-account {
-    
-    display: flex;
-    margin: 5px;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.1s;
-    overflow: auto;
-    border: solid 2px rgb(var(--border-color-0));
-}
-
-address.account-infos {
-    color: -webkit-linear-gradient(#eee, #333);;
-    padding: 5px;
-    font-size: 1rem;
-    font-style: initial; /* ça enleve italic
-    line-height: 1.25rem;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    display: inline-flex;
-    flex-flow: column nowrap;
-}
-
-address.account-infos .name-first-name {
-    font-weight: 600;
-}
-
-address.account-infos sup {
-    display: inline;
-    font-size: 0.6rem;
-}
-
-
-.drop-down-list {
-    display: none;
-    height: 0px;
-    overflow: auto;
-    position: absolute;
-    left: 0;
-    background-color: #39378f;
-    width: 100%;
-    border-radius: 0 0 20px 20px;
-/*     box-shadow: 0 0 20px black; */ /*ça donne un truc immonde vu que ça override le active profile aled
-    box-shadow: 0 20px 20px black; /* ça cancel le pb mais du coup il y a une énorme ombre en bas et c'est également immonde
-    font-size: 1.5rem;
-    transition: height 0.5s ease;
-    border: solid 2px rgb(var(--border-color-1));
-    border-top: none;
-}
-
-.drop-down-list li {
-    border-top: 3px solid #272664;
-}
-
-.drop-down-list li.account:hover {
-    cursor: pointer;
-    background-color: #272664;
-}
-
-.account-container {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-}
-
-.account {
-    display: flex;
-    padding: 5px;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.profile-picture-container {
-    background-color: #FFFF0011;
-    border-radius: 15px;
-}
-
-.profile-picture {
-    object-fit: cover; /*pour crop l'image au lieu de resize
-    height: 90px;
-    width: 90px;
-    border-radius: 15px;
-    mix-blend-mode: darker;
-}
-
-.profile-picture {
-}
-
-.switch-arrow {
-    height: 40px;
-    margin: 0 10px;
-}
-
-#settings {
-    display: flex;
-    flex-flow: row wrap;
-/*     align-items: center; 
-    justify-content: space-between;
-}
-
-#settings a {
-    box-sizing: border-box;
-    text-decoration: none;
-    font-size: 0.8rem;
-    margin: 5px 2.5px 2.5px 5px;
-    padding: 10px;
-    color: white;
-    background-color: #141338;
-    border-radius: 10px;
-    flex-basis: calc(50% - 10px); /* 50% - 2*marginX 
-    flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    transition: 0.1s;
-}
-/*culture de mangue c'est ici 
-#settings a:nth-child(2) {margin: 5px 5px 2.5px 2.5px;}
-#settings a:nth-child(3) {margin: 2.5px 2.5px 5px 5px;}
-#settings a:nth-child(4) {margin: 2.5px 5px 5px 2.5px;}
-
-#settings a:hover {
-    background-color: #242348;
-}
-
-#settings img {
-    display: inline-block;
-    margin-right: 10px;
-    height: 12px;
-    width: auto;
-}
-
-#logout-button {
-    font-size: 1.2rem;
-    font-weight: 900;
-    padding: 15px 20px;
-    width: 100%;
-    background-color: #643763;
-    color: red;
-    border: none;
-    border-radius: 0 0 20px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: 0.1s;
-}
-
-#logout-button:hover {
-    background-color: #742753;
-}
-
-#logout-button img {
-    width: 35px;
-    height: auto;
-}
-
-
-/* -- media queries -- 
-
-@media only screen and (max-width: 1016px) {
-    img.logo {
-        display: none;
-    }
-}
-
-@media only screen and (max-width: 926px) {
-    header.header-menu {
-        position: fixed;
-        top: auto;
-        left: auto;
-        bottom: 0;
-        border-radius: 20px 20px 0 0;
-    } 
-
-    nav {
-        width: 100%;
-    }
-
-    ul.pages {
-        height: 90px;
-        padding: 0 5px;
-        justify-content: space-evenly;
-    }
-
-    ul.pages li.page {
-        padding: 7px;
-        margin: 0;
-        min-width: 0;
-    }
-    
-    ul.pages li.page span {
-        display: none;
-    }
-    
-    .icon {
-        margin-bottom: 0;
-        width: 100%;
-        height: auto;
-        min-width: 0;
-        min-height: 0;
-    }
-
-    .account-selection {
-        display: none;
-    }
-
-    .windows-container {
-        max-height: calc(100vh - 90px);
-        overflow-y: scroll;
-    }
-
-} */

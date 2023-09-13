@@ -18,7 +18,7 @@
     overflow: hidden;
     font-size: var(--font-size-16);
     border: 2px solid rgb(var(--border-color-0));
-    background-color: rgb(var(--background-color-1));
+    /* background-color: rgb(var(--background-color-1)); */
     border-radius: 15px;
     transition: all 0.2s;
     transition: border-color 0.1s;
@@ -60,6 +60,8 @@
 }
 
 #selected-option-value {
+    flex: 1;
+    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -72,12 +74,12 @@
     height: 10px;
     vertical-align: middle;
     transform-origin: center;
-    rotation: 0;
+    rotate: none;
     transition: 0.2s var(--timing-function-spring-effect);
     transition-delay: 0.1s;
 }
 
-.drop-down-menu:not(.focus):active .selected svg {
+.drop-down-menu:active .selected svg {
     transform: translateY(5px);
 }
 

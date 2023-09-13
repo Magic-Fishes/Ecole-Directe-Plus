@@ -2,17 +2,24 @@
 .tooltip-content {    
     font-size: var(--font-size-14);
     color: rgb(var(--text-color-main));
-    background-color: rgba(var(--background-color-2), 0.6);
-    -webkit-backdrop-filter: blur(4px) brightness(0.8); /* safari */
-    backdrop-filter: blur(4px) brightness(0.8);
+    background-color: rgb(var(--background-color-2));
     box-shadow: var(--box-shadow-element);
-    
+        
     text-align: center;
     padding: 10px;
     border-radius: 10px;
     width: max-content;
     max-width: min(250px, calc(100% - 20px));
     cursor: help;
+    isolation: isolate;
+    z-index: 50;
+}
+
+:root.quality .tooltip-content,
+:root.balanced .tooltip-content {
+    background-color: rgba(var(--background-color-2), 0.6);
+    -webkit-backdrop-filter: blur(4px) brightness(0.8); /* safari */
+    backdrop-filter: blur(4px) brightness(0.8);
 }
 
 svg.floating-arrow {

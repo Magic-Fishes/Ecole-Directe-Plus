@@ -1,0 +1,12 @@
+/* Webfont: Luciole-Regular */@font-face {
+    font-family: 'Luciole';
+    src: url('Luciole-Regular.eot'); /* IE9 Compat Modes */
+    src: url('Luciole-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Luciole-Regular.woff') format('woff'), /* Modern Browsers */
+         url('Luciole-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('Luciole-Regular.svg#Luciole-Regular') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+

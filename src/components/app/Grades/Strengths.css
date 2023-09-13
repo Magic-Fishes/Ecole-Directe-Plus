@@ -1,0 +1,96 @@
+
+.strengths .window-content {
+    container-type: size;
+}
+
+ol.strengths-container {
+    height: 100%;
+    padding: 15px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+@container (max-height: 180px) {
+    ol.strengths-container {
+        height: auto;        
+    }
+}
+
+.strengths-container li.strength-container {
+    display: block;
+    padding: 7px;
+    border-radius: 50px;
+    box-shadow: var(--box-shadow-element);
+
+    cursor: pointer;
+    transition: all 0.1s, outline 0s;
+}
+.strengths-container li.strength-container:nth-child(1) { background-color: rgba(36, 186, 22, 0.8) }
+.strengths-container li.strength-container:nth-child(2) { background-color: rgba(27, 155, 22, 0.8) }
+.strengths-container li.strength-container:nth-child(3) { background-color: rgba(17, 123, 21, 0.8) }
+
+.strengths-container li.strength-container:hover {
+    opacity: 0.8;
+}
+
+.strengths-container li.strength-container:has(:focus-visible) {
+    outline: 2px solid rgba(var(--text-color-main), .7);
+}
+
+.strengths-container li.strength-container:active {
+    opacity: 0.7;
+}
+
+.strengths-container .strength-wrapper {
+    text-decoration: none;
+    outline: none;
+    
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.strengths-container span {
+    color: rgba(var(--text-color-main), .7);
+    font-weight: var(--font-weight-semi-bold);
+}
+
+
+.strengths-container .subject-container {
+    flex: 1;    
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.strengths-container .subject-rank {
+    margin-left: 10px;
+}
+
+.strengths-container .subject-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.strengths-container .subject-average {
+    background-color: rgba(var(--background-color-0), 0.35);
+    padding: 5px 15px;
+    border-radius: 50px;
+}
+
+@media only screen and (max-width: 869px) {
+    .strengths .window-content {
+        container-type: normal;
+    }
+    
+    ol.strengths-container {
+        height: auto;
+    }
+}
+

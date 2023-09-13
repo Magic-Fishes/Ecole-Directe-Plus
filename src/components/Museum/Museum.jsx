@@ -15,21 +15,25 @@ import InfoIcon from "../graphics/InfoIcon";
 import KeyIcon from "../graphics/KeyIcon";
 import LoadingAnimation from "../graphics/LoadingAnimation";
 import MessagingIcon from "../graphics/MessagingIcon";
-import PlanningIcon from "../graphics/PlanningIcon";
 import SelectedArrow from "../graphics/SelectedArrow";
 import SettingsIcon from "../graphics/SettingsIcon";
 import SwitchArrows from "../graphics/SwitchArrows";
 import TimetableIcon from "../graphics/TimetableIcon";
+import RefreshIcon from "../graphics/RefreshIcon";
+import CanardmanSearching from "../graphics/CanardmanSearching";
 
 
 import "./Museum.css";
 
 export default function Museum() {
+    useEffect(() => {
+        document.title = "Musée • Ecole Directe Plus";
+    }, []);
 
     // JSX
     return (
         <div id="museum">
-            <h1>Museum</h1>
+            <h1>Musée</h1>
             <div className="assets">
                 <div className="asset">
                     <h3>EDPLogo</h3>
@@ -88,10 +92,6 @@ export default function Museum() {
                     <MessagingIcon />
                 </div>
                 <div className="asset">
-                    <h3>PlanningIcon</h3>
-                    <PlanningIcon />
-                </div>
-                <div className="asset">
                     <h3>SelectedArrow</h3>
                     <SelectedArrow />
                 </div>
@@ -106,6 +106,14 @@ export default function Museum() {
                 <div className="asset">
                     <h3>TimetableIcon</h3>
                     <TimetableIcon />
+                </div>
+                <div className="asset">
+                    <h3>RefreshIcon</h3>
+                    <RefreshIcon />
+                </div>
+                <div className="asset">
+                    <h3>CanardmanSearching</h3>
+                    <CanardmanSearching/>
                 </div>
             </div>
         </div>

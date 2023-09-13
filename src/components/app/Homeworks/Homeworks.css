@@ -1,0 +1,15 @@
+
+#homeworks {
+    height: 100%;
+    min-height: 100%;
+}
+
+#homeworks .windows-layout#test {
+    padding: 30px;
+    height: 100%;
+}
+
+#homeworks .windows-layout#test2 {
+    padding: 30px;
+    height: 100%;
+}

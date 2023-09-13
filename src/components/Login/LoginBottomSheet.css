@@ -1,0 +1,21 @@
+
+#login-form.background-task {
+    display: none;
+}
+
+
+.login-bottom-sheet #bottom-sheet-box {
+    max-width: clamp(600px, 60vw, 800px);
+}
+
+.login-bottom-sheet .explanation {
+    text-align: center;
+    color: rgb(var(--text-color-alt));
+    margin-bottom: 25px;
+}
+
+.login-bottom-sheet #login-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}

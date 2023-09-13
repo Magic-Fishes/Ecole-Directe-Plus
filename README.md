@@ -1,7 +1,7 @@
 # Ecole-Directe-Plus
 ## Aim of the project
 We were really driven to improve the experience of the online part of our school and give it a more pleasant and functional environment.
-The Ecole Directe platform has been completely redesigned to offer the best comfort to all students.
+The EcoleDirecte platform has been completely redesigned to offer the best comfort to all students.
 Enjoy the most-requested features and a ton of small but game changer improvements.
 
 ## New features
@@ -22,7 +22,7 @@ Enjoy the most-requested features and a ton of small but game changer improvemen
 ## FAQ
 - A release date?<br>When it's ready.
 - My data?<br>We don't and will never collect any data about you.
-- Do I need an application?<br>No, you don't. Ecole Directe Plus is a web application therefore you just need a browser.
+- Do I need an application?<br>No, you don't. Ecole Directe Plus is a web application therefore you just need a browser, however you can easily install it as an application (check out our tutorial).
 
 ## Join us
 Are you excited about this project ?<br>

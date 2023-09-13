@@ -1,13 +1,19 @@
 
-#lab-page h1 {
+#lab-page h1#lab-page-heading {
     text-align: center;
+    margin-block: 20px;
+    font-size: var(--font-size-42);
 }
 
 #lab-page h3 {
     margin-block: 20px 10px;
 }
 
-#test {
+#scroll-shaded-div {
+    height: 200px;
+}
+
+#lab-page #test {
     transition: 1s;
     padding: 20px;
     background-color: blue;
@@ -20,4 +26,32 @@
 #lab-tooltip {
     width: max-content;
     margin: 0 auto;
+}
+
+#lab-page .header-button  {
+    max-width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+#shining-div-test {
+    background: linear-gradient(180deg, #FF0F00 30%, #FF7A00 100%);
+    text-align: center;
+    width: 100%;
+    font-weight: 800;
+    height: 150px;
+}
+
+#shining-test p {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#lab-page #store-call-to-action {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
 }

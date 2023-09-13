@@ -1,0 +1,34 @@
+
+.shining-div {
+    isolation: isolate;
+    position: relative;
+}
+
+.shining-icon {
+    opacity: 0;
+    visibility: hidden;
+    
+    position: absolute;
+    height: var(--grow-size);
+    animation: shine var(--grow-duration) ease-in-out 0s forwards;
+    transform-origin: center;
+}
+
+@keyframes shine {
+    0% {
+        visibility: visible;
+        transform: scale(0);
+        /* rotate: -45deg; */
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        visibility: visible;
+        transform: scale(0);
+        /* rotate: 30deg; */
+        opacity: 0.2;
+    }
+}

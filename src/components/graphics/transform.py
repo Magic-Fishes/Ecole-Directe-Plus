@@ -5,6 +5,7 @@ removeFromRoot = ["width", "height", "xmlns:xlink"]
 remove = ["style"]
 
 style = {}
+svgInlineStyle = []
 
 definedColors = {
     "white": "text-main",
@@ -13,6 +14,8 @@ definedColors = {
     "#4B48D9": "border-0",
     "#6865EC": "border-1",
     "#39378F": "background-header",
+    "#B4B4F0": "text-alt",
+    "#dfc8c8": "text-soft-error-main"
 } 
 
 def kebabToCamel(str):
@@ -27,6 +30,7 @@ def colorsToCSSVar(txt):
         "border-0": "--border-color-0",
         "border-1": "--border-color-1",
         "background-header": "--background-color-header",
+        "text-alt": "--text-color-alt",
     }
     if txt in defined:
         return "rgb(var(" + defined[txt] + "))"
@@ -37,6 +41,7 @@ def modifyChildren(parent):
     for child in parent:
         className = ""
         remove = []
+        removeFromParent = []
         replace = {}
         tag = child.tag
         tag = tag[tag.index("}")+1:]
@@ -46,12 +51,15 @@ def modifyChildren(parent):
                     child.attrib.pop(i)
                 except:
                     pass
+        
+        if tag == "style":
+            svgInlineStyle.append(child.text)
 
-        for i in remove:
-            try:
-                child.attrib.pop(i)
-            except:
-                pass
+        # for i in remove:
+        #     try:
+        #         child.attrib.pop(i)
+        #     except:
+        #         pass
 
         for i in child.attrib:
             if "-" in i:
@@ -106,30 +114,33 @@ for i in os.listdir(route):
         fileName = kebabToCamel(fileName)
         inlineFile = """
 import "./graphics.css"
-export default function """ + fileName + """ ({ className, id, alt }) {
+export default function """ + fileName + """ ({ className="", id="", alt, ...props }) {
     return (
 """
         tree = ET.parse(route + i)
         root = [tree.getroot()]
         modifyChildren(root)
-        root = root[0] # g pas envie de parler de ça tllmt g fait n'imp là dessus mais aled
-        # title = ET.Element("title")
-        # title.text = "{alt}"
-        # root.insert(0, title)
-
-        # convert as a str
+        root = root[0]
+        
+        # convert as a string for last formating and writing it in file
         svgFile = ET.tostring(root, encoding="utf-8", method="xml").decode()
-
+        
         # average text modifications to add jsx specifications
         svgFile = svgFile.replace("ns0:", "").replace(":ns0", "")
-        svgFile = svgFile.replace("<svg", "<svg className={className} id={id} aria-label={alt}")
-
+        svgFile = svgFile.replace("<svg", "<svg aria-label={alt} className={className} id={id}")
+        svgFile = svgFile.replace('fill="none">', 'fill="none" {...props}>')
+        
+        try:
+            styleBalise1 = svgFile.index("<style")
+            styleBalise2 = svgFile.index("</style>") + 8
+            svgFile = svgFile[:styleBalise1] + svgFile[styleBalise2:]
+        except ValueError:
+            pass
+        
         with open("./src/inline/" + fileName + ".jsx", "w") as f:
             f.write(inlineFile + svgFile + "\n\t)\n}")
 
-print(style)
-
-with open("./src/graphics.css", "w") as css:
+with open("./src/inline/graphics.css", "w") as css:
     for i in style:
         for n in style[i]:
             css.write("." + n + "-" + i.strip("#") + """ {
@@ -137,3 +148,7 @@ with open("./src/graphics.css", "w") as css:
 }
 
 """)
+    for i in svgInlineStyle:
+        css.write(i)
+
+print("svg successfully turned into react.js component")

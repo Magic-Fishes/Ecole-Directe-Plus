@@ -50,7 +50,9 @@
     --max-width-tablet: 869px;
     --min-width-wide-screen: 2361px;
 
-    font-size: 62.5%; /*pour que 1rem = 10px*/
+    /*pour que 1rem = 10px*/
+    font-size: 62.5%;
+    /* font-size: 55%;  */
 }
 
 :root.dark {
@@ -62,6 +64,7 @@
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
     --background-color-2: 72, 72, 102;
+    --background-color-3: 94, 94, 136;
     --background-color-focus: 75, 72, 217, 0.3;
     --background-color-header: 55, 57, 143;
     
@@ -111,17 +114,13 @@
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
-    /* --text-color-alt: 76, 76, 184; */
     --text-color-alt: 76, 76, 184;
     
-    /* --background-color-0: 228, 228, 255; */
     --background-color-0: 228, 228, 255;
-    /* --background-color-1: 185, 185, 255; */
     --background-color-1: 210, 210, 255;
-    /* --background-color-2: 170, 170, 220; */
-    /* 200, 200, 240 */
-    /* --background-color-2: 180, 180, 220; */
     --background-color-2: 200, 200, 240;
+    --background-color-3: 156, 156, 205;
+    /* --background-color-3: 94, 94, 136; */
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;
 
@@ -164,7 +163,9 @@
 :root.balanced ::placeholder,
 :root.balanced ::after {
     animation-duration: 0s !important;
+    animation-delay: 0s !important;
     transition: 0s !important;
+    transition-delay: 0s !important;
 }
 :root.performance *,
 :root.performance ::placeholder,
@@ -177,6 +178,7 @@
     box-shadow: none !important;
     filter: none !important;
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 /* .switching-theme :is(*, ::placeholder, ::-webkit-scrollbar, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb), */
@@ -186,7 +188,20 @@
 .switching-theme ::-webkit-scrollbar-thumb,
 .switching-theme ::placeholder,
 .switching-theme ::after {
-    transition: all 0.5s !important;
+    /* transition: all 0.5s; */
+    transition:
+        background 0.5s,
+        background-color 0.5s,
+        color 0.5s,
+        border 0.5s,
+        border-color 0.5s,
+        outline 0.5s,
+        outline-color 0.5S,
+        box-shadow 0.5s,
+        fill 0.5s,
+        stroke 0.5s,
+        stop-color 0.5s
+        !important;
 }
 
 *, ::after {
@@ -207,7 +222,21 @@ body {
     /* color: rgb(var(--text-color-main)); */
     font-size: var(--main-font-size-16);
     font-weight: var(--main-font-weight-regular);
+    /* zoom: .8; */
 }
+
+/* @media only screen and (max-height: 750px) {
+    body {
+        font-size: 12px;
+        zoom: 0.8;
+    }
+} */
+/* @media only screen and (max-width: 1496px) {
+    body {
+        font-size: 12px;
+        zoom: calc(100vw / 1496);
+    }
+} */
 
 body, input, button, textarea {
     font-family: Inter, sans-serif;
@@ -223,14 +252,17 @@ body, input, button, textarea {
     border-radius: 5px;
     cursor: pointer;
     margin-left: 2px;
+    opacity: 0.5;
 }
 
 #admin-controls input:hover, #admin-controls button:hover {
     background-color: #323232;
+    opacity: 0.8;
 }
 
 #admin-controls input:active, #admin-controls button:active {
     background-color: #646464;
+    opacity: 1;
 }
 
 /* invalid inputs */
@@ -280,6 +312,7 @@ p.error-message {
     /* backdrop-filter: brightness(1.5); */
     /* padding: 2px; */
     outline: 2px solid currentcolor;
+    transition: outline-width 0s;
     /* outline-offset: 5px; */
     border-radius: 4px;
 }
@@ -299,7 +332,7 @@ p.error-message {
 
 
 /* Track */
-/* tricks pour mettre de l'espace autour de la scrollbar pour plus qu'elle soit collé au contenu et au bord du container */
+/* tricks pour mettre de l'espace autour de la scrollbar pour plus qu'elle soit collée au contenu et au bord du container */
 /* https://stackoverflow.com/questions/29866759/how-do-i-add-a-margin-to-a-css-webkit-scrollbar */
 ::-webkit-scrollbar-track {
     /* background-color: transparent; */
@@ -323,4 +356,13 @@ p.error-message {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     box-shadow: inset 0 0 10px 10px rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+}
+
+/* Handle on click */
+::-webkit-scrollbar-thumb:active {
+    box-shadow: inset 0 0 10px 10px rgba(var(--box-shadow-color-scrollbar-thumb-on-hover), .5);
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
 }

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/public/images/EDP-logo-favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
-    <link rel="icon" href="/public/images/EDP-logo-favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="/images/EDP-logo-favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/images/EDP-logo-favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
     <title>Ecole Directe Plus</title>
 </head>
 <body>
@@ -22,7 +22,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 75%;
-            max-width: 480px;
+            max-width: 400px;
             text-align: center;
         }
         svg#epd-logo-full-width {
@@ -42,12 +42,18 @@
             color: rgb(109, 106, 251);
             text-decoration: none;
         }
+        a:hover, a:focus-visible {
+            color: rgba(109, 106, 251, 0.8);
+        }
+        a:active {
+            color: rgba(109, 106, 251, 0.6);
+        }
         button {
             font-family: Inter, sans-serif;
             width: 50%;
             display: block;
             margin: 20px auto;
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 600;
             padding: 10px 15px;
             min-width: min-content;
@@ -103,12 +109,14 @@
             <path d="M510.593 292.371L577.82 400.858C578.438 401.855 577.13 402.918 576.28 402.108L516.628 345.296C515.067 343.809 512.493 344.405 511.745 346.428L498.914 381.143C498.134 383.252 495.398 383.786 493.883 382.125L424.158 305.671C423.4 304.839 424.38 303.583 425.371 304.117L480.642 333.88C482.119 334.676 483.962 334.105 484.731 332.614L505.376 292.576C506.444 290.504 509.365 290.389 510.593 292.371Z" stroke="rgb(50, 50, 87)" stroke-width="13" stroke-linecap="round"/>
             <path d="M100.026 221.953L36.7795 111.098C36.1981 110.079 37.5439 109.065 38.3636 109.904L95.9149 168.844C97.4215 170.387 100.015 169.884 100.836 167.89L114.919 133.663C115.774 131.584 118.528 131.15 119.981 132.865L186.886 211.798C187.614 212.657 186.589 213.877 185.618 213.307L131.463 181.558C130.016 180.709 128.154 181.212 127.331 182.675L105.247 221.937C104.104 223.969 101.181 223.978 100.026 221.953Z" stroke="rgb(50, 50, 87)" stroke-width="13" stroke-linecap="round"/>
         </svg>
-        <h2>Problème de connexion</h2>
-        <p>Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez</p>
+        <h2>Aïe... On dirait que Canardman a trébuché sur le câble réseau</h2>
+        <p>Impossible de se connecter. Vérifiez votre connexion internet et réessayez</p>
         <button type="button" onclick="location.reload()">Réessayer</button>
 
-        <p>Si le problème persiste, <a href="mailto:ecole.directe.plus@gmail.com">contactez notre support technique</a> pour obtenir de l'aide.</p>
+        <p>Si le problème persiste, <a href="mailto:support@ecole-directe.plus">contactez notre support technique</a> pour obtenir de l'aide.</p>
     </div>
-
+    <script>
+        window.addEventListener('online', () => location.reload());
+    </script>
 </body>
 </html>
