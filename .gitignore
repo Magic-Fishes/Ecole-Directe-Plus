@@ -4,6 +4,7 @@ node_modules
 dist
 dist-ssr
 *.local
+public/fonts/
 
 # packager files
 package-lock.json

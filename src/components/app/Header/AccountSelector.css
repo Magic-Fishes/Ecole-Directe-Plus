@@ -117,7 +117,7 @@
 #account-selector .profile-picture {
     flex-basis: auto;
     object-fit: cover;
-    object-position: 0 35%;
+    object-position: 0 20%;
     height: 100%;
     width: 100%; /*= height*/
     scale: 1.02; /* permet de masquer les traits sur les bords de la pp*/
@@ -155,7 +155,19 @@
     font-weight: 600;
 }
 
-.options-container .links {
+
+#account-selector .animation-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    transition: grid-template-rows .2s;
+}
+
+[data-state="open"]#account-selector .animation-wrapper {
+    grid-template-rows: 1fr;
+}
+
+#account-selector .options-container .links {
     border-top: 2px solid rgba(var(--background-color-0), 0.5);
     margin-inline: 10px;
     padding-block: 10px;
@@ -165,7 +177,7 @@
     gap: 7px;
 }
 
-.options-container .links a {
+#account-selector .options-container .links a {
     background-color: rgb(var(--background-color-0));
     padding: 7px;
     border-radius: 10px;
@@ -178,15 +190,15 @@
     align-items: center;
 }
 
-.options-container .links a:hover,
-.options-container .links a:focus-visible {
+#account-selector .options-container .links a:hover,
+#account-selector .options-container .links a:focus-visible {
     background-color: rgba(var(--background-color-0), 0.8);
 }
 
-.options-container .links a:active {
+#account-selector .options-container .links a:active {
     background-color: rgba(var(--background-color-0), 0.6);
 }
-.options-container .links span.link-text {
+#account-selector .options-container .links span.link-text {
     color: rgb(var(--text-color-alt));
     flex: 1;
     white-space: nowrap;
@@ -194,17 +206,17 @@
     text-overflow: ellipsis;
 }
 
-.options-container .links svg {
+#account-selector .options-container .links svg {
     height: 20px;
     margin-right: 5px;
     /* scale: 1.2; */
 }
-.options-container .links #settings-page svg { scale: 1.1 }
-.options-container .links #account-page svg { scale: 1.2 }
-.options-container .links #feedback svg { scale: 1.3 }
-.options-container .links #patch-notes svg { scale: 1.3 }
+#account-selector .options-container .links #settings-page svg { scale: 1.1 }
+#account-selector .options-container .links #account-page svg { scale: 1.2 }
+#account-selector .options-container .links #feedback svg { scale: 1.3 }
+#account-selector .options-container .links #patch-notes svg { scale: 1.3 }
 
-.options-container .links #account-page path {
+#account-selector .options-container .links #account-page path {
     fill: rgb(var(--text-color-alt));
 }
 
@@ -212,14 +224,6 @@
     border-block: 2px solid rgba(var(--background-color-0), 0.5);
     margin-inline: 10px;
     padding-block: 10px;
-}
-
-
-.logout {
-    /* border-top: 2px solid rgba(var(--background-color-0), 0.5);
-    margin-inline: 10px;
-    padding-block: 10px 5px; */
-    /* width: 100%; */
 }
 
 #account-selector button#logout-button {

@@ -133,6 +133,11 @@ function areOccurenciesEqual(obj1, obj2) {
     return true;
 }
 
+
+console.log("-----------------")
+console.log("OUVERTURE FICHIER")
+console.log("-----------------")
+
 function initSettings(accountList) {
     // comment ajouter un setting :
     // userSettings ici ; defaultSettings
@@ -185,6 +190,11 @@ if (keepLoggedInFromLs) {
 export const AppContext = createContext(null);
 
 export default function App() {
+    useEffect(() => {
+        console.log("-------------------")
+        console.log("RENDER DU COMPOSANT")
+        console.log("-------------------")
+    }, [])
 
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs);
@@ -192,7 +202,7 @@ export default function App() {
     const [userIds, setUserIds] = useState(userIdsFromLs);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
-    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedInFromLs", activeAccount, true));
+    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true));
 
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
@@ -204,8 +214,10 @@ export default function App() {
 
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
-    const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
-    const [isTabletLayout, setIsTabletLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+    // const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
+    // const [isTabletLayout, setIsTabletLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+    const [isMobileLayout, setIsMobileLayout] = useState(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
+    const [isTabletLayout, setIsTabletLayout] = useState(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
     
@@ -229,9 +241,23 @@ export default function App() {
     function getUserData(data) {
         return userData[activeAccount][data]
     }
+ 
+    const useUserData = [changeUserData, getUserData,]
 
+    function changeUserSettings(setting, value, accountIdx=activeAccount) { 
+        setUserSettings((oldSettings) => {
+            const newSettings = [...oldSettings];
+            newSettings[accountIdx][setting].value = value;
+            return newSettings;
+        })
+        if (shareSettings) {
+            console.log("synched settings")
+            console.log(shareSettings)
+            syncSettings();
+        }
+    }
+    
     function syncSettings() {
-        console.log("cacacacacaca")
         setUserSettings((oldSettings) => {
             const newSettings = [];
             for (const i in oldSettings) {
@@ -241,22 +267,8 @@ export default function App() {
         })
     }
     
-    const useUserData = [changeUserData, getUserData,]
-
-    function changeUserSettings(setting, value) { 
-        setUserSettings((oldSettings) => {
-            const newSettings = [...oldSettings];
-            newSettings[activeAccount][setting].value = value;
-            return newSettings;
-        })
-        if (shareSettings) {
-            console.log(shareSettings)
-            syncSettings();
-        }
-    }
-    
     function defaultChangeUserSettings(setFunction) { 
-        setUserSettings(setFunction)    
+        setUserSettings(setFunction);
     }
     
     function getUserSettingValue(setting) {
@@ -333,7 +345,7 @@ export default function App() {
     useEffect(() => {
         const lsGlobalSettings = {};
         for (const i in globalSettings) {
-            lsGlobalSettings[i] = globalSettings[i].value;
+            lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
         }
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
         
@@ -354,6 +366,8 @@ export default function App() {
        shareSettings])
     
     useEffect(() => {
+        console.log("shareSettings")
+        console.log(shareSettings)
         if (shareSettings) {
             syncSettings();
         }
@@ -369,11 +383,11 @@ export default function App() {
 
     // handle storing into localStorage
         
-        const lsUserSettings = []
+        const lsUserSettings = [];
         for (let i = 0; i < accountsListState.length; i++) {
-            lsUserSettings[i] = {}
+            lsUserSettings[i] = {};
             for (let n in userSettings[i]) {
-                lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n])
+                lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
             }
         }
         localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
@@ -446,8 +460,10 @@ export default function App() {
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
         const handleWindowResize = () => {
-            setIsMobileLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
-            setIsTabletLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+            // setIsMobileLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
+            // setIsTabletLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
+            setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
+            setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
             
             
             // dezoom
@@ -619,7 +635,7 @@ export default function App() {
         const data = {
             anneeScolaire: ""
         }
-        await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
+        // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get%26v=${apiVersion}`,
@@ -667,6 +683,22 @@ export default function App() {
             })
     }
 
+    async function createFolderStorage(name) {
+        const data = {
+            libelle: name,
+        }
+        fetch("https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.39.0",
+              {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState,
+                },
+                body: `data=${JSON.stringify(data)}`,
+            },
+        )
+    }
+    
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -786,6 +818,7 @@ export default function App() {
                     setIsFullScreen={setIsFullScreen}
                     setting={userSettings}
                     syncSettings={syncSettings}
+                    createFolderStorage={createFolderStorage}
                 />
             ,
 

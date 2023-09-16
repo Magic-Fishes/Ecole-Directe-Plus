@@ -202,5 +202,5 @@ function draw() {
 setInterval((draw), 1); // loop of the game
 
 window.onresize=()=>{ // reload the file if the size of the screen change
-    location.reload();
+    location.reload()
 }

@@ -1,5 +1,5 @@
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 
 import Grade from "./Grade";
@@ -76,6 +76,7 @@ function decodeBase64(string) {
 
 export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
     const location = useLocation();
+    const navigate = useNavigate();
     
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
     if (sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]) {
@@ -91,12 +92,13 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
         <Window className="information">
             <WindowHeader>
                 <h2>Informations</h2>
+                <button className="clear-button" onClick={() => navigate("#")} style={{display: (["none", undefined].includes(selectedElement) ? "none" : "")}}>✕</button>
             </WindowHeader>
             <WindowContent>
-                {selectedElement === "loading" ? <div className="element-informations">
+                {selectedElement === "loading" ? <div className="element-information">
                     <div className="grade-zone">
                         {
-                            Array.from({ length: 4 }, (_, index) => index).map(() => <div>
+                            Array.from({ length: 4 }, (_, index) => <div key={crypto.randomUUID()}>
                                 <ContentLoader
                                     speed={1}
                                     backgroundColor={'#63638c'}
@@ -163,26 +165,26 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             </ContentLoader>
                         </div>
                     </div>
-                    </div> : ["none", undefined].includes(selectedElement)? <div className="no-selected-grades">
+                    </div> : ["none", undefined].includes(selectedElement) ? <div className="no-selected-grades">
                     <CanardmanSearching/>
                     <p>Sélectionnez une note pour en voir les détails ici</p>
-                </div> : selectedElement.elementType === "grade" ? <div className="element-informations">
+                </div> : selectedElement.elementType === "grade" ? <div className="element-information">
                     <div className="grade-zone">
                         <div>
                             <div className="number-name">Note</div>
-                            <div className="number-value">{selectedElement.value.toString().replace(".", ",")}<sub>/{selectedElement.scale}</sub></div>
+                            <div className="number-value">{selectedElement.value.toString().replace(".", ",")}{isNaN(selectedElement.value) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
                         <div>
                             <div className="number-name">Moyenne</div>
-                            <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}<sub>/{selectedElement.scale}</sub></div>
+                            <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
                         <div>
                             <div className="number-name">Min</div>
-                            <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}<sub>/{selectedElement.scale}</sub></div> 
+                            <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div> 
                         </div>
                         <div>
                             <div className="number-name">Max</div>
-                            <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}<sub>/{selectedElement.scale}</sub></div> 
+                            <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div> 
                         </div>
                     </div>
                     <p className="selected-coefficient">coeficient : {selectedElement.coef}</p>
@@ -212,23 +214,23 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></div>
                         </div> */}
                     </div>
-                </div> : <div className="element-informations">
+                </div> : <div className="element-information">
                     <div className="grade-zone">
                         <div>
                             <div className="number-name">Moyenne</div>
-                            <div className="number-value">{selectedElement.average.toString().replace(".", ",")}<sub>/20</sub></div>
+                            <div className="number-value">{selectedElement.average.toString().replace(".", ",")}{isNaN(selectedElement.average) ? null : <sub>/20</sub>}</div>
                         </div>
                         <div>
                             <div className="number-name">Classe</div>
-                            <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}<sub>/20</sub></div>
+                            <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/20</sub>}</div>
                         </div>
                         <div>
                             <div className="number-name">Min</div>
-                            <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}<sub>/20</sub></div>
+                            <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}{isNaN(selectedElement.minAverage) ? null :<sub>/20</sub>}</div>
                         </div>
                         <div>
                             <div className="number-name">Max</div>
-                            <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}<sub>/20</sub></div> 
+                            <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null :<sub>/20</sub>}</div> 
                         </div>
                     </div>
                     <p className="selected-coefficient">coeficient : {selectedElement.coef}</p>

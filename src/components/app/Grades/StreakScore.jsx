@@ -17,7 +17,7 @@ import ArrowOutline from "../../graphics/ArrowOutline";
 import "./StreakScore.css";
 
 
-export default function StreakScore({ streakScore=0, streakHighScore=0, className="", ...props }) {
+export default function StreakScore({ streakScore, streakHighScore=0, className="", ...props }) {
     const [displayedStreakScore, setDisplayedStreakScore] = useState(0);
     const [arrowsNumber, setArrowsNumber] = useState(0); // arrowsNumber on one side only
 
@@ -46,7 +46,7 @@ export default function StreakScore({ streakScore=0, streakHighScore=0, classNam
             }
         }
 
-        if (displayMode.get() === "quality") {
+        if (displayMode.get() === "quality" && streakScore) {
             const STEP_NUMBER = (streakScore < 15 ? streakScore : 12 + Math.floor(streakScore / 5)); // à ne pas confondre avec le sport qui consiste à monter et descendre des dizaines de fois par minutes
             const STEP_DURATION = 50;
             intervalId.current = setInterval(() => newStep(STEP_NUMBER), STEP_DURATION);
@@ -104,17 +104,13 @@ export default function StreakScore({ streakScore=0, streakHighScore=0, classNam
             <WindowContent>
                 <ShiningDiv className="score" shiningIconsList={[Star]} intensity={streakScore / 13} padding={[50, 80]} ref={containerRef} >
                     {
-                        Array.from({ length: arrowsNumber }, (_, index) => index).map((item => {
-                            return <ArrowOutline className="arrow-outline" key={item} style={{ "--order": item }} />
-                        }))
+                        Array.from({ length: arrowsNumber }, (_, index) => <ArrowOutline className="arrow-outline" key={index} style={{ "--order": index }} />)
                     }
                     <span ref={scoreRef}>
-                        {displayedStreakScore}
+                        {displayedStreakScore || 0}
                     </span>
                     {
-                        Array.from({ length: arrowsNumber }, (_, index) => index).map((item => {
-                            return <ArrowOutline className="arrow-outline right" key={item} style={{ "--order": (arrowsNumber - item) }} />
-                        }))
+                        Array.from({ length: arrowsNumber }, (_, index) => <ArrowOutline className="arrow-outline right" key={index} style={{ "--order": (arrowsNumber - index) }} />)
                     }
                 </ShiningDiv>
                 <div className="score-high-score">

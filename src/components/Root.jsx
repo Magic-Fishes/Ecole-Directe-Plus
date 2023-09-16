@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, useIsTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, useIsTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -81,11 +81,10 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             } else if (oldVersion === "0.1.5") {
                 return 0;
             } else if (oldVersion === "0.2.1") {
-                return 0;                
+                return 0;
             } else {
                 localStorage.clear();
             }
-            
         }
         
         // localStorage.clear();
@@ -334,6 +333,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
                 {isAdmin && <input type="button" onClick={syncSettings} value="SYNC SETTINGS" />}
+                {isAdmin && <input type="button" onClick={() => {createFolderStorage("123test123")}} value="FOLDER" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}

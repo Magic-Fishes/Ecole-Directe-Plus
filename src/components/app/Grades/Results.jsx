@@ -53,7 +53,43 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                     <WindowHeader className="results-header">
                         <div className="results-title">
                             <h2>Résultats</h2>
-                            <InfoButton className="results-legend">Légende</InfoButton>
+                            <InfoButton className="results-legend">
+                                <table style={{ textAlign: "left" }}>
+                                    <caption>Légende des notes</caption>
+                                    <colgroup>
+                                        <col className="visual-demo-col" style={{ width: 70 }}/>
+                                        <col className="definition-col" />
+                                    </colgroup>
+                                    <tr>
+                                        <th>Note<sup>(x)</sup></th>
+                                        <td>Note coefficientée</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Note<sub className="x-unknown">(x)</sub></th>
+                                        <td>Note sur <span className="x-unknown">x</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th style={{ opacity: .5 }}>Note</th>
+                                        <td>Note non significative</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Abs</th>
+                                        <td>Absent</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Disp</th>
+                                        <td>Dispensé</td>
+                                    </tr>
+                                    <tr>
+                                        <th>NE</th>
+                                        <td>Non évalué</td>
+                                    </tr>
+                                    <tr>
+                                        <th>EA</th>
+                                        <td>En attente</td>
+                                    </tr>
+                                </table>
+                            </InfoButton>
                         </div>
                         <div className="general-average">
                             <span>Moyenne Générale</span>
@@ -116,9 +152,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 </tr>
                                             )
                                         })
-                                        : Array.from({ length: 13 }, (_, index) => crypto.randomUUID()).map((id, index) => {
+                                        : Array.from({ length: 13 }, (_, index) => {
                                             const subjectNameWidth = Math.round(Math.random() * 100) + 100;
-                                            return <tr key={id} className={index % 7 < 1 ? "category-row" : "subject-row"}>
+                                            return <tr key={crypto.randomUUID()} className={index % 7 < 1 ? "category-row" : "subject-row"}>
                                                 <th className="head-cell">
                                                     <ContentLoader
                                                         speed={1}
@@ -169,7 +205,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                             </ContentLoader>
                                                         </div>
                                                         : <div className="grades-values">
-                                                            {Array.from({ length: Math.floor(Math.random() * 8) + 2 }, (_, index) => crypto.randomUUID()).map((id) => {
+                                                            {Array.from({ length: Math.floor(Math.random() * 8) + 2 }, (_) => {
                                                                 return (
                                                                     <ContentLoader
                                                                         speed={1}
@@ -177,7 +213,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                         foregroundColor={'#7e7eb2'}
                                                                         viewBox="0 0 70 50"
                                                                         height="30"
-                                                                        key={id}
+                                                                        key={crypto.randomUUID()}
                                                                     >
                                                                         <rect x="0" y="0" rx="25" ry="25" width="50" height="50" />
                                                                     </ContentLoader>

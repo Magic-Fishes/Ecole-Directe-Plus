@@ -21,29 +21,15 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
             if (sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]) {
                 const STRENGTHS_NUMBER = 3;
                 const period = sortedGrades[activeAccount][selectedPeriod];
-                const newStrengths = [];
-                // init newStrengths
-                for (let i = 0; i < STRENGTHS_NUMBER; i++ ) {
-                    for (let subjectKey in period.subjects) {
-                        const subject = period.subjects[subjectKey];
-                        if (subject.isCategory || newStrengths.some((strength) => strength.subject === subject)) { continue };
-                        newStrengths.push({
-                            algebricDiff: 0,
-                            subject
-                        });
-                        break;
-                    }
-                }
+                const newStrengths = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
                 
-                console.log("newStrengths:", newStrengths);
                 for (let subjectKey in period.subjects) {
                     const subject = period.subjects[subjectKey];
-                    if (subject.isCategory || subject.average === "N/A") { continue };
-                    console.log("no category no N/A")
+                    if (subject.isCategory) { continue };
                     const algebricDiff = subject.average - subject.classAverage;
                     for (let i = 0; i < newStrengths.length; i++) {
                         const strength = newStrengths[i];
-                        if (strength === undefined || algebricDiff >= strength.algebricDiff) {
+                        if (strength === undefined || (subject.average !== "N/A" && strength.subject.average === "N/A") || (subject.average !== "N/A" && strength.subject.average !== "N/A" && algebricDiff >= strength.algebricDiff)) {
                             newStrengths.splice(i, 0, { algebricDiff, subject })
                             newStrengths.splice(newStrengths.length - 1, 1);
                             break;
@@ -78,7 +64,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                 </ol>
                 : <ol className="strengths-container">
                     {
-                        Array.from({ length: 3 }, (_, index) => crypto.randomUUID()).map((item) => <li key={item} className="strength-container">
+                        Array.from({ length: 3 }, (_, index) => <li key={crypto.randomUUID()} className="strength-container">
                             <div className="strength-wrapper">
                                 <ContentLoader
                                     speed={1}

@@ -1,5 +1,31 @@
 
-.information .element-informations {
+.information .clear-button {
+    position: absolute;
+    line-height: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+    padding: 3px 6px;
+    border-radius: 8px;
+    background: none;
+    border: none;
+    color: rgba(var(--text-color-alt), .5);
+    font-size: var(--main-font-size-20);
+    font-weight: var(--main-font-weight-extra-bold);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: .1s;
+}
+.information .clear-button:hover {
+    color: rgb(var(--text-color-main));
+    background-color: rgba(var(--text-color-main), .15);
+}
+.information .clear-button:active {
+    color: rgb(var(--text-color-main), .5);
+    background-color: rgba(var(--text-color-main), .10);
+}
+
+.information .element-information {
     padding: 10px;
     width: 100%;
     min-height: 100%;
@@ -7,7 +33,7 @@
     flex-direction: column;
 }
 
-.information .element-informations hr {
+.information .element-information hr {
     height: 2px;
     width: 100%;
     background-color: rgba(var(--text-color-alt), .5);
@@ -80,7 +106,7 @@
     vertical-align: middle;
 }
 
-.information .element-informations .appreciation {
+.information .element-information .appreciation {
     margin-top: 5px;
     padding-left: 7px;
     border-left: 3px solid rgb(var(--text-color-alt));

@@ -31,7 +31,6 @@ export default function GradeScaleToggle({ className="", ...props }) {
     }
 
     const handleScroll = (event) => {
-        console.log("event:", event)
         if (event.deltaY === 0) {
             return;
         }
@@ -53,7 +52,7 @@ export default function GradeScaleToggle({ className="", ...props }) {
     
 
     return (
-        <button className={`grade-scale-toggle ${isGradeScaleEnabled.get() && "active"}`} onClick={handleClick} onWheel={handleScroll} onKeyDown={handleKeyDown} >
+        <button className={`grade-scale-toggle ${isGradeScaleEnabled.get() && "active"}`} title={`Uniformiser tous les barèmes sur ${gradeScale.get()}`} onClick={handleClick} onWheel={handleScroll} onKeyDown={handleKeyDown} >
             <div className="top">x</div> <div className="bottom">{gradeScale.get()}</div>
         </button>
     )

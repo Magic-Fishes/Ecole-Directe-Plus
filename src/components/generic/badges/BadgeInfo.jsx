@@ -92,7 +92,7 @@ export function BadgeStreakInfo ({ className="", id="", activated, ...props }) {
                     </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Note attisant le feu de la Streak</p>
+                    <p>Attise le feu de la Streak</p>
                 </TooltipContent>
             </Tooltip>
     )

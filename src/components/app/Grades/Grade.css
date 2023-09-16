@@ -42,6 +42,34 @@ a.grade.selectable .grade-container {
     justify-content: center;
 }
 
+a.grade.new-grade {
+    position: relative;
+}
+
+a.grade.new-grade::after {
+    display: block;
+    content: "nouvelle note";
+    color: transparent;
+    background-color: rgba(var(--text-color-main), .5);
+    /* background-color: rgba(var(--background-color-3)); */
+    border-radius: 50px;
+    width: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 5px;
+    position: absolute;
+    top: calc(100% + 2px);
+    /* top: calc(100% + 5px); */
+    pointer-events: none;
+    transition: top 0.1s;
+}
+a.grade.new-grade:is(.selected, .streak-grade, :hover, :focus-visible)::after {
+    top: calc(100% + 5px);
+}
+a.grade.streak-grade.new-grade:not(.maybe-streak)::after {
+    background-color: #FF9600;
+}
+
 
 /* streak */
 a.grade.streak-grade {

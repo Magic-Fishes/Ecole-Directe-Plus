@@ -140,36 +140,39 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         <DropDownArrow className="drop-down-arrow" />
                     </div>
                 </div>
-                {isOpen && <div className="options-container">
-                    <div className="alt-accounts">
-                        {accountsList.map((account, index) => {
-                            if (index !== activeAccount) {
-                                return <div className="alt-account" key={account.id} role="button" tabIndex="0" onKeyDown={(event) => handleKeyDown2(event, () => { switchAccount(index); handleClose() })} onClick={() => { switchAccount(index); handleClose() }}>
-                                    <div className="account">
-                                        <div className="pp-container">
-                                            <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={"https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + account.picture} alt={"Photo de profil de " + account.firstName} />
+                {isOpen && 
+                <div className="animation-wrapper">
+                    <div className="options-container">
+                        <div className="alt-accounts">
+                            {accountsList.map((account, index) => {
+                                if (index !== activeAccount) {
+                                    return <div className="alt-account" key={account.id} role="button" tabIndex="0" onKeyDown={(event) => handleKeyDown2(event, () => { switchAccount(index); handleClose() })} onClick={() => { switchAccount(index); handleClose() }}>
+                                        <div className="account">
+                                            <div className="pp-container">
+                                                <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={"https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + account.picture} alt={"Photo de profil de " + account.firstName} />
+                                            </div>
+                                            <address className="account-info">
+                                                <span className="name"><span className="first-name">{account.firstName}</span> <span className="last-name">{account.lastName.toUpperCase()}</span></span>
+                                                <span className="class">{account.class[1]}</span>
+                                            </address>
+                                            <SwitchArrows className="switch-arrows"/>
                                         </div>
-                                        <address className="account-info">
-                                            <span className="name"><span className="first-name">{account.firstName}</span> <span className="last-name">{account.lastName.toUpperCase()}</span></span>
-                                            <span className="class">{account.class[1]}</span>
-                                        </address>
-                                        <SwitchArrows className="switch-arrows"/>
                                     </div>
-                                </div>
-                            }
-                        })}
-                    </div>
-                    <div className="links">
-                        <Link to={`/app/${activeAccount}/settings`} id="settings-page" onClick={handleClose}><SettingsIcon /> <span className="link-text">Paramètres</span></Link>
-                        <Link to={`/app/${activeAccount}/account`} id="account-page" onClick={handleClose}><AccountIcon /> <span className="link-text">Compte</span></Link>
-                        <Link to="#feedback" replace={true} id="feedback" onClick={handleClose}><FeedbackIcon /> <span className="link-text">Faire un retour</span></Link>
-                        <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
-                    </div>
-                    <div className="change-display-theme-shortcut">
-                        <DisplayThemeController selected={displayTheme.get()} onChange={displayTheme.set} fieldsetName="display-theme-shortcut" />
-                    </div>
-                    <div className="logout">
-                        <button id="logout-button" onClick={logout}><span>Se déconnecter</span><LogoutIcon className="logout-icon" /></button>
+                                }
+                            })}
+                        </div>
+                        <div className="links">
+                            <Link to={`/app/${activeAccount}/settings`} id="settings-page" onClick={handleClose}><SettingsIcon /> <span className="link-text">Paramètres</span></Link>
+                            <Link to={`/app/${activeAccount}/account`} id="account-page" onClick={handleClose}><AccountIcon /> <span className="link-text">Compte</span></Link>
+                            <Link to="#feedback" replace={true} id="feedback" onClick={handleClose}><FeedbackIcon /> <span className="link-text">Faire un retour</span></Link>
+                            <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
+                        </div>
+                        <div className="change-display-theme-shortcut">
+                            <DisplayThemeController selected={displayTheme.get()} onChange={displayTheme.set} fieldsetName="display-theme-shortcut" />
+                        </div>
+                        <div className="logout">
+                            <button id="logout-button" onClick={logout}><span>Se déconnecter</span><LogoutIcon className="logout-icon" /></button>
+                        </div>
                     </div>
                 </div>}
             </div>

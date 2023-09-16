@@ -80,17 +80,19 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
                     <span id="selected-option-value">{displayedOptions[options.indexOf(selected)]}</span>
                     <DropDownArrow />
                 </button>
-                <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className="options-container">
-                    {options.map((option) => <div key={option} name={name} className="option-container" >
-                        <hr /> 
-                        <label htmlFor={option} onKeyDown={handleKeyDown} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
-                            {option === selected ? <SelectedArrow className="selected-arrow" /> : <NotSelectedOption className="not-selected-option" />}
-                            <input type="radio" id={option} name={name} value={option} onClick={onChoose} defaultChecked={option === selected} />
-                            <span className="option-content">{displayedOptions[options.indexOf(option)]}</span>
-                        </label>
-                    </div>
-                    )}
-                </fieldset>
+                <div className="animation-wrapper">
+                    <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className="options-container">
+                        {options.map((option) => <div key={option} name={name} className="option-container" >
+                            <hr /> 
+                            <label htmlFor={option} onKeyDown={handleKeyDown} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
+                                {option === selected ? <SelectedArrow className="selected-arrow" /> : <NotSelectedOption className="not-selected-option" />}
+                                <input type="radio" id={option} name={name} value={option} onClick={onChoose} defaultChecked={option === selected} />
+                                <span className="option-content">{displayedOptions[options.indexOf(option)]}</span>
+                            </label>
+                        </div>
+                        )}
+                    </fieldset>
+                </div>
             </div>
         </div>
     )

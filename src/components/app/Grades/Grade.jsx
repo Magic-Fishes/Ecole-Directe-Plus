@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useContext, createElement } from "react";
 import { Link } from 'react-router-dom'
 
@@ -5,7 +6,7 @@ import { AppContext } from "../../../App";
 
 import "./Grade.css";
 
-export default function Grade({ grade, className="", ...props }) {
+export default function Grade({ grade, className = "", ...props }) {
     const { useUserSettings } = useContext(AppContext); // de même pour ça
 
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
@@ -15,15 +16,7 @@ export default function Grade({ grade, className="", ...props }) {
 
     const gradeRef = useRef(null);
 
-    // useEffect(() => {
-    //     if (className.includes("selected")) {
-    //         if (grade.id) {
-    //             gradeRef.current.scrollIntoViewIfNeeded();
-    //         }
-    //     }
-    // }, [className])
-
-    function hasStreakGradeAfter(siblingsLimit=0) {
+    function hasStreakGradeAfter(siblingsLimit = 0) {
         let i = 0;
         while (i <= siblingsLimit || siblingsLimit < 1) {
             if (gradeRef.current.nextElementSibling === null) {
@@ -34,10 +27,10 @@ export default function Grade({ grade, className="", ...props }) {
             i++;
         }
 
-        return false
+        return false;
     }
-    
-    function hasStreakGradeBefore(siblingsLimit=1) {
+
+    function hasStreakGradeBefore(siblingsLimit = 1) {
         let i = 0;
         while (i <= siblingsLimit || siblingsLimit < 1) {
             if (gradeRef.current.previousElementSibling === null) {
@@ -48,40 +41,51 @@ export default function Grade({ grade, className="", ...props }) {
             i++;
         }
 
-        return false
+        return false;
     }
 
     function updateClassList() {
         if (gradeRef.current.classList.contains("streak-grade")) {
-            const newClassList = [];
-            // gradeRef.current.classList.remove("mid-row");
-            // gradeRef.current.classList.remove("start-row");
-            // gradeRef.current.classList.remove("end-row");
-            
-            if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
-                // gradeRef.current.classList.add("mid-row");
-                newClassList.push("mid-row");
-            } else {
-                if (!hasStreakGradeBefore(1)) {
-                    // gradeRef.current.classList.add("start-row");
-                    newClassList.push("start-row");
+            setClassList((oldClassList) => {
+                if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
+                    oldClassList.push("mid-row");
+                } else {
+                    if (!hasStreakGradeBefore(1)) {
+                        oldClassList.push("start-row");
+                    }
+    
+                    if (!hasStreakGradeAfter(1)) {
+                        oldClassList.push("end-row");
+                    }
                 }
-                
-                if (!hasStreakGradeAfter(1)) {
-                    // gradeRef.current.classList.add("end-row");
-                    newClassList.push("end-row");
-                }
-            }
 
-            setClassList(newClassList);
+                return oldClassList;
+            });
         }
     }
-    
+
+    function handleNewGrade() {
+        if (grade.entryDate ?? grade.date) {
+            setClassList((oldClassList) => {
+                const newClassList = [...oldClassList];
+                const MAX_TIME_DIFFERENCE = 3 * 1000 * 60 * 60 * 24; // 3 jours en ms
+                let isNewGrade = (Date.now() - (grade.entryDate ?? grade.date)) <= MAX_TIME_DIFFERENCE;
+                if (isNewGrade) {
+                    newClassList.push("new-grade");
+                }
+
+                return newClassList;
+            });
+        }
+    }
+
     useEffect(() => {
         updateClassList();
+        handleNewGrade();
     }, [grade]);
 
-    
+
+
     return (
         createElement(
             grade.id === undefined ? "span" : Link,
@@ -95,8 +99,8 @@ export default function Grade({ grade, className="", ...props }) {
             },
             <span className="grade-container">
                 <span>
-                    {(isGradeScaleEnabled.get() && !isNaN(grade.value) ? Math.round((grade.value * gradeScale.get() / (grade.scale ?? 20))*100)/100 : grade.value )?.toString().replace(".", ",")}
-                    {isGradeScaleEnabled.get() || ((grade.scale ?? 20 ) != 20 && <sub>/{grade.scale}</sub>)}
+                    {(isGradeScaleEnabled.get() && !isNaN(grade.value) ? Math.round((grade.value * gradeScale.get() / (grade.scale ?? 20)) * 100) / 100 : grade.value)?.toString().replace(".", ",")}
+                    {isGradeScaleEnabled.get() || ((grade.scale ?? 20) != 20 && <sub>/{grade.scale}</sub>)}
                     {(grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
                 </span>
             </span>

@@ -13,15 +13,26 @@ import Results from "./Results";
 import {
     WindowsContainer,
     WindowsLayout,
-    MoveableContainer,
-    Window,
-    WindowHeader,
-    WindowContent
 } from "../../generic/Window";
 
 
 import "./Grades.css";
 
+
+function getGradeValue(gradeValue) {
+    // cringe mb
+    if (gradeValue.includes("Abs")) {
+        return "Abs";
+    } else if (gradeValue.includes("Disp")) {
+        return "Disp";
+    } else if (gradeValue.includes("NE")) {
+        return "NE";
+    } else if (gradeValue.includes("EA")) {
+        return "EA";
+    }
+
+    return parseFloat(gradeValue.replace(",", "."));
+}
 
 function calcAverage(list) {
     let average = 0;
@@ -29,12 +40,12 @@ function calcAverage(list) {
     for (let i of list) {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {
             average += (i.value * 20 / i.scale) * i.coef;
-            coef += i.coef;            
+            coef += i.coef;
         }
     }
-    
+
     if (coef > 0 && list.length > 0) {
-        return Math.round(average/coef * 100)/100;        
+        return Math.round(average / coef * 100) / 100;
     } else {
         return "N/A"
     }
@@ -44,7 +55,7 @@ function calcAverage(list) {
 function findCategory(period, subject) {
     const subjectsKeys = Object.keys(period.subjects);
     let i = subjectsKeys.indexOf(subject);
-    while (--i > 0 && !period.subjects[subjectsKeys[i]].isCategory) {} // très sad
+    while (--i > 0 && !period.subjects[subjectsKeys[i]].isCategory) { } // très sad
     return period.subjects[subjectsKeys[i]];
 }
 
@@ -92,18 +103,18 @@ function createUserLists(accountNumber) {
 export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, isTabletLayout }) {
     // States
     const location = useLocation();
-    
+
     const [selectedPeriod, setSelectedPeriod] = useState("");
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
     const [sortedGrades, setSortedGrades] = useState([]);
 
     const [getData, setData] = useUserData;
-    
+
     // Behavior
     useEffect(() => {
         document.title = "Notes • Ecole Directe Plus";
     }, [])
-    
+
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
@@ -122,7 +133,7 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
-                        let subjectCode = matiere.codeMatiere; 
+                        let subjectCode = matiere.codeMatiere;
                         if (!subjectCode) {
                             subjectCode = "category" + i.toString();
                             i++;
@@ -174,20 +185,21 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                         streak: 0,
                     }
                 }
-                
+
                 const newGrade = {};
                 newGrade.elementType = "grade";
                 newGrade.id = grade.id.toString();
                 newGrade.name = grade.devoir;
                 newGrade.type = grade.typeDevoir;
                 newGrade.date = new Date(grade.date);
+                newGrade.entryDate = new Date(grade.dateSaisie);
                 newGrade.coef = parseFloat(grade.coef);
-                newGrade.scale = parseFloat(grade.noteSur);
-                newGrade.value = parseFloat(grade.valeur.replace(",", "."));
-                newGrade.classMin = parseFloat(grade.minClasse.replace(",", "."));
-                newGrade.classMax = parseFloat(grade.maxClasse.replace(",", "."));
+                newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
+                newGrade.value = getGradeValue(grade.valeur);
+                newGrade.classMin = isNaN(parseFloat(grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat(grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
+                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse);
                 newGrade.subjectName = grade.libelleMatiere;
-                newGrade.classAverage = parseFloat(grade.moyenneClasse);
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
                 newGrade.examCorrectionSRC = grade.uncCorrige;
@@ -198,11 +210,11 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                     subjectDatas[periodCode][subjectCode] = [];
                 }
                 subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant });
-                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.length ?? 0;
+                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
-                const oldGeneralAverage = periods[periodCode].generalAverage || 10;
+                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                newGrade.upTheStreak = (newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
+                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
                 if (newGrade.upTheStreak) {
                     periods[periodCode].streak += 1;
                     if (periods[periodCode].streak > periods[periodCode].maxStreak) {
@@ -214,7 +226,7 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                     if (newGrade.isSignificant) {
                         periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
                         periods[periodCode].subjects[subjectCode].streak = 0;
-                        
+
                         // enlève le "upTheStreak" des notes précédant celle qu'on considère
                         for (let grade of periods[periodCode].subjects[subjectCode].grades) {
                             if (grade.upTheStreak) {
@@ -235,29 +247,31 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                 // création des badges
                 // les noms sont marqués dans le figma stv mieux t'y retrouver
                 const gradeBadges = [];
-                if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
-                    gradeBadges.push("star")
-                }
-                if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
-                    gradeBadges.push("bestStudent")
-                }
-                if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
-                    gradeBadges.push("greatStudent")
-                }
-                if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
-                    gradeBadges.push("stonks")
-                }
-                if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
-                    gradeBadges.push("keepOnFire")
-                }
-                if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
-                    gradeBadges.push("meh")
+                if (!isNaN(newGrade.value)) {
+                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
+                        gradeBadges.push("star");
+                    }
+                    if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
+                        gradeBadges.push("bestStudent");
+                    }
+                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
+                        gradeBadges.push("greatStudent");
+                    }
+                    if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
+                        gradeBadges.push("stonks");
+                    }
+                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
+                        gradeBadges.push("keepOnFire");
+                    }
+                    if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
+                        gradeBadges.push("meh");
+                    }
                 }
                 newGrade.badges = gradeBadges;
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
             }
         }
-        
+
         // supprime les périodes vides
         let i = 0;
         let firstPeriod;
@@ -268,11 +282,11 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
             i++;
             let isEmpty = true;
             if (periods[key])
-            for (const subject in periods[key].subjects) {
-                if (periods[key].subjects[subject].grades.length !== 0) {
-                    isEmpty = false;
+                for (const subject in periods[key].subjects) {
+                    if (periods[key].subjects[subject].grades.length !== 0) {
+                        isEmpty = false;
+                    }
                 }
-            }
             if (isEmpty) {
                 delete periods[key];
             }
@@ -280,12 +294,12 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
-        
+
         let currentPeriod = 0;
         for (let periodCode in periods) {
             if (Date.now() > periods[periodCode].endDate) {
-                if (currentPeriod < Object.keys(periods).length-1) {
-                    currentPeriod++;                    
+                if (currentPeriod < Object.keys(periods).length - 1) {
+                    currentPeriod++;
                 }
             }
         }
@@ -312,7 +326,7 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
         }
 
         return () => {
-            console.log("controller.abort")
+            // console.log("controller.abort")
             controller.abort();
         }
     }, [grades, isLoggedIn, activeAccount]);
@@ -324,6 +338,11 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
             <WindowsContainer name="grades">
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
+                        {/* {console.log(sortedGrades)}
+                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount])}
+                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod])}
+                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.streak)}
+                        {console.log((sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.streak) ?? 0)} */}
                         <StreakScore streakScore={(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.streak) ?? 0} streakHighScore={(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.maxStreak) ?? 0} />
                         <Information sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                         <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
