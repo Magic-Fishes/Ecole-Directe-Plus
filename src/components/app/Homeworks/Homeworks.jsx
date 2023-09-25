@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 
-
 import {
     WindowsContainer,
     WindowsLayout,
@@ -27,9 +26,30 @@ export default function Homeworks() {
         <div id="homeworks">
             <WindowsContainer name="homeworks">
                 <WindowsLayout direction="row" ultimateContainer={true}>
-                    <Window>
+                    <WindowsLayout direction="column">
+                        <Window WIP={true}>
+                            <WindowHeader>
+                                <h2>Prochains devoirs surveillés</h2>
+                            </WindowHeader>
+                            <WindowContent>
+                                
+                            </WindowContent>
+                        </Window>
+                        <Window WIP={true}>
+                            <WindowHeader>
+                                <h2>Calendrier</h2>
+                            </WindowHeader>
+                            <WindowContent>
+                                
+                            </WindowContent>
+                        </Window>                        
+                    </WindowsLayout>
+                    <Window growthFactor={2.5} WIP={true}>
+                        <WindowHeader>
+                            <h2>Cahier de texte</h2>
+                        </WindowHeader>
                         <WindowContent>
-                            <h1>No header window</h1>
+                            
                         </WindowContent>
                     </Window>
                 </WindowsLayout>

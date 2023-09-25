@@ -1,3 +1,10 @@
+.tritanopia .edp-logo .start {
+    stop-color: #9fd3db;
+}
+.dark .edp-logo .end {
+    stop-color: #B4C3D1;
+}
+
 .dark .edp-logo .start {
     stop-color: #B4C9FF;
 }

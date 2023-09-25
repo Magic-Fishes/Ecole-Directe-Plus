@@ -24,38 +24,30 @@ export default function Messaging({ }) {
     return (
         <div id="messaging">
             <WindowsContainer name="timetable">
-                <WindowsLayout direction="column" ultimateContainer={true}>
-                    <Window>
+                <WindowsLayout direction="row" ultimateContainer={true}>
+                    <Window WIP={true}>
                         <WindowHeader>
-                            <h2>Window 1</h2>
+                            <h2>Dossiers</h2>
                         </WindowHeader>
                         <WindowContent>
-                            <p>window1</p>
-                        </WindowContent>
-                        <WindowHeader>
-                            <h2>Window 1</h2>
-                        </WindowHeader>
-                        <WindowContent>
-                            <p>window1</p>
-                        </WindowContent>
-                        <WindowHeader>
-                            <h2>Window 1</h2>
-                        </WindowHeader>
-                        <WindowContent>
-                            <p>window1</p>
+                            
                         </WindowContent>
                     </Window>
-
-                    <Window>
+                    <Window growthFactor={1.5} WIP={true}>
                         <WindowHeader>
-                            <h2>Window 2</h2>
+                            <h2>Boîte de réception</h2>
                         </WindowHeader>
                         <WindowContent>
-                            <p>window2</p>
+                            
                         </WindowContent>
+                    </Window>
+                    <Window growthFactor={3} WIP={true}>
                         <WindowHeader>
-                            <h2>Window 2</h2>
+                            <h2>Message</h2>
                         </WindowHeader>
+                        <WindowContent>
+                            
+                        </WindowContent>
                     </Window>
                 </WindowsLayout>
             </WindowsContainer>

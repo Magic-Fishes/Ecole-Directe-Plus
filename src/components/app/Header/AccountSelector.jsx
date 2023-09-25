@@ -140,7 +140,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         <DropDownArrow className="drop-down-arrow" />
                     </div>
                 </div>
-                {isOpen && 
+                {true && 
                 <div className="animation-wrapper">
                     <div className="options-container">
                         <div className="alt-accounts">

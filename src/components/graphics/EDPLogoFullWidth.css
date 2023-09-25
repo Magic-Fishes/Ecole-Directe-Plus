@@ -15,6 +15,13 @@
 
 
 /* faudra changer ça */
+.tritanopia .gradients .gradient-logo .start {
+    stop-color: #9fd3db;
+}
+.tritanopia .gradients .gradient-logo .end {
+    stop-color: #B4C3D1;
+}
+
 .light .gradients .gradient-logo .start {
     stop-color: #1743B5;
 }
@@ -29,6 +36,13 @@
     stop-color: #C1B7FF;
 }
 
+
+.light .gradients .gradient-ecole .start {
+    stop-color: #9fd3db;
+}
+.light .gradients .gradient-ecole .end {
+    stop-color: #5942F0;
+}
 
 .light .gradients .gradient-ecole .start {
     stop-color: #1743B5;

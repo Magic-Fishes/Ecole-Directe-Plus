@@ -1,4 +1,4 @@
-serviceWorkerVersion = "V1.17";
+serviceWorkerVersion = "V1.18";
 const CACHED_FILES = [
     "/cache/NetworkError.html",
     "/cache/SplashScreen.html"

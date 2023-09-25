@@ -60,7 +60,7 @@ textarea#feedback-content:focus {
     margin: 0;
     flex-grow: 1;
     flex-basis: 100%;
-    font-size: 20px;
+    font-size: var(--font-size-20);
     -webkit-user-drag: none;
     user-drag: none;
     -moz-user-select: none; /* Firefox */

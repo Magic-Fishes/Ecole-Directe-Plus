@@ -13,6 +13,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
 }
 
 
@@ -61,6 +62,24 @@
 }
 .window:focus-visible {
     box-shadow: 0 0 20px rgb(var(--background-color-1));
+}
+
+.window.work-in-progress {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    background-color: transparent;
+    box-shadow: none;
+    border: 2px solid rgba(var(--text-color-alt), .3);
+}
+.window.work-in-progress::after {
+    content: "Travail en cours...";
+    color: rgba(var(--text-color-alt), .5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
 }
 
 .window.appeared {

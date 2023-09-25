@@ -25,7 +25,8 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     }
 
     function redirectToApp() {
-        navigate(`/app/${activeAccount}/dashboard`, { replace: true });
+        // navigate(`/app/${activeAccount}/dashboard`, { replace: true });
+        navigate(`/app/${activeAccount}/grades`, { replace: true });
     }
 
     function redirectToLab() {
@@ -128,6 +129,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             { keys: ["t", "T"], trigger: switchDisplayTheme },
             { keys: ["d", "D"], trigger: switchDisplayMode, message: (insert) => <span>Le mode d'affichage a basculé sur <span className="emphasis">{insert}</span> avec succès</span> },
             { keys: ["f", "F"], trigger: toggleFullScreen, message: (insert) => <span>Plein écran <span className="emphasis">{insert ? "activé" : "désactivé"}</span> avec succès</span> },
+            { keys: ["m", "M"], trigger: focusAccountSelector },
             { keys: ["ArrowRight"], trigger: () => changePageIdBy(1, location, navigate) },
             { keys: ["ArrowLeft"], trigger: () => changePageIdBy(-1, location, navigate) },
             { keys: ["ArrowUp"], trigger: () => changeAccountIdxBy(-1, location, navigate) },
@@ -249,6 +251,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             pageId = siteMap.length - 1;
         }
         navigate(`/app/${activeAccount}/${siteMap[pageId]}`);
+        // document.querySelector("main.content").focus();
     }
 
     // thème
@@ -307,6 +310,14 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
         }
         return fullScreenState;
     }
+
+    // focus account selector
+    const focusAccountSelector = () => {
+        const accountSelector = document.querySelector("#active-account");
+        if (accountSelector) {
+            accountSelector.focus();            
+        }
+    }
     
 
     return (
@@ -317,6 +328,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
+                {isAdmin && <input type="button" onClick={() => resetUserData()} value="RESET USER DATA" />}
                 {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
                 {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
                 {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
@@ -329,11 +341,12 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                     <option value="balanced">DISPLAY: BALANCED</option>
                     <option value="performance">DISPLAY: PERF</option>
                 </select>}
+                {isAdmin && <input type="button" onClick={() => { document.documentElement.classList.remove("dark") ; document.documentElement.classList.remove("light") ; document.documentElement.classList.add("tritanopia")}} value="TRITANOPIA" />}
+                {isAdmin && <input type="button" onClick={syncSettings} value="SYNC SETTINGS" />}
+                {isAdmin && <input type="button" onClick={() => {createFolderStorage("123test123")}} value="FOLDER" />}
                 {isAdmin && <form action="https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
-                {isAdmin && <input type="button" onClick={syncSettings} value="SYNC SETTINGS" />}
-                {isAdmin && <input type="button" onClick={() => {createFolderStorage("123test123")}} value="FOLDER" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}

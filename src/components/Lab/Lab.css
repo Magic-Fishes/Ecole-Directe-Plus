@@ -34,6 +34,10 @@
     margin: 0 auto;
 }
 
+#lab-page #app-loading {
+    height: 100vh;
+}
+
 #shining-div-test {
     background: linear-gradient(180deg, #FF0F00 30%, #FF7A00 100%);
     text-align: center;

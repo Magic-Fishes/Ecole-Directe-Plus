@@ -12,16 +12,16 @@ export default function ErrorPage() {
         localStorage.clear()
     }
     
-    if (process.env.NODE_ENV !== "development") {
-        safetyFunction();
-    }
-
     if (error.status === 404) {
         return (
             <Error404 />
         );
     }
     else {
+        if (process.env.NODE_ENV !== "development") {
+            safetyFunction();
+        }
+        
         return (
             <div id="error-page">
                 <h1>Oops!</h1>

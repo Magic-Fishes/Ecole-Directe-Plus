@@ -1,11 +1,15 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import ContentLoader from "react-content-loader";
+
+import { AppContext } from "../../../App";
 
 
 import "./Tabs.css";
 
-export default function Tabs({ tabs, displayedTabs=tabs, selected, fieldsetName, dir = "row", onChange, contentLoader=false, id = "", className = "", ...props }) {
+export default function Tabs({ tabs, displayedTabs = tabs, selected, fieldsetName, dir = "row", onChange, contentLoader = false, id = "", className = "", ...props }) {
+
+    const { actualDisplayTheme } = useContext(AppContext);
 
     const [tabsState, setTabsState] = useState(tabs);
 
@@ -16,28 +20,29 @@ export default function Tabs({ tabs, displayedTabs=tabs, selected, fieldsetName,
             onChange(tabsState[0]);
         }
     }, [tabs]);
-    
+
     const handleClick = (event) => {
         onChange(event.target.value);
     }
 
+
     return (!contentLoader && tabs.length > 0
-            ? <fieldset name={fieldsetName} className={`tabs-container ${dir === "column" ? "d-col" : ""} ${className}`} id={id} {...props} >
-                {tabsState.map((option, index) =>
-                    <label htmlFor={option} key={option} title={displayedTabs[index]} style={{ "--order": index }} className={"tab " + "selected ".repeat(selected === option)}>
-                        <input name={fieldsetName} type="radio" id={option} value={option} onClick={handleClick}/>
-                        {displayedTabs[index]}
-                    </label>
-                )}
-            </fieldset>
-            : <ContentLoader
-                  speed={1}
-                  backgroundColor={'#2e2e4f'}
-                  foregroundColor={'#444475'}
-                  style={{ width: (dir === "row" ? "100%" : "44px"), height: (dir === "row" ? "44px" : "100%" ) }}
-                  className="tabs-content-loader"
-            >
-                <rect x="0" y="0" rx="15" ry="15" style={{ width: "100%", height: "100%" }} />
-            </ContentLoader>
+        ? <fieldset name={fieldsetName} className={`tabs-container ${dir === "column" ? "d-col" : ""} ${className}`} id={id} {...props} >
+            {tabsState.map((option, index) =>
+                <label htmlFor={option} key={option} title={displayedTabs[index]} style={{ "--order": index }} className={"tab " + "selected ".repeat(selected === option)}>
+                    <input name={fieldsetName} type="radio" id={option} value={option} onClick={handleClick} />
+                    {displayedTabs[index]}
+                </label>
+            )}
+        </fieldset>
+        : <ContentLoader
+            speed={1}
+            backgroundColor={actualDisplayTheme === "dark" ? "#2e2e4f" : "#d2d2ff"}
+            foregroundColor={actualDisplayTheme === "dark" ? "#444475" : "#aaaabf"}
+            style={{ width: (dir === "row" ? "100%" : "44px"), height: (dir === "row" ? "44px" : "100%") }}
+            className="tabs-content-loader"
+        >
+            <rect x="0" y="0" rx="15" ry="15" style={{ width: "100%", height: "100%" }} />
+        </ContentLoader>
     )
 }

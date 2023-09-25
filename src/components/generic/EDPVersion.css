@@ -6,7 +6,6 @@
     position: absolute;
     right: 6px; /*=10px - padding -> aligne avec policy*/
     bottom: 6px;
-    z-index: -1;
     padding: 4px;
     border-radius: 6px;
     cursor: pointer;

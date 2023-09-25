@@ -28,46 +28,41 @@ export default function Dashboard({ }) {
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column" growthFactor={2.5}>
                         <WindowsLayout direction="row">
-                            <Window>
+                            <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../grades")}>
                                     <h2>Dernière notes</h2>
                                 </WindowHeader>
                                 <WindowContent>
-                                    <p>window1</p>
-                                    <p>window1</p>
-                                    <p>window1</p>
-
+                                    
                                 </WindowContent>
                             </Window>
                             
-                            <Window>
+                            <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>
                                     <h2>Prochains contrôles</h2>
                                 </WindowHeader>
                                 <WindowContent>
-                                    <p>window2</p>
+                                    
                                 </WindowContent>
                             </Window>
                         </WindowsLayout>
 
-                        <Window>
+                        <Window WIP={true}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
                             <WindowContent>
-                                <p>window4</p>
-                                <p>window4</p>
-                                <p>window4</p>
+                                
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
                     <WindowsLayout>
-                        <Window>
+                        <Window WIP={true}>
                             <WindowHeader onClick={() => navigate("../timetable")}>
                                 <h2>Emploi du temps</h2>
                             </WindowHeader>
                             <WindowContent>
-                                <p>window5</p>
+                                
                             </WindowContent>
                         </Window>
                     </WindowsLayout>

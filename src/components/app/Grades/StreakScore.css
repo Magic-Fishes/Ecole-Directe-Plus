@@ -1,6 +1,6 @@
 
 .window.streak-score {
-    background: linear-gradient(180deg, rgb(var(--background-color-1)) 15px, #FF0F00 16px, #FF0F00 17px, #FF7A00 100%);
+    background: linear-gradient(180deg, rgb(var(--background-color-1)) 15px, rgb(var(--background-color-streak-0)) 16px, rgb(var(--background-color-streak-0)) 17px, rgb(var(--background-color-streak-1)) 100%);
 }
 
 .streak-score .window-content {

@@ -27,9 +27,10 @@ ol.strengths-container {
     cursor: pointer;
     transition: all 0.1s, outline 0s;
 }
-.strengths-container li.strength-container:nth-child(1) { background-color: rgba(36, 186, 22, 0.8) }
-.strengths-container li.strength-container:nth-child(2) { background-color: rgba(27, 155, 22, 0.8) }
-.strengths-container li.strength-container:nth-child(3) { background-color: rgba(17, 123, 21, 0.8) }
+
+.strengths-container li.strength-container:nth-child(1) { background-color: rgba(var(--background-color-strength-li-1), 0.8) }
+.strengths-container li.strength-container:nth-child(2) { background-color: rgba(var(--background-color-strength-li-2), 0.8) }
+.strengths-container li.strength-container:nth-child(3) { background-color: rgba(var(--background-color-strength-li-3), 0.8) }
 
 .strengths-container li.strength-container:hover {
     opacity: 0.8;

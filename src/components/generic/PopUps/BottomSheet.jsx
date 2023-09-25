@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect } from "react";
+import { applyZoom } from "../../../utils/zoom";
 
 import ScrollShadedDiv from "../CustomDivs/ScrollShadedDiv";
 
@@ -179,8 +180,9 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     }
 
     const handleMouseResize = (event) => {
-        const newHeight = (window.innerHeight - event.clientY + grabPosition.current) / window.innerHeight * 100;
-        let distance = Math.abs(firstYPosition.current - event.clientY);
+        const clientY = applyZoom(event.clientY);
+        const newHeight = (applyZoom(window.innerHeight) - clientY + grabPosition.current) / applyZoom(window.innerHeight) * 100;
+        let distance = Math.abs(firstYPosition.current - clientY);
         if (distance > maxDistanceFromPointer.current) {
             maxDistanceFromPointer.current = distance;
         }
@@ -188,8 +190,9 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     }
 
     const handleTouchResize = (event) => {
-        const newHeight = (window.innerHeight - event.touches[0].clientY + grabPosition.current) / window.innerHeight * 100;
-        let distance = Math.abs(firstYPosition.current - event.touches[0].clientY);
+        const clientY = applyZoom(event.touches[0].clientY);
+        const newHeight = (applyZoom(window.innerHeight) - clientY + grabPosition.current) / applyZoom(window.innerHeight) * 100;
+        let distance = Math.abs(firstYPosition.current - clientY);
         if (distance > maxDistanceFromPointer.current) {
             maxDistanceFromPointer.current = distance;
         }
@@ -226,8 +229,8 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
             return 0;
         }
         const topPosition = bottomSheetRef.current?.getBoundingClientRect().top;
-        grabPosition.current = (event.touches ? (window.innerHeight - topPosition - (window.innerHeight - event.touches[0].clientY)) : (window.innerHeight - topPosition - (window.innerHeight - event.clientY)));
-        firstYPosition.current = (event.touches ? event.touches[0].clientY : event.clientY);
+        grabPosition.current = (event.touches ? (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.touches[0].clientY))) : (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.clientY))));
+        firstYPosition.current = applyZoom(event.touches ? event.touches[0].clientY : event.clientY);
         maxDistanceFromPointer.current = 0;
 
         // Calcul du resizing breakpoint actuel
@@ -270,21 +273,22 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
 
     // resizing avec le scroll
     const handleContentGrab = (event) => {
-        oldEventClientY.current = event.touches[0].clientY;
+        oldEventClientY.current = applyZoom(event.touches[0].clientY);
         document.addEventListener("touchmove", handleTouchMove);
     }
 
     const handleTouchMove = (event) => {
         const scrollHeight = contentRef.current.scrollHeight; // hauteur du contenu réel
-        const bottomSheetMaxHeight = resizingBreakpoints[resizingBreakpoints.length - 1] * window.innerHeight * 0.01;
+        const bottomSheetMaxHeight = resizingBreakpoints[resizingBreakpoints.length - 1] * applyZoom(window.innerHeight) * 0.01;
         const contentMaxHeight = bottomSheetMaxHeight - resizeHandlerRef.current.getBoundingClientRect().height; // hauteur de la div de contenu
 
         const divHeight = contentRef.current.offsetHeight;
         const scrollTop = contentRef.current.scrollTop;
         const scrollBottom = (scrollHeight - divHeight) - scrollTop;
 
-        const canResizeTop = (oldEventClientY.current < event.touches[0].clientY && scrollTop === 0);
-        const canResizeBottom = (oldEventClientY.current > event.touches[0].clientY && scrollBottom === 0);
+        const clientY = applyZoom(event.touches[0].clientY)
+        const canResizeTop = (oldEventClientY.current < clientY && scrollTop === 0);
+        const canResizeBottom = (oldEventClientY.current > clientY && scrollBottom === 0);
         if ((scrollHeight <= contentMaxHeight) || canResizeTop || canResizeBottom) {
             contentRef.current.style.overflow = "hidden"; // désactive le scrolling pendant le resizing
             handleGrab(event);

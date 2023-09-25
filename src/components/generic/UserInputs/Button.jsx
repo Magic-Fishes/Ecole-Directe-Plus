@@ -1,5 +1,3 @@
-
-import { useState } from "react";
 import "./Button.css";
 
 export default function Button({ buttonType="button", children, value, onClick, state="", className="", id="", ...props }) {

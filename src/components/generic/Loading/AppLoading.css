@@ -2,7 +2,7 @@
 #app-loading {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100%;
 }
 
 #app-loading .edp-logo-full-width {
@@ -39,7 +39,7 @@
 
 #loading-box h1 {
     /* margin-top: 20px; */
-    font-size: 24px;
+    font-size: var(--font-size-24);
 }
 
 #loading-box #loading-screen-tip {

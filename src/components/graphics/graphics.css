@@ -111,7 +111,7 @@
 }
 
 .fill-canardman-background-1 {
-    fill: #323257
+    fill: rgb(var(--background-color-canarman-main))
 }
 
 .fill-white {

@@ -50,9 +50,76 @@
     --max-width-tablet: 869px;
     --min-width-wide-screen: 2361px;
 
+    --background-color-canarman-main: 50, 50, 87;
+
     /*pour que 1rem = 10px*/
-    font-size: 62.5%;
+    font-size: 0.625em;
+    /* zoom: .5; */
+    /* font-size: 10px; */
     /* font-size: 55%;  */
+}
+
+:root.tritanopia {
+    /* - Main (darker to lighter) - */
+    --text-color-main: 255, 255, 255;
+    /* --text-color-alt: 170, 170, 238; */
+    --text-color-alt: 166, 190, 201;
+    
+    --background-color-0: 22, 28, 28;
+    --background-color-1: 38, 59, 64;
+    --background-color-2: 64, 77, 83;
+    --background-color-3: 83, 102, 109;
+    --background-color-focus: 0, 110, 138, 0.3;
+    --background-color-header: 0, 77, 95;
+
+    --background-color-streak-0: 255, 0, 22;
+    --background-color-streak-1: 255, 90, 105;
+
+    --background-color-strength-li-1: 0, 157, 138;
+    --background-color-strength-li-2: 0, 134, 118;
+    --background-color-strength-li-3: 0, 109, 96;
+    
+    --background-color-canarman-main: 38, 59, 64;
+    
+    --border-color-0: 0, 110, 138;
+    --border-color-1: 22, 141, 168;
+    
+    --box-shadow-window: 0 0 20px black;
+    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    
+    
+    /* - Process states (errors ; warning ; success) - */
+    /* TOTK */
+    --text-color-error: 255, 66, 66;
+    --border-color-error: 255, 66, 66;
+    --background-color-error: 255, 66, 66;
+    
+    /* error */
+    
+    --text-color-soft-error-main: 223, 200, 200;
+    --text-color-soft-error-alt: 223, 98, 98;
+    --border-color-soft-error: 223, 98, 98;
+    --background-color-soft-error: 223, 98, 98;
+    
+    /* warning */
+    
+    --background-color-warning-0: 140, 45, 54;
+    --background-color-warning-1: 214, 63, 70;
+    --background-color-warning-2: 255, 51, 0;
+    
+    /* success */
+
+    --background-color-success: 0, 255, 56;
+    --border-color-success: 98, 207, 122;
+
+    /* - Others - */
+    --background-color-selection: 4, 98, 210;
+    
+    --box-shadow-color-scrollbar-track: 187, 209, 218, 0.133;
+    --box-shadow-color-scrollbar-thumb: 108, 126, 133;
+    --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
+    
+    --alpha-shadow-color-scroll-shaded-div: 0.5;
 }
 
 :root.dark {
@@ -67,6 +134,13 @@
     --background-color-3: 94, 94, 136;
     --background-color-focus: 75, 72, 217, 0.3;
     --background-color-header: 55, 57, 143;
+    
+    --background-color-streak-0: 255, 15, 0;
+    --background-color-streak-1: 255, 122, 0;
+    
+    --background-color-strength-li-1: 36, 186, 22;
+    --background-color-strength-li-2: 27, 155, 22;
+    --background-color-strength-li-3: 17, 123, 21;
     
     --border-color-0: 75, 72, 217;
     --border-color-1: 109, 106, 251;
@@ -124,6 +198,13 @@
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;
 
+    --background-color-streak-0: 255, 15, 0;
+    --background-color-streak-1: 255, 122, 0;
+    
+    --background-color-strength-li-1: 36, 186, 22;
+    --background-color-strength-li-2: 27, 155, 22;
+    --background-color-strength-li-3: 17, 123, 21;
+    
     --border-color-0: 109, 106, 251;
     --border-color-1: 75, 72, 217;
 
@@ -212,7 +293,8 @@
     margin: 0;
 }
 
-html {
+html, body, #root {
+    width: 100%;
     height: 100%;
 }
 
@@ -222,7 +304,6 @@ body {
     /* color: rgb(var(--text-color-main)); */
     font-size: var(--main-font-size-16);
     font-weight: var(--main-font-weight-regular);
-    /* zoom: .8; */
 }
 
 /* @media only screen and (max-height: 750px) {
@@ -231,12 +312,16 @@ body {
         zoom: 0.8;
     }
 } */
-/* @media only screen and (max-width: 1496px) {
-    body {
-        font-size: 12px;
-        zoom: calc(100vw / 1496);
+@media only screen and (max-width: 1496px) {
+    /* font-size: 12px; */
+    /* zoom: calc(100vw / 1496); */
+    /* body {
+        zoom: .8;
     }
-} */
+    :root {
+        font-size: 55%;
+    } */
+}
 
 body, input, button, textarea {
     font-family: Inter, sans-serif;

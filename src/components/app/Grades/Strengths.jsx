@@ -18,15 +18,20 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
 
     useEffect(() => {
         function strengthsCalculation() {
-            if (sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]) {
+            if (sortedGrades && sortedGrades[selectedPeriod]) {
                 const STRENGTHS_NUMBER = 3;
-                const period = sortedGrades[activeAccount][selectedPeriod];
+                const period = sortedGrades[selectedPeriod];
                 const newStrengths = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
                 
                 for (let subjectKey in period.subjects) {
                     const subject = period.subjects[subjectKey];
                     if (subject.isCategory) { continue };
-                    const algebricDiff = subject.average - subject.classAverage;
+                    let algebricDiff;
+                    if (subject.average !== "N/A" && subject.classAverage !== "N/A") {
+                        algebricDiff = subject.average - subject.classAverage;
+                    } else {
+                        algebricDiff = 0;
+                    }
                     for (let i = 0; i < newStrengths.length; i++) {
                         const strength = newStrengths[i];
                         if (strength === undefined || (subject.average !== "N/A" && strength.subject.average === "N/A") || (subject.average !== "N/A" && strength.subject.average !== "N/A" && algebricDiff >= strength.algebricDiff)) {
@@ -48,7 +53,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
             <h2>Vos points forts</h2>
         </WindowHeader>
         <WindowContent>
-            {sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]
+            {sortedGrades && sortedGrades[selectedPeriod]
                 ? <ol className="strengths-container">
                     {
                         strengths.map((strength, idx) => <li key={crypto.randomUUID()} className="strength-container">

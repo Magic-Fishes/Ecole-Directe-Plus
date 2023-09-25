@@ -90,11 +90,13 @@
     display: grid;
     grid-template-rows: 0fr;
     overflow: hidden;
-    transition: grid-template-rows .2s ease;
+    transition: grid-template-rows .2s ease, visibility .2s;
+    visibility: hidden;
 }
 
 .drop-down-menu.focus .animation-wrapper {
     grid-template-rows: 1fr;
+    visibility: visible;
 }
 
 .drop-down-menu fieldset.options-container {

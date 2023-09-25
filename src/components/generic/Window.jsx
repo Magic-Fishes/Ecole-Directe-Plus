@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { AppContext } from "../../App";
+import { applyZoom } from "../../utils/zoom";
 
 import "./Window.css";
 
@@ -52,6 +53,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
+
+    const isGrabbing = useRef(false);
 
     function getWindowArrangement() {
         /**
@@ -111,7 +114,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                        (el) => {
                            // action
                            if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
-                               orderChildrenInDOM(el, true); // reset=true
+                               orderChildrenInDOM(el, true); // reset
                            }
                        },
                         (el) => {
@@ -395,6 +398,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
     
     function handleMouseDown(event) {
+        if (isGrabbing.current) {
+            return 0;
+        }
+        isGrabbing.current = true
         if (event.touches || true) {
             // prevent from selecting
             if (window.getSelection) {
@@ -416,6 +423,14 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         let scrollableParentElement;
         const windowOrigin = {};
         let moveableElements;
+
+        function constantDeltaScale(element, delta, reference="height") {
+            const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
+            const bounds = element.getBoundingClientRect();
+            const scaledReference = bounds[reference]/scale;
+            const scaleFactor = (scaledReference+delta)/scaledReference;
+            element.style.scale = scaleFactor;
+        }
         
         function lookForClosestScrollableParentElement(element) {
             /**
@@ -508,25 +523,32 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     
             // mirror the bounds of targetWindow on floatingWindow
             const boundingClientRect = targetWindow.getBoundingClientRect();
-            const computedStyle = getComputedStyle(targetWindow);
-            const scale = computedStyle.scale;
+            // const computedStyle = getComputedStyle(targetWindow);
+            // const scale = computedStyle.scale === "none" ? 1 : computedStyle.scale;
+            const scale = parseFloat(targetWindow.style.scale) || 1;
             floatingWindow.style.position = "fixed";
-            floatingWindow.style.height = boundingClientRect.height/scale + "px";
-            floatingWindow.style.width = boundingClientRect.width/scale + "px";
+            const newSize = {
+                width: boundingClientRect.width/scale,
+                height: boundingClientRect.height/scale
+            }
+            floatingWindow.style.width = newSize.width + "px";
+            floatingWindow.style.height = newSize.height + "px";
             const target = {
-                x: boundingClientRect.x - (((1-scale)*boundingClientRect.width)/2),
-                y: boundingClientRect.y - (((1-scale)*boundingClientRect.height)/2)
+                x: boundingClientRect.x - (((1-scale)*(newSize.width))/2),
+                y: boundingClientRect.y - (((1-scale)*(newSize.height))/2)
             }
             floatingWindow.style.left = target.x + "px";
             floatingWindow.style.top = target.y + "px";
             floatingWindow.style.scale = scale;
-            setTimeout(() => (floatingWindow.style.scale = 1.05), 0);
+            const FLOATING_SCALE_DELTA = 20;
+            setTimeout(() => (constantDeltaScale(floatingWindow, FLOATING_SCALE_DELTA, isTabletLayout ? "width" : "height")), 0);
     
             windowOrigin.x = target.x;
             windowOrigin.y = target.y;
             
             // add the floatingWindow to the DOM and change targetWindow style with the "moving" class
-            targetWindow.classList.remove("grabbing");
+            /* targetWindow.classList.remove("grabbing"); */
+            targetWindow.style.scale = "";
             targetWindow.classList.add("moving");
             floatingPortalRef.current.appendChild(floatingWindow);
     
@@ -543,13 +565,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         const targetWindow = lookForClosestWindowParent(event.target);
         // console.log("target:", targetWindow, "| mousedown");
 
-        targetWindow.classList.add("grabbing");
-        
-        
+        /* targetWindow.classList.add("grabbing"); */
+        const GRABBING_SCALE_DELTA = -20;
+        constantDeltaScale(targetWindow, GRABBING_SCALE_DELTA, isTabletLayout ? "width" : "height");
 
         const mouseOrigin = {
-            x: event.clientX ?? event.touches[0].clientX,
-            y: event.clientY ?? event.touches[0].clientY
+            x: applyZoom(event.clientX ?? event.touches[0].clientX),
+            y: applyZoom(event.clientY ?? event.touches[0].clientY)
         }
 
 
@@ -558,8 +580,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         let intervalId;
         const handleMouseMove = (event) => {
             const mouse = {
-                x: event.clientX ?? event.touches[0].clientX,
-                y: event.clientY ?? event.touches[0].clientY
+                x: applyZoom(event.clientX ?? event.touches[0].clientX),
+                y: applyZoom(event.clientY ?? event.touches[0].clientY)
             }
             const TRIGGER_SHIFT = 13;
             const mouseOriginDist = Math.sqrt((mouseOrigin.x-mouse.x)**2 + (mouseOrigin.y-mouse.y)**2);
@@ -593,6 +615,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
 
         const handleMouseUp = () => {
+            isGrabbing.current = false
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
@@ -616,7 +639,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                         element.style.overscrollBehavior = "";
                     });
                 }
-                targetWindow.classList.remove("grabbing");
+                // targetWindow.classList.remove("grabbing");
+                targetWindow.style.scale = "";
             }
             document.removeEventListener("mousemove", handleMouseMove);
             document.removeEventListener("touchmove", handleMouseMove);
@@ -891,7 +915,7 @@ export function MoveableContainer({ children, className = "", ...props }) {
 }
 
 
-export function Window({ children, growthFactor=1, className = "", ...props }) {
+export function Window({ children, growthFactor=1, WIP=false, className = "", ...props }) {
 
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
@@ -918,8 +942,8 @@ export function Window({ children, growthFactor=1, className = "", ...props }) {
 
 
     return (
-        <section className={`window ${className}`} style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
-            {children}
+        <section className={`window ${className} ${WIP ? "work-in-progress" : ""}`} style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
+            {WIP ? null : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
         </section>
     )

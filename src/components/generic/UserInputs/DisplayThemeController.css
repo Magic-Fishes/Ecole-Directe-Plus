@@ -12,8 +12,8 @@ fieldset.display-theme-controller {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    /* user-select: none;
-    -webkit-user-select: none; */
+    user-select: none;
+    -webkit-user-select: none;
     transition: 0.1s;
 }
 fieldset.display-theme-controller:hover {
@@ -28,9 +28,10 @@ fieldset.display-theme-controller:has(:focus-visible) {
     position: absolute;
     background-color: rgb(var(--background-color-header));
     border-radius: 50px;
+    cursor: pointer;
 }
 .quality .display-theme-controller .slider {
-    transition: transform 0.2s, inset 0.2s, width 0.2s, background-color 0.5s !important;    
+    transition: transform 0.2s, inset 0.2s, width 0.2s, background-color 0.5s !important;
 }
 
 

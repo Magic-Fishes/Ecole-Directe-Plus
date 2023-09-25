@@ -132,6 +132,7 @@ li#messaging.header-button-container { order: 5; }
 main.content {
     height: 100%;
     overflow: auto;
+    scroll-behavior: smooth;
     /* overscroll-behavior: contain; */
     width: 100%;
     max-width: 2360px;

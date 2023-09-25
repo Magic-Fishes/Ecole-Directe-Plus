@@ -82,6 +82,7 @@ body:has(#bottom-sheet) {
 }
 #bottom-sheet-container #resize-handle:active {
     cursor: grabbing;
+    user-select: none;
 }
 
 #resize-handle #inner-resize-handle {

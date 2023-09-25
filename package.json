@@ -1,0 +1,33 @@
+{
+  "name": "ecole-directe-plus",
+  "version": "0.1.5",
+  "type": "module",
+  "description": "Ecole Directe plus is a React web app that is designed to replace and improve EcoleDirecte",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "Magic-Fish",
+  "license": "MIT",
+  "dependencies": {
+    "@floating-ui/react": "^0.24.3",
+    "ecole-directe-plus": "file:",
+    "node": "^20.6.0",
+    "python": "^0.0.4",
+    "react-content-loader": "^6.2.1",
+    "react-router-dom": "^6.10.0",
+    "react-router-use-history": "^1.0.0",
+    "web-vitals": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^4.9.5",
+    "vite": "^4.4.9"
+  }
+}

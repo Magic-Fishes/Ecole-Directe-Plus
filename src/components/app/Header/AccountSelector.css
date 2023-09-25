@@ -5,15 +5,12 @@
     /* padding: 12px;  */
     padding: 10px;
     isolation: isolate;
-}
-[data-state="open"]#account-selector {
-    isolation: isolate;
     position: relative;
     z-index: 1;
 }
 
 #account-selector #options-wrapper {
-    height: 100%;
+    height: auto;
     background-color: rgb(var(--background-color-header));
     box-shadow: var(--box-shadow-element);
     border-radius: 15px;
@@ -22,9 +19,7 @@
 :root.performance #account-selector #options-wrapper {
     border: 1px solid rgb(var(--border-color-0));
 }
-[data-state="open"] #options-wrapper {
-    height: auto !important;
-}
+
 
 #account-selector #active-account {
     height: 100%;
@@ -39,10 +34,6 @@
 #account-selector #active-account:focus-visible {
     border-radius: 0;
     background-color: rgba(var(--text-color-main), 0.10);
-}
-
-[data-state="open"] #active-account {
-    padding-bottom: 5px;
 }
 
 #account-selector .drop-down-arrow {
@@ -160,11 +151,17 @@
     display: grid;
     grid-template-rows: 0fr;
     overflow: hidden;
-    transition: grid-template-rows .2s;
+    transition: grid-template-rows .3s ease, visibility .3s;
+    visibility: hidden;
 }
 
 [data-state="open"]#account-selector .animation-wrapper {
     grid-template-rows: 1fr;
+    visibility: visible;
+}
+
+#account-selector .options-container {
+    min-height: 0;
 }
 
 #account-selector .options-container .links {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import ContentLoader from "react-content-loader";
 import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../../../App";
@@ -18,7 +18,7 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import "./Results.css";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
-    const { isTabletLayout } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
 
     const location = useLocation();
 
@@ -42,9 +42,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
             <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "column nowrap", gap: "20px" }}>
                 <MoveableContainer>
                     {!isTabletLayout
-                        ? <Tabs contentLoader={sortedGrades[activeAccount] === undefined} tabs={sortedGrades.length > 0 ? Object.keys(sortedGrades[activeAccount]) : ["test 1", "test 2", "test 3"]} displayedTabs={sortedGrades.length > 0 ? Object.values(sortedGrades[activeAccount]).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
+                        ? <Tabs contentLoader={sortedGrades === undefined} tabs={sortedGrades ? Object.keys(sortedGrades) : ["test 1", "test 2", "test 3"]} displayedTabs={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
                         : <div className="results-options-container">
-                            <DropDownMenu name="periods" options={sortedGrades.length > 0 ? Object.keys(sortedGrades[activeAccount]) : ["test 1", "test 2", "test 3"]} displayedOptions={sortedGrades.length > 0 ? Object.values(sortedGrades[activeAccount]).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} />
+                            <DropDownMenu name="periods" options={sortedGrades ? Object.keys(sortedGrades) : ["test 1", "test 2", "test 3"]} displayedOptions={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} />
                             <DropDownMenu name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
                         </div>
                     }
@@ -55,46 +55,48 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                             <h2>Résultats</h2>
                             <InfoButton className="results-legend">
                                 <table style={{ textAlign: "left" }}>
-                                    <caption>Légende des notes</caption>
+                                    <caption style={{ fontWeight: "800" }}>Légende des notes</caption>
                                     <colgroup>
-                                        <col className="visual-demo-col" style={{ width: 70 }}/>
+                                        <col className="visual-demo-col" style={{ width: 80 }}/>
                                         <col className="definition-col" />
                                     </colgroup>
-                                    <tr>
-                                        <th>Note<sup>(x)</sup></th>
-                                        <td>Note coefficientée</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Note<sub className="x-unknown">(x)</sub></th>
-                                        <td>Note sur <span className="x-unknown">x</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th style={{ opacity: .5 }}>Note</th>
-                                        <td>Note non significative</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Abs</th>
-                                        <td>Absent</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Disp</th>
-                                        <td>Dispensé</td>
-                                    </tr>
-                                    <tr>
-                                        <th>NE</th>
-                                        <td>Non évalué</td>
-                                    </tr>
-                                    <tr>
-                                        <th>EA</th>
-                                        <td>En attente</td>
-                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <th>Note<sup>(x)</sup></th>
+                                            <td>Note coefficientée</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Note<sub className="x-unknown">(x)</sub></th>
+                                            <td>Note sur <span className="x-unknown">x</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th style={{ opacity: .5 }}>Note</th>
+                                            <td>Note non significative</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Abs</th>
+                                            <td>Absent</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Disp</th>
+                                            <td>Dispensé</td>
+                                        </tr>
+                                        <tr>
+                                            <th>NE</th>
+                                            <td>Non évalué</td>
+                                        </tr>
+                                        <tr>
+                                            <th>EA</th>
+                                            <td>En attente</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </InfoButton>
                         </div>
                         <div className="general-average">
                             <span>Moyenne Générale</span>
-                            {sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]
-                                ? <Grade grade={{ value: sortedGrades[activeAccount][selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
+                            {sortedGrades && sortedGrades[selectedPeriod]
+                                ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
                                 : <ContentLoader
                                     speed={1}
                                     backgroundColor={'#4b48d9'}
@@ -123,9 +125,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]
-                                        ? Object.keys(sortedGrades[activeAccount][selectedPeriod].subjects).map((idx) => {
-                                            const el = sortedGrades[activeAccount][selectedPeriod].subjects[idx]
+                                    {sortedGrades && sortedGrades[selectedPeriod]
+                                        ? Object.keys(sortedGrades[selectedPeriod].subjects).map((idx) => {
+                                            const el = sortedGrades[selectedPeriod].subjects[idx]
                                             return (
                                                 <tr key={el.id} className={el.isCategory ? "category-row" : "subject-row"}>
                                                     <th className="head-cell">
@@ -158,8 +160,8 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 <th className="head-cell">
                                                     <ContentLoader
                                                         speed={1}
-                                                        backgroundColor={'#63638c'}
-                                                        foregroundColor={'#7e7eb2'}
+                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                                         style={{ width: subjectNameWidth + "px", maxHeight: "30px" }}
                                                     >
                                                         <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
@@ -168,8 +170,8 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 <td className="moyenne-cell">
                                                     <ContentLoader
                                                         speed={1}
-                                                        backgroundColor={'#7878ae'}
-                                                        foregroundColor={'#9292d4'}
+                                                        backgroundColor={actualDisplayTheme === "dark" ?  "#7878ae" : "#75759a"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#9292d4" : "#9292c0"}
                                                         viewBox="0 0 50 50"
                                                         style={{ maxHeight: "30px" }}
                                                     >
@@ -181,24 +183,24 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                         ? <div className="category-info">
                                                             <ContentLoader
                                                                 speed={1}
-                                                                backgroundColor={'#63638c'}
-                                                                foregroundColor={'#7e7eb2'}
+                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
                                                                 speed={1}
-                                                                backgroundColor={'#63638c'}
-                                                                foregroundColor={'#7e7eb2'}
+                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
                                                                 speed={1}
-                                                                backgroundColor={'#63638c'}
-                                                                foregroundColor={'#7e7eb2'}
+                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -209,8 +211,8 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 return (
                                                                     <ContentLoader
                                                                         speed={1}
-                                                                        backgroundColor={'#63638c'}
-                                                                        foregroundColor={'#7e7eb2'}
+                                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                                                         viewBox="0 0 70 50"
                                                                         height="30"
                                                                         key={crypto.randomUUID()}

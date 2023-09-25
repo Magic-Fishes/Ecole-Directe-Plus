@@ -14,7 +14,7 @@
     font-weight: var(--main-font-weight-extra-bold);
     cursor: pointer;
     pointer-events: auto;
-    transition: .1s;
+    transition: all .1s, outline 0s;
 }
 .information .clear-button:hover {
     color: rgb(var(--text-color-main));
@@ -73,9 +73,17 @@
     border-radius: 10px;
     width: 100%;
 }
+.information .number-value:hover {
+    background-color: rgba(var(--border-color-0), .8);
+}
+.information .number-value:active {
+    background-color: rgba(var(--border-color-0), .6);
+}
+
 
 .information .info-zone {
     padding: 10px;
+    padding-bottom: 0;
     display: flex;
     flex-grow: 1;
     gap: 5px;
@@ -100,6 +108,17 @@
     padding-bottom: 0;
     display: flex;
     gap: 10px;
+}
+
+.information .badges-zone .badge-value {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 3px;
+}
+.information .badges-zone .badge-value .badge-number {
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-12);
 }
 
 .information .badges-zone .badge {

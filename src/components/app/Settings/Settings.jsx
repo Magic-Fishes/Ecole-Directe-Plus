@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -19,19 +18,19 @@ import { AppContext } from "../../../App";
 
 import "./Settings.css";
 
-export default function Settings({ usersSettings,  globalSettings, accountsList }) {
+export default function Settings({ usersSettings, globalSettings, accountsList }) {
 
     const { useUserSettings } = useContext(AppContext);
-    
+
     const settings = useUserSettings();
 
 
-    
+
     useEffect(() => {
         document.title = "Paramètres • Ecole Directe Plus";
     }, []);
-    
-    const handleGradeScaleEnableChange = () => { 
+
+    const handleGradeScaleEnableChange = () => {
         const newEnableValue = !settings.get("isGradeScaleEnabled");
         if (newEnableValue) {
             settings.set("gradeScale", settings.get("gradeScale") ? newEnableValue * settings.get("gradeScale") : newEnableValue * 20)
@@ -43,13 +42,13 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
         if (settings.get("gradeScale") !== newValue) {
             settings.set("isGradeScaleEnabled", !!parseInt(newValue));
         }
-        settings.set("gradeScale", newValue); 
+        settings.set("gradeScale", newValue);
     }
 
     useEffect(() => {
         console.log("useEffect", settings.get("gradeScale"))
     }, [settings.get("gradeScale")])
-    
+
     return (
         <div id="settings">
             <div id="settings-box">
@@ -60,7 +59,7 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                 </div>
 
                 <div className="setting" id="display-theme">
-                    <span>Thème d'affichage</span> <DisplayThemeController id="display-theme-sc" selected={settings.get("displayTheme")} onChange={(value) => {settings.set("displayTheme", value)}} fieldsetName="display-theme" />
+                    <span>Thème d'affichage</span> <DisplayThemeController id="display-theme-sc" selected={settings.get("displayTheme")} onChange={(value) => { settings.set("displayTheme", value) }} fieldsetName="display-theme" />
                 </div>
 
                 <div className="setting" id="grade-scale">
@@ -87,14 +86,14 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                                     <td>Oui</td>
                                     <td>Non</td>
                                 </tr>
-    
+
                                 <tr>
                                     <th className="row-header">Ombres portées</th>
                                     <td>Oui</td>
                                     <td>Oui</td>
                                     <td>Non</td>
                                 </tr>
-    
+
                                 <tr>
                                     <th className="row-header">Effets graphiques</th>
                                     <td>Oui</td>
@@ -116,23 +115,27 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                             </tbody>
                         </table>
                     </InfoButton>
-                    <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => {settings.set("displayMode", value)}} fieldsetName="display-mode" />
+                    <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />
                 </div>
 
                 <div className="setting disabled" id="luciole-font">
-                    <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => {settings.set("lucioleFont", event.target.checked)}} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
+                    <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">
                     <span>Réinitialiser l'agencement des fenêtres</span> <Button onClick={() => settings.set("windowArrangement", [])}>Réinitialiser</Button>
                 </div>
-                
+
                 <div className="setting disabled" id="animate-windows">
                     <CheckBox id="animate-windows" label={<span>Animer l'apparition des fenêtres</span>} />
                 </div>
 
                 <div className="setting disabled" id="show-old-streak">
                     <CheckBox id="show-old-streak" label={<span>Afficher les Streak passées</span>} />
+                </div>
+
+                <div className="setting disabled" id="show-negative-badges">
+                    <CheckBox id="show-negative-badges" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
                 </div>
 
                 {/* advanced settings */}
@@ -144,7 +147,7 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                     </div>
 
                     <div className="setting" id="clear-local-storage">
-                        <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear() ; sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+                        <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     <div className="setting disabled" id="info-persistence">
@@ -154,18 +157,18 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                     <div className="setting disabled" id="school-year">
                         <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={false} onChange={() => console.log("changed")} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={2021} max={(new Date()).getFullYear()+1}  />
+                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} />
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">
-                        <CheckBox id="synchronise-settings" label={<span>Synchroniser les paramètres sur tous les profils</span>} checked={globalSettings.shareSettings.value} onChange={() => globalSettings.shareSettings.set(!globalSettings.shareSettings.value)} /> <InfoButton className="setting-tooltip">Les paramètres seront synchronisés avec ceux du profil actif</InfoButton>
+                        <CheckBox id="synchronise-settings" label={<span>Synchroniser les paramètres sur tous les profils</span>} checked={globalSettings.shareSettings.value} onChange={() => { globalSettings.shareSettings.set(!globalSettings.shareSettings.value) }} /> <InfoButton className="setting-tooltip">Les paramètres seront synchronisés avec ceux du profil actif</InfoButton>
                     </div> : null}
-                    
+
 
                     <div className="setting disabled" id="dynamic-loading">
                         <CheckBox id="dynamic-loading" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
                     </div>
-                    
+
 
                     <h2 className="heading">Raccourcis claviers</h2>
 
@@ -192,6 +195,12 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                                 <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="ArrowUp">↑</KeyboardKey> / <KeyboardKey keyName="ArrowDown">↓</KeyboardKey>
                             </div>
                         </div>
+                        <div className="shortcut">
+                            <span>Cibler le menu de navigation</span>
+                            <div className="keys">
+                                <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="ArrowUp">M</KeyboardKey>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="split-heading">
@@ -212,7 +221,7 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="split-heading">
                         <hr />
                         <h3 className="heading">Personnalisation</h3>
@@ -240,12 +249,12 @@ export default function Settings({ usersSettings,  globalSettings, accountsList 
                         </div>
                     </div>
                 </div>
-                <p id="important-note">Note : ces paramètres sont exclusifs { ((usersSettings.syncNomDeDossierTier ?? true) && "à l’appareil,") } au compte et au profil que vous utilisez en ce moment</p>
+                <p id="important-note">Ces paramètres sont exclusifs {usersSettings.syncNomDeDossierTier ? (globalSettings.shareSettings.value ? "à l'appareil et au compte" : "à l'appareil, au compte et au profil") : (globalSettings.shareSettings.value ? "au compte" : "au compte et au profil")} que vous utilisez en ce moment</p>
                 {/* Install as application (iOS/Android/Windows) */}
                 <div className="setting" id="install-as-application-tutorials">
-                    <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo de Apple" targetURL="https://youtu.be/uHgt8giw1LY" />
-                    <StoreCallToAction companyLogoSRC="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://youtu.be/uHgt8giw1LY" />
-                    <StoreCallToAction companyLogoSRC="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://youtu.be/uHgt8giw1LY" />
+                    <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo de Apple" targetURL="https://www.clubic.com/tutoriels/article-889913-1-comment-ajouter-raccourci-web-page-accueil-iphone.html " />
+                    <StoreCallToAction companyLogoSRC="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://www.nextpit.fr/comment-creer-applications-web-raccourcis-android" />
+                    <StoreCallToAction companyLogoSRC="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://www.01net.com/astuces/windows-10-comment-transformer-vos-sites-web-preferes-en-applications-natives-1968951.html" />
                 </div>
                 <div id="diverse-links">
                     <Link to="#patch-notes">Patch Notes</Link> • <Link to="#policy">Mentions légales</Link> • <Link to="/feedback">Faire un retour</Link> • <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">Github</a>

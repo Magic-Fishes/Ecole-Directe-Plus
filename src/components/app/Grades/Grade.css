@@ -48,7 +48,7 @@ a.grade.new-grade {
 
 a.grade.new-grade::after {
     display: block;
-    content: "nouvelle note";
+    content: "Nouvelle note";
     color: transparent;
     background-color: rgba(var(--text-color-main), .5);
     /* background-color: rgba(var(--background-color-3)); */

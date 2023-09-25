@@ -21,6 +21,8 @@ const Museum = lazy(() => import("./components/Museum/Museum"));
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
+
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -82,6 +84,7 @@ const defaultSettings = {
     toggleAnimatedWindowApparition: true,
     dynamicLoading: true,
     shareSettings: true,
+    negativeBadges: false,
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
@@ -97,7 +100,10 @@ function createUserLists(accountNumber) {
 
 
 import testGrades from "./testGrades.json";
-import testGrades2 from "./testGrades2.json";
+// import testGrades2 from "./testGrades2.json";
+// const testGrades = lazy(() => import("./testGrades.json"));
+// const testGrades2 = lazy(() => import("./testGrades2.json"));
+
 
 const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
@@ -105,13 +111,13 @@ const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0)
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
 
 
-function getSetting(setting, accountIdx, isGlobal=false) {
+function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
         const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
     } else if (userSettingsFromLs[accountIdx]) {
         userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
-        return userSettingsFromLs[accountIdx][setting] ?? defaultSettings[setting];
+        return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
 }
@@ -172,11 +178,26 @@ function initSettings(accountList) {
             dynamicLoading: {
                 value: getSetting("dynamicLoading", i),
             },
+            negativeBadges: {
+                value: getSetting("negativeBadges", i),
+            },
         })
     }
     return userSettings;
 }
 
+function initData(length) {
+    return Array.from({ length: length }, (_, index) => ({
+        badges: {
+            star: 0,
+            bestStudent: 0,
+            greatStudent: 0,
+            stonks: 0,
+            keepOnFire: 0,
+            meh: 0,
+        },
+    }))
+}
 
 const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
 let userIdsFromLs;
@@ -202,11 +223,11 @@ export default function App() {
     const [userIds, setUserIds] = useState(userIdsFromLs);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
-    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true));
+    const [keepLoggedIn, setKeepLoggedIn] = useState(/*() => {*/getSetting("keepLoggedIn", activeAccount, true)/*}*/);
 
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
-    const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
+    const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
 
     // user data
     const [grades, setGrades] = useState([]);
@@ -214,14 +235,13 @@ export default function App() {
 
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
-    // const [isMobileLayout, setIsMobileLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT);
-    // const [isTabletLayout, setIsTabletLayout] = useState(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
-    const [isMobileLayout, setIsMobileLayout] = useState(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
-    const [isTabletLayout, setIsTabletLayout] = useState(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
+    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
+    const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
 
-    
-    const lastActiveAccount = useRef(activeAccount);
+    // diverse
+    const abortControllers = useRef([]);
+    const actualDisplayTheme = getActualDisplayTheme();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -231,20 +251,24 @@ export default function App() {
 
     // fonctions pour modifier le userData
     function changeUserData(data, value) {
+        console.log(userData);
         setUserData((oldData) => {
             const newData = [...oldData];
+            if (!newData[activeAccount]) {
+                newData[activeAccount] = {};
+            }
             newData[activeAccount][data] = value;
             return newData;
         })
     }
 
     function getUserData(data) {
-        return userData[activeAccount][data]
+        return userData && userData[activeAccount] && userData[activeAccount][data]
     }
- 
-    const useUserData = [changeUserData, getUserData,]
 
-    function changeUserSettings(setting, value, accountIdx=activeAccount) { 
+    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData })
+
+    function changeUserSettings(setting, value, accountIdx = activeAccount) {
         setUserSettings((oldSettings) => {
             const newSettings = [...oldSettings];
             newSettings[accountIdx][setting].value = value;
@@ -256,8 +280,9 @@ export default function App() {
             syncSettings();
         }
     }
-    
+
     function syncSettings() {
+        console.log("syncSetting()")
         setUserSettings((oldSettings) => {
             const newSettings = [];
             for (const i in oldSettings) {
@@ -266,24 +291,24 @@ export default function App() {
             return newSettings;
         })
     }
-    
-    function defaultChangeUserSettings(setFunction) { 
+
+    function defaultChangeUserSettings(setFunction) {
         setUserSettings(setFunction);
     }
-    
+
     function getUserSettingValue(setting) {
-        if (userSettings[activeAccount][setting]) {
-            return userSettings[activeAccount][setting].value;            
+        if (userSettings[activeAccount] && userSettings[activeAccount][setting]) {
+            return userSettings[activeAccount][setting].value;
         } else {
             return undefined;
         }
     }
-    
+
     function getUserSettingObject(setting) {
         return userSettings[activeAccount][setting]
     }
 
-    function useUserSettings(setting="") { 
+    function useUserSettings(setting = "") {
         if (setting === "") {
             return {
                 set: changeUserSettings, // dcp ça c'est la fonction de set qui marche avec les setState((oldState) => newState) (vu que c'est un objet pas trop le choix)
@@ -292,7 +317,7 @@ export default function App() {
             }
         } else {
             return {
-                set: (value) => {changeUserSettings(setting, value)},
+                set: (value) => { changeUserSettings(setting, value) },
                 get: () => getUserSettingValue(setting),
                 object: () => getUserSettingObject(setting),
             }
@@ -341,16 +366,16 @@ export default function App() {
             set: setShareSettings,
         },
     }
-    
+
     useEffect(() => {
         const lsGlobalSettings = {};
         for (const i in globalSettings) {
             lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
         }
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
-        
+
         const handleStorageChange = () => {
-            const newLsGlobalSettings = localstorage.getItem("globalSettings")
+            const newLsGlobalSettings = localStorage.getItem("globalSettings")
             if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
                 for (i in globalSettings) {
                     globalSettings[i].set(newLsGlobalSettings[i])
@@ -358,13 +383,13 @@ export default function App() {
             }
         }
         window.addEventListener("storage", handleStorageChange)
-        
+
         return (() => {
             window.removeEventListener("storage", handleStorageChange);
         });
     }, [keepLoggedIn,
-       shareSettings])
-    
+        shareSettings])
+
     useEffect(() => {
         console.log("shareSettings")
         console.log(shareSettings)
@@ -372,7 +397,7 @@ export default function App() {
             syncSettings();
         }
     }, [shareSettings])
-    
+
     // useEffect(() => {
     //     if (isLoggedIn) {
     //         setUserSettings(initSettings(accountsListState))
@@ -381,8 +406,8 @@ export default function App() {
 
     useEffect(() => {
 
-    // handle storing into localStorage
-        
+        // handle storing into localStorage
+
         const lsUserSettings = [];
         for (let i = 0; i < accountsListState.length; i++) {
             lsUserSettings[i] = {};
@@ -392,13 +417,13 @@ export default function App() {
         }
         localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
 
-    // handle getting from localStorage if it changes
-        
+        // handle getting from localStorage if it changes
+
         const handleStorageChange = () => {
             applyConfigFromLocalStorage();
             const newLsSettings = initSettings(accountsListState)
             if (!areOccurenciesEqual(newLsSettings, userSettings)) {
-                setUserSettings(() => newLsSettings)
+                setUserSettings(newLsSettings);
             }
         }
         window.addEventListener("storage", handleStorageChange)
@@ -419,7 +444,7 @@ export default function App() {
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
         if (accountsList && accountsList.length > 0) setAccountsListState(accountsList);
     }
-    
+
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
         applyConfigFromLocalStorage();
@@ -464,24 +489,33 @@ export default function App() {
             // setIsTabletLayout(window.innerWidth <= WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT);
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
-            
-            
+
             // dezoom
             // const computedStyle = getComputedStyle(document.documentElement);
-            // if (window.innerWidth > 869 && window.innerWidth < 1496) {
-            //     document.documentElement.style.zoom = window.innerWidth / 1496;                    
-            // } else {
-            //     document.documentElement.style.zoom = "";                    
-            // }
-            
-            // const newFontSize = ((15/848)*window.innerWidth + 28.5)/100*16;
-            // if (newFontSize < 8) {
-            //     document.documentElement.style.fontSize = "8px";
-            // } else if (newFontSize > 10) {
-            //     document.documentElement.style.fontSize = "";                
-            // } else {
-            //     document.documentElement.style.fontSize = newFontSize;
-            // }
+            if (window.innerWidth > 869 && window.innerWidth < 1250) {
+                // document.documentElement.style.zoom = window.innerWidth / 1250;
+                if (window.innerWidth >= 995) {
+                    document.documentElement.style.zoom = (.2 / 170) * window.innerWidth - .47;
+                } else {
+                    document.documentElement.style.zoom = .7;
+                }
+
+                let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                if (isSafari) {
+                    // const newFontSize = ((15 / 848) * window.innerWidth + 28.5) / 100 * 16;
+                    const newFontSize = (.125 / 170) * window.innerWidth - .294;
+                    if (newFontSize < 8) {
+                        document.documentElement.style.fontSize = "8px";
+                    } else if (newFontSize > 10) {
+                        document.documentElement.style.fontSize = "";
+                    } else {
+                        document.documentElement.style.fontSize = newFontSize + "em";
+                    }
+                }
+            } else {
+                document.documentElement.style.fontSize = "";
+                document.documentElement.style.zoom = "";
+            }
         }
 
         window.addEventListener("resize", handleWindowResize);
@@ -491,6 +525,223 @@ export default function App() {
             window.removeEventListener("resize", handleWindowResize);
         }
     }, []);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                                                                                                  //
+    //                                                                                  Data Functions                                                                                 //
+    //                                                                                                                                                                                  //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function sortGrades(grades, activeAccount) {
+        const periodsFromJson = grades[activeAccount].periodes;
+        const periods = {};
+        if (periodsFromJson !== undefined) {
+            for (let period of periodsFromJson) {
+                if (period) {
+                    const newPeriod = {};
+                    newPeriod.streak = 0;
+                    newPeriod.maxStreak = 0;
+                    newPeriod.name = period.periode;
+                    newPeriod.code = period.codePeriode;
+                    newPeriod.startDate = new Date(period.dateDebut);
+                    newPeriod.endDate = new Date(period.dateFin);
+                    newPeriod.MTname = period.ensembleMatieres.nomPP;
+                    newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.subjects = {};
+                    let i = 0;
+                    for (let matiere of period.ensembleMatieres.disciplines) {
+                        let subjectCode = matiere.codeMatiere;
+                        if (!subjectCode) {
+                            subjectCode = "category" + i.toString();
+                            i++;
+                        }
+                        const newSubject = {};
+                        newSubject.code = subjectCode;
+                        newSubject.elementType = "subject";
+                        newSubject.id = matiere.id.toString();
+                        newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        newSubject.classAverage = !isNaN(parseFloat(matiere.moyenneClasse?.replace(",", "."))) ? parseFloat(matiere.moyenneClasse?.replace(",", ".")) : "N/A";
+                        newSubject.minAverage = !isNaN(parseFloat(matiere.moyenneMin?.replace(",", "."))) ? parseFloat(matiere.moyenneMin?.replace(",", ".")) : "N/A";
+                        newSubject.maxAverage = !isNaN(parseFloat(matiere.moyenneMax?.replace(",", "."))) ? parseFloat(matiere.moyenneMax?.replace(",", ".")) : "N/A";
+                        newSubject.coef = matiere.coef;
+                        newSubject.size = matiere.effectif;
+                        newSubject.rank = matiere.rang;
+                        newSubject.isCategory = matiere.groupeMatiere;
+                        newSubject.teachers = matiere.professeurs;
+                        newSubject.appreciations = matiere.appreciations;
+                        newSubject.grades = [];
+                        newSubject.average = "N/A";
+                        newSubject.streak = 0;
+                        newSubject.badges = {
+                            star: 0,
+                            bestStudent: 0,
+                            greatStudent: 0,
+                            stonks: 0,
+                            keepOnFire: 0,
+                            meh: 0,
+                        }
+                        newPeriod.subjects[subjectCode] = newSubject;
+                    }
+                    periods[period.codePeriode] = newPeriod;
+                }
+            }
+            const gradesFromJson = grades[activeAccount].notes;
+            const subjectDatas = {};
+            for (let grade of gradesFromJson) {
+                // console.log("grade", grade)
+                const periodCode = grade.codePeriode;
+                const subjectCode = grade.codeMatiere;
+                // créer la matière si elle n'existe pas
+                if (periods[periodCode].subjects[subjectCode] === undefined) {
+                    periods[periodCode].subjects[subjectCode] = {
+                        code: subjectCode,
+                        elementType: "subject",
+                        name: subjectCode,
+                        classAverage: "N/A",
+                        minAverage: "N/A",
+                        maxAverage: "N/A",
+                        coef: 1,
+                        size: "N/A",
+                        isCategory: false,
+                        teachers: [],
+                        appreciations: [],
+                        grades: [],
+                        average: 20,
+                        streak: 0,
+                        badges: {
+                            star: 0,
+                            bestStudent: 0,
+                            greatStudent: 0,
+                            stonks: 0,
+                            keepOnFire: 0,
+                            meh: 0,
+                        }
+                    }
+                }
+
+                const newGrade = {};
+                newGrade.elementType = "grade";
+                newGrade.id = grade.id.toString();
+                newGrade.name = grade.devoir;
+                newGrade.type = grade.typeDevoir;
+                newGrade.date = new Date(grade.date);
+                newGrade.entryDate = new Date(grade.dateSaisie);
+                newGrade.coef = parseFloat(grade.coef);
+                newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
+                newGrade.value = getGradeValue(grade.valeur);
+                newGrade.classMin = isNaN(parseFloat(grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat(grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
+                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse);
+                newGrade.subjectName = grade.libelleMatiere;
+                newGrade.isSignificant = !grade.nonSignificatif;
+                newGrade.examSubjectSRC = grade.uncSujet;
+                newGrade.examCorrectionSRC = grade.uncCorrige;
+                if (!subjectDatas.hasOwnProperty(periodCode)) {
+                    subjectDatas[periodCode] = {};
+                }
+                if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
+                    subjectDatas[periodCode][subjectCode] = [];
+                }
+                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant });
+                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
+                const subjectAverage = periods[periodCode].subjects[subjectCode].average;
+                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
+                const average = calcAverage(subjectDatas[periodCode][subjectCode]);
+                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
+                if (newGrade.upTheStreak) {
+                    periods[periodCode].streak += 1;
+                    if (periods[periodCode].streak > periods[periodCode].maxStreak) {
+                        periods[periodCode].maxStreak = periods[periodCode].streak;
+                    }
+                    periods[periodCode].totalStreak += 1;
+                    periods[periodCode].subjects[subjectCode].streak += 1;
+                } else {
+                    if (newGrade.isSignificant) {
+                        periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
+                        periods[periodCode].subjects[subjectCode].streak = 0;
+
+                        // enlève le "upTheStreak" des notes précédant celle qu'on considère
+                        for (let grade of periods[periodCode].subjects[subjectCode].grades) {
+                            if (grade.upTheStreak) {
+                                grade.upTheStreak = "maybe";
+                            }
+                        }
+                    }
+                }
+
+                periods[periodCode].subjects[subjectCode].average = average;
+                const category = findCategory(periods[periodCode], subjectCode);
+                const categoryAverage = calcCategoryAverage(periods[periodCode], category);
+                periods[periodCode].subjects[category.code].average = categoryAverage;
+                const generalAverage = calcGeneralAverage(periods[periodCode]);
+                periods[periodCode].generalAverage = generalAverage;
+
+
+                // création des badges
+                // les noms sont marqués dans le figma stv mieux t'y retrouver
+                const gradeBadges = [];
+                if (!isNaN(newGrade.value)) {
+                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
+                        gradeBadges.push("star");
+                        periods[periodCode].subjects[subjectCode].badges.star++
+                    }
+                    if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
+                        gradeBadges.push("bestStudent");
+                        periods[periodCode].subjects[subjectCode].badges.bestStudent++
+                    }
+                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
+                        gradeBadges.push("greatStudent");
+                        periods[periodCode].subjects[subjectCode].badges.greatStudent++
+                    }
+                    console.log("a", newGrade.value)
+                    console.log("b", subjectAverage)
+                    if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
+                        gradeBadges.push("stonks");
+                        periods[periodCode].subjects[subjectCode].badges.stonks++
+                    }
+                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
+                        gradeBadges.push("keepOnFire");
+                        periods[periodCode].subjects[subjectCode].badges.keepOnFire++
+                    }
+                    if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
+                        gradeBadges.push("meh");
+                        periods[periodCode].subjects[subjectCode].badges.meh++
+                    }
+                }
+                newGrade.badges = gradeBadges;
+                periods[periodCode].subjects[subjectCode].grades.push(newGrade);
+            }
+        }
+
+        // supprime les périodes vides
+        let i = 0;
+        let firstPeriod;
+        for (const key in periods) {
+            if (i === 0) {
+                firstPeriod = { key: key, value: periods[key] }
+            }
+            i++;
+            let isEmpty = true;
+            if (periods[key])
+                for (const subject in periods[key].subjects) {
+                    if (periods[key].subjects[subject].grades.length !== 0) {
+                        isEmpty = false;
+                    }
+                }
+            if (isEmpty) {
+                delete periods[key];
+            }
+        }
+        if (Object.keys(periods).length < 1) {
+            periods[firstPeriod.key] = firstPeriod.value;
+        }
+        changeUserData("sortedGrades", periods) /*((oldSortedGrades) => {
+            const newSortedGrades = [...oldSortedGrades];
+            newSortedGrades[activeAccount] = periods;
+            return newSortedGrades;
+        });*/
+    }
+
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -629,7 +880,9 @@ export default function App() {
             })
     }
 
-    async function fetchUserGrades(controller=(new AbortController())) {
+    async function fetchUserGrades(controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        console.log("abortControllers.current:", abortControllers.current);
         const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
         // bah enft si le mec change de compte il faudrait juste abort ce fetch tah l'avortement
         const data = {
@@ -658,7 +911,8 @@ export default function App() {
                     code = response.code;
                 }
                 // const code = response.code;
-                console.log("OH LALA NON:", response);
+                console.log("RESPONSE:", response);
+                console.log("CODE:", code);
                 if (code === 200) {
                     console.log("UWU");
                     let usersGrades = [...grades];
@@ -673,6 +927,7 @@ export default function App() {
                     // setTokenState("");
                     // logout();
                 } else if (code === 403) {
+                    console.log("testGrades")
                     let usersGrades = [...grades];
                     usersGrades[userId] = testGrades.data;
                     // console.log("data:", testGrades2.data)
@@ -681,6 +936,9 @@ export default function App() {
                     setTokenState((old) => (response.token || old));
                 }
             })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
     }
 
     async function createFolderStorage(name) {
@@ -688,7 +946,7 @@ export default function App() {
             libelle: name,
         }
         fetch("https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.39.0",
-              {
+            {
                 method: "POST",
                 headers: {
                     "user-agent": navigator.userAgent,
@@ -698,7 +956,7 @@ export default function App() {
             },
         )
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -715,7 +973,8 @@ export default function App() {
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
-        setUserData(createUserLists(accountsList.length));
+        setUserSettings(initSettings(accountsList));
+        setUserData(initData(accountsList.length));
         // localStorage.setItem("token", token);
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
@@ -723,6 +982,7 @@ export default function App() {
     function resetUserData() {
         setUserIds({});
         setActiveAccount(0);
+        setUserData([])
         // setKeepLoggedIn(false);
         setGrades([]);
     }
@@ -738,11 +998,16 @@ export default function App() {
         localStorage.removeItem("userSettings");
         localStorage.removeItem("keepLoggedIn");
         localStorage.removeItem("userIds");
-        setTokenState(() => "");
-        setAccountsListState(() => []);
+        setTokenState("");
+        setAccountsListState([]);
         resetUserData();
         setKeepLoggedIn(false);
         setIsLoggedIn(false);
+        // abort tous les fetch en cours
+        for (let controller of abortControllers.current) {
+            controller.abort();
+        }
+        abortControllers.current = [];
     }
 
 
@@ -765,6 +1030,18 @@ export default function App() {
         }
         toggleThemeTransitionAnimation();
     }, [getUserSettingValue("displayTheme")]);
+
+
+    function getActualDisplayTheme() {
+        const displayTheme = getUserSettingValue("displayTheme");
+        if (displayTheme === "auto") {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
+        }
+
+        return displayTheme;
+    }
+
+
 
     function toggleThemeTransitionAnimation() {
         if (getUserSettingValue("displayMode") === "balanced" || getUserSettingValue("displayMode") === "performance") {
@@ -804,17 +1081,17 @@ export default function App() {
                     getUserInfo={getUserInfo}
                     resetUserData={resetUserData}
 
-                    setDisplayTheme={(value) =>  {changeUserSettings("displayTheme", value)}}
+                    setDisplayTheme={(value) => { changeUserSettings("displayTheme", value) }}
                     displayTheme={getUserSettingValue("displayTheme")}
 
-                    setDisplayModeState={(value) =>  {changeUserSettings("displayMode", value)}}
+                    setDisplayModeState={(value) => { changeUserSettings("displayMode", value) }}
                     displayMode={getUserSettingValue("displayMode")}
 
                     activeAccount={activeAccount}
                     setActiveAccount={setActiveAccount}
                     logout={logout}
                     useIsTabletLayout={useIsTabletLayout}
-                    
+
                     setIsFullScreen={setIsFullScreen}
                     setting={userSettings}
                     syncSettings={syncSettings}
@@ -857,18 +1134,18 @@ export default function App() {
                     element: ((!tokenState || accountsListState.length < 1)
                         ? <Navigate to="/login" replace={true} />
                         : <>
-                            
-                                <Header
-                                    currentEDPVersion={currentEDPVersion}
-                                    token={tokenState}
-                                    accountsList={accountsListState}
-                                    setActiveAccount={setActiveAccount}
-                                    activeAccount={activeAccount}
-                                    useIsTabletLayout={useIsTabletLayout}
-                                    isFullScreen={isFullScreen}
-                                    logout={logout}
-                                />
-                                {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={userIds.username && userIds.password} />)}
+
+                            <Header
+                                currentEDPVersion={currentEDPVersion}
+                                token={tokenState}
+                                accountsList={accountsListState}
+                                setActiveAccount={setActiveAccount}
+                                activeAccount={activeAccount}
+                                useIsTabletLayout={useIsTabletLayout}
+                                isFullScreen={isFullScreen}
+                                logout={logout}
+                            />
+                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={userIds.username && userIds.password} />)}
                         </>),
                     path: "app",
                     children: [
@@ -905,7 +1182,7 @@ export default function App() {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} />,
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
                             path: ":userId/grades"
                         },
                         {
@@ -944,13 +1221,15 @@ export default function App() {
         isMobileLayout,
         isTabletLayout,
         useUserData,
-        useUserSettings
+        useUserSettings,
+        actualDisplayTheme
     }), [activeAccount,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
-        userData, 
-        useUserSettings]);
+        userData,
+        useUserSettings,
+        actualDisplayTheme]);
 
     return (
         <AppContext.Provider value={appContextValue}>

@@ -47,6 +47,12 @@ export default function Grade({ grade, className = "", ...props }) {
     function updateClassList() {
         if (gradeRef.current.classList.contains("streak-grade")) {
             setClassList((oldClassList) => {
+                for (let className of ["start-row", "mid-row", "end-row"]) {
+                    const index = oldClassList.indexOf(className);
+                    if (index > -1) {
+                        oldClassList.splice(index, 1);
+                    }                    
+                }
                 if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
                     oldClassList.push("mid-row");
                 } else {

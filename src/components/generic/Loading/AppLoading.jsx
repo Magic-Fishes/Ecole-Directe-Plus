@@ -46,7 +46,7 @@ const loadingScreenTips = [
     { message: <span>Le chargement est une plaisanterie. Mais vous n’êtes pas obligé de rire.</span>, weight: 1 },
     { message: <span>Le chargement est une illusion. Il n’existe pas vraiment. C’est juste dans votre tête...</span>, weight: 1 },
     { message: <span>Le chargement est un art.<br/>Il faut savoir l’apprécier à sa juste valeur.</span>, weight: 1 },
-    { message: <span>Le chargement est plus long que prévu, profitez de cette pause pour faire 10 pompes !</span>, weight: 1 },
+    { message: <span>Le chargement est plus long que prévu, profitez de cette pause pour faire 10 pompes</span>, weight: 1 },
     { message: <span>Le chargement vous rappelle que le temps est relatif, surtout quand on attend quelque chose d'important.</span>, weight: 1 },
     // { message: <span>Le chargement rapide n'existe que dans les contes de fées. Nous sommes dans la réalité, désolé...</span>, weight: 1 },
     { message: <span>Le chargement rapide n'existe que dans les contes de fées. Nous sommes dans la réalité, désolé.</span>, weight: 1 },
@@ -58,7 +58,7 @@ const loadingScreenTips = [
     // Canardman
     { message: <span>Canardman est de tout cœur avec vous pendant ce chargement. Il sait à quel point c'est long.</span>, weight: 1 },
     { message: <span>Chargement... Canardman vous suggère de méditer sur l'absurdité de l'existence pendant cette attente.</span>, weight: 1 },
-    { message: <span>Rafraichissez cette page, vous verrez peut-être un Canardman sauvage apparaître !</span>, weight: 1 },
+    { message: <span>Rafraichissez cette page, vous verrez peut-être un Canardman sauvage apparaître</span>, weight: 1 },
     
     // stoïcisme 
     { message: <span>Développez-vous, impressionnez-vous. Chaque jour est une opportunité d'être meilleur.</span>, weight: 1 },
