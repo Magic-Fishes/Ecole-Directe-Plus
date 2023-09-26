@@ -20,7 +20,6 @@ setTimeout(() => splashScreen?.remove(), 500);
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        {/* <p>caca/pipi=69</p> */}
         {/* <HelmetProvider> */}
             <App />
         {/* </HelmetProvider> */}
