@@ -34,6 +34,10 @@ export function findCategory(period, subject) {
     const subjectsKeys = Object.keys(period.subjects);
     let i = subjectsKeys.indexOf(subject);
     while (--i > 0 && !period.subjects[subjectsKeys[i]].isCategory) { } // très sad
+    if (!period.subjects[subjectsKeys[i]]?.isCategory) {
+        return null;
+    }
+
     return period.subjects[subjectsKeys[i]];
 }
 

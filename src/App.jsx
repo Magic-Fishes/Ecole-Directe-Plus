@@ -671,8 +671,10 @@ export default function App() {
 
                 periods[periodCode].subjects[subjectCode].average = average;
                 const category = findCategory(periods[periodCode], subjectCode);
-                const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                periods[periodCode].subjects[category.code].average = categoryAverage;
+                if (category !== null) {
+                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
+                    periods[periodCode].subjects[category.code].average = categoryAverage;
+                }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
                 periods[periodCode].generalAverage = generalAverage;
 
