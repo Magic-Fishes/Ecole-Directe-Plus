@@ -198,7 +198,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                         <div className="shortcut">
                             <span>Cibler le menu de navigation</span>
                             <div className="keys">
-                                <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="ArrowUp">M</KeyboardKey>
+                                <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="m">M</KeyboardKey>
                             </div>
                         </div>
                     </div>

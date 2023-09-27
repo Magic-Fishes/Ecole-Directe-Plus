@@ -1,12 +1,14 @@
 
 import { useState, useEffect, useRef } from "react";
+import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
+
 import "./PopUp.css"
 
 export default function PopUp({ type, header, subHeader, contentTitle, content, onClose }) {
-    
+
     const closingCooldown = 300; // milliseconds
     const types = ["info", "warning", "error"]
-    
+
     const [isClosing, setIsClosing] = useState(false);
     const [typeState, setTypeState] = useState(types.includes(type) ? type : types[0]);
 
@@ -14,11 +16,11 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
-        document.body.style.overflow = "hidden"; /* empêche le scrolling */
+        // disableBodyScroll(PopUpRef.current)
         // Utilise la fonction de nettoyage de useEffect pour supprimer le gestionnaire d'événements lorsque le composant est démonté
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
-            document.body.style.overflow = "";
+            clearAllBodyScrollLocks();
         }
     }, [])
 
@@ -44,20 +46,20 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
         }
     }, []);
 
-    
+
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(onClose, closingCooldown);
     }
-    
+
     const handleKeyDown = (event) => {
         if (event.key === "Escape") {
             handleClose();
         }
     }
-    
+
     return (
-       <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose}>
+        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose}>
             <div ref={PopUpRef} className={(isClosing ? "closing " : "") + typeState} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* empêche la détection du clique par le background si le pop-up est cliqué */}
                 <div className="relative-container">
                     <button className="close-button" onClick={handleClose}>✕</button>
@@ -72,6 +74,6 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
                 </div>
                 <button id="close-pop-up" onClick={handleClose}>Fermer</button>
             </div>
-       </div> 
+        </div>
     )
 }

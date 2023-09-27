@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
+import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 
 import { applyZoom } from "../../../utils/zoom";
 
@@ -108,6 +109,7 @@ export default function DisplayThemeController({ selected, fieldsetName, onChang
 
     const handlePointerDown = (event) => {
         sliderRef.current.style.cssText += "transition: none !important;"
+        disableBodyScroll(sliderRef.current);
         
         
         const mouseOrigin = {
@@ -134,6 +136,7 @@ export default function DisplayThemeController({ selected, fieldsetName, onChang
 
         const handlePointerUp = () => {
             sliderRef.current.style.removeProperty("transition");
+            clearAllBodyScrollLocks();
             if (tempSelected.current !== undefined) {
                 onChange(tempSelected.current);
             }
