@@ -10,8 +10,8 @@ dist-ssr
 *.local
 
 # packager files
-#package-lock.json
-#package.json
+# package-lock.json
+# package.json
 
 # useless dependencies
 replit.nix
@@ -20,7 +20,7 @@ replit.nix
 # vite-config file
 *.mjs
 tsconfig.json
-vite.config.js
+# vite.config.js
 
 # other
 build_history
