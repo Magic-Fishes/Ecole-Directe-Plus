@@ -1229,7 +1229,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
-        userData,
+        useUserData,
         useUserSettings,
         actualDisplayTheme]);
 

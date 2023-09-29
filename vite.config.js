@@ -9,4 +9,7 @@ export default defineConfig({
         basicSsl()
     ],
     https: true,
+    server: {
+        port: 3000,
+    },
 })
