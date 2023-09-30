@@ -123,7 +123,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     useEffect(() => {
         function handleDevChannel() {
             if (process.env.NODE_ENV !== "development") {
-                const isDevChannelEnabled = useUserSettings("devChannel");
+                const isDevChannelEnabled = useUserSettings("isDevChannel");
                 const url = new URL(window.location.href);
                 const params = new URLSearchParams(url);
                 const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
@@ -150,7 +150,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             }
         }
 
-        setTimeout(() => handleDevChannel(), 1000);
+        handleDevChannel();
     }, []);
 
 

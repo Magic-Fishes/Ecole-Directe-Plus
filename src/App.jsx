@@ -85,7 +85,7 @@ const defaultSettings = {
     dynamicLoading: true,
     shareSettings: true,
     negativeBadges: false,
-    devChannel: false
+    isDevChannel: false
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
@@ -181,9 +181,6 @@ function initSettings(accountList) {
             negativeBadges: {
                 value: getSetting("negativeBadges", i),
             },
-            devChannel: {
-                value: getSetting("devChannel", i),
-            },
         })
     }
     return userSettings;
@@ -231,6 +228,7 @@ export default function App() {
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
     const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
+    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true));
 
     // user data
     const [grades, setGrades] = useState([]);
@@ -369,6 +367,10 @@ export default function App() {
             value: shareSettings,
             set: setShareSettings,
         },
+        isDevChannel: {
+            value: isDevChannel,
+            set: setIsDevChannel
+        },
     }
 
     useEffect(() => {
@@ -392,7 +394,8 @@ export default function App() {
             window.removeEventListener("storage", handleStorageChange);
         });
     }, [keepLoggedIn,
-        shareSettings])
+        shareSettings,
+        isDevChannel])
 
     useEffect(() => {
         console.log("shareSettings")
