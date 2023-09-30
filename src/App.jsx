@@ -536,6 +536,14 @@ export default function App() {
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
+        const totalBadges = {
+            "star": 0,
+            "bestStudent": 0,
+            "greatStudent": 0,
+            "stonks": 0,
+            "keepOnFire": 0,
+            "meh": 0,
+        };
         if (periodsFromJson !== undefined) {
             for (let period of periodsFromJson) {
                 if (period) {
@@ -588,6 +596,7 @@ export default function App() {
             }
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
+            
             for (let grade of gradesFromJson) {
                 // console.log("grade", grade)
                 const periodCode = grade.codePeriode;
@@ -687,28 +696,34 @@ export default function App() {
                     if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
                         gradeBadges.push("star");
                         periods[periodCode].subjects[subjectCode].badges.star++
+                        totalBadges.star++
                     }
                     if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
                         gradeBadges.push("bestStudent");
                         periods[periodCode].subjects[subjectCode].badges.bestStudent++
+                        totalBadges.bestStudent++
                     }
                     if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
                         gradeBadges.push("greatStudent");
                         periods[periodCode].subjects[subjectCode].badges.greatStudent++
+                        totalBadges.greatStudent++
                     }
                     console.log("a", newGrade.value)
                     console.log("b", subjectAverage)
                     if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
                         gradeBadges.push("stonks");
                         periods[periodCode].subjects[subjectCode].badges.stonks++
+                        totalBadges.stonks++
                     }
                     if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
                         gradeBadges.push("keepOnFire");
                         periods[periodCode].subjects[subjectCode].badges.keepOnFire++
+                        totalBadges.keepOnFire++
                     }
                     if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
                         gradeBadges.push("meh");
                         periods[periodCode].subjects[subjectCode].badges.meh++
+                        totalBadges.meh++
                     }
                 }
                 newGrade.badges = gradeBadges;
@@ -738,6 +753,7 @@ export default function App() {
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
+        changeUserData("totalBadges", totalBadges) 
         changeUserData("sortedGrades", periods) /*((oldSortedGrades) => {
             const newSortedGrades = [...oldSortedGrades];
             newSortedGrades[activeAccount] = periods;
