@@ -1,19 +1,22 @@
-name: Build and Deploy
+name: Build and Deploy (main channel)
 
 on:
   push:
-    branches:
-      - dev-channel
+    tags:
+      - 'v*'
 
 jobs:
-  build-deploy:
+  main-build-deploy:
     runs-on: ubuntu-latest
 
     environment:
-      name: dev-production
+      name: main-production
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
       
       - name: Install Node.js
         uses: actions/setup-node@v3
