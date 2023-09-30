@@ -3,31 +3,37 @@
   "version": "0.1.5",
   "type": "module",
   "description": "Ecole Directe plus is a React web app that is designed to replace and improve EcoleDirecte",
+  "dependencies": {
+    "@floating-ui/react": "^0.25.4",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "@vitejs/plugin-react": "^4.1.0",
+    "body-scroll-lock": "^4.0.0-beta.0",
+    "react-content-loader": "^6.2.1",
+    "react-router-dom": "^6.16.0",
+    "vite": "^4.4.9"
+  },
   "scripts": {
     "dev": "vite",
+    "host": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "Magic-Fish",
-  "license": "MIT",
-  "dependencies": {
-    "@floating-ui/react": "^0.24.3",
-    "ecole-directe-plus": "file:",
-    "node": "^20.6.0",
-    "python": "^0.0.4",
-    "react-content-loader": "^6.2.1",
-    "react-router-dom": "^6.10.0",
-    "react-router-use-history": "^1.0.0",
-    "web-vitals": "^3.4.0"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
-  "devDependencies": {
-    "@types/react": "^18.0.27",
-    "@types/react-dom": "^18.0.10",
-    "@vitejs/plugin-react": "^3.1.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.4.9"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

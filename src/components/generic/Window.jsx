@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
+import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext } from "../../App";
 import { applyZoom } from "../../utils/zoom";
 
@@ -47,7 +48,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
     const windowArrangementSetting = useUserSettings("windowArrangement");
     const displayMode = useUserSettings("displayMode");
-    
+
     name = (isTabletLayout ? "tablet-" : "") + name;
     const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement }));
 
@@ -64,7 +65,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         for (let window of windowsContainer.windows) {
             windowArrangement.push({ name: window.current.name, order: window.current.style.order });
         }
-        
+
         for (let windowLayout of windowsContainer.windowsLayouts) {
             windowArrangement.push({ name: windowLayout.current.name, order: windowLayout.current.style.order });
         }
@@ -72,7 +73,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         for (let moveableContainer of windowsContainer.moveableContainers) {
             windowArrangement.push({ name: moveableContainer.current.name, order: moveableContainer.current.style.order });
         }
-        
+
         return windowArrangement;
     }
 
@@ -84,7 +85,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
          * (the name attribute allow to precisely target the element)
          */
 
-        
+
         if (windowArrangement !== undefined && windowArrangement.length > 0) {
             for (let item of windowArrangement) {
                 for (let window of windowsContainer.windows) {
@@ -93,14 +94,14 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                         break;
                     }
                 }
-                
+
                 for (let windowLayout of windowsContainer.windowsLayouts) {
                     if (item.name === windowLayout.current.name) {
                         windowLayout.current.style.order = item.order;
                         break;
                     }
                 }
-                
+
                 for (let moveableContainer of windowsContainer.moveableContainers) {
                     if (item.name === moveableContainer.current.name) {
                         moveableContainer.current.style.order = item.order;
@@ -111,20 +112,20 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         } else {
             // reset the CSS "order" of the flex containers
             const children = digChildren(windowsContainerRef.current,
-                       (el) => {
-                           // action
-                           if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
-                               orderChildrenInDOM(el, true); // reset
-                           }
-                       },
-                        (el) => {
-                           // condition
-                           return el.classList.contains("windows-layout") || el.classList.contains("window") || el.classList.contains("moveable-container") ? true : false
-                       });
+                (el) => {
+                    // action
+                    if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
+                        orderChildrenInDOM(el, true); // reset
+                    }
+                },
+                (el) => {
+                    // condition
+                    return el.classList.contains("windows-layout") || el.classList.contains("window") || el.classList.contains("moveable-container") ? true : false
+                });
         }
     }
 
-    
+
     function saveWindowArrangement(windowArrangement) {
         /**
          * This function save the given windowArrangement in the userSettings and then in the localStorage
@@ -137,7 +138,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     }
 
 
-    function digChildren(element, action=(() => 0), condition=(() => true), children=[]) {
+    function digChildren(element, action = (() => 0), condition = (() => true), children = []) {
         /**
          * This recursive function maps all the children elements of the element given in parameter
          * @param element Element around which it looks for children
@@ -153,12 +154,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
         }
         action(element);
-        
+
         return children
     }
 
-    
-    function mapSiblings(element, condition=(() => true), siblings=[], knownSiblings=[]) {
+
+    function mapSiblings(element, condition = (() => true), siblings = [], knownSiblings = []) {
         /**
          * This function maps all the sibling elements of the given element
          * @param element Element around which it looks for siblings
@@ -173,50 +174,50 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         if (previousElementSibling !== null && !knownSiblings.includes(previousElementSibling)) {
             siblings.concat(mapSiblings(previousElementSibling, condition, siblings, knownSiblings));
         }
-        
+
         // current element
         if (condition(element)) {
             siblings.push(element)
         }
-        
+
         // next sibling element
         const nextElementSibling = element.nextElementSibling;
         if (nextElementSibling !== null && !knownSiblings.includes(nextElementSibling)) {
             siblings.concat(mapSiblings(nextElementSibling, condition, siblings, knownSiblings));
         }
-        
+
         return siblings;
     }
 
-    
+
     function mapMoveableElements(targetElement) {
         /**
          * This function maps all the moveable elements around and above the targeted element (siblings & parents)
          * @param targetElement Element around which it looks for moveable elements
         */
-        
+
         const moveableElements = [];
         let currentElement = targetElement;
-        
+
         const isMoveableElement = (element) => {
             // check if the element is moveable and is not the targetElement
             if ((element.classList.contains("window") ||
-                 element.classList.contains("windows-layout") ||
-                 element.classList.contains("moveable-container"))  &&
+                element.classList.contains("windows-layout") ||
+                element.classList.contains("moveable-container")) &&
                 element !== currentElement) {
                 return true;
             } else {
                 return false;
             }
         }
-        
+
         while (currentElement && currentElement.id !== "windows-container") {
             // data structure: array of couple moveableElement - moveableElement's siblings
             // this way, we only change the CSS "order" of the moveableElements according to the position of the moveableElement's siblings
             moveableElements.push([currentElement, mapSiblings(currentElement, isMoveableElement)]);
             currentElement = currentElement.parentElement;
         }
-        
+
         return moveableElements;
     }
 
@@ -225,7 +226,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         return elements.toSorted((elA, elB) => parseInt(elA?.style.order) - parseInt(elB?.style.order));
     }
 
-    
+
     function sortMoveableElementsByCSSOrder(moveableElements) {
         /**
          * Sort the list by the "order" css property of the elements
@@ -236,12 +237,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             let array = sortByCSSOrder(item[1]);
             elementsCopy[index][1] = array;
         })
-        
+
         return elementsCopy;
     }
 
 
-    function orderChildrenInDOM(flexContainer, reset=false) {
+    function orderChildrenInDOM(flexContainer, reset = false) {
         /**
          * Add an "order" css property to each child of the flexContainer
          * @param flexContainer Parent element with a display flex
@@ -303,7 +304,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     } else {
                         conditionX = mouse.x < (rect.x + movingRect.width);
                     }
-    
+
                     if (movingRect.height > rect.height) {
                         conditionY = mouse.y < (rect.y + rect.height);
                     } else {
@@ -317,7 +318,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     } else {
                         conditionX = mouse.x > (rect.x + rect.width - movingRect.width);
                     }
-    
+
                     if (movingRect.height > rect.height) {
                         conditionY = mouse.y > rect.y;
                     } else {
@@ -331,7 +332,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             });
         }
     }
-    
+
 
     function moveFloatingWindow(mouse, mouseOrigin, windowOrigin, floatingWindow) {
         floatingWindow.style.left = windowOrigin.x + mouse.x - mouseOrigin.x + "px";
@@ -343,12 +344,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         if (scrollableParentElement === null) {
             return 0;
         }
-        
+
         const bounds = scrollableParentElement.getBoundingClientRect();
 
         const SCROLLING_EDGE_SHIFT = 100; // px
         const SCROLLING_SPEED = 3; // px/frame
-        
+
         if (mouse.y < bounds.y + SCROLLING_EDGE_SHIFT) {
             scrollableParentElement.scrollBy(0, -SCROLLING_SPEED);
         } else if (mouse.y > (bounds.y + bounds.height) - SCROLLING_EDGE_SHIFT) {
@@ -362,61 +363,69 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         return 0;
     }
-    
+
+
+    function preventDraggingIssues(scrollTarget) {
+        document.body.style.overflow = "hidden";
+        disableBodyScroll(scrollTarget);
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+            element.style.userSelect = "none";
+            element.style.webkitUserSelect = "none";
+            element.style.overscrollBehavior = "contain";
+        });
+    }
+
+    function unpreventDraggingIssues() {
+        document.body.style.overflow = "";
+        clearAllBodyScrollLocks();
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+            element.style.userSelect = "";
+            element.style.webkitUserSelect = "";
+            element.style.overscrollBehavior = "";
+        });
+    }
+
 
     const unfloatWindow = (floatingWindow, targetWindow) => {
         const boundingClientRect = targetWindow.getBoundingClientRect();
         const computedStyle = getComputedStyle(targetWindow);
         const scale = computedStyle.getPropertyValue("scale") === "none" ? 1 : computedStyle.getPropertyValue("scale");
-        
+
         floatingWindow.style.transition = "all 0.4s ease, scale 0.2s ease";
         setTimeout(() => (floatingWindow.style.scale = 1), 0);
-        
-        floatingWindow.style.height = boundingClientRect.height/scale + "px";
-        floatingWindow.style.width = boundingClientRect.width/scale + "px";
-        
-        floatingWindow.style.left = boundingClientRect.x - (((1-scale)*boundingClientRect.width)/2) + "px";
-        floatingWindow.style.top = boundingClientRect.y - (((1-scale)*boundingClientRect.height)/2) + "px";
+
+        floatingWindow.style.height = boundingClientRect.height / scale + "px";
+        floatingWindow.style.width = boundingClientRect.width / scale + "px";
+
+        floatingWindow.style.left = boundingClientRect.x - (((1 - scale) * boundingClientRect.width) / 2) + "px";
+        floatingWindow.style.top = boundingClientRect.y - (((1 - scale) * boundingClientRect.height) / 2) + "px";
         // floatingWindow.style.left = boundingClientRect.x + "px";
         // floatingWindow.style.top = boundingClientRect.y + "px";
 
         floatingWindow.classList.add("unfloating");
-        
+
         setTimeout(() => {
-            document.body.style.overflow = "";
-            const allElements = document.querySelectorAll('*');
-            allElements.forEach(element => {
-                element.style.userSelect = "";
-                element.style.webkitUserSelect = "";
-                element.style.overscrollBehavior = "";
-            });
-            
+            unpreventDraggingIssues();
+
             targetWindow.classList.remove("moving")
             floatingWindow.remove()
         }, displayMode.get() === "quality" ? 400 : 0);
     }
 
-    
+
     function handleMouseDown(event) {
         if (isGrabbing.current) {
             return 0;
         }
         isGrabbing.current = true
-        if (event.touches || true) {
-            // prevent from selecting
-            if (window.getSelection) {
-                var selection = window.getSelection();
-                selection.removeAllRanges();
-            }
-            document.body.style.overflow = "hidden";            
-            const allElements = document.querySelectorAll('*');
-            allElements.forEach(element => {
-                element.style.userSelect = "none";
-                element.style.webkitUserSelect = "none";
-                element.style.overscrollBehavior = "contain";
-            });
+        // prevent from selecting
+        if (window.getSelection) {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
         }
-        
+
         let reorderStarted = false;
         let oldWindowArrangement;
         let floatingWindow;
@@ -424,14 +433,14 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         const windowOrigin = {};
         let moveableElements;
 
-        function constantDeltaScale(element, delta, reference="height") {
+        function constantDeltaScale(element, delta, reference = "height") {
             const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
             const bounds = element.getBoundingClientRect();
-            const scaledReference = bounds[reference]/scale;
-            const scaleFactor = (scaledReference+delta)/scaledReference;
+            const scaledReference = bounds[reference] / scale;
+            const scaleFactor = (scaledReference + delta) / scaledReference;
             element.style.scale = scaleFactor;
         }
-        
+
         function lookForClosestScrollableParentElement(element) {
             /**
              * Return the closest scrollable parent element.
@@ -440,17 +449,17 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             let currentElement = element.parentElement;
             let currentElementComputedStyle = getComputedStyle(currentElement);
             while (currentElement !== null) {
-                
+
                 let contentHeight = currentElement.scrollHeight;
                 let divHeight = currentElement.offsetHeight;
                 let scrollTop = currentElement.scrollTop;
                 let scrollBottom = (contentHeight - divHeight) - scrollTop;
-                
+
                 let contentWidth = currentElement.scrollWidth;
                 let divWidth = currentElement.offsetWidth;
                 let scrollLeft = currentElement.scrollLeft;
                 let scrollRight = (contentWidth - divWidth) - scrollLeft;
-                
+
                 if ((scrollTop > 0 || scrollBottom > 0 || scrollLeft > 0 || scrollRight > 0) && (currentElementComputedStyle.overflow === "auto" || currentElementComputedStyle.overflow === "scroll")) {
                     // found a scrollable element
                     break;
@@ -466,7 +475,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
             return currentElement;
         }
-        
+
         function lookForClosestWindowParent(element) {
             /**
              * Return the closest window parent
@@ -492,13 +501,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     var selection = window.getSelection();
                     selection.removeAllRanges();
                 }
-                document.body.style.overflow = "hidden";            
-                const allElements = document.querySelectorAll('*');
-                allElements.forEach(element => {
-                    element.style.webkitUserSelect = "none";
-                    element.style.userSelect = "none";
-                    element.style.overscrollBehavior = "contain";
-                });
+                preventDraggingIssues(targetWindow);
             }
 
             // vibrate (android only)
@@ -516,11 +519,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 scrollableParentElement.style.overflow = "hidden";
             }
             // console.log("scrollableParentElement", scrollableParentElement);
-    
+
             floatingWindow = targetWindow.cloneNode(true);
             // console.log("floatingWindow:", floatingWindow)
-    
-    
+
+
             // mirror the bounds of targetWindow on floatingWindow
             const boundingClientRect = targetWindow.getBoundingClientRect();
             // const computedStyle = getComputedStyle(targetWindow);
@@ -528,31 +531,31 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             const scale = parseFloat(targetWindow.style.scale) || 1;
             floatingWindow.style.position = "fixed";
             const newSize = {
-                width: boundingClientRect.width/scale,
-                height: boundingClientRect.height/scale
+                width: boundingClientRect.width / scale,
+                height: boundingClientRect.height / scale
             }
             floatingWindow.style.width = newSize.width + "px";
             floatingWindow.style.height = newSize.height + "px";
             const target = {
-                x: boundingClientRect.x - (((1-scale)*(newSize.width))/2),
-                y: boundingClientRect.y - (((1-scale)*(newSize.height))/2)
+                x: boundingClientRect.x - (((1 - scale) * (newSize.width)) / 2),
+                y: boundingClientRect.y - (((1 - scale) * (newSize.height)) / 2)
             }
             floatingWindow.style.left = target.x + "px";
             floatingWindow.style.top = target.y + "px";
             floatingWindow.style.scale = scale;
             const FLOATING_SCALE_DELTA = 20;
             setTimeout(() => (constantDeltaScale(floatingWindow, FLOATING_SCALE_DELTA, isTabletLayout ? "width" : "height")), 0);
-    
+
             windowOrigin.x = target.x;
             windowOrigin.y = target.y;
-            
+
             // add the floatingWindow to the DOM and change targetWindow style with the "moving" class
             /* targetWindow.classList.remove("grabbing"); */
             targetWindow.style.scale = "";
             targetWindow.classList.add("moving");
             floatingPortalRef.current.appendChild(floatingWindow);
-    
-    
+
+
             // setup dependencies for window reorganization
             moveableElements = sortMoveableElementsByCSSOrder(mapMoveableElements(targetWindow));
             orderMoveableElementsInDOM(moveableElements);
@@ -560,9 +563,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         }
 
-        
+
         // setup
         const targetWindow = lookForClosestWindowParent(event.target);
+        preventDraggingIssues(targetWindow);
         // console.log("target:", targetWindow, "| mousedown");
 
         /* targetWindow.classList.add("grabbing"); */
@@ -584,11 +588,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 y: applyZoom(event.clientY ?? event.touches[0].clientY)
             }
             const TRIGGER_SHIFT = 13;
-            const mouseOriginDist = Math.sqrt((mouseOrigin.x-mouse.x)**2 + (mouseOrigin.y-mouse.y)**2);
+            const mouseOriginDist = Math.sqrt((mouseOrigin.x - mouse.x) ** 2 + (mouseOrigin.y - mouse.y) ** 2);
             if (timeoutId && mouseOriginDist >= TRIGGER_SHIFT) {
                 clearTimeout(timeoutId);
             }
-            
+
             if (!reorderStarted && mouseOriginDist >= TRIGGER_SHIFT && !event.touches) {
                 startReorder(targetWindow);
                 mouseOrigin.x = mouse.x;
@@ -604,13 +608,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
         }
 
-        
+
         const handleKeyDown = (event) => {
-            if (event.key === "Escape")   {
+            if (event.key === "Escape") {
                 // restore old window arrangement
                 setWindowArrangement(oldWindowArrangement);
                 handleMouseUp();
-            }          
+            }
         }
 
 
@@ -626,19 +630,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 if (scrollableParentElement) {
                     scrollableParentElement.style.overflow = "";
                 }
-                
+
                 saveWindowArrangement(getWindowArrangement());
                 unfloatWindow(floatingWindow, targetWindow);
             } else {
-                if (event.touches || true) {
-                    document.body.style.overflow = "";
-                    const allElements = document.querySelectorAll('*');
-                    allElements.forEach(element => {
-                        element.style.webkitUserSelect = "";
-                        element.style.userSelect = "";
-                        element.style.overscrollBehavior = "";
-                    });
-                }
+                unpreventDraggingIssues();
                 // targetWindow.classList.remove("grabbing");
                 targetWindow.style.scale = "";
             }
@@ -649,7 +645,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             document.removeEventListener("keydown", handleKeyDown);
         }
 
-        
+
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("touchmove", handleMouseMove);
         document.addEventListener("keydown", handleKeyDown);
@@ -680,7 +676,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         const headers = getWindowsHeader(windowsContainer.windows);
         // console.log("headers:", headers);
-        
+
         function cleanup() {
             for (let header of headers) {
                 header.removeEventListener("mousedown", handleMouseDown);
@@ -692,7 +688,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
         }
         // cleanup()
-        
+
         for (let header of headers) {
             if (windowsContainer.allowWindowsManagement) {
                 header.addEventListener("mousedown", handleMouseDown);
@@ -701,7 +697,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     // will only happen when css property "pointer-events" is not set to "none"
                     child.addEventListener("mousedown", stopEventPropagation);
                     child.addEventListener("touchstart", stopEventPropagation);
-                }                
+                }
             }
         }
 
@@ -734,7 +730,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
     useEffect(() => {
         // windows popping animation
-                
+
         function reflectDOMHierarchy(elements) {
             /**
              * build and return the hierarchy tree
@@ -751,7 +747,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     i = 0;
                 }
                 let elementA = elementsCopy[i]
-            
+
                 let isContained = false;
                 // check if the elementA is contained by another element of the array
                 for (let elementB of elementsCopy) {
@@ -762,13 +758,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 if (!isContained) {
                     // elementA is not contained by any other element of the array: it's a parent element
                     elementsCopy.splice(elementsCopy.indexOf(elementA), 1);
-                    
+
                     // figure out where to place the new parent element
                     let branch = DOMTree;
                     let foundExit = false;
                     while (branch.length > 0 && !foundExit) {
                         foundExit = true;
-                        for (let i = 0 ; i < branch.length ; i++) {
+                        for (let i = 0; i < branch.length; i++) {
                             if (branch[i].element?.contains(elementA)) {
                                 branch = branch[i].children;
                                 foundExit = false;
@@ -781,7 +777,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     }
                 }
             }
-        
+
             return DOMTree;
         }
 
@@ -789,48 +785,48 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         function sortDOMTreeByCSSOrder(DOMTree) {
             if (DOMTree.length > 0) {
                 DOMTree.sort((elA, elB) => parseInt(elA?.element.style.order) - parseInt(elB?.element.style.order));
-                for (let i = 0 ; i < DOMTree.length ; i++) {
+                for (let i = 0; i < DOMTree.length; i++) {
                     sortDOMTreeByCSSOrder(DOMTree[i].children);
                 }
             }
         }
 
 
-        function applyAnimationDelayToWindows(DOMTree, idx=0) {
+        function applyAnimationDelayToWindows(DOMTree, idx = 0) {
             const ANIMATION_DELAY_SHIFT = 50; // ms
             const ANIMATION_DURATION = 500;
             DOMTree.map((branch) => {
                 if (branch.element.classList.contains("window")) {
-                    branch.element.style.animationDelay = (idx)*ANIMATION_DELAY_SHIFT + "ms";
-                    setTimeout(() => branch.element.classList.add("appeared"), (idx)*ANIMATION_DELAY_SHIFT + ANIMATION_DURATION)
+                    branch.element.style.animationDelay = (idx) * ANIMATION_DELAY_SHIFT + "ms";
+                    setTimeout(() => branch.element.classList.add("appeared"), (idx) * ANIMATION_DELAY_SHIFT + ANIMATION_DURATION)
                     idx += 1;
                 } else {
                     idx = applyAnimationDelayToWindows(branch.children, idx);
                 }
             });
-        
+
             return idx
         }
 
 
-        
+
         let children = digChildren(windowsContainerRef.current,
-                                   (el) => {
-                                       // action
-                                       if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
-                                           orderChildrenInDOM(el)
-                                       }
-                                   },
-                                   (el) => {
-                                       // condition
-                                       return el.classList.contains("windows-layout") || el.classList.contains("window") || el.classList.contains("moveable-container") ? true : false
-                                   });
-        
+            (el) => {
+                // action
+                if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
+                    orderChildrenInDOM(el)
+                }
+            },
+            (el) => {
+                // condition
+                return el.classList.contains("windows-layout") || el.classList.contains("window") || el.classList.contains("moveable-container") ? true : false
+            });
+
         let DOMTree = reflectDOMHierarchy(children);
         // console.log("DOMTree", DOMTree)
         sortDOMTreeByCSSOrder(DOMTree);
         applyAnimationDelayToWindows(DOMTree)
-        
+
     }, [isTabletLayout]);
 
 
@@ -844,13 +840,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     )
 }
 
-export function WindowsLayout({ children, direction = "row", growthFactor = 1, ultimateContainer=false, className = "", ...props }) {
+export function WindowsLayout({ children, direction = "row", growthFactor = 1, ultimateContainer = false, className = "", ...props }) {
     // available directions: row, column
 
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
     const windowArrangementSetting = useUserSettings("windowArrangement")
-    
+
     const context = useWindowsContainerContext();
 
     const windowsLayoutRef = useRef(null);
@@ -876,7 +872,7 @@ export function WindowsLayout({ children, direction = "row", growthFactor = 1, u
             <div ref={windowsLayoutRef} className={`windows-layout ${direction === "row" ? "d-row" : "d-column"} ${className}`} style={{ flexGrow: growthFactor }} {...props}>
                 {children}
             </div>
-        )        
+        )
     }
 
 }
@@ -886,7 +882,7 @@ export function MoveableContainer({ children, className = "", ...props }) {
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
     const windowArrangementSetting = useUserSettings("windowArrangement")
-    
+
     const context = useWindowsContainerContext();
 
     const moveableContainerRef = useRef(null);
@@ -915,12 +911,12 @@ export function MoveableContainer({ children, className = "", ...props }) {
 }
 
 
-export function Window({ children, growthFactor=1, WIP=false, className = "", ...props }) {
+export function Window({ children, growthFactor = 1, WIP = false, className = "", ...props }) {
 
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
     const windowArrangementSetting = useUserSettings("windowArrangement");
-    
+
     const context = useWindowsContainerContext();
 
     const windowRef = useRef(null);

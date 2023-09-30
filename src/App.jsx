@@ -515,7 +515,7 @@ export default function App() {
         }
 
         window.addEventListener("resize", handleWindowResize);
-        handleWindowResize()
+        handleWindowResize();
 
         return () => {
             window.removeEventListener("resize", handleWindowResize);
@@ -667,8 +667,10 @@ export default function App() {
 
                 periods[periodCode].subjects[subjectCode].average = average;
                 const category = findCategory(periods[periodCode], subjectCode);
-                const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                periods[periodCode].subjects[category.code].average = categoryAverage;
+                if (category !== null) {
+                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
+                    periods[periodCode].subjects[category.code].average = categoryAverage;
+                }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
                 periods[periodCode].generalAverage = generalAverage;
 
@@ -1141,7 +1143,7 @@ export default function App() {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={userIds.username && userIds.password} />)}
+                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password} />)}
                         </>),
                     path: "app",
                     children: [
@@ -1223,7 +1225,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
-        userData,
+        useUserData,
         useUserSettings,
         actualDisplayTheme]);
 

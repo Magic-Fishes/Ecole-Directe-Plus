@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect } from "react";
+import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { applyZoom } from "../../../utils/zoom";
 
 import ScrollShadedDiv from "../CustomDivs/ScrollShadedDiv";
@@ -205,6 +206,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     }, [targetSheetHeight]);
 
     const handleMouseUp = () => {
+        clearAllBodyScrollLocks();
         window.removeEventListener('mousemove', handleMouseResize);
         setTimeout(setIsResizing, 0, false); // timeout pour éviter fermeture si le curseur est hors de la bottomSheet après resize
         if (bottomSheetRef.current) {
@@ -212,8 +214,9 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
         }
         window.removeEventListener('mouseup', handleMouseUp);
     }
-
+    
     const handleTouchEnd = () => {
+        clearAllBodyScrollLocks();
         window.removeEventListener('touchmove', handleTouchResize);
         setTimeout(setIsResizing, 0, false); // timeout pour éviter fermeture si le curseur est hors de la bottomSheet après resize
         if (bottomSheetRef.current) {
@@ -228,6 +231,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
         if (!bottomSheetRef.current) {
             return 0;
         }
+        disableBodyScroll(bottomSheetRef.current);
         const topPosition = bottomSheetRef.current?.getBoundingClientRect().top;
         grabPosition.current = (event.touches ? (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.touches[0].clientY))) : (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.clientY))));
         firstYPosition.current = applyZoom(event.touches ? event.touches[0].clientY : event.clientY);

@@ -18,12 +18,12 @@ const splashScreen = document.getElementById("loading-start");
 splashScreen?.classList.add("fade-out");
 setTimeout(() => splashScreen?.remove(), 500);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
+createRoot(document.getElementById("root")).render(
+    <StrictMode>
         {/* <HelmetProvider> */}
             <App />
         {/* </HelmetProvider> */}
-    </React.StrictMode>
+    </StrictMode>
 );
 
 // reportWebVitals(console.log);

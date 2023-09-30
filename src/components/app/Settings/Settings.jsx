@@ -147,7 +147,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                     </div>
 
                     <div className="setting" id="clear-local-storage">
-                        <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+                        <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     <div className="setting disabled" id="info-persistence">
@@ -198,7 +198,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                         <div className="shortcut">
                             <span>Cibler le menu de navigation</span>
                             <div className="keys">
-                                <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="ArrowUp">M</KeyboardKey>
+                                <KeyboardKey keyName="Control">Ctrl</KeyboardKey> <KeyboardKey keyName="Alt">Alt</KeyboardKey> <KeyboardKey keyName="m">M</KeyboardKey>
                             </div>
                         </div>
                     </div>
@@ -252,7 +252,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                 <p id="important-note">Ces paramètres sont exclusifs {usersSettings.syncNomDeDossierTier ? (globalSettings.shareSettings.value ? "à l'appareil et au compte" : "à l'appareil, au compte et au profil") : (globalSettings.shareSettings.value ? "au compte" : "au compte et au profil")} que vous utilisez en ce moment</p>
                 {/* Install as application (iOS/Android/Windows) */}
                 <div className="setting" id="install-as-application-tutorials">
-                    <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo de Apple" targetURL="https://www.clubic.com/tutoriels/article-889913-1-comment-ajouter-raccourci-web-page-accueil-iphone.html " />
+                    <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo d'Apple" targetURL="https://www.clubic.com/tutoriels/article-889913-1-comment-ajouter-raccourci-web-page-accueil-iphone.html " />
                     <StoreCallToAction companyLogoSRC="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://www.nextpit.fr/comment-creer-applications-web-raccourcis-android" />
                     <StoreCallToAction companyLogoSRC="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://www.01net.com/astuces/windows-10-comment-transformer-vos-sites-web-preferes-en-applications-natives-1968951.html" />
                 </div>
