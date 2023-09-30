@@ -8,6 +8,8 @@ import {
     RouterProvider
 } from "react-router-dom";
 
+import "./App.css";
+
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
@@ -17,8 +19,6 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
-
-import "./App.css";
 
 import testGrades from "./testGrades.json";
 
@@ -85,6 +85,7 @@ const defaultSettings = {
     dynamicLoading: true,
     shareSettings: true,
     negativeBadges: false,
+    devChannel: false
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
@@ -180,6 +181,9 @@ function initSettings(accountList) {
             negativeBadges: {
                 value: getSetting("negativeBadges", i),
             },
+            devChannel: {
+                value: getSetting("devChannel", i),
+            },
         })
     }
     return userSettings;
@@ -237,6 +241,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [appKey, setAppKey] = useState(crypto.randomUUID());
 
     // diverse
     const abortControllers = useRef([]);
@@ -1067,6 +1072,11 @@ export default function App() {
 
     /* ################################################################################### */
 
+    function refreshApp() {
+        // permet de refresh l'app sans F5
+        setAppKey(crypto.randomUUID());
+    }
+
     // routing system
     const router = createBrowserRouter([
         {
@@ -1091,6 +1101,7 @@ export default function App() {
                     isTabletLayout={isTabletLayout}
 
                     setIsFullScreen={setIsFullScreen}
+                    useUserSettings={useUserSettings}
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
@@ -1220,17 +1231,19 @@ export default function App() {
         isTabletLayout,
         useUserData,
         useUserSettings,
-        actualDisplayTheme
+        actualDisplayTheme,
+        refreshApp
     }), [activeAccount,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
         useUserData,
         useUserSettings,
-        actualDisplayTheme]);
+        actualDisplayTheme,
+        refreshApp]);
 
     return (
-        <AppContext.Provider value={appContextValue}>
+        <AppContext.Provider value={appContextValue} key={appKey}>
             <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
                 <DOMNotification>
                     <RouterProvider router={router} />

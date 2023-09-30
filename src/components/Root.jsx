@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, isTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, useUserSettings, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -118,6 +118,24 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             console.log("redirected to app")
         }
     }, [location, token, accountsList])
+
+    // devChannel management
+    useEffect(() => {
+        function handleDevChannel() {
+            if (process.env.NODE_ENV !== "development") {
+                const isDevChannelEnabled = useUserSettings("devChannel");
+                if (isDevChannelEnabled.get() && window.location.hostname !== "dev.ecole-directe.plus") {
+                    window.location.href = "https://dev.ecole-directe.plus";
+                } else {
+                    if (window.location.hostname !== "ecole-directe.plus") {
+                        window.location.href = "https://ecole-directe.plus";
+                    }
+                }
+            }
+        }
+
+        handleDevChannel()
+    }, []);
 
 
     // - - - - - - - - - - - - - - - - - - - - //

@@ -13,6 +13,7 @@ import StoreCallToAction from "../../generic/StoreCallToAction";
 
 // graphics
 import RefreshIcon from "../../graphics/RefreshIcon";
+import ToggleEnd from "../../graphics/ToggleEnd";
 
 import { AppContext } from "../../../App";
 
@@ -20,11 +21,9 @@ import "./Settings.css";
 
 export default function Settings({ usersSettings, globalSettings, accountsList }) {
 
-    const { useUserSettings } = useContext(AppContext);
+    const { useUserSettings, refreshApp } = useContext(AppContext);
 
     const settings = useUserSettings();
-
-
 
     useEffect(() => {
         document.title = "Paramètres • Ecole Directe Plus";
@@ -45,9 +44,11 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
         settings.set("gradeScale", newValue);
     }
 
-    useEffect(() => {
-        console.log("useEffect", settings.get("gradeScale"))
-    }, [settings.get("gradeScale")])
+    const handleDevChannelSwitchingToggle = () => {
+        settings.set("devChannel", !settings.get("devChannel"));
+        refreshApp();
+        // location.reload();
+    }
 
     return (
         <div id="settings">
@@ -142,8 +143,8 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
 
-                    <div className="setting disabled" id="dev-channel">
-                        <CheckBox id="dev-channel-cb" label={<span>Basculer sur le canal développeur</span>} /> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+                    <div className="setting" id="dev-channel">
+                        <span>Basculer sur le canal développeur</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
                     </div>
 
                     <div className="setting" id="clear-local-storage">

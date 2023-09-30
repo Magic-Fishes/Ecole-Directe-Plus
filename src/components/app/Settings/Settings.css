@@ -57,6 +57,12 @@ body:has(#settings) {
     scale: 1.3;
 }
 
+#settings .toggle-button svg {
+    vertical-align: middle;
+    margin-left: 10px;
+    height: 20px;
+}
+
 
 /* display theme */
 #settings #display-theme {
