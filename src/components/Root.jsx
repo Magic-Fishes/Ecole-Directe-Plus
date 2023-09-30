@@ -124,8 +124,10 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
         function handleDevChannel() {
             if (process.env.NODE_ENV !== "development") {
                 const isDevChannelEnabled = useUserSettings("devChannel");
-                if (isDevChannelEnabled.get() && window.location.hostname !== "dev.ecole-directe.plus") {
-                    window.location.href = "https://dev.ecole-directe.plus";
+                if (isDevChannelEnabled.get()) {
+                    if (window.location.hostname !== "dev.ecole-directe.plus") {
+                        window.location.href = "https://dev.ecole-directe.plus";
+                    }
                 } else {
                     if (window.location.hostname !== "ecole-directe.plus") {
                         window.location.href = "https://ecole-directe.plus";
