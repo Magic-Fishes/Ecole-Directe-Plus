@@ -9,6 +9,9 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: dev-production
+
     steps:
       - uses: actions/checkout@v3
       
