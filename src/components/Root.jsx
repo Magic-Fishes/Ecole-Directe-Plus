@@ -123,18 +123,34 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     useEffect(() => {
         function handleDevChannel() {
             if (process.env.NODE_ENV !== "development") {
-                const isDevChannelEnabled = useUserSettings("devChannel");
-                if (isDevChannelEnabled.get() && window.location.hostname !== "dev.ecole-directe.plus") {
-                    window.location.href = "https://dev.ecole-directe.plus";
-                } else {
-                    if (window.location.hostname !== "ecole-directe.plus") {
+                const isDevChannelEnabled = useUserSettings("isDevChannel");
+                const url = new URL(window.location.href);
+                const params = new URLSearchParams(url);
+                const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
+                if (isVerifiedOrigin) {
+                    if (window.location.hostname === "dev.ecole-directe.plus") {
+                        isDevChannelEnabled.set(true);
+                        window.location.href = "https://dev.ecole-directe.plus";
+                    } else {
+                        isDevChannelEnabled.set(false);
                         window.location.href = "https://ecole-directe.plus";
                     }
+                } else {
+                    if (isDevChannelEnabled.get()) {
+                        if (window.location.hostname !== "dev.ecole-directe.plus") {
+                            window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
+                        }
+                    } else {
+                        if (window.location.hostname !== "ecole-directe.plus") {
+                            window.location.href = "https://ecole-directe.plus/?verifiedOrigin=true";
+                        }
+                    }
                 }
+
             }
         }
 
-        handleDevChannel()
+        handleDevChannel();
     }, []);
 
 

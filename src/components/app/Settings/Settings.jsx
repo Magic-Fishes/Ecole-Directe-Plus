@@ -45,7 +45,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
     }
 
     const handleDevChannelSwitchingToggle = () => {
-        settings.set("devChannel", !settings.get("devChannel"));
+        settings.set("isDevChannel", !settings.get("isDevChannel"));
         refreshApp();
         // location.reload();
     }
