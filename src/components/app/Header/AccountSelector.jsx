@@ -18,7 +18,7 @@ import { AppContext } from "../../../App";
 
 import "./AccountSelector.css";
 
-export default function AccountSelector({ accountsList, activeAccount, setActiveAccount, useIsTabletLayout, logout, ...props }) {
+export default function AccountSelector({ accountsList, activeAccount, setActiveAccount, isTabletLayout, logout, ...props }) {
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -96,7 +96,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
 
     const getSiteMap = () => {
         let siteMap;
-        if (useIsTabletLayout()) {
+        if (isTabletLayout) {
             siteMap = ["grades", "homeworks", "dashboard", "timetable", "messaging", "settings"];
         } else {
             siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging", "settings"];

@@ -1,5 +1,5 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import App from "./App";
 // import reportWebVitals from './reportWebVitals';
 
@@ -18,13 +18,12 @@ const splashScreen = document.getElementById("loading-start");
 splashScreen?.classList.add("fade-out");
 setTimeout(() => splashScreen?.remove(), 500);
 
-createRoot(document.getElementById("root")).render(
-    <StrictMode>
-        {/* <p>caca/pipi=69</p> */}
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <React.StrictMode>
         {/* <HelmetProvider> */}
             <App />
         {/* </HelmetProvider> */}
-    </StrictMode>
+    </React.StrictMode>
 );
 
 // reportWebVitals(console.log);

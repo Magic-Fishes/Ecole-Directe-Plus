@@ -23,7 +23,7 @@ import Policy from "../../generic/Policy";
 import "./Header.css";
 
 
-export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, isFullScreen, useIsTabletLayout, logout }) {
+export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -152,9 +152,9 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                             )}
                         </ul>
                     </nav>
-                    {useIsTabletLayout() === false &&
+                    {isTabletLayout === false &&
                         <div className="account-selection">
-                            <AccountSelector accountsList={accountsList} activeAccount={activeAccount} setActiveAccount={setActiveAccount} useIsTabletLayout={useIsTabletLayout} logout={logout} />
+                            <AccountSelector accountsList={accountsList} activeAccount={activeAccount} setActiveAccount={setActiveAccount} isTabletLayout={isTabletLayout} logout={logout} />
                         </div>
                     }
                 </header>
@@ -162,9 +162,9 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
             <main className="content">
                 <Suspense>
-                    {useIsTabletLayout() === true &&
+                    {isTabletLayout === true &&
                         <div className="account-selection">
-                            <AccountSelector accountsList={accountsList} activeAccount={activeAccount} setActiveAccount={setActiveAccount} useIsTabletLayout={useIsTabletLayout} logout={logout} />
+                            <AccountSelector accountsList={accountsList} activeAccount={activeAccount} setActiveAccount={setActiveAccount} isTabletLayout={isTabletLayout} logout={logout} />
                         </div>
                     }
                     <Outlet />

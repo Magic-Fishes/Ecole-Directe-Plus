@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, useIsTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -195,7 +195,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
     const getSiteMap = (extended) => {
         let siteMap;
-        if (useIsTabletLayout()) {
+        if (isTabletLayout) {
             siteMap = ["grades", "homeworks", "dashboard", "timetable", "messaging"];
         } else {
             siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging"];

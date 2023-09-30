@@ -1,14 +1,12 @@
 // npm run build
 // zip -r build_history/build-<année>-<mois>-<jour>.zip dist
 
-import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
+import React, { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
     createBrowserRouter,
     RouterProvider
 } from "react-router-dom";
-
-import "./App.css";
 
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
@@ -16,13 +14,15 @@ import ErrorPage from "./components/Errors/ErrorPage";
 import Feedback from "./components/Feedback/Feedback";
 import Canardman from "./components/Canardman/Canardman";
 import Lab from "./components/Lab/Lab";
-const Museum = lazy(() => import("./components/Museum/Museum"));
-
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
-
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
 
+import "./App.css";
+
+import testGrades from "./testGrades.json";
+
+const Museum = lazy(() => import("./components/Museum/Museum"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -99,7 +99,6 @@ function createUserLists(accountNumber) {
 }
 
 
-import testGrades from "./testGrades.json";
 // import testGrades2 from "./testGrades2.json";
 // const testGrades = lazy(() => import("./testGrades.json"));
 // const testGrades2 = lazy(() => import("./testGrades2.json"));
@@ -377,7 +376,7 @@ export default function App() {
         const handleStorageChange = () => {
             const newLsGlobalSettings = localStorage.getItem("globalSettings")
             if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
-                for (i in globalSettings) {
+                for (const i in globalSettings) {
                     globalSettings[i].set(newLsGlobalSettings[i])
                 }
             }
@@ -475,9 +474,6 @@ export default function App() {
 
     // TABLET / MOBILE LAYOUT
 
-    function useIsTabletLayout() {
-        return isTabletLayout;
-    }
     function useIsMobileLayout() {
         return isMobileLayout;
     }
@@ -1090,7 +1086,7 @@ export default function App() {
                     activeAccount={activeAccount}
                     setActiveAccount={setActiveAccount}
                     logout={logout}
-                    useIsTabletLayout={useIsTabletLayout}
+                    isTabletLayout={isTabletLayout}
 
                     setIsFullScreen={setIsFullScreen}
                     setting={userSettings}
@@ -1141,7 +1137,7 @@ export default function App() {
                                 accountsList={accountsListState}
                                 setActiveAccount={setActiveAccount}
                                 activeAccount={activeAccount}
-                                useIsTabletLayout={useIsTabletLayout}
+                                isTabletLayout={isTabletLayout}
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
