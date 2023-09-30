@@ -1,7 +1,7 @@
 // npm run build
 // zip -r build_history/build-<année>-<mois>-<jour>.zip dist
 
-import React, { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
     createBrowserRouter,
