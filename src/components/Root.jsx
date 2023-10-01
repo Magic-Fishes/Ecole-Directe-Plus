@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, useUserSettings, logout, isTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -123,20 +123,23 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
     useEffect(() => {
         function handleDevChannel() {
             if (process.env.NODE_ENV !== "development") {
-                const isDevChannelEnabled = useUserSettings("isDevChannel");
-                const url = new URL(window.location.href);
-                const params = new URLSearchParams(url);
+                const url = new URL(entryURL.current);
+                const params = url.searchParams;
                 const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
+                console.log("url.href:", url.href)
+                console.log("isVerifiedOrigin:", isVerifiedOrigin);
                 if (isVerifiedOrigin) {
+                    console.log("verified origin");
+                    
                     if (window.location.hostname === "dev.ecole-directe.plus") {
-                        isDevChannelEnabled.set(true);
-                        window.location.href = "https://dev.ecole-directe.plus";
+                        globalSettings.isDevChannel.set(true);
                     } else {
-                        isDevChannelEnabled.set(false);
-                        window.location.href = "https://ecole-directe.plus";
+                        globalSettings.isDevChannel.set(false);
                     }
+                    
+                    navigate("/");
                 } else {
-                    if (isDevChannelEnabled.get()) {
+                    if (globalSettings.isDevChannel.value) {
                         if (window.location.hostname !== "dev.ecole-directe.plus") {
                             window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
                         }

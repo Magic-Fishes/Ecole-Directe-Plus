@@ -126,7 +126,7 @@ function areOccurenciesEqual(obj1, obj2) {
     if (typeof obj1 !== "object" || typeof obj2 !== "object") {
         return obj1 === obj2;
     }
-    if (obj1.length !== obj2.length) {
+    if (obj1?.length !== obj2?.length) {
         return false;
     }
     for (const i in obj1) {
@@ -243,6 +243,7 @@ export default function App() {
 
     // diverse
     const abortControllers = useRef([]);
+    const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1120,7 +1121,8 @@ export default function App() {
                     isTabletLayout={isTabletLayout}
 
                     setIsFullScreen={setIsFullScreen}
-                    useUserSettings={useUserSettings}
+                    globalSettings={globalSettings}
+                    entryURL={entryURL}
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
@@ -1190,7 +1192,7 @@ export default function App() {
                             path: "settings",
                         },
                         {
-                            element: <Settings usersSettings={userSettings[activeAccount]} globalSettings={globalSettings} accountsList={accountsListState} />,
+                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} />,
                             path: ":userId/settings"
                         },
                         {
@@ -1250,6 +1252,7 @@ export default function App() {
         isTabletLayout,
         useUserData,
         useUserSettings,
+        globalSettings,
         actualDisplayTheme,
         refreshApp
     }), [activeAccount,
@@ -1258,6 +1261,7 @@ export default function App() {
         isTabletLayout,
         useUserData,
         useUserSettings,
+        globalSettings,
         actualDisplayTheme,
         refreshApp]);
 

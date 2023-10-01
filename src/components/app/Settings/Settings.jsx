@@ -19,9 +19,9 @@ import { AppContext } from "../../../App";
 
 import "./Settings.css";
 
-export default function Settings({ usersSettings, globalSettings, accountsList }) {
+export default function Settings({ usersSettings, accountsList }) {
 
-    const { useUserSettings, refreshApp } = useContext(AppContext);
+    const { useUserSettings, globalSettings, refreshApp } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -45,7 +45,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
     }
 
     const handleDevChannelSwitchingToggle = () => {
-        settings.set("isDevChannel", !settings.get("isDevChannel"));
+        globalSettings.isDevChannel.set(!globalSettings.isDevChannel.value);
         refreshApp();
         // location.reload();
     }
