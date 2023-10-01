@@ -1,0 +1,14 @@
+
+a.welcome-pop-up-links {
+    text-decoration: none;
+    color: rgb(var(--border-color-1));
+    transition: .1s;
+}
+
+a.welcome-pop-up-links:is(:hover, :focus-visible) {
+    color: rgb(var(--border-color-0));
+}
+
+a.welcome-pop-up-links:active {
+    color: rgba(var(--border-color-0), .7);
+}

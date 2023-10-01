@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect, Suspense } from "react";
+import { useState, useRef, useEffect, useContext, Suspense } from "react";
 import { Link, useLocation, useNavigate, useParams, useMatch, useMatches, Outlet } from "react-router-dom";
 
 import HeaderNavigationButton from "./HeaderNavigationButton";
@@ -20,12 +20,16 @@ import Policy from "../../generic/Policy";
 // import PlanningIcon from "../../graphics/PlanningIcon"
 
 
+import { AppContext } from "../../../App";
+
 import "./Header.css";
 
 
 export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { globalSettings } = useContext(AppContext);
 
     const { userId } = useParams();
     
@@ -139,7 +143,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
-                            <div id="version-tag">{currentEDPVersion}</div>
+                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : currentEDPVersion}</div>
                         </Link>
                     </div>
 
