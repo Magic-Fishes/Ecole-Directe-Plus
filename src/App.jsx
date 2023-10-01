@@ -19,6 +19,7 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
+import { areOccurenciesEqual } from "./utils/functions"
 
 import testGrades from "./testGrades.json";
 
@@ -122,22 +123,7 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     return defaultSettings[setting];
 }
 
-function areOccurenciesEqual(obj1, obj2) {
-    if (typeof obj1 !== "object" || typeof obj2 !== "object") {
-        return obj1 === obj2;
-    }
-    if (obj1?.length !== obj2?.length) {
-        return false;
-    }
-    for (const i in obj1) {
-        if (obj2.hasOwnProperty(i)) {
-            if (!areOccurenciesEqual(obj1[i], obj2[i])) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+
 
 
 console.log("-----------------")
@@ -271,6 +257,39 @@ export default function App() {
 
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData })
 
+
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+
+    useEffect(() => {
+        if (!keepLoggedIn) {
+            localStorage.removeItem("userIds");
+        } else if (userIds.username && userIds.password) {
+            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [keepLoggedIn]);
+
+
+    useEffect(() => {
+        if (!userIds.username || !userIds.password) {
+            setKeepLoggedIn(false);
+        }
+    }, [userIds])
+
+
+    /////////// SETTINGS ///////////
+
     function changeUserSettings(setting, value, accountIdx = activeAccount) {
         setUserSettings((oldSettings) => {
             const newSettings = [...oldSettings];
@@ -278,19 +297,14 @@ export default function App() {
             return newSettings;
         })
         if (shareSettings) {
-            console.log("synched settings")
-            console.log(shareSettings)
             syncSettings();
         }
     }
 
     function syncSettings() {
-        console.log("syncSetting()")
         setUserSettings((oldSettings) => {
-            const newSettings = [];
-            for (const i in oldSettings) {
-                newSettings[i] = oldSettings[activeAccount];
-            }
+            const selectedUserSetting = oldSettings[activeAccount]
+            const newSettings = Array.from({ length: oldSettings.length}, (_) => structuredClone(selectedUserSetting));
             return newSettings;
         })
     }
@@ -326,38 +340,6 @@ export default function App() {
             }
         }
     }
-
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
-
-    useEffect(() => {
-        if (!keepLoggedIn) {
-            localStorage.removeItem("userIds");
-        } else if (userIds.username && userIds.password) {
-            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, [keepLoggedIn]);
-
-
-    useEffect(() => {
-        if (!userIds.username || !userIds.password) {
-            setKeepLoggedIn(false);
-        }
-    }, [userIds])
-
-
-    /////////// SETTINGS ///////////
 
     const globalSettings = {
         keepLoggedIn: {
@@ -399,18 +381,10 @@ export default function App() {
         isDevChannel])
 
     useEffect(() => {
-        console.log("shareSettings")
-        console.log(shareSettings)
         if (shareSettings) {
             syncSettings();
         }
     }, [shareSettings])
-
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         setUserSettings(initSettings(accountsListState))
-    //     }
-    // }, [isLoggedIn])
 
     useEffect(() => {
 
@@ -600,7 +574,7 @@ export default function App() {
             }
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
-            
+
             for (let grade of gradesFromJson) {
                 // console.log("grade", grade)
                 const periodCode = grade.codePeriode;
@@ -757,7 +731,7 @@ export default function App() {
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
-        changeUserData("totalBadges", totalBadges) 
+        changeUserData("totalBadges", totalBadges)
         changeUserData("sortedGrades", periods) /*((oldSortedGrades) => {
             const newSortedGrades = [...oldSortedGrades];
             newSortedGrades[activeAccount] = periods;
