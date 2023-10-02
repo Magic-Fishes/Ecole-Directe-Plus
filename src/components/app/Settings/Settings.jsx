@@ -18,10 +18,11 @@ import ToggleEnd from "../../graphics/ToggleEnd";
 import { AppContext } from "../../../App";
 
 import "./Settings.css";
+import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList }) {
 
-    const { useUserSettings, globalSettings, refreshApp } = useContext(AppContext);
+    const { useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -116,7 +117,7 @@ export default function Settings({ usersSettings, accountsList }) {
                             </tbody>
                         </table>
                     </InfoButton>
-                    <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />
+                    {isMobileLayout ? <DropDownMenu id="display-mode-sc" name="display-mode-dm" options={settings.object("displayMode").values} displayedOptions={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} /> : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
                 </div>
 
                 <div className="setting disabled" id="luciole-font">
