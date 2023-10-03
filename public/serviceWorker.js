@@ -47,6 +47,7 @@ function cleanResponse(response) {
     });
 }
 
+// https://chat.openai.com/c/21cbdf9f-7de5-4fc9-a140-fe9172bba68a
 self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate" &&
         !event.request.url.includes("/awstats/awstats.pl") &&
