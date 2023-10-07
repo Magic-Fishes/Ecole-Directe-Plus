@@ -21,7 +21,7 @@ import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
 import { areOccurenciesEqual } from "./utils/functions"
 
-import testGrades from "./testGrades.json";
+import guestGrades from "./data/grades.json";
 
 const Museum = lazy(() => import("./components/Museum/Museum"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
@@ -101,9 +101,9 @@ function createUserLists(accountNumber) {
 }
 
 
-// import testGrades2 from "./testGrades2.json";
-// const testGrades = lazy(() => import("./testGrades.json"));
-// const testGrades2 = lazy(() => import("./testGrades2.json"));
+// import guestGrades2 from "./data/grades2.json";
+// const guestGrades = lazy(() => import("./data/grades.json"));
+// const guestGrades2 = lazy(() => import("./data/grades2.json"));
 
 
 const tokenFromLs = localStorage.getItem("token") ?? "";
@@ -218,6 +218,7 @@ export default function App() {
 
     // user data
     const [grades, setGrades] = useState([]);
+    const [timeline, setTimeline] = useState([]);
     const [userData, setUserData] = useState([]);
 
     // utils
@@ -252,7 +253,8 @@ export default function App() {
     }
 
     function getUserData(data) {
-        return userData && userData[activeAccount] && userData[activeAccount][data]
+        // return userData && userData[activeAccount] && userData[activeAccount][data]
+        return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
 
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData })
@@ -304,7 +306,7 @@ export default function App() {
     function syncSettings() {
         setUserSettings((oldSettings) => {
             const selectedUserSetting = oldSettings[activeAccount]
-            const newSettings = Array.from({ length: oldSettings.length}, (_) => structuredClone(selectedUserSetting));
+            const newSettings = Array.from({ length: oldSettings.length }, (_) => structuredClone(selectedUserSetting));
             return newSettings;
         })
     }
@@ -802,13 +804,14 @@ export default function App() {
                         // compte élève
                         accountsList.push({
                             accountType: "E", // type de compte
+                            lastConnection: new Date(accounts.lastConnexion),
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
                             lastName: accounts.nom, // nom de famille de l'élève
                             email: accounts.email, // email du compte
                             picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
+                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
                         // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
                         //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
@@ -821,6 +824,7 @@ export default function App() {
                         accounts.map((account) => {
                             accountsList.push({
                                 accountType: "P",
+                                lastConnection: new Date(account.lastConnexion),
                                 id: account.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,
@@ -877,18 +881,59 @@ export default function App() {
             })
     }
 
+    async function fetchUserTimeline(controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {};
+
+        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get%26v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState,
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 403;
+                } else {
+                    code = response.code;
+                }
+                // const code = response.code;
+                console.log("RESPONSE:", response);
+                if (code === 200) {
+                    const oldTimeline = structuredClone(timeline);
+                    oldTimeline[activeAccount] = response.data;
+                    setTimeline(oldTimeline);
+                    setTokenState(response.token);
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else if (code === 403) {
+                    setTokenState((old) => (response.token || old));
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function fetchUserGrades(controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        console.log("abortControllers.current:", abortControllers.current);
-        const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
-        // bah enft si le mec change de compte il faudrait juste abort ce fetch tah l'avortement
+        const userId = activeAccount;
         const data = {
             anneeScolaire: ""
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get%26v=${apiVersion}`,
+            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -912,9 +957,9 @@ export default function App() {
                 console.log("CODE:", code);
                 if (code === 200) {
                     console.log("UWU");
-                    let usersGrades = [...grades];
+                    let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
-                    // usersGrades[userId] = testGrades.data;
+                    // usersGrades[userId] = guestGrades.data;
                     setGrades(usersGrades);
                     setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
@@ -924,11 +969,11 @@ export default function App() {
                     // setTokenState("");
                     // logout();
                 } else if (code === 403) {
-                    console.log("testGrades")
+                    console.log("guestGrades")
                     let usersGrades = [...grades];
-                    usersGrades[userId] = testGrades.data;
-                    // console.log("data:", testGrades2.data)
-                    // usersGrades[userId] = testGrades2.data;
+                    usersGrades[userId] = guestGrades.data;
+                    // console.log("data:", guestGrades2.data)
+                    // usersGrades[userId] = guestGrades2.data;
                     setGrades(usersGrades);
                     setTokenState((old) => (response.token || old));
                 }
@@ -970,6 +1015,7 @@ export default function App() {
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
+        setTimeline(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
         setUserData(initData(accountsList.length));
         // localStorage.setItem("token", token);
@@ -1145,6 +1191,9 @@ export default function App() {
                                 accountsList={accountsListState}
                                 setActiveAccount={setActiveAccount}
                                 activeAccount={activeAccount}
+                                isLoggedIn={isLoggedIn}
+                                fetchUserTimeline={fetchUserTimeline}
+                                timeline={timeline}
                                 isTabletLayout={isTabletLayout}
                                 isFullScreen={isFullScreen}
                                 logout={logout}
