@@ -18,6 +18,7 @@ self.addEventListener("activate", (event) => {
     clients.claim();
     event.waitUntil((async () => {
         const keys = await caches.keys();
+        // delete old caches
         await Promise.all(
             keys.map((key) => {
                 if (!key.includes(serviceWorkerVersion)) {
