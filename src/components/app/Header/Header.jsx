@@ -67,7 +67,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         if (accountsList[activeAccount].accountType === "E") {
             for (const eventKey in timeline[activeAccount]) {
                 const event = timeline[activeAccount][eventKey];
-                if (accountsList[activeAccount].lastConnection?.getTime() > (new Date(event.date)).getTime()) {
+                console.log("calculateNotificationsNumber ~ accountsList[activeAccount].lastConnection:", accountsList[activeAccount].lastConnection)
+                if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
                     continue;
                 }
                 switch (event.typeElement) {
