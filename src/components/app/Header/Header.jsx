@@ -64,20 +64,25 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         notifications.messaging = 0;
         notifications.settings = 0;
 
-        console.log("calculateNotificationsNumber ~ notifications:", notifications)
         if (accountsList[activeAccount].accountType === "E") {
             for (const eventKey in timeline[activeAccount]) {
                 const event = timeline[activeAccount][eventKey];
-                if (accountsList[activeAccount].lastConnection.getTime() > (new Date(event.date)).getTime()) {
+                if (accountsList[activeAccount].lastConnection?.getTime() > (new Date(event.date)).getTime()) {
                     continue;
                 }
-                console.log("calculateNotificationsNumber ~ event:", event)
-                if (event.typeElement === "Note") {
-                    notifications.grades = (notifications.grades ?? 0) + 1;
-                } else if (event.typeElement === "Messagerie") {
-                    notifications.messaging = (notifications.messaging ?? 0) + 1;
-                } else if (event.typeElement === "VieScolaire" || event.typeElement === "Document") {
-                    notifications.settings = (notifications.settings ?? 0) + 1;
+                switch (event.typeElement) {
+                    case "Note":
+                        notifications.grades = (notifications.grades ?? 0) + 1;
+                        break;
+
+                    case "Messagerie":
+                        notifications.messaging = (notifications.messaging ?? 0) + 1;
+                        break;
+                    
+                    case "VieScolaire":
+                    case "Document":
+                        notifications.settings = (notifications.settings ?? 0) + 1;
+                        break;
                 }
             }
 
