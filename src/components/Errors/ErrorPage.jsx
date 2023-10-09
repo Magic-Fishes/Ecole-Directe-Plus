@@ -1,11 +1,14 @@
 
+import { useContext } from "react";
 import { useRouteError } from "react-router-dom";
+import { AppContext } from "../../App";
 
 import Error404 from "./Error404";
 import "./ErrorPage.css";
 
 export default function ErrorPage() {
     const error = useRouteError();
+    const { isDevChannel, globalSettings } = useContext(AppContext);
 
     function safetyFunction() {
         console.log("safety function | reset")
@@ -20,6 +23,9 @@ export default function ErrorPage() {
     else {
         if (process.env.NODE_ENV !== "development") {
             safetyFunction();
+            if (isDevChannel) {
+                globalSettings.isDevChannel.set(true);
+            }
         }
         
         return (

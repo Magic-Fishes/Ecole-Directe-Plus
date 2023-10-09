@@ -1273,20 +1273,24 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isDevChannel,
         useUserData,
         useUserSettings,
         globalSettings,
         actualDisplayTheme,
-        refreshApp
+        refreshApp,
+        currentEDPVersion
     }), [activeAccount,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isDevChannel,
         useUserData,
         useUserSettings,
         globalSettings,
         actualDisplayTheme,
-        refreshApp]);
+        refreshApp,
+        currentEDPVersion]);
 
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
