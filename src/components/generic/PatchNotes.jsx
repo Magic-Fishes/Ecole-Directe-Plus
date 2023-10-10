@@ -30,7 +30,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
 
     return (
         <div id="patch-notes">
-            <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"29 juillet 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose} />
+            <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"10 octobre 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose} />
         </div>
     )
 }

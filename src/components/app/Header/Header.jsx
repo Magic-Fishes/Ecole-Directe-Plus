@@ -67,13 +67,16 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         if (accountsList[activeAccount].accountType === "E") {
             for (const eventKey in timeline[activeAccount]) {
                 const event = timeline[activeAccount][eventKey];
-                console.log("calculateNotificationsNumber ~ accountsList[activeAccount].lastConnection:", accountsList[activeAccount].lastConnection)
-                if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
-                    continue;
-                }
+                // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
+                //     continue;
+                // }
                 switch (event.typeElement) {
                     case "Note":
-                        notifications.grades = (notifications.grades ?? 0) + 1;
+                        // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
+                        console.log("calculateNotificationsNumber ~ ((new Date(event.date)).getTime() - Date.now()):", ((new Date(event.date)).getTime() - Date.now()))
+                        if ((Date.now() - (new Date(event.date)).getTime()) < 259_200_000) {
+                            notifications.grades = (notifications.grades ?? 0) + 1;
+                        }
                         break;
 
                     case "Messagerie":
