@@ -230,8 +230,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 </tbody>
                             </table>
                             : <div>
-                                <h3>Cancer chart.js</h3>
-                                <img src="https://i.ibb.co/myGqzqJ/GIGACHADpp2.jpg" alt="MONSIEUR GIGACHAD" style={{ width: "100%" }} />
+                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
                             </div>
                         }
                     </WindowContent>

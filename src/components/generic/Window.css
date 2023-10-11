@@ -190,7 +190,7 @@
     }
     .window {
         max-width: 100%;
-        min-height: 100px;
+        /* min-height: 100px; */
         /* max-height: calc(80vh - 100px); = 80% hauteur du viewport - hauteur du header */
         overflow: visible;
         /* overflow: auto; */
