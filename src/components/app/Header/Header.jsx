@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect, Suspense } from "react";
+import { useState, useRef, useEffect, useContext, Suspense } from "react";
 import { Link, useLocation, useNavigate, useParams, useMatch, useMatches, Outlet } from "react-router-dom";
 
 import HeaderNavigationButton from "./HeaderNavigationButton";
@@ -20,12 +20,16 @@ import Policy from "../../generic/Policy";
 // import PlanningIcon from "../../graphics/PlanningIcon"
 
 
+import { AppContext } from "../../../App";
+
 import "./Header.css";
 
 
-export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { globalSettings, useUserData } = useContext(AppContext);
 
     const { userId } = useParams();
     
@@ -51,6 +55,68 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             handleUserId(parseInt(userId));
         }
     }, [userId]);
+
+    // handle notifications
+    function calculateNotificationsNumber(timeline) {
+        const notifications = useUserData().get("notifications") ?? {};
+        // reset notifications
+        notifications.grades = 0;
+        notifications.messaging = 0;
+        notifications.settings = 0;
+
+        if (accountsList[activeAccount].accountType === "E") {
+            for (const eventKey in timeline[activeAccount]) {
+                const event = timeline[activeAccount][eventKey];
+                // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
+                //     continue;
+                // }
+                switch (event.typeElement) {
+                    case "Note":
+                        // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
+                        console.log("calculateNotificationsNumber ~ ((new Date(event.date)).getTime() - Date.now()):", ((new Date(event.date)).getTime() - Date.now()))
+                        if ((Date.now() - (new Date(event.date)).getTime()) < 259_200_000) {
+                            notifications.grades = (notifications.grades ?? 0) + 1;
+                        }
+                        break;
+
+                    case "Messagerie":
+                        notifications.messaging = (notifications.messaging ?? 0) + 1;
+                        break;
+                    
+                    case "VieScolaire":
+                    case "Document":
+                        notifications.settings = (notifications.settings ?? 0) + 1;
+                        break;
+                }
+            }
+
+        } else if (accountsList[activeAccount].accountType === "P") {
+
+        }
+
+        useUserData().set("notifications", notifications)
+        console.log("calculateNotificationsNumber ~ notifications:", notifications)
+    }
+
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (timeline.length < 1 || timeline[activeAccount] === undefined) {
+                console.log("fetchUserTimeline")
+                fetchUserTimeline(controller);
+            } else {
+                console.log("timeline:");
+                console.log(timeline);
+                calculateNotificationsNumber(timeline);
+            }
+        }
+
+        return () => {
+            // console.log("controller.abort")
+            controller.abort();
+        }
+    }, [timeline, isLoggedIn, activeAccount]);
+
 
     // if (isFirstFrame.current) {
     //     handleUserId(parseInt(userId));
@@ -82,6 +148,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         }
     }, [easterEggCounter]);
 
+    const notifications = useUserData().get("notifications");
     const headerNavigationButtons = [
         {
             id: 1,
@@ -89,7 +156,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Accueil",
             link: `/app/${activeAccount}/dashboard`,
             icon: <DashboardIcon />,
-            notifications: 0
+            notifications: notifications?.dashboard || 0
         },
         {
             id: 2,
@@ -97,7 +164,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Notes",
             link: `/app/${activeAccount}/grades`,
             icon: <GradesIcon />,
-            notifications: 6
+            notifications: notifications?.grades || 0
         },
         {
             id: 3,
@@ -105,7 +172,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Cahier de texte",
             link: `/app/${activeAccount}/homeworks`,
             icon: <HomeworksIconOfficial />,
-            notifications: 0
+            notifications: notifications?.homeworks || 0
         },
         {
             id: 4,
@@ -113,7 +180,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Emploi du temps",
             link: `/app/${activeAccount}/timetable`,
             icon: <TimetableIcon />,
-            notifications: 0
+            notifications: notifications?.timetable || 0
         },
         {
             id: 5,
@@ -121,7 +188,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Messagerie",
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
-            notifications: 9
+            notifications: notifications?.messaging || 0
         }
     ]
     // Behavior
@@ -139,7 +206,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
-                            <div id="version-tag">{currentEDPVersion}</div>
+                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : currentEDPVersion}</div>
                         </Link>
                     </div>
 

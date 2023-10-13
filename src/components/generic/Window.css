@@ -72,7 +72,7 @@
     border: 2px solid rgba(var(--text-color-alt), .3);
 }
 .window.work-in-progress::after {
-    content: "Travail en cours...";
+    content: "En cours de développement... (Bientôt disponible)";
     color: rgba(var(--text-color-alt), .5);
     position: absolute;
     top: 50%;
@@ -190,8 +190,8 @@
     }
     .window {
         max-width: 100%;
-        min-height: 100px;
-        max-height: calc(80vh - 100px); /*= 80% hauteur du viewport - hauteur du header */
+        /* min-height: 100px; */
+        /* max-height: calc(80vh - 100px); = 80% hauteur du viewport - hauteur du header */
         overflow: visible;
         /* overflow: auto; */
     }

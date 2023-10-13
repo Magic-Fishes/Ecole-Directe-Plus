@@ -1,6 +1,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
+/* body {
+    background-color: lightblue !important;
+} */
+
 :root {
     /* - - - Nouvelles variables - - - */
     /* - NOMENCLATURE - */
@@ -24,6 +28,9 @@
     --main-font-weight-semi-bold: 600;
     --main-font-weight-extra-bold: 800;
 
+    --debug-color-1: 255, 0, 0;
+    --debug-color-2: 0, 255, 0;
+    --debug-color-3: 0, 255, 255;
 
     /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
@@ -247,6 +254,7 @@
     animation-delay: 0s !important;
     transition: 0s !important;
     transition-delay: 0s !important;
+    scroll-behavior: auto;
 }
 :root.performance *,
 :root.performance ::placeholder,
@@ -260,6 +268,7 @@
     filter: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    scroll-behavior: auto;
 }
 
 /* .switching-theme :is(*, ::placeholder, ::-webkit-scrollbar, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb), */

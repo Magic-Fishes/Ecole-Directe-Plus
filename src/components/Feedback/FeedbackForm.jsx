@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import DropDownMenu from "../generic/UserInputs/DropDownMenu";
 import TextInput from "../generic/UserInputs/TextInput";
@@ -7,6 +7,9 @@ import Button from "../generic/UserInputs/Button";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import WarningMessage from "../generic/Informative/WarningMessage";
 
+import { AppContext } from "../../App";
+
+// graphics
 import PasteIcon from "../graphics/PasteIcon"
 import AtWhite from "../graphics/AtWhite"
 
@@ -63,6 +66,8 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
     const [warningMessage, setWarningMessage] = useState(""); // pour input file
     const [errorMessage, setErrorMessage] = useState("");
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
+
+    const { isDevChannel, currentEDPVersion } = useContext(AppContext);
 
     // Refs
     const imgRef = useRef(null);
@@ -300,7 +305,7 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
                                 url: (data && data.display_url)
                             },
                             footer: {
-                                text: readableDate,
+                                text: readableDate + " - v" + currentEDPVersion + (isDevChannel ? " - DEV CHANNEL" : ""),
                             },
                         }
                     ]

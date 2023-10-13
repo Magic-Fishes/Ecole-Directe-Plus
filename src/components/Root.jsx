@@ -383,7 +383,11 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 {isAdmin && <form action="https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
+                {isAdmin && <form action="https://github.com/Magic-Fishes/Ecole-Directe-Plus" method="get" target="_blank" style={{ display: "inline" }}>
+                    <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
+                </form>}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
+                {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
