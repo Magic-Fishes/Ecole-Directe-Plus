@@ -13,15 +13,14 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
 
     function handleChange(event) {
         let newValue = event.target.value;
-        console.log(newValue);
         if (newValue !== "") {
             if (newValue > max) {
                 newValue = max;
-            } else if (newValue < min) {
-                newValue = min;            
             }
+            // else if (newValue < min) {
+            //     newValue = min;            
+            // }
         }
-        console.log(newValue);
         onChange(newValue);
     }
 
@@ -38,19 +37,14 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     }
     
     useEffect(() => {
-        console.log("number useEffect", value);
         valueRef.current = value;
-        console.log("number useEffect", valueRef.current);
     }, [value])
     
     const handleButtonPress = (delta) => {
         changeValueBy(delta);
         const SLEEP_DURATION = 400;
         const TICK_DURACTION = 50;
-        console.log(value);
         timeoutId.current = setTimeout(() => {
-            console.log("intervalset")
-            console.log(value)
             intervalId.current = setInterval(changeValueBy, TICK_DURACTION, delta);
         } , SLEEP_DURATION)
         document.addEventListener("mouseup", clearAutoChange);
@@ -65,11 +59,9 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             } else if (newValue > max) {
                 newValue = max;
             }
-            console.log("a", value)
             return newValue
         }
         onChange(test(delta));
-        console.log(value)
     }
 
     const clearAutoChange = () => {
