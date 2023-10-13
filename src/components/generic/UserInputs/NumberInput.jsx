@@ -5,7 +5,7 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 
 import "./NumberInput.css";
 
-export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, className = "", id = "", ...props }) {
+export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, displayArrowsControllers=true, className = "", id = "", ...props }) {
 
     const timeoutId = useRef(0);
     const intervalId = useRef(0);
@@ -93,14 +93,17 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
                 onBlur={handleBlur}
                 {...props}
             />
-            <div className="number-input-buttons">
-                <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(1) } }} onPointerDown={() => {handleButtonPress(1)}} className="increase-button" >
-                    <DropDownArrow />
-                </button>
-                <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(-1) } }} onPointerDown={() => handleButtonPress(-1)} className="decrease-button" >
-                    <DropDownArrow />
-                </button>
-            </div>
+            {displayArrowsControllers
+                ? <div className="number-input-buttons">
+                    <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(1) } }} onPointerDown={() => {handleButtonPress(1)}} className="increase-button" >
+                        <DropDownArrow />
+                    </button>
+                    <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(-1) } }} onPointerDown={() => handleButtonPress(-1)} className="decrease-button" >
+                        <DropDownArrow />
+                    </button>
+                </div>
+                : null
+            }
         </div>
     )
 }

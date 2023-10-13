@@ -22,7 +22,7 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList }) {
 
-    const { useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -143,23 +143,24 @@ export default function Settings({ usersSettings, accountsList }) {
                 {/* advanced settings */}
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
+                    {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
+                    <div className={`setting${(isStandaloneApp && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) ? " disabled" : ""}`} id="dev-channel">
+                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                    </div>
 
-                    <div className="setting" id="dev-channel">
-                        <span>Basculer sur le canal développeur</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+
+                    <div className="setting disabled" id="info-persistence">
+                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
                     </div>
 
                     <div className="setting" id="clear-local-storage">
                         <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
-                    <div className="setting disabled" id="info-persistence">
-                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
-                    </div>
-
-                    <div className="setting disabled" id="school-year">
+                    <div className="setting" id="school-year">
                         <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={false} onChange={() => console.log("changed")} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} />
+                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} displayArrowsControllers={false} />
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">

@@ -226,6 +226,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
     const [appKey, setAppKey] = useState(crypto.randomUUID());
 
     // diverse
@@ -1273,6 +1274,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
         isDevChannel,
         useUserData,
         useUserSettings,
@@ -1284,6 +1286,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
         isDevChannel,
         useUserData,
         useUserSettings,
