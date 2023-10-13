@@ -21,8 +21,6 @@ import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
 import { areOccurenciesEqual } from "./utils/functions"
 
-import testGrades from "./testGrades.json";
-
 const Museum = lazy(() => import("./components/Museum/Museum"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
@@ -99,12 +97,6 @@ function createUserLists(accountNumber) {
     }
     return list;
 }
-
-
-// import testGrades2 from "./testGrades2.json";
-// const testGrades = lazy(() => import("./testGrades.json"));
-// const testGrades2 = lazy(() => import("./testGrades2.json"));
-
 
 const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
@@ -358,7 +350,7 @@ export default function App() {
 
     useEffect(() => {
         const lsGlobalSettings = {};
-        for (const i in globalSettings) {
+                for (const i in globalSettings) {
             lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
         }
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
@@ -686,8 +678,6 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.greatStudent++
                         totalBadges.greatStudent++
                     }
-                    console.log("a", newGrade.value)
-                    console.log("b", subjectAverage)
                     if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
                         gradeBadges.push("stonks");
                         periods[periodCode].subjects[subjectCode].badges.stonks++
@@ -791,7 +781,7 @@ export default function App() {
                     setUserIds({ username: username, password: password })
                     if (keepLoggedIn) {
                         localStorage.setItem("userIds", JSON.stringify({ username: username, password: password }))
-                    }
+                                            }
                     let token = response.token // collecte du token
                     console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
@@ -914,21 +904,17 @@ export default function App() {
                     console.log("UWU");
                     let usersGrades = [...grades];
                     usersGrades[userId] = response.data;
-                    // usersGrades[userId] = testGrades.data;
+// usersGrades[userId] = testGrades.data;
                     setGrades(usersGrades);
                     setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-                    // setTokenState("");
+// setTokenState("");
                     // logout();
                 } else if (code === 403) {
-                    console.log("testGrades")
-                    let usersGrades = [...grades];
-                    usersGrades[userId] = testGrades.data;
-                    // console.log("data:", testGrades2.data)
-                    // usersGrades[userId] = testGrades2.data;
+                    let usersGrades = [...grades]; 
                     setGrades(usersGrades);
                     setTokenState((old) => (response.token || old));
                 }
