@@ -73,9 +73,12 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                 switch (event.typeElement) {
                     case "Note":
                         // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
-                        console.log("calculateNotificationsNumber ~ ((new Date(event.date)).getTime() - Date.now()):", ((new Date(event.date)).getTime() - Date.now()))
-                        if ((Date.now() - (new Date(event.date)).getTime()) < 259_200_000) {
-                            notifications.grades = (notifications.grades ?? 0) + 1;
+                        if ((Date.now() - (new Date(event.date)).getTime()) < (3 * 1000 * 60 * 60 * 24)) {
+                            let newGradesNb = 1;
+                            if (event.titre === "Nouvelles évaluations") {
+                                newGradesNb = event.contenu.split("/").length;
+                            }
+                            notifications.grades = (notifications.grades ?? 0) + newGradesNb;
                         }
                         break;
 
