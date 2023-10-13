@@ -193,7 +193,6 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             if (commandPattern.includes(event.key) && !commandInputs.current.includes(event.key)) {
                 commandInputs.current.push(event.key);
             } else if (isAskingForShortcut()) {
-                console.log(event.key)
                 for (let shortcut of shortcuts) {
                     if (shortcut.keys.includes(event.key)) {
                         event.preventDefault();
