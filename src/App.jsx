@@ -19,7 +19,7 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
-import { areOccurenciesEqual } from "./utils/functions"
+import { areOccurenciesEqual, getCurrentSchoolYear } from "./utils/functions"
 
 import guestGrades from "./data/grades.json";
 
@@ -80,6 +80,8 @@ const defaultSettings = {
     displayMode: "quality",
     gradeScale: 20,
     isGradeScaleEnabled: false,
+    schoolYear: getCurrentSchoolYear(),
+    isSchoolYearEnabled: false,
     lucioleFont: false,
     windowArrangement: [],
     toggleAnimatedWindowApparition: true,
@@ -110,8 +112,7 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
         const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {
-        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
         return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
@@ -145,6 +146,13 @@ function initSettings(accountList) {
             },
             isGradeScaleEnabled: {
                 value: getSetting("isGradeScaleEnabled", i),
+            },
+            schoolYear: {
+                value: getSetting("schoolYear", i),
+                max: (new Date()).getFullYear() + 1
+            },
+            isSchoolYearEnabled: {
+                value: getSetting("isSchoolYearEnabled", i),
             },
             lucioleFont: {
                 value: getSetting("lucioleFont", i),
@@ -877,7 +885,9 @@ export default function App() {
     async function fetchUserTimeline(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
-        const data = {};
+        const data = {
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+        }
 
         fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get%26v=${apiVersion}`,
             {
@@ -921,7 +931,7 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
-            anneeScolaire: ""
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
@@ -1013,12 +1023,15 @@ export default function App() {
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    function resetUserData() {
-        setUserIds({});
-        setActiveAccount(0);
+    function resetUserData(soft=false) {
+        if (soft) {
+            setUserIds({});
+            setActiveAccount(0);
+        }
         setUserData([])
-        // setKeepLoggedIn(false);
         setGrades([]);
+        setTimeline([]);
+        // setKeepLoggedIn(false);
     }
 
     function logout() {
@@ -1206,7 +1219,7 @@ export default function App() {
                             path: "settings",
                         },
                         {
-                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} />,
+                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} getCurrentSchoolYear={getCurrentSchoolYear} resetUserData={resetUserData} />,
                             path: ":userId/settings"
                         },
                         {

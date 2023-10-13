@@ -20,7 +20,7 @@ import { AppContext } from "../../../App";
 import "./Settings.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
-export default function Settings({ usersSettings, accountsList }) {
+export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
 
     const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
 
@@ -35,7 +35,7 @@ export default function Settings({ usersSettings, accountsList }) {
         if (newEnableValue) {
             settings.set("gradeScale", settings.get("gradeScale") ? newEnableValue * settings.get("gradeScale") : newEnableValue * 20)
         }
-        settings.set("isGradeScaleEnabled", newEnableValue)
+        settings.set("isGradeScaleEnabled", newEnableValue);
     }
 
     const handleGradeScaleValueChange = (newValue) => {
@@ -48,7 +48,23 @@ export default function Settings({ usersSettings, accountsList }) {
     const handleDevChannelSwitchingToggle = () => {
         globalSettings.isDevChannel.set(!globalSettings.isDevChannel.value);
         refreshApp();
-        // location.reload();
+    }
+
+    const handleSchoolYearChange = (newValue, side) => {
+        newValue = parseInt(newValue);
+        settings.set("isSchoolYearEnabled", true);
+        
+        let schoolYear = structuredClone(settings.get("schoolYear"));
+        if (side === 0) {
+            schoolYear[0] = newValue;
+            schoolYear[1] = newValue + 1;
+        } else {
+            schoolYear[1] = newValue;
+            schoolYear[0] = newValue - 1;
+        }
+        
+        resetUserData(true);
+        settings.set("schoolYear", schoolYear)
     }
 
     return (
@@ -158,9 +174,10 @@ export default function Settings({ usersSettings, accountsList }) {
                     </div>
 
                     <div className="setting" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={false} onChange={() => console.log("changed")} />
+                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => settings.set("isSchoolYearEnabled", event.target.checked)} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} displayArrowsControllers={false} />
+                        <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
+                        <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">
@@ -171,7 +188,6 @@ export default function Settings({ usersSettings, accountsList }) {
                     <div className="setting disabled" id="dynamic-loading">
                         <CheckBox id="dynamic-loading" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
                     </div>
-
 
                     <h2 className="heading">Raccourcis claviers</h2>
 
