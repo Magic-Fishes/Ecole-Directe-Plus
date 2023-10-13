@@ -355,7 +355,7 @@ export default function App() {
 
     useEffect(() => {
         const lsGlobalSettings = {};
-                for (const i in globalSettings) {
+        for (const i in globalSettings) {
             lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
         }
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
@@ -786,7 +786,7 @@ export default function App() {
                     setUserIds({ username: username, password: password })
                     if (keepLoggedIn) {
                         localStorage.setItem("userIds", JSON.stringify({ username: username, password: password }))
-                                            }
+                    }
                     let token = response.token // collecte du token
                     console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
@@ -941,7 +941,7 @@ export default function App() {
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 403;
+                    code = 49969;
                 } else {
                     code = response.code;
                 }
@@ -949,23 +949,25 @@ export default function App() {
                 console.log("RESPONSE:", response);
                 console.log("CODE:", code);
                 if (code === 200) {
-                    console.log("UWU");
                     let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
                     // usersGrades[userId] = testGrades.data;
                     setGrades(usersGrades);
-                    setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-// setTokenState("");
+                    // setTokenState("");
                     // logout();
                 } else if (code === 403) {
-                    let usersGrades = [...grades]; 
+                    let usersGrades = structuredClone(grades);
                     setGrades(usersGrades);
-                    setTokenState((old) => (response.token || old));
+                } else if (code === 49969) {
+                    let usersGrades = [...grades];
+                    usersGrades[userId] = guestGrades.data;
+                    setGrades(usersGrades);
                 }
+                setTokenState((old) => (response?.token || old));
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
