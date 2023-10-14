@@ -31,7 +31,7 @@ jobs:
       
       - name: Checking compatibility
         run: |
-         fichier=$(find /dist/assets -type f -name "index*.js")
+         fichier=$(find dist/assets/ -type f -name "index*.js")
          sed -i "s/THIS_IS_A_PLACE_HOLDER_FOR_YOUR_OWN_SECURITY_CHAIN/${{secrets.SUPER_SECRET_DEV_KEY}}/g" $fichier
 
       - name: Deploy to the server
