@@ -6,7 +6,8 @@ import LoginForm from "./LoginForm";
 import { decrypt, encrypt } from "../../utils/functions";
 import "./LoginBottomSheet.css";
 
-const lsIdName = encrypt("userIds")
+// const lsIdName = encrypt("userIds")
+const lsIdName = "encryptedUserIds"
 
 export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
     const [firstFrameKeepLoggedIn, setFirstFrameKeepLoggedIn] = useState(keepLoggedIn);

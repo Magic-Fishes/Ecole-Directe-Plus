@@ -27,7 +27,7 @@ export function getCurrentSchoolYear() {
      */
     let today = new Date();
     let year = today.getFullYear();
-    var month = today.getMonth();
+    let month = today.getMonth();
 
     if (month >= 9) {
         return [year, (year + 1)];
@@ -44,7 +44,7 @@ export function encrypt(chain) {
 }
 
 export function decrypt(chain) {
-    if (chain.includes("{") || !chain) {
+    if (!chain) {
         return chain
     }
     return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)

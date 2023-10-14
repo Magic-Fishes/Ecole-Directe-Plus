@@ -12,7 +12,8 @@ import KeyIcon from "../graphics/KeyIcon"
 
 import "./LoginForm.css";
 
-const lsIdName = encrypt("userIds")
+// const lsIdName = encrypt("userIds")
+const lsIdName = "encryptedUserIds"
 
 const submitButtonAvailableStates = {
     "Connexion...": "submitting",
@@ -40,7 +41,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
         if (keepLoggedIn) {
             if (submitButtonText !== "Connexion...") {
                 // keep logged in using credentials
-                const userIds = JSON.parse((localStorage.getItem(lsIdName) !== null ?? decrypt(localStorage.getItem(lsIdName))) ?? "{}");
+                const userIds = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
         
                 if ( userIds.username && userIds.password ) {
                     fetchLogin(userIds.username, userIds.password, true, (messages) => {

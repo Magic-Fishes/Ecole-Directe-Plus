@@ -68,7 +68,8 @@ const currentEDPVersion = "0.1.5";
 const apiVersion = "4.38.0";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
-const lsIdName = encrypt("userIds")
+// const lsIdName = encrypt("userIds")
+const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
@@ -123,12 +124,6 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     return defaultSettings[setting];
 }
 
-
-
-
-console.log("-----------------")
-console.log("OUVERTURE FICHIER")
-console.log("-----------------")
 
 function initSettings(accountList) {
     // comment ajouter un setting :
@@ -203,8 +198,7 @@ function initData(length) {
 const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
 let userIdsFromLs;
 if (keepLoggedInFromLs) {
-    console.log(localStorage.getItem(lsIdName))
-    userIdsFromLs = JSON.parse((localStorage.getItem(lsIdName) !== null ?? decrypt(localStorage.getItem(lsIdName))) ?? "{}");
+    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
 } else {
     userIdsFromLs = {};
 }
@@ -213,12 +207,6 @@ if (keepLoggedInFromLs) {
 export const AppContext = createContext(null);
 
 export default function App() {
-    useEffect(() => {
-        console.log("-------------------")
-        console.log("RENDER DU COMPOSANT")
-        console.log("-------------------")
-    }, [])
-
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs);
     const [accountsListState, setAccountsListState] = useState(accountListFromLs);
