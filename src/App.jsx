@@ -1305,7 +1305,6 @@ export default function App() {
                     <RouterProvider router={router} />
                 </DOMNotification>
             </Suspense>
-            <p>{"THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY"}</p>
         </AppContext.Provider>
     );
 }
