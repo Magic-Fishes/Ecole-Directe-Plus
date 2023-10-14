@@ -63,7 +63,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
             schoolYear[0] = newValue - 1;
         }
         
-        resetUserData(true);
+        resetUserData(false);
         settings.set("schoolYear", schoolYear)
     }
 
@@ -186,10 +186,9 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     </div>
 
                     <div className="setting" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => settings.set("isSchoolYearEnabled", event.target.checked)} />
+                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => {settings.set("isSchoolYearEnabled", event.target.checked); resetUserData(false);}} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
                         <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
-                        <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">

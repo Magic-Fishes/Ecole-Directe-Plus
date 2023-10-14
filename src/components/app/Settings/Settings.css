@@ -29,6 +29,7 @@ body:has(#settings) {
 }
 
 #settings .setting.disabled {
+    /* display: none; */
     opacity: 0.3;
     pointer-events: none;
     cursor: not-allowed; /* marche pas à cause de pointer-events */

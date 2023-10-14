@@ -167,7 +167,7 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
         let filters = "";
         if (isSepiaEnabled) {
-            filters += "sepia(.7) ";
+            filters += "sepia(.5) ";
         }
         if (isHighContrastEnabled) {
             filters += "contrast(1.5) ";
@@ -177,7 +177,6 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
         }
 
         document.documentElement.style.filter = filters;
-        
     }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled")])
 
 

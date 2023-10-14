@@ -9,6 +9,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
 
     const timeoutId = useRef(0);
     const intervalId = useRef(0);
+    const initialValue = useRef(value);
     const valueRef = useRef(value);
 
     function handleChange(event) {
@@ -26,6 +27,9 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
 
     function handleBlur(event) {
         let newValue = parseInt(event.target.value);
+        if (initialValue.current === newValue) {
+            return 0;
+        }
         if (!isNaN(newValue)) {
             if (newValue < min) {
                 newValue = min;

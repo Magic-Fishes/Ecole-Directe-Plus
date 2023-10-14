@@ -1034,8 +1034,8 @@ export default function App() {
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    function resetUserData(soft=false) {
-        if (soft) {
+    function resetUserData(hard=true) {
+        if (hard) {
             setUserIds({});
             setActiveAccount(0);
         }
