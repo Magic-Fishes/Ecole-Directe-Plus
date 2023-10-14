@@ -1,3 +1,6 @@
+import CryptoJS from 'crypto-js';
+
+const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
 
 export function areOccurenciesEqual(obj1, obj2) {
     if (typeof obj1 !== "object" || typeof obj2 !== "object") {
@@ -31,4 +34,18 @@ export function getCurrentSchoolYear() {
     }
     
     return [(year - 1), year];
+}
+
+export function encrypt(chain) {
+    if (!chain) {
+        return chain
+    }
+    return  CryptoJS.AES.encrypt(chain, key).toString()
+}
+
+export function decrypt(chain) {
+    if (chain.includes("{") || !chain) {
+        return chain
+    }
+    return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)
 }

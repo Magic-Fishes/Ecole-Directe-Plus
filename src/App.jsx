@@ -19,7 +19,8 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
-import { areOccurenciesEqual, getCurrentSchoolYear } from "./utils/functions"
+import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./utils/functions"
+
 
 import guestGrades from "./data/grades.json";
 
@@ -67,6 +68,7 @@ const currentEDPVersion = "0.1.5";
 const apiVersion = "4.38.0";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
+const lsIdName = encrypt("userIds")
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
@@ -201,7 +203,8 @@ function initData(length) {
 const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
 let userIdsFromLs;
 if (keepLoggedInFromLs) {
-    userIdsFromLs = (JSON.parse(localStorage.getItem("userIds")) ?? "{}");
+    console.log(localStorage.getItem(lsIdName))
+    userIdsFromLs = JSON.parse((localStorage.getItem(lsIdName) !== null ?? decrypt(localStorage.getItem(lsIdName))) ?? "{}");
 } else {
     userIdsFromLs = {};
 }
@@ -288,9 +291,9 @@ export default function App() {
 
     useEffect(() => {
         if (!keepLoggedIn) {
-            localStorage.removeItem("userIds");
+            localStorage.removeItem(lsIdName);
         } else if (userIds.username && userIds.password) {
-            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
+            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: userIds.username, password: userIds.password })));
         } else {
             setIsLoggedIn(false);
         }
@@ -804,7 +807,7 @@ export default function App() {
                     messages.submitButtonText = "Connecté";
                     setUserIds({ username: username, password: password })
                     if (keepLoggedIn) {
-                        localStorage.setItem("userIds", JSON.stringify({ username: username, password: password }))
+                        localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
                     }
                     let token = response.token // collecte du token
                     console.log("TOKEN FROM FETCH LOGIN", token)
@@ -1055,7 +1058,7 @@ export default function App() {
         // suppression des paramètres locaux et globaux
         localStorage.removeItem("userSettings");
         localStorage.removeItem("keepLoggedIn");
-        localStorage.removeItem("userIds");
+        localStorage.removeItem(lsIdName);
         setTokenState("");
         setAccountsListState([]);
         resetUserData();

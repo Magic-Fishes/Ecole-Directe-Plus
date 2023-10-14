@@ -3,15 +3,16 @@ import { useState } from "react";
 
 import BottomSheet from "../generic/PopUps/BottomSheet";
 import LoginForm from "./LoginForm";
-
+import { decrypt, encrypt } from "../../utils/functions";
 import "./LoginBottomSheet.css";
 
+const lsIdName = encrypt("userIds")
 
 export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
     const [firstFrameKeepLoggedIn, setFirstFrameKeepLoggedIn] = useState(keepLoggedIn);
 
     const handleClose = () => {
-        const userIds = JSON.parse(localStorage.getItem("userIds") ?? "{}");
+        const userIds = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
         if (!userIds.username || !userIds.password) {
             console.log("LOGIN BS KEEP LOGGED IN FALSE");
             setKeepLoggedIn(false);

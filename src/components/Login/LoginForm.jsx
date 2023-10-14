@@ -5,12 +5,14 @@ import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../generic/PopUps/Tooltip";
+import { decrypt, encrypt } from "../../utils/functions"
 
 import AccountIcon from "../graphics/AccountIcon"
 import KeyIcon from "../graphics/KeyIcon"
 
 import "./LoginForm.css";
 
+const lsIdName = encrypt("userIds")
 
 const submitButtonAvailableStates = {
     "Connexion...": "submitting",
@@ -38,7 +40,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
         if (keepLoggedIn) {
             if (submitButtonText !== "Connexion...") {
                 // keep logged in using credentials
-                const userIds = JSON.parse(localStorage.getItem("userIds") ?? "{}");
+                const userIds = JSON.parse((localStorage.getItem(lsIdName) !== null ?? decrypt(localStorage.getItem(lsIdName))) ?? "{}");
         
                 if ( userIds.username && userIds.password ) {
                     fetchLogin(userIds.username, userIds.password, true, (messages) => {
