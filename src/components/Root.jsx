@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, logout, isTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -119,6 +119,43 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
         }
     }, [location, token, accountsList])
 
+    // devChannel management
+    useEffect(() => {
+        function handleDevChannel() {
+            if (process.env.NODE_ENV !== "development") {
+                const url = new URL(entryURL.current);
+                const params = url.searchParams;
+                const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
+                console.log("url.href:", url.href)
+                console.log("isVerifiedOrigin:", isVerifiedOrigin);
+                if (isVerifiedOrigin) {
+                    console.log("verified origin");
+                    
+                    if (window.location.hostname === "dev.ecole-directe.plus") {
+                        globalSettings.isDevChannel.set(true);
+                    } else {
+                        globalSettings.isDevChannel.set(false);
+                    }
+                    
+                    navigate("/");
+                } else {
+                    if (globalSettings.isDevChannel.value) {
+                        if (window.location.hostname !== "dev.ecole-directe.plus") {
+                            window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
+                        }
+                    } else {
+                        if (window.location.hostname !== "ecole-directe.plus") {
+                            window.location.href = "https://ecole-directe.plus/?verifiedOrigin=true";
+                        }
+                    }
+                }
+
+            }
+        }
+
+        handleDevChannel();
+    }, []);
+
 
     // - - - - - - - - - - - - - - - - - - - - //
     //               Raccourcis                //
@@ -156,7 +193,6 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
             if (commandPattern.includes(event.key) && !commandInputs.current.includes(event.key)) {
                 commandInputs.current.push(event.key);
             } else if (isAskingForShortcut()) {
-                console.log(event.key)
                 for (let shortcut of shortcuts) {
                     if (shortcut.keys.includes(event.key)) {
                         event.preventDefault();
@@ -347,7 +383,11 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
                 {isAdmin && <form action="https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
+                {isAdmin && <form action="https://github.com/Magic-Fishes/Ecole-Directe-Plus" method="get" target="_blank" style={{ display: "inline" }}>
+                    <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
+                </form>}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
+                {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}

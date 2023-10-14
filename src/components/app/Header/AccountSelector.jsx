@@ -140,7 +140,6 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         <DropDownArrow className="drop-down-arrow" />
                     </div>
                 </div>
-                {true && 
                 <div className="animation-wrapper">
                     <div className="options-container">
                         <div className="alt-accounts">
@@ -174,7 +173,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                             <button id="logout-button" onClick={logout}><span>Se déconnecter</span><LogoutIcon className="logout-icon" /></button>
                         </div>
                     </div>
-                </div>}
+                </div>
             </div>
         </div>
     )

@@ -64,7 +64,20 @@
     text-align: center;
     font-weight: var(--font-weight-semi-bold);
     z-index: 50;
-    
+
+    animation: notification-pop-in .2s ease forwards;
+}
+
+@keyframes notification-pop-in {
+    from {
+        opacity: 0;
+        scale: 0;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+
 }
 
 .header-button .header-button-title {

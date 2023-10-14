@@ -8,6 +8,8 @@ import {
     RouterProvider
 } from "react-router-dom";
 
+import "./App.css";
+
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
@@ -17,10 +19,9 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
+import { areOccurenciesEqual, getCurrentSchoolYear } from "./utils/functions"
 
-import "./App.css";
-
-import testGrades from "./testGrades.json";
+import guestGrades from "./data/grades.json";
 
 const Museum = lazy(() => import("./components/Museum/Museum"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
@@ -79,12 +80,15 @@ const defaultSettings = {
     displayMode: "quality",
     gradeScale: 20,
     isGradeScaleEnabled: false,
+    schoolYear: getCurrentSchoolYear(),
+    isSchoolYearEnabled: false,
     lucioleFont: false,
     windowArrangement: [],
     toggleAnimatedWindowApparition: true,
     dynamicLoading: true,
     shareSettings: true,
     negativeBadges: false,
+    isDevChannel: false
 }
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
@@ -98,12 +102,6 @@ function createUserLists(accountNumber) {
     return list;
 }
 
-
-// import testGrades2 from "./testGrades2.json";
-// const testGrades = lazy(() => import("./testGrades.json"));
-// const testGrades2 = lazy(() => import("./testGrades2.json"));
-
-
 const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
 const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
@@ -114,29 +112,13 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
         const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {
-        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
         return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
 }
 
-function areOccurenciesEqual(obj1, obj2) {
-    if (typeof obj1 !== "object" || typeof obj2 !== "object") {
-        return obj1 === obj2;
-    }
-    if (obj1.length !== obj2.length) {
-        return false;
-    }
-    for (const i in obj1) {
-        if (obj2.hasOwnProperty(i)) {
-            if (!areOccurenciesEqual(obj1[i], obj2[i])) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+
 
 
 console.log("-----------------")
@@ -164,6 +146,13 @@ function initSettings(accountList) {
             },
             isGradeScaleEnabled: {
                 value: getSetting("isGradeScaleEnabled", i),
+            },
+            schoolYear: {
+                value: getSetting("schoolYear", i),
+                max: (new Date()).getFullYear() + 1
+            },
+            isSchoolYearEnabled: {
+                value: getSetting("isSchoolYearEnabled", i),
             },
             lucioleFont: {
                 value: getSetting("lucioleFont", i),
@@ -227,9 +216,11 @@ export default function App() {
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
     const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
+    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true));
 
     // user data
     const [grades, setGrades] = useState([]);
+    const [timeline, setTimeline] = useState([]);
     const [userData, setUserData] = useState([]);
 
     // utils
@@ -237,9 +228,12 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
+    const [appKey, setAppKey] = useState(crypto.randomUUID());
 
     // diverse
     const abortControllers = useRef([]);
+    const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,10 +256,44 @@ export default function App() {
     }
 
     function getUserData(data) {
-        return userData && userData[activeAccount] && userData[activeAccount][data]
+        // return userData && userData[activeAccount] && userData[activeAccount][data]
+        return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
 
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData })
+
+
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+
+    useEffect(() => {
+        if (!keepLoggedIn) {
+            localStorage.removeItem("userIds");
+        } else if (userIds.username && userIds.password) {
+            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [keepLoggedIn]);
+
+
+    useEffect(() => {
+        if (!userIds.username || !userIds.password) {
+            setKeepLoggedIn(false);
+        }
+    }, [userIds])
+
+
+    /////////// SETTINGS ///////////
 
     function changeUserSettings(setting, value, accountIdx = activeAccount) {
         setUserSettings((oldSettings) => {
@@ -274,19 +302,14 @@ export default function App() {
             return newSettings;
         })
         if (shareSettings) {
-            console.log("synched settings")
-            console.log(shareSettings)
             syncSettings();
         }
     }
 
     function syncSettings() {
-        console.log("syncSetting()")
         setUserSettings((oldSettings) => {
-            const newSettings = [];
-            for (const i in oldSettings) {
-                newSettings[i] = oldSettings[activeAccount];
-            }
+            const selectedUserSetting = oldSettings[activeAccount]
+            const newSettings = Array.from({ length: oldSettings.length }, (_) => structuredClone(selectedUserSetting));
             return newSettings;
         })
     }
@@ -323,38 +346,6 @@ export default function App() {
         }
     }
 
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
-
-    useEffect(() => {
-        if (!keepLoggedIn) {
-            localStorage.removeItem("userIds");
-        } else if (userIds.username && userIds.password) {
-            localStorage.setItem("userIds", JSON.stringify({ username: userIds.username, password: userIds.password }));
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, [keepLoggedIn]);
-
-
-    useEffect(() => {
-        if (!userIds.username || !userIds.password) {
-            setKeepLoggedIn(false);
-        }
-    }, [userIds])
-
-
-    /////////// SETTINGS ///////////
-
     const globalSettings = {
         keepLoggedIn: {
             value: keepLoggedIn,
@@ -363,6 +354,10 @@ export default function App() {
         shareSettings: {
             value: shareSettings,
             set: setShareSettings,
+        },
+        isDevChannel: {
+            value: isDevChannel,
+            set: setIsDevChannel
         },
     }
 
@@ -387,21 +382,14 @@ export default function App() {
             window.removeEventListener("storage", handleStorageChange);
         });
     }, [keepLoggedIn,
-        shareSettings])
+        shareSettings,
+        isDevChannel])
 
     useEffect(() => {
-        console.log("shareSettings")
-        console.log(shareSettings)
         if (shareSettings) {
             syncSettings();
         }
     }, [shareSettings])
-
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         setUserSettings(initSettings(accountsListState))
-    //     }
-    // }, [isLoggedIn])
 
     useEffect(() => {
 
@@ -531,6 +519,14 @@ export default function App() {
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
+        const totalBadges = {
+            "star": 0,
+            "bestStudent": 0,
+            "greatStudent": 0,
+            "stonks": 0,
+            "keepOnFire": 0,
+            "meh": 0,
+        };
         if (periodsFromJson !== undefined) {
             for (let period of periodsFromJson) {
                 if (period) {
@@ -583,6 +579,7 @@ export default function App() {
             }
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
+
             for (let grade of gradesFromJson) {
                 // console.log("grade", grade)
                 const periodCode = grade.codePeriode;
@@ -682,28 +679,32 @@ export default function App() {
                     if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
                         gradeBadges.push("star");
                         periods[periodCode].subjects[subjectCode].badges.star++
+                        totalBadges.star++
                     }
                     if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
                         gradeBadges.push("bestStudent");
                         periods[periodCode].subjects[subjectCode].badges.bestStudent++
+                        totalBadges.bestStudent++
                     }
                     if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
                         gradeBadges.push("greatStudent");
                         periods[periodCode].subjects[subjectCode].badges.greatStudent++
+                        totalBadges.greatStudent++
                     }
-                    console.log("a", newGrade.value)
-                    console.log("b", subjectAverage)
                     if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
                         gradeBadges.push("stonks");
                         periods[periodCode].subjects[subjectCode].badges.stonks++
+                        totalBadges.stonks++
                     }
                     if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
                         gradeBadges.push("keepOnFire");
                         periods[periodCode].subjects[subjectCode].badges.keepOnFire++
+                        totalBadges.keepOnFire++
                     }
                     if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
                         gradeBadges.push("meh");
                         periods[periodCode].subjects[subjectCode].badges.meh++
+                        totalBadges.meh++
                     }
                 }
                 newGrade.badges = gradeBadges;
@@ -733,6 +734,7 @@ export default function App() {
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
+        changeUserData("totalBadges", totalBadges)
         changeUserData("sortedGrades", periods) /*((oldSortedGrades) => {
             const newSortedGrades = [...oldSortedGrades];
             newSortedGrades[activeAccount] = periods;
@@ -803,13 +805,14 @@ export default function App() {
                         // compte élève
                         accountsList.push({
                             accountType: "E", // type de compte
+                            lastConnection: new Date(accounts.lastConnexion),
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
                             lastName: accounts.nom, // nom de famille de l'élève
                             email: accounts.email, // email du compte
                             picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
+                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
                         });
                         // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
                         //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
@@ -822,6 +825,7 @@ export default function App() {
                         accounts.map((account) => {
                             accountsList.push({
                                 accountType: "P",
+                                lastConnection: new Date(account.lastConnexion),
                                 id: account.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,
@@ -878,18 +882,61 @@ export default function App() {
             })
     }
 
+    async function fetchUserTimeline(controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+        }
+
+        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get%26v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState,
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 403;
+                } else {
+                    code = response.code;
+                }
+                // const code = response.code;
+                console.log("RESPONSE:", response);
+                if (code === 200) {
+                    const oldTimeline = structuredClone(timeline);
+                    oldTimeline[activeAccount] = response.data;
+                    setTimeline(oldTimeline);
+                    setTokenState(response.token);
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else if (code === 403) {
+                    setTokenState((old) => (response.token || old));
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function fetchUserGrades(controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        console.log("abortControllers.current:", abortControllers.current);
-        const userId = activeAccount // JSP si ca peut arriver mais c dans le cas ou le ggars change de compte avant la fin du fetch et dcp ca enregistre pas bien
-        // bah enft si le mec change de compte il faudrait juste abort ce fetch tah l'avortement
+        const userId = activeAccount;
         const data = {
-            anneeScolaire: ""
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get%26v=${apiVersion}`,
+            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -904,7 +951,7 @@ export default function App() {
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 403;
+                    code = 49969;
                 } else {
                     code = response.code;
                 }
@@ -912,12 +959,10 @@ export default function App() {
                 console.log("RESPONSE:", response);
                 console.log("CODE:", code);
                 if (code === 200) {
-                    console.log("UWU");
-                    let usersGrades = [...grades];
+                    let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
                     // usersGrades[userId] = testGrades.data;
                     setGrades(usersGrades);
-                    setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
@@ -925,14 +970,14 @@ export default function App() {
                     // setTokenState("");
                     // logout();
                 } else if (code === 403) {
-                    console.log("testGrades")
-                    let usersGrades = [...grades];
-                    usersGrades[userId] = testGrades.data;
-                    // console.log("data:", testGrades2.data)
-                    // usersGrades[userId] = testGrades2.data;
+                    let usersGrades = structuredClone(grades);
                     setGrades(usersGrades);
-                    setTokenState((old) => (response.token || old));
+                } else if (code === 49969) {
+                    let usersGrades = [...grades];
+                    usersGrades[userId] = guestGrades.data;
+                    setGrades(usersGrades);
                 }
+                setTokenState((old) => (response?.token || old));
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
@@ -971,18 +1016,22 @@ export default function App() {
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
+        setTimeline(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
         setUserData(initData(accountsList.length));
         // localStorage.setItem("token", token);
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    function resetUserData() {
-        setUserIds({});
-        setActiveAccount(0);
+    function resetUserData(soft=false) {
+        if (soft) {
+            setUserIds({});
+            setActiveAccount(0);
+        }
         setUserData([])
-        // setKeepLoggedIn(false);
         setGrades([]);
+        setTimeline([]);
+        // setKeepLoggedIn(false);
     }
 
     function logout() {
@@ -1067,6 +1116,11 @@ export default function App() {
 
     /* ################################################################################### */
 
+    function refreshApp() {
+        // permet de refresh l'app sans F5
+        setAppKey(crypto.randomUUID());
+    }
+
     // routing system
     const router = createBrowserRouter([
         {
@@ -1091,6 +1145,8 @@ export default function App() {
                     isTabletLayout={isTabletLayout}
 
                     setIsFullScreen={setIsFullScreen}
+                    globalSettings={globalSettings}
+                    entryURL={entryURL}
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
@@ -1139,6 +1195,9 @@ export default function App() {
                                 accountsList={accountsListState}
                                 setActiveAccount={setActiveAccount}
                                 activeAccount={activeAccount}
+                                isLoggedIn={isLoggedIn}
+                                fetchUserTimeline={fetchUserTimeline}
+                                timeline={timeline}
                                 isTabletLayout={isTabletLayout}
                                 isFullScreen={isFullScreen}
                                 logout={logout}
@@ -1160,7 +1219,7 @@ export default function App() {
                             path: "settings",
                         },
                         {
-                            element: <Settings usersSettings={userSettings[activeAccount]} globalSettings={globalSettings} accountsList={accountsListState} />,
+                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} getCurrentSchoolYear={getCurrentSchoolYear} resetUserData={resetUserData} />,
                             path: ":userId/settings"
                         },
                         {
@@ -1218,19 +1277,29 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
+        isDevChannel,
         useUserData,
         useUserSettings,
-        actualDisplayTheme
+        globalSettings,
+        actualDisplayTheme,
+        refreshApp,
+        currentEDPVersion
     }), [activeAccount,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
+        isDevChannel,
         useUserData,
         useUserSettings,
-        actualDisplayTheme]);
+        globalSettings,
+        actualDisplayTheme,
+        refreshApp,
+        currentEDPVersion]);
 
     return (
-        <AppContext.Provider value={appContextValue}>
+        <AppContext.Provider value={appContextValue} key={appKey}>
             <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
                 <DOMNotification>
                     <RouterProvider router={router} />

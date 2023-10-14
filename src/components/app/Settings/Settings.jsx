@@ -13,18 +13,18 @@ import StoreCallToAction from "../../generic/StoreCallToAction";
 
 // graphics
 import RefreshIcon from "../../graphics/RefreshIcon";
+import ToggleEnd from "../../graphics/ToggleEnd";
 
 import { AppContext } from "../../../App";
 
 import "./Settings.css";
+import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
-export default function Settings({ usersSettings, globalSettings, accountsList }) {
+export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
 
-    const { useUserSettings } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
-
-
 
     useEffect(() => {
         document.title = "Paramètres • Ecole Directe Plus";
@@ -35,7 +35,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
         if (newEnableValue) {
             settings.set("gradeScale", settings.get("gradeScale") ? newEnableValue * settings.get("gradeScale") : newEnableValue * 20)
         }
-        settings.set("isGradeScaleEnabled", newEnableValue)
+        settings.set("isGradeScaleEnabled", newEnableValue);
     }
 
     const handleGradeScaleValueChange = (newValue) => {
@@ -45,9 +45,27 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
         settings.set("gradeScale", newValue);
     }
 
-    useEffect(() => {
-        console.log("useEffect", settings.get("gradeScale"))
-    }, [settings.get("gradeScale")])
+    const handleDevChannelSwitchingToggle = () => {
+        globalSettings.isDevChannel.set(!globalSettings.isDevChannel.value);
+        refreshApp();
+    }
+
+    const handleSchoolYearChange = (newValue, side) => {
+        newValue = parseInt(newValue);
+        settings.set("isSchoolYearEnabled", true);
+        
+        let schoolYear = structuredClone(settings.get("schoolYear"));
+        if (side === 0) {
+            schoolYear[0] = newValue;
+            schoolYear[1] = newValue + 1;
+        } else {
+            schoolYear[1] = newValue;
+            schoolYear[0] = newValue - 1;
+        }
+        
+        resetUserData(true);
+        settings.set("schoolYear", schoolYear)
+    }
 
     return (
         <div id="settings">
@@ -115,7 +133,7 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                             </tbody>
                         </table>
                     </InfoButton>
-                    <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />
+                    {isMobileLayout ? <DropDownMenu id="display-mode-sc" name="display-mode-dm" options={settings.object("displayMode").values} displayedOptions={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} /> : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
                 </div>
 
                 <div className="setting disabled" id="luciole-font">
@@ -141,23 +159,25 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                 {/* advanced settings */}
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
+                    {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
+                    <div className={`setting${(isStandaloneApp && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) ? " disabled" : ""}`} id="dev-channel">
+                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                    </div>
 
-                    <div className="setting disabled" id="dev-channel">
-                        <CheckBox id="dev-channel-cb" label={<span>Basculer sur le canal développeur</span>} /> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+
+                    <div className="setting disabled" id="info-persistence">
+                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
                     </div>
 
                     <div className="setting" id="clear-local-storage">
                         <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
-                    <div className="setting disabled" id="info-persistence">
-                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
-                    </div>
-
-                    <div className="setting disabled" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={false} onChange={() => console.log("changed")} />
+                    <div className="setting" id="school-year">
+                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => settings.set("isSchoolYearEnabled", event.target.checked)} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} />
+                        <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
+                        <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">
@@ -168,7 +188,6 @@ export default function Settings({ usersSettings, globalSettings, accountsList }
                     <div className="setting disabled" id="dynamic-loading">
                         <CheckBox id="dynamic-loading" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
                     </div>
-
 
                     <h2 className="heading">Raccourcis claviers</h2>
 

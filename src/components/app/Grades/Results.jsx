@@ -42,9 +42,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
             <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "column nowrap", gap: "20px" }}>
                 <MoveableContainer>
                     {!isTabletLayout
-                        ? <Tabs contentLoader={sortedGrades === undefined} tabs={sortedGrades ? Object.keys(sortedGrades) : ["test 1", "test 2", "test 3"]} displayedTabs={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
+                        ? <Tabs contentLoader={sortedGrades === undefined} tabs={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedTabs={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
                         : <div className="results-options-container">
-                            <DropDownMenu name="periods" options={sortedGrades ? Object.keys(sortedGrades) : ["test 1", "test 2", "test 3"]} displayedOptions={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : ["1er Trimestre", "2ème Trimestre", "3ème trimestre"]} selected={selectedPeriod} onChange={setSelectedPeriod} />
+                            <DropDownMenu name="periods" options={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedOptions={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} />
                             <DropDownMenu name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
                         </div>
                     }
@@ -230,8 +230,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 </tbody>
                             </table>
                             : <div>
-                                <h3>Cancer chart.js</h3>
-                                <img src="https://i.ibb.co/myGqzqJ/GIGACHADpp2.jpg" alt="MONSIEUR GIGACHAD" style={{ width: "100%" }} />
+                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
                             </div>
                         }
                     </WindowContent>

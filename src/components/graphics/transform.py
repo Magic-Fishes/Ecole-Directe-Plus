@@ -15,7 +15,8 @@ definedColors = {
     "#6865EC": "border-1",
     "#39378F": "background-header",
     "#B4B4F0": "text-alt",
-    "#dfc8c8": "text-soft-error-main"
+    "#dfc8c8": "text-soft-error-main",
+    "#323257": "canardman-main",
 } 
 
 def kebabToCamel(str):
@@ -31,6 +32,8 @@ def colorsToCSSVar(txt):
         "border-1": "--border-color-1",
         "background-header": "--background-color-header",
         "text-alt": "--text-color-alt",
+        "text-soft-error-main": "--text-color-soft-error-main",
+        "canardman-main": "--background-color-canarman-main",
     }
     if txt in defined:
         return "rgb(var(" + defined[txt] + "))"

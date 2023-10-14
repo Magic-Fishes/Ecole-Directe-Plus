@@ -11,7 +11,7 @@ export default function Button({ buttonType="button", children, value, onClick, 
             type={buttonType}
             value={value}
             onClick={onClick}
-            className={`button ${className} ${(buttonType === "submit" && "submitter")} ${state}`}
+            className={`button ${className} ${(buttonType === "submit" ? "submitter" : "")} ${state}`}
             id={id}
             {...props}
         >

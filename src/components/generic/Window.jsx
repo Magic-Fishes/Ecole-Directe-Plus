@@ -437,7 +437,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
             const bounds = element.getBoundingClientRect();
             const scaledReference = bounds[reference] / scale;
-            const scaleFactor = (scaledReference + delta) / scaledReference;
+            let scaleFactor = (scaledReference + delta) / scaledReference;
+            const MIN_SCALE = .9;
+            if (scaleFactor < MIN_SCALE) {
+                scaleFactor = MIN_SCALE;
+            }
             element.style.scale = scaleFactor;
         }
 

@@ -46,7 +46,11 @@
     cursor: pointer;
     opacity: 0;
     scale: 0;
-    animation: pop-in 0.3s ease forwards;
+    /* animation: pop-in .3s ease forwards; */
+    animation-name: pop-in;
+    animation-duration: .3s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
     animation-delay: calc(var(--order) * 100ms);
 }
 .tabs-container .tab:hover {
