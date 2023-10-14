@@ -140,20 +140,32 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
+                <div className="setting" id="sepia-filter">
+                    <CheckBox id="sepia-filter-cb" label={<span>Activer le filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                </div>
+                
+                <div className="setting" id="high-contrast-filter">
+                    <CheckBox id="high-contrast-filter-cb" label={<span>Activer le mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
+                </div>
+                
+                <div className="setting" id="grayscale-filter">
+                    <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
+                </div>
+
                 <div className="setting" id="reset-windows-layouts">
                     <span>Réinitialiser l'agencement des fenêtres</span> <Button onClick={() => settings.set("windowArrangement", [])}>Réinitialiser</Button>
                 </div>
 
                 <div className="setting disabled" id="animate-windows">
-                    <CheckBox id="animate-windows" label={<span>Animer l'apparition des fenêtres</span>} />
+                    <CheckBox id="animate-windows-cb" label={<span>Animer l'apparition des fenêtres</span>} />
                 </div>
 
                 <div className="setting disabled" id="show-old-streak">
-                    <CheckBox id="show-old-streak" label={<span>Afficher les Streak passées</span>} />
+                    <CheckBox id="show-old-streak-cb" label={<span>Afficher les Streak passées</span>} />
                 </div>
 
                 <div className="setting disabled" id="show-negative-badges">
-                    <CheckBox id="show-negative-badges" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
+                    <CheckBox id="show-negative-badges-cb" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
                 </div>
 
                 {/* advanced settings */}

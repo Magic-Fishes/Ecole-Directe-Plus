@@ -7,9 +7,11 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const settings = useUserSettings();
 
     const createNotification = useCreateNotification();
     
@@ -155,6 +157,28 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
         handleDevChannel();
     }, []);
+
+
+    // filters management
+    useEffect(() => {
+        const isSepiaEnabled = settings.get("isSepiaEnabled");
+        const isHighContrastEnabled = settings.get("isHighContrastEnabled");
+        const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
+
+        let filters = "";
+        if (isSepiaEnabled) {
+            filters += "sepia(.7) ";
+        }
+        if (isHighContrastEnabled) {
+            filters += "contrast(1.5) ";
+        }
+        if (isGrayscaleEnabled) {
+            filters += "grayscale(1) ";
+        }
+
+        document.documentElement.style.filter = filters;
+        
+    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled")])
 
 
     // - - - - - - - - - - - - - - - - - - - - //

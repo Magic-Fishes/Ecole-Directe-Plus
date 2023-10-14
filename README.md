@@ -1,7 +1,7 @@
 # Ecole-Directe-Plus
 ## Aim of the project
 We were really driven to improve the experience of the online part of our school and give it a more pleasant and functional environment.
-The EcoleDirecte platform has been completely redesigned to offer the best comfort to all students.
+The EcoleDirecte platform has been completely redesigned from scratch to offer the best comfort to all students.
 Enjoy the most-requested features and a ton of small but game changer improvements.
 
 ## New features

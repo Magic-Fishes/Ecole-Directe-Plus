@@ -78,6 +78,9 @@ const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
     displayMode: "quality",
+    isSepiaEnabled: false,
+    isHighContrastEnabled: false,
+    isGrayscaleEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
@@ -139,6 +142,15 @@ function initSettings(accountList) {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
             },
+            isSepiaEnabled: {
+                value: getSetting("isSepiaEnabled", i),
+            },
+            isHighContrastEnabled: {
+                value: getSetting("isHighContrastEnabled", i),
+            },
+            isGrayscaleEnabled: {
+                value: getSetting("isGrayscaleEnabled", i),
+            },
             gradeScale: {
                 value: getSetting("gradeScale", i),
                 min: 1,
@@ -149,7 +161,6 @@ function initSettings(accountList) {
             },
             schoolYear: {
                 value: getSetting("schoolYear", i),
-                max: (new Date()).getFullYear() + 1
             },
             isSchoolYearEnabled: {
                 value: getSetting("isSchoolYearEnabled", i),
@@ -1146,6 +1157,7 @@ export default function App() {
 
                     setIsFullScreen={setIsFullScreen}
                     globalSettings={globalSettings}
+                    useUserSettings={useUserSettings}
                     entryURL={entryURL}
                     setting={userSettings}
                     syncSettings={syncSettings}
