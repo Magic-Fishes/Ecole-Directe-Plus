@@ -1305,7 +1305,7 @@ export default function App() {
                     <RouterProvider router={router} />
                 </DOMNotification>
             </Suspense>
-            <p>{"THIS_IS_A_SUPER_SECRET_CHAIN_YOU_SHOULDN_T_SEE"}</p>
+            <p>{"THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY"}</p>
         </AppContext.Provider>
     );
 }
