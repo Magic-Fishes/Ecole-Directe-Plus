@@ -20,9 +20,9 @@ import { AppContext } from "../../../App";
 import "./Settings.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
-export default function Settings({ usersSettings, accountsList }) {
+export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
 
-    const { useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -35,7 +35,7 @@ export default function Settings({ usersSettings, accountsList }) {
         if (newEnableValue) {
             settings.set("gradeScale", settings.get("gradeScale") ? newEnableValue * settings.get("gradeScale") : newEnableValue * 20)
         }
-        settings.set("isGradeScaleEnabled", newEnableValue)
+        settings.set("isGradeScaleEnabled", newEnableValue);
     }
 
     const handleGradeScaleValueChange = (newValue) => {
@@ -48,7 +48,23 @@ export default function Settings({ usersSettings, accountsList }) {
     const handleDevChannelSwitchingToggle = () => {
         globalSettings.isDevChannel.set(!globalSettings.isDevChannel.value);
         refreshApp();
-        // location.reload();
+    }
+
+    const handleSchoolYearChange = (newValue, side) => {
+        newValue = parseInt(newValue);
+        settings.set("isSchoolYearEnabled", true);
+        
+        let schoolYear = structuredClone(settings.get("schoolYear"));
+        if (side === 0) {
+            schoolYear[0] = newValue;
+            schoolYear[1] = newValue + 1;
+        } else {
+            schoolYear[1] = newValue;
+            schoolYear[0] = newValue - 1;
+        }
+        
+        resetUserData(true);
+        settings.set("schoolYear", schoolYear)
     }
 
     return (
@@ -124,42 +140,56 @@ export default function Settings({ usersSettings, accountsList }) {
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
+                <div className="setting" id="sepia-filter">
+                    <CheckBox id="sepia-filter-cb" label={<span>Activer le filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                </div>
+                
+                <div className="setting" id="high-contrast-filter">
+                    <CheckBox id="high-contrast-filter-cb" label={<span>Activer le mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
+                </div>
+                
+                <div className="setting" id="grayscale-filter">
+                    <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
+                </div>
+
                 <div className="setting" id="reset-windows-layouts">
                     <span>Réinitialiser l'agencement des fenêtres</span> <Button onClick={() => settings.set("windowArrangement", [])}>Réinitialiser</Button>
                 </div>
 
                 <div className="setting disabled" id="animate-windows">
-                    <CheckBox id="animate-windows" label={<span>Animer l'apparition des fenêtres</span>} />
+                    <CheckBox id="animate-windows-cb" label={<span>Animer l'apparition des fenêtres</span>} />
                 </div>
 
                 <div className="setting disabled" id="show-old-streak">
-                    <CheckBox id="show-old-streak" label={<span>Afficher les Streak passées</span>} />
+                    <CheckBox id="show-old-streak-cb" label={<span>Afficher les Streak passées</span>} />
                 </div>
 
                 <div className="setting disabled" id="show-negative-badges">
-                    <CheckBox id="show-negative-badges" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
+                    <CheckBox id="show-negative-badges-cb" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
                 </div>
 
                 {/* advanced settings */}
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
+                    {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
+                    <div className={`setting${(isStandaloneApp && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) ? " disabled" : ""}`} id="dev-channel">
+                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                    </div>
 
-                    <div className="setting" id="dev-channel">
-                        <span>Basculer sur le canal développeur</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+
+                    <div className="setting disabled" id="info-persistence">
+                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
                     </div>
 
                     <div className="setting" id="clear-local-storage">
                         <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
-                    <div className="setting disabled" id="info-persistence">
-                        <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
-                    </div>
-
-                    <div className="setting disabled" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={false} onChange={() => console.log("changed")} />
+                    <div className="setting" id="school-year">
+                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => settings.set("isSchoolYearEnabled", event.target.checked)} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={2021} max={(new Date()).getFullYear() + 1} />
+                        <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
+                        <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">
@@ -170,7 +200,6 @@ export default function Settings({ usersSettings, accountsList }) {
                     <div className="setting disabled" id="dynamic-loading">
                         <CheckBox id="dynamic-loading" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
                     </div>
-
 
                     <h2 className="heading">Raccourcis claviers</h2>
 

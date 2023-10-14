@@ -9,6 +9,7 @@
     visibility: hidden;
     
     position: absolute;
+    /* z-index: auto; */
     height: var(--grow-size);
     animation: shine var(--grow-duration) ease-in-out 0s forwards;
     transform-origin: center;

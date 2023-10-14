@@ -19,7 +19,7 @@ import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
-import { areOccurenciesEqual } from "./utils/functions"
+import { areOccurenciesEqual, getCurrentSchoolYear } from "./utils/functions"
 
 import guestGrades from "./data/grades.json";
 
@@ -78,8 +78,13 @@ const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
     displayMode: "quality",
+    isSepiaEnabled: false,
+    isHighContrastEnabled: false,
+    isGrayscaleEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
+    schoolYear: getCurrentSchoolYear(),
+    isSchoolYearEnabled: false,
     lucioleFont: false,
     windowArrangement: [],
     toggleAnimatedWindowApparition: true,
@@ -110,8 +115,7 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
         const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {
-        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
         return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
@@ -138,6 +142,15 @@ function initSettings(accountList) {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
             },
+            isSepiaEnabled: {
+                value: getSetting("isSepiaEnabled", i),
+            },
+            isHighContrastEnabled: {
+                value: getSetting("isHighContrastEnabled", i),
+            },
+            isGrayscaleEnabled: {
+                value: getSetting("isGrayscaleEnabled", i),
+            },
             gradeScale: {
                 value: getSetting("gradeScale", i),
                 min: 1,
@@ -145,6 +158,12 @@ function initSettings(accountList) {
             },
             isGradeScaleEnabled: {
                 value: getSetting("isGradeScaleEnabled", i),
+            },
+            schoolYear: {
+                value: getSetting("schoolYear", i),
+            },
+            isSchoolYearEnabled: {
+                value: getSetting("isSchoolYearEnabled", i),
             },
             lucioleFont: {
                 value: getSetting("lucioleFont", i),
@@ -220,6 +239,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
     const [appKey, setAppKey] = useState(crypto.randomUUID());
 
     // diverse
@@ -354,7 +374,7 @@ export default function App() {
 
     useEffect(() => {
         const lsGlobalSettings = {};
-                for (const i in globalSettings) {
+        for (const i in globalSettings) {
             lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
         }
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
@@ -785,7 +805,7 @@ export default function App() {
                     setUserIds({ username: username, password: password })
                     if (keepLoggedIn) {
                         localStorage.setItem("userIds", JSON.stringify({ username: username, password: password }))
-                                            }
+                    }
                     let token = response.token // collecte du token
                     console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
@@ -876,7 +896,9 @@ export default function App() {
     async function fetchUserTimeline(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
-        const data = {};
+        const data = {
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+        }
 
         fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get%26v=${apiVersion}`,
             {
@@ -920,7 +942,7 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
-            anneeScolaire: ""
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
@@ -940,7 +962,7 @@ export default function App() {
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 403;
+                    code = 49969;
                 } else {
                     code = response.code;
                 }
@@ -948,23 +970,25 @@ export default function App() {
                 console.log("RESPONSE:", response);
                 console.log("CODE:", code);
                 if (code === 200) {
-                    console.log("UWU");
                     let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
                     // usersGrades[userId] = testGrades.data;
                     setGrades(usersGrades);
-                    setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-// setTokenState("");
+                    // setTokenState("");
                     // logout();
                 } else if (code === 403) {
-                    let usersGrades = [...grades]; 
+                    let usersGrades = structuredClone(grades);
                     setGrades(usersGrades);
-                    setTokenState((old) => (response.token || old));
+                } else if (code === 49969) {
+                    let usersGrades = [...grades];
+                    usersGrades[userId] = guestGrades.data;
+                    setGrades(usersGrades);
                 }
+                setTokenState((old) => (response?.token || old));
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
@@ -1010,12 +1034,15 @@ export default function App() {
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    function resetUserData() {
-        setUserIds({});
-        setActiveAccount(0);
+    function resetUserData(soft=false) {
+        if (soft) {
+            setUserIds({});
+            setActiveAccount(0);
+        }
         setUserData([])
-        // setKeepLoggedIn(false);
         setGrades([]);
+        setTimeline([]);
+        // setKeepLoggedIn(false);
     }
 
     function logout() {
@@ -1130,6 +1157,7 @@ export default function App() {
 
                     setIsFullScreen={setIsFullScreen}
                     globalSettings={globalSettings}
+                    useUserSettings={useUserSettings}
                     entryURL={entryURL}
                     setting={userSettings}
                     syncSettings={syncSettings}
@@ -1203,7 +1231,7 @@ export default function App() {
                             path: "settings",
                         },
                         {
-                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} />,
+                            element: <Settings usersSettings={userSettings[activeAccount]} accountsList={accountsListState} getCurrentSchoolYear={getCurrentSchoolYear} resetUserData={resetUserData} />,
                             path: ":userId/settings"
                         },
                         {
@@ -1261,6 +1289,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
         isDevChannel,
         useUserData,
         useUserSettings,
@@ -1272,6 +1301,7 @@ export default function App() {
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
+        isStandaloneApp,
         isDevChannel,
         useUserData,
         useUserSettings,
