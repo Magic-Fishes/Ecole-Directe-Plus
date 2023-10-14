@@ -37,9 +37,15 @@ export function getCurrentSchoolYear() {
 }
 
 export function encrypt(chain) {
+    if (!chain) {
+        return chain
+    }
     return  CryptoJS.AES.encrypt(chain, key).toString()
 }
 
 export function decrypt(chain) {
+    if (chain.includes("{") || !chain) {
+        return chain
+    }
     return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)
 }
