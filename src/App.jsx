@@ -908,7 +908,6 @@ export default function App() {
 
     async function fetchUserTimeline(controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        const userId = activeAccount;
         const data = {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
@@ -1051,6 +1050,8 @@ export default function App() {
         if (hard) {
             setUserIds({});
             setActiveAccount(0);
+            // localStorage.removeItem(lsIdName);
+            localStorage.removeItem("encryptedUserIds");
         }
         setUserData([])
         setGrades([]);
@@ -1062,13 +1063,10 @@ export default function App() {
         // suppression des informations de connexion
         localStorage.removeItem("token");
         localStorage.removeItem("accountsList");
-        localStorage.removeItem("username");
-        localStorage.removeItem("password");
         localStorage.removeItem("oldActiveAccount");
         // suppression des paramètres locaux et globaux
         localStorage.removeItem("userSettings");
         localStorage.removeItem("keepLoggedIn");
-        localStorage.removeItem(lsIdName);
         setTokenState("");
         setAccountsListState([]);
         resetUserData();
