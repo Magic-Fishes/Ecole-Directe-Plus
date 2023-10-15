@@ -29,7 +29,7 @@ export function getCurrentSchoolYear() {
     let year = today.getFullYear();
     let month = today.getMonth();
 
-    if (month >= 9) {
+    if (month >= 8) {
         return [year, (year + 1)];
     }
     

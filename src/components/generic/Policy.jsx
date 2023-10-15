@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import BottomSheet from "./PopUps/BottomSheet";
-
+import Copyleft from "../graphics/Copyleft"
 
 import "./Policy.css";
 
@@ -86,7 +86,7 @@ export default function Policy({ onCloseNavigateURL }) {
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
         <li className="legal-content" style={{listStyle: "none", marginBlock: "20px"}}>Dernière révision le 14 août 2023</li>
-        <li id="copyleft-container">Copyleft <img src="/images/copyleft-white.png" id="copyleft" alt="Copyleft" width="18" height="18" /> {new Date().getFullYear()} Ecole Directe Plus</li>
+        <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 
 
