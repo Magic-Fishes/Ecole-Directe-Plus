@@ -18,7 +18,8 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import "./Results.css";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
-    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
+    const settings = useUserSettings();
 
     const location = useLocation();
 
@@ -98,6 +99,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                             {sortedGrades && sortedGrades[selectedPeriod]
                                 ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
                                 : <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
                                     speed={1}
                                     backgroundColor={'#4b48d9'}
                                     foregroundColor={'#6354ff'}
@@ -159,6 +161,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             return <tr key={crypto.randomUUID()} className={index % 7 < 1 ? "category-row" : "subject-row"}>
                                                 <th className="head-cell">
                                                     <ContentLoader
+                                                        animate={settings.get("displayMode") === "quality"}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                         foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
@@ -169,6 +172,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 </th>
                                                 <td className="moyenne-cell">
                                                     <ContentLoader
+                                                        animate={settings.get("displayMode") === "quality"}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ?  "#7878ae" : "#75759a"}
                                                         foregroundColor={actualDisplayTheme === "dark" ?  "#9292d4" : "#9292c0"}
@@ -182,6 +186,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                     {index % 7 < 1
                                                         ? <div className="category-info">
                                                             <ContentLoader
+                                                                animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
@@ -190,6 +195,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
+                                                                animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
@@ -198,6 +204,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
+                                                                animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
@@ -210,6 +217,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                             {Array.from({ length: Math.floor(Math.random() * 8) + 2 }, (_) => {
                                                                 return (
                                                                     <ContentLoader
+                                                                        animate={settings.get("displayMode") === "quality"}
                                                                         speed={1}
                                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                         foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}

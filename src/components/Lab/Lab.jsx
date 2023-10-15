@@ -179,7 +179,7 @@ export default function Lab({ fetchGrades }) {
             <br />
             <KeyboardKey keyName="AltGraph">Alt gr</KeyboardKey>
             <h3 id="lab-app-loading">AppLoading</h3>
-            <AppLoading currentEDPVersion={"0.1.5"} />
+            <AppLoading currentEDPVersion={"0.6.9"} />
             <h3>ShiningDiv</h3>
             {/* Juste prcq le border radius de l'écran de mon tel m'empêche de tout voir bien*/}
             <div id="shining-test">

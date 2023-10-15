@@ -269,6 +269,9 @@
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     scroll-behavior: auto;
+    /* content loaders svg */
+    rx: 0;
+    ry: 0;
 }
 
 /* .switching-theme :is(*, ::placeholder, ::-webkit-scrollbar, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb), */

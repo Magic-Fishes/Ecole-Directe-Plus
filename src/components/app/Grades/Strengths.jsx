@@ -14,6 +14,8 @@ import "./Strengths.css";
 
 export default function Strengths({ activeAccount, sortedGrades, selectedPeriod, className = "", ...props }) {
     const [strengths, setStrengths] = useState([]);
+    const { useUserSettings } = useContext(AppContext);
+    const settings = useUserSettings();
 
 
     useEffect(() => {
@@ -72,6 +74,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                         Array.from({ length: 3 }, (_, index) => <li key={crypto.randomUUID()} className="strength-container">
                             <div className="strength-wrapper">
                                 <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
                                     speed={1}
                                     backgroundColor={'#35c92e'}
                                     foregroundColor={'#3fef36'}

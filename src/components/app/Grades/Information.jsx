@@ -1,8 +1,11 @@
 
+import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
+import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/functions";
 
-import Grade from "./Grade";
+import { AppContext } from "../../../App";
+
 import {
     Window,
     WindowHeader,
@@ -17,6 +20,9 @@ import {
     BadgeMehInfo,
 } from "../../generic/badges/BadgeInfo"
 
+
+
+// graphics
 import CanardmanSearching from "../../graphics/CanardmanSearching";
 
 import "./Information.css";
@@ -41,29 +47,12 @@ function findGradesObjectById(list, value) {
     }
 }
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function decodeBase64(string) {
-    const decodedText = atob(string);
-
-    const bytes = new Uint8Array(decodedText.length);
-    for (let i = 0; i < decodedText.length; i++) {
-        bytes[i] = decodedText.charCodeAt(i);
-    }
-
-    const textDecoder = new TextDecoder('utf-8');
-    const output = textDecoder.decode(bytes);
-
-    return output;
-
-}
-
-
 export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
     const location = useLocation();
     const navigate = useNavigate();
+
+    const { actualDisplayTheme, useUserSettings } = useContext(AppContext);
+    const settings = useUserSettings();
 
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
     if (sortedGrades && sortedGrades[selectedPeriod]) {
@@ -87,15 +76,17 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         {
                             Array.from({ length: 4 }, (_, index) => <div key={crypto.randomUUID()}>
                                 <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
                                     speed={1}
-                                    backgroundColor={'#63638c'}
-                                    foregroundColor={'#7e7eb2'}
+                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                     height="20"
                                     style={{ width: "70%" }}
                                 >
                                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                                 </ContentLoader>
                                 <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
                                     speed={1}
                                     backgroundColor={'#4b48d9'}
                                     foregroundColor={'#6354ff'}
@@ -109,6 +100,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                     </div>
                     <div style={{ textAlign: "center" }}>
                         <ContentLoader
+                            animate={settings.get("displayMode") === "quality"}
                             speed={1}
                             backgroundColor={'#7e7eab7F'}
                             foregroundColor={'#9a9ad17F'}
@@ -122,9 +114,10 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                     <div className="info-zone" style={{ paddingBottom: "0" }}>
                         <div className="text">
                             <ContentLoader
+                                animate={settings.get("displayMode") === "quality"}
                                 speed={1}
-                                backgroundColor={'#63638c'}
-                                foregroundColor={'#7e7eb2'}
+                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "300px" }}
                             >
@@ -132,9 +125,10 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             </ContentLoader>
 
                             <ContentLoader
+                                animate={settings.get("displayMode") === "quality"}
                                 speed={1}
-                                backgroundColor={'#63638c'}
-                                foregroundColor={'#7e7eb2'}
+                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "200px" }}
                             >
@@ -142,9 +136,10 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             </ContentLoader>
 
                             <ContentLoader
+                                animate={settings.get("displayMode") === "quality"}
                                 speed={1}
-                                backgroundColor={'#63638c'}
-                                foregroundColor={'#7e7eb2'}
+                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "260px" }}
                             >

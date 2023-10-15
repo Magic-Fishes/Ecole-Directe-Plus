@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, getUserInfo, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isTabletLayout }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isTabletLayout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -41,24 +41,6 @@ export default function Root({ currentEDPVersion, token, accountsList, getUserIn
 
     function redirectToLogin() {
         navigate("/login");
-    }
-
-    const fakeLogin = () => {
-        const fakeToken = "thisisafaketoken";
-        const fakeAccountsList = [
-            {
-                accountType: "E",
-                id: "0001",
-                firstName: "Guest",
-                lastName: "",
-                email: "ecole.directe.plus@gmail.com",
-                picture: "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
-                schoolName: "École de la République",
-                class: ["Pcpt", "Précepteur d'exception"]
-            },
-        ];
-        resetUserData()
-        getUserInfo(fakeToken, fakeAccountsList)
     }
 
     useEffect(() => {

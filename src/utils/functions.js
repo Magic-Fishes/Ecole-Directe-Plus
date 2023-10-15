@@ -36,6 +36,10 @@ export function getCurrentSchoolYear() {
     return [(year - 1), year];
 }
 
+export function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function encrypt(chain) {
     if (!chain) {
         return chain
@@ -48,4 +52,18 @@ export function decrypt(chain) {
         return chain
     }
     return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)
+}
+
+export function decodeBase64(string) {
+    const decodedText = atob(string);
+
+    const bytes = new Uint8Array(decodedText.length);
+    for (let i = 0; i < decodedText.length; i++) {
+        bytes[i] = decodedText.charCodeAt(i);
+    }
+
+    const textDecoder = new TextDecoder('utf-8');
+    const output = textDecoder.decode(bytes);
+
+    return output;
 }
