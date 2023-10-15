@@ -31,8 +31,8 @@ jobs:
       
       - name: Checking compatibility
         run: |
-         fichier=$(find dist/assets/ -type f -name "index*.js")
-         sed -i "s/THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY/${{secrets.SUPER_SECRET_KEY}}/g" $fichier
+          fichier=$(find dist/assets/ -type f -name "index*.js")
+          sed -i "s/THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY/${{secrets.SUPER_SECRET_KEY}}/g" $fichier
 
       - name: Deploy to the server
         uses: easingthemes/ssh-deploy@main
