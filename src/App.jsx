@@ -673,7 +673,6 @@ export default function App() {
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
                 periods[periodCode].generalAverage = generalAverage;
 
-
                 // création des badges
                 // les noms sont marqués dans le figma stv mieux t'y retrouver
                 const gradeBadges = [];
@@ -693,7 +692,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.greatStudent++
                         totalBadges.greatStudent++
                     }
-                    if (newGrade.value > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
+                    if ((newGrade.value/newGrade.scale*20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
                         gradeBadges.push("stonks");
                         periods[periodCode].subjects[subjectCode].badges.stonks++
                         totalBadges.stonks++
@@ -703,7 +702,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.keepOnFire++
                         totalBadges.keepOnFire++
                     }
-                    if (newGrade.value === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
+                    if ((newGrade.value/newGrade.scale*20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
                         gradeBadges.push("meh");
                         periods[periodCode].subjects[subjectCode].badges.meh++
                         totalBadges.meh++
@@ -768,7 +767,30 @@ export default function App() {
         }
     }
 
+    const fakeLogin = () => {
+        const fakeToken = "thisisafaketoken";
+        const fakeAccountsList = [
+            {
+                accountType: "E",
+                id: "0001",
+                firstName: "Guest",
+                lastName: "",
+                email: "ecole.directe.plus@gmail.com",
+                picture: "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
+                schoolName: "École de la République",
+                class: ["Pcpt", "Précepteur d'exception"]
+            },
+        ];
+        resetUserData()
+        getUserInfo(fakeToken, fakeAccountsList)
+    }
+
     async function fetchLogin(username, password, keepLoggedIn, callback) {
+        // guest management
+        if (username === "guest" && password === "secret") {
+            fakeLogin();
+            return 0;
+        }
 
         const payload = {
             identifiant: username,
@@ -1132,7 +1154,7 @@ export default function App() {
                     currentEDPVersion={currentEDPVersion}
                     token={tokenState}
                     accountsList={accountsListState}
-                    getUserInfo={getUserInfo}
+                    fakeLogin={fakeLogin}
                     resetUserData={resetUserData}
 
                     setDisplayTheme={(value) => { changeUserSettings("displayTheme", value) }}
