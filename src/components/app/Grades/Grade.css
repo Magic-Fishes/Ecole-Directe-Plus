@@ -66,8 +66,9 @@ a.grade.new-grade::after {
 a.grade.new-grade:is(.selected, .streak-grade, :hover, :focus-visible)::after {
     top: calc(100% + 5px);
 }
+
 a.grade.streak-grade.new-grade:not(.maybe-streak)::after {
-    background-color: #FF9600;
+    background-color: rgb(var(--background-color-streak-1));
 }
 
 
@@ -81,15 +82,17 @@ a.grade.streak-grade {
 a.grade.streak-grade.selectable:is(:hover, :focus-visible):not(.selected, .maybe-streak, :active) {
     background-color: #FFEACC77;
 }
+
 a.grade.streak-grade.selectable.selected {
-    border-color: #FF9600;
+    border-color: rgb(var(--background-color-streak-1));
 }
 
 a.grade.streak-grade.selectable:active {
-    border-color: #c77400;
+    border-color: rgb(var(--background-color-streak-1));
 }
+
 a.grade.streak-grade .grade-container {
-    background-color: #FF9600;
+    background-color: rgb(var(--background-color-streak-1));
 }
 
 /* début de row */
