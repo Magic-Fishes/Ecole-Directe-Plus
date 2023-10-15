@@ -9,6 +9,7 @@ svgInlineStyle = []
 
 definedColors = {
     "white": "text-main",
+    "black": "text-main",
     "#ffffff": "text-main",
     "#181829": "background-0",
     "#4B48D9": "border-0",
@@ -109,7 +110,7 @@ def modifyChildren(parent):
         if len(child):
             modifyChildren(child)
 
-route = "./images/"
+route = "../../../public/images/new/"
 for i in os.listdir(route):
     if i[i.index("."):] == ".svg":
         fileName = i.replace(".svg", "")
@@ -140,18 +141,29 @@ export default function """ + fileName + """ ({ className="", id="", alt, ...pro
         except ValueError:
             pass
         
-        with open("./src/inline/" + fileName + ".jsx", "w") as f:
+        with open("./" + fileName + ".jsx", "w") as f:
             f.write(inlineFile + svgFile + "\n\t)\n}")
 
-with open("./src/inline/graphics.css", "w") as css:
+cssFile = ""
+
+with open("./graphics.css", "r") as css:
+    cssFile = css.read()
+
+with open("./graphics.css", "w") as css:
+    css.write(cssFile)
     for i in style:
         for n in style[i]:
-            css.write("." + n + "-" + i.strip("#") + """ {
+            writedCss = "." + n + "-" + i.strip("#") + """ {
     """ + n + ": " + colorsToCSSVar(i) + """;
 }
 
-""")
+"""
+        if not writedCss in cssFile:
+            print(writedCss)
+            css.write(writedCss)
+
     for i in svgInlineStyle:
-        css.write(i)
+        if not i in cssFile:
+            css.write(i)
 
 print("svg successfully turned into react.js component")
