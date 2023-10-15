@@ -44,6 +44,27 @@ export default function Grade({ grade, className = "", ...props }) {
         return false;
     }
 
+    function checkLineBreak(dir) {
+        const sibling = (dir === 1 ? gradeRef.current.nextElementSibling : gradeRef.current.previousElementSibling);
+        if (sibling === null) {
+            return 0;
+        }
+        const siblingBounds = sibling.getBoundingClientRect()
+        const selfBounds = gradeRef.current.getBoundingClientRect();
+        if (siblingBounds.top !== selfBounds.top) {
+            setClassList((oldClassList) => {
+                for (let className of ["before-line-break", "after-line-break"]) {
+                    const index = oldClassList.indexOf(className);
+                    if (index > -1) {
+                        oldClassList.splice(index, 1);
+                    }
+                }
+                oldClassList.push(dir === 1 ? "before-line-break" : "after-line-break");
+                return oldClassList;
+            })
+        }
+    }
+
     function updateClassList() {
         if (gradeRef.current.classList.contains("streak-grade")) {
             setClassList((oldClassList) => {
@@ -51,17 +72,25 @@ export default function Grade({ grade, className = "", ...props }) {
                     const index = oldClassList.indexOf(className);
                     if (index > -1) {
                         oldClassList.splice(index, 1);
-                    }                    
+                    }
                 }
                 if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
                     oldClassList.push("mid-row");
+                    checkLineBreak(1);
+                    checkLineBreak(-1);
                 } else {
                     if (!hasStreakGradeBefore(1)) {
                         oldClassList.push("start-row");
+                        if (hasStreakGradeAfter(1)) {
+                            checkLineBreak(1);
+                        }
                     }
-    
+                    
                     if (!hasStreakGradeAfter(1)) {
                         oldClassList.push("end-row");
+                        if (hasStreakGradeBefore(1)) {
+                            checkLineBreak(-1);
+                        }
                     }
                 }
 
@@ -85,12 +114,19 @@ export default function Grade({ grade, className = "", ...props }) {
         }
     }
 
+    // TODO: handle when resize
+    // useEffect(() => {
+    //     window.addEventListener("resize", updateClassList);
+        
+    //     return () => {
+    //         window.removeEventListener("resize", updateClassList);
+    //     }
+    // }, [])
+
     useEffect(() => {
         updateClassList();
         handleNewGrade();
     }, [grade]);
-
-
 
     return (
         createElement(
