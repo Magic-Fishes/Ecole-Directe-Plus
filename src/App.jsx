@@ -183,7 +183,7 @@ function initSettings(accountList) {
 }
 
 function initData(length) {
-    return Array.from({ length: length }, (_, index) => ({
+    return Array.from({ length: length }, (_) => ({
         badges: {
             star: 0,
             bestStudent: 0,

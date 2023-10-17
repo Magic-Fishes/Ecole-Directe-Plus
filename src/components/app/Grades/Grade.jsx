@@ -44,57 +44,63 @@ export default function Grade({ grade, className = "", ...props }) {
         return false;
     }
 
-    function checkLineBreak(dir) {
+    function checkLineBreak(dir = 1) {
         const sibling = (dir === 1 ? gradeRef.current.nextElementSibling : gradeRef.current.previousElementSibling);
         if (sibling === null) {
+            console.log("sibling === null")
             return 0;
         }
-        const siblingBounds = sibling.getBoundingClientRect()
+        const siblingBounds = sibling.getBoundingClientRect();
         const selfBounds = gradeRef.current.getBoundingClientRect();
-        if (siblingBounds.top !== selfBounds.top) {
+        if (dir*Math.round(siblingBounds.left) <= dir*Math.round(selfBounds.left)) {
+            console.log("resize")
             setClassList((oldClassList) => {
+                const newClassList = structuredClone(oldClassList);
                 for (let className of ["before-line-break", "after-line-break"]) {
-                    const index = oldClassList.indexOf(className);
+                    const index = newClassList.indexOf(className);
                     if (index > -1) {
-                        oldClassList.splice(index, 1);
+                        newClassList.splice(index, 1);
                     }
                 }
-                oldClassList.push(dir === 1 ? "before-line-break" : "after-line-break");
-                return oldClassList;
+                newClassList.push(dir === 1 ? "before-line-break" : "after-line-break");
+                console.log("newClassList:", newClassList)
+                return newClassList;
             })
         }
     }
 
     function updateClassList() {
+        console.log("------------------")
         if (gradeRef.current.classList.contains("streak-grade")) {
             setClassList((oldClassList) => {
+                const newClassList = structuredClone(oldClassList);
                 for (let className of ["start-row", "mid-row", "end-row"]) {
-                    const index = oldClassList.indexOf(className);
+                    const index = newClassList.indexOf(className);
                     if (index > -1) {
-                        oldClassList.splice(index, 1);
+                        newClassList.splice(index, 1);
                     }
                 }
                 if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
-                    oldClassList.push("mid-row");
+                    newClassList.push("mid-row");
                     checkLineBreak(1);
                     checkLineBreak(-1);
                 } else {
                     if (!hasStreakGradeBefore(1)) {
-                        oldClassList.push("start-row");
+                        newClassList.push("start-row");
                         if (hasStreakGradeAfter(1)) {
                             checkLineBreak(1);
                         }
                     }
                     
                     if (!hasStreakGradeAfter(1)) {
-                        oldClassList.push("end-row");
+                        newClassList.push("end-row");
                         if (hasStreakGradeBefore(1)) {
                             checkLineBreak(-1);
                         }
                     }
                 }
 
-                return oldClassList;
+                return newClassList;
             });
         }
     }
@@ -115,13 +121,13 @@ export default function Grade({ grade, className = "", ...props }) {
     }
 
     // TODO: handle when resize
-    // useEffect(() => {
-    //     window.addEventListener("resize", updateClassList);
+    useEffect(() => {
+        window.addEventListener("resize", updateClassList);
         
-    //     return () => {
-    //         window.removeEventListener("resize", updateClassList);
-    //     }
-    // }, [])
+        return () => {
+            window.removeEventListener("resize", updateClassList);
+        }
+    }, [])
 
     useEffect(() => {
         updateClassList();

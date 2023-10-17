@@ -182,7 +182,6 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             })()}</p>
                             {selectedElement.badges.length > 0 ? <div className="badges-zone">
                                 <span>Badges :</span>
-                                {console.log(selectedElement.badges)}
                                 {selectedElement.badges.includes("star") && <BadgeStarInfo />}
                                 {selectedElement.badges.includes("bestStudent") && <BadgePlusInfo />}
                                 {selectedElement.badges.includes("greatStudent") && <BadgeCheckInfo />}

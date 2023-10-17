@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Button from "../../generic/UserInputs/Button";
 import DisplayThemeController from "../../generic/UserInputs/DisplayThemeController";
 
 // graphics

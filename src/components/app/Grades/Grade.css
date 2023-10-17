@@ -135,14 +135,14 @@ a.grade.streak-grade.end-row .grade-container {
     border-bottom-right-radius: 50px;
 }
 
-a.grade.streak-grade.mid-row.before-line-break {
+/* a.grade.streak-grade.mid-row.before-line-break {
     border-image-slice: 1;
     border-image-source: linear-gradient(to right, #FFEACC, transparent 90%);
 }
 a.grade.streak-grade.mid-row.after-line-break {
     border-image-slice: 1;
     border-image-source: linear-gradient(to left, #FFEACC, transparent 90%);
-}
+} */
 
 a.grade.streak-grade.before-line-break .grade-container {
     background: linear-gradient(to right, #FF9600, transparent 90%);
