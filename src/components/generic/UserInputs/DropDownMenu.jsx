@@ -10,6 +10,8 @@ import "./DropDownMenu.css";
 export default function DropDownMenu({ name, options, displayedOptions=options, selected, onChange, id="", className="", ...props }) {
     const [isOpen, setIsOpen] = useState(false);
 
+    const [needOverflowAuto, setNeedOverflowAuto] = useState(false);
+    
     const dropDownMenuRef = useRef(null);
 
     useEffect(() => {
@@ -22,12 +24,14 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
         const handleClickOutside = (event) => {
             if (event.target !== dropDownMenuRef.current && !dropDownMenuRef.current.contains(event.target)) {
                 setIsOpen(false);
+                setTimeout(() => setNeedOverflowAuto(false), 200);
             }
         }
 
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
                 setIsOpen(false);
+                setTimeout(() => setNeedOverflowAuto(false), 200);
             }
         }
 
@@ -47,11 +51,13 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
 
     const handleClick = () => {
         setIsOpen(!isOpen);
+        setTimeout(() => setNeedOverflowAuto(!isOpen), 200);
     }
 
     const onChoose = (event) => {
         onChange(event.target.value);
         setIsOpen(false);
+        setTimeout(() => setNeedOverflowAuto(false), 200);
     }
 
     // Pour navigation clavier
@@ -81,7 +87,7 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
                     <DropDownArrow />
                 </button>
                 <div className="animation-wrapper">
-                    <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className="options-container">
+                    <fieldset name={name} onMouseDown={handleMiddleMouseButtonDown} className={`options-container${needOverflowAuto ? " overflow-auto" : ""}`}>
                         {options.map((option) => <div key={option} name={name} className="option-container" >
                             <hr /> 
                             <label htmlFor={option} onKeyDown={handleKeyDown} className={"option" + (option === selected ? " selected-option" : "")} tabIndex="0">
