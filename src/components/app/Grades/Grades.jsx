@@ -51,7 +51,6 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                 console.log("fetchUserGrades")
                 fetchUserGrades(controller);
             } else {
-                console.log("WTF")
                 sortGrades(grades, activeAccount);
             }
         }

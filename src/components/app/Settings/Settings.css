@@ -26,6 +26,7 @@ body:has(#settings) {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+    /* gap: 10px; */
 }
 
 #settings .setting.disabled {
@@ -33,6 +34,12 @@ body:has(#settings) {
     opacity: 0.3;
     pointer-events: none;
     cursor: not-allowed; /* marche pas à cause de pointer-events */
+}
+
+#settings .setting .setting-label {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
 }
 
 #settings .setting .info-button {
@@ -84,7 +91,10 @@ body:has(#settings) {
 }
 
 /* grade scale */
-#grade-scale-cb {
+#settings #grade-scale {
+    row-gap: 20px;
+}
+#settings #grade-scale #grade-scale-cb {
     margin-right: 10px;
 }
 
@@ -92,7 +102,8 @@ body:has(#settings) {
 /* display mode */
 #settings #display-mode {
     display: flex;
-    flex-flow: row nowrap;   
+    flex-flow: row wrap;
+    row-gap: 20px;
 }
 #settings #display-mode span {
     white-space: nowrap;
@@ -130,26 +141,20 @@ body:has(#settings) {
 }
 #settings #display-mode #display-mode-sc {
     flex: 1;
-    display: inline-flex;
+    width: 100%;
+}
+#settings #display-mode #display-mode-dd {
+    flex: 1;
+    max-width: initial;
     width: 100%;
 }
 
 
-/* default active account  */
-
-#settings #default-active-account {
-    display: flex;
-    flex-flow: row nowrap;
-    gap: 10px;
+#settings #reset-windows-layouts {
+    column-gap: 10px;
+    row-gap: 20px;
+    text-align: center;
 }
-#settings #default-active-account span {
-    flex-basis: auto;
-}
-#settings #default-active-account .drop-down-menu  {
-    max-width: initial;
-    flex: 1;
-}
-
 
 /* advanced settings */
 
@@ -250,4 +255,16 @@ body:has(#settings) {
     flex-flow: row wrap;
     justify-content: center;
     gap: 5px;
+}
+
+
+@media only screen and (max-width: 450px) {
+    #settings .setting {
+        justify-content: center;
+        margin-bottom: 50px;
+    }
+
+    #settings #display-theme {
+        flex-direction: column;
+    }
 }

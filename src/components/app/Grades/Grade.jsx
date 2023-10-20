@@ -47,13 +47,11 @@ export default function Grade({ grade, className = "", ...props }) {
     function checkLineBreak(dir = 1) {
         const sibling = (dir === 1 ? gradeRef.current.nextElementSibling : gradeRef.current.previousElementSibling);
         if (sibling === null) {
-            console.log("sibling === null")
             return 0;
         }
         const siblingBounds = sibling.getBoundingClientRect();
         const selfBounds = gradeRef.current.getBoundingClientRect();
         if (dir*Math.round(siblingBounds.left) <= dir*Math.round(selfBounds.left)) {
-            console.log("resize")
             setClassList((oldClassList) => {
                 const newClassList = structuredClone(oldClassList);
                 for (let className of ["before-line-break", "after-line-break"]) {
@@ -63,14 +61,12 @@ export default function Grade({ grade, className = "", ...props }) {
                     }
                 }
                 newClassList.push(dir === 1 ? "before-line-break" : "after-line-break");
-                console.log("newClassList:", newClassList)
                 return newClassList;
             })
         }
     }
 
     function updateClassList() {
-        console.log("------------------")
         if (gradeRef.current.classList.contains("streak-grade")) {
             setClassList((oldClassList) => {
                 const newClassList = structuredClone(oldClassList);
