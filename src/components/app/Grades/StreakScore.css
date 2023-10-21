@@ -71,6 +71,7 @@
     flex-basis: 100px;
     display: flex;
     justify-content: center;
+    font-variant: tabular-nums;
 }
 
 .streak-score .score-high-score {
