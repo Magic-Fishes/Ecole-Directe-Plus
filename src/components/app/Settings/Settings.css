@@ -41,6 +41,9 @@ body:has(#settings) {
     flex-flow: row nowrap;
     align-items: center;
 }
+#settings .setting .setting-label > span {
+    flex: 1;
+}
 
 #settings .setting .info-button {
     display: inline-block;
@@ -76,7 +79,7 @@ body:has(#settings) {
 #settings #display-theme {
     display: flex;
     flex-flow: row nowrap;
-    gap: 20px;
+    gap: 15px;
 }
 #settings #display-theme span {
     white-space: nowrap;
@@ -92,7 +95,7 @@ body:has(#settings) {
 
 /* grade scale */
 #settings #grade-scale {
-    row-gap: 20px;
+    row-gap: 15px;
 }
 #settings #grade-scale #grade-scale-cb {
     margin-right: 10px;
@@ -103,7 +106,7 @@ body:has(#settings) {
 #settings #display-mode {
     display: flex;
     flex-flow: row wrap;
-    row-gap: 20px;
+    row-gap: 15px;
 }
 #settings #display-mode span {
     white-space: nowrap;
@@ -152,8 +155,37 @@ body:has(#settings) {
 
 #settings #reset-windows-layouts {
     column-gap: 10px;
-    row-gap: 20px;
+    row-gap: 15px;
     text-align: center;
+}
+
+#settings #refresh-user-data .button {
+    width: 100%;
+    margin: 0;
+}
+
+/* face your fears */
+#face-your-fears {
+    /* background-color: rgb(12, 4, 20); */
+    background-image: url("https://img.freepik.com/free-vector/gradient-black-background-with-wavy-lines_23-2149157314.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    border: 1px solid #7b7b7b;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+#face-your-fears * {
+    color: white;
+}
+#face-your-fears .heading {
+    font-size: var(--font-size-20);
+    margin-bottom: 20px;
+}
+
+#face-your-fears :last-child {
+    margin-bottom: 0;
 }
 
 /* advanced settings */
@@ -194,7 +226,34 @@ body:has(#settings) {
 
 /* specific settings */
 
+/* dev channel */
+#advanced-settings #dev-channel {
+    row-gap: 15px;
+}
 
+/* info persistence */
+#advanced-settings #info-persistence {
+    flex-wrap: nowrap;
+}
+#advanced-settings #info-persistence #info-persistence-cb {
+    flex-shrink: 999;
+}
+
+
+/* clear local storage */
+#advanced-settings #clear-local-storage {
+    row-gap: 15px;
+}
+
+/* school year */
+#advanced-settings #school-year {
+    row-gap: 15px;
+}
+#advanced-settings #school-year > #shool-year-ni {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
 #advanced-settings #school-year .separator {
     margin-inline: 10px;
 }
@@ -204,7 +263,7 @@ body:has(#settings) {
 
 #advanced-settings .shortcuts .shortcut {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
@@ -217,7 +276,13 @@ body:has(#settings) {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
-    align-items: flex-end
+    align-items: flex-end;
+    gap: 2px;
+}
+#advanced-settings .shortcuts .keys {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 5px;
 }
 
 /* install as application */
@@ -266,5 +331,11 @@ body:has(#settings) {
 
     #settings #display-theme {
         flex-direction: column;
+    }
+
+    #advanced-settings #info-persistence #info-persistence-cb,
+    #advanced-settings #dynamic-loading-cb,
+    #advanced-settings #school-year-cb {
+        flex: 1;
     }
 }

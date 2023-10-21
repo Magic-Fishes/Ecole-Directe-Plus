@@ -164,35 +164,62 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="animate-windows-cb" label={<span>Animer l'apparition des fenêtres</span>} />
                 </div>
 
-                <div className="setting disabled" id="show-old-streak">
-                    <CheckBox id="show-old-streak-cb" label={<span>Afficher les Streak passées</span>} />
-                </div>
-
-                <div className="setting disabled" id="show-negative-badges">
-                    <CheckBox id="show-negative-badges-cb" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.value)} />
-                </div>
+                
+                {/^((?!chrome|android).)*safari/i.test(navigator.userAgent) && isStandaloneApp
+                    ? <div className="setting" id="refresh-user-data">
+                        <Button onClick={resetUserData}>Rafraîchir les informations</Button>
+                    </div>
+                    : null
+                }
+                {false && <div id="face-your-fears">
+                    <h2 className="heading">AFFRONTER LA RÉALITÉ</h2>
+                    <div className="setting" id="show-old-streak">
+                        <CheckBox id="show-old-streak-cb" label={<span>Afficher les Streak passées</span>} />
+                    </div>
+                    <div className="setting" id="show-negative-badges">
+                        <CheckBox id="show-negative-badges-cb" label={<span>Afficher les Badges négatifs</span>} checked={settings.get("negativeBadges")} onChange={(event) => settings.set("negativeBadges", event.target.checked)} />
+                    </div>
+                    <div className="setting" id="weaknesses-badges">
+                        <CheckBox id="weaknesses-cb" label={<span>Afficher les points faibles</span>} />
+                    </div>
+                </div>}
+                
 
                 {/* advanced settings */}
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
                     {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
                     <div className={`setting${(isStandaloneApp && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) ? " disabled" : ""}`} id="dev-channel">
-                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span> <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton> <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                        <div className="setting-label">
+                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
+                        <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
+                        </div>
+                        <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
                     </div>
 
 
                     <div className="setting disabled" id="info-persistence">
                         <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>
                     </div>
-
                     <div className="setting" id="clear-local-storage">
-                        <span>Nettoyer le localStorage et le sessionStorage</span> <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton> <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button> <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+                        <div className="setting-label">
+                            <span>Nettoyer le localStorage et le sessionStorage</span>
+                            <InfoButton className="setting-tooltip">Efface toutes les données relatives à Ecole Directe Plus stockées sur votre appareil (action destructrice). Si vous rencontrez un problème, cela pourrait le résoudre. Il est recommandé de rafraichir la page (vous serez déconnecté)</InfoButton>
+                        </div>
+                        <div>
+                            <Button onClick={() => { localStorage.clear(); sessionStorage.clear() }}>Nettoyer</Button>
+                            <Button onClick={() => location.reload()} title="Rafraîchir la page" className="refresh-button"><RefreshIcon /></Button>
+                        </div>
                     </div>
 
                     <div className="setting" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => { settings.set("isSchoolYearEnabled", event.target.checked); resetUserData(false); }} />
-                        <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
-                        <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
+                        <div className="setting-label">
+                            <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => { settings.set("isSchoolYearEnabled", event.target.checked); resetUserData(false); }} />
+                            <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
+                        </div>
+                        <div id="shool-year-ni">
+                            <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
+                        </div>
                     </div>
 
                     {accountsList.length > 1 ? <div className="setting" id="sync-settings">
@@ -201,7 +228,9 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
 
 
                     <div className="setting disabled" id="dynamic-loading">
-                        <CheckBox id="dynamic-loading" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
+                        <div className="setting-label">
+                            <CheckBox id="dynamic-loading-cb" label={<span>Activer le chargement dynamique</span>} /> <InfoButton className="setting-tooltip">Charge le contenu uniquement lorsque vous en avez besoin (recommandé pour les petits forfaits)</InfoButton>
+                        </div>
                     </div>
 
                     <h2 className="heading">Raccourcis claviers</h2>
