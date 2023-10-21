@@ -262,7 +262,7 @@ export default function App() {
         return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
 
-    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData })
+    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
 
 
     useEffect(() => {
@@ -1299,6 +1299,7 @@ export default function App() {
 
     const appContextValue = useMemo(() => ({
         activeAccount,
+        accountsListState,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
@@ -1311,6 +1312,7 @@ export default function App() {
         refreshApp,
         currentEDPVersion
     }), [activeAccount,
+        accountsListState,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
