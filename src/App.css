@@ -28,10 +28,6 @@
     --main-font-weight-semi-bold: 600;
     --main-font-weight-extra-bold: 800;
 
-    --debug-color-1: 255, 0, 0;
-    --debug-color-2: 0, 255, 0;
-    --debug-color-3: 0, 255, 255;
-
     /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
 
@@ -142,9 +138,6 @@
     --background-color-focus: 75, 72, 217, 0.3;
     --background-color-header: 55, 57, 143;
     
-    --background-color-streak-0: 255, 15, 0;
-    --background-color-streak-1: 255, 122, 0;
-    
     --background-color-strength-li-1: 36, 186, 22;
     --background-color-strength-li-2: 27, 155, 22;
     --background-color-strength-li-3: 17, 123, 21;
@@ -182,6 +175,9 @@
 
     /* - Others - */
     --background-color-selection: 4, 98, 210;
+
+    --background-color-streak-0: 255, 15, 0;
+    --background-color-streak-1: 255, 150, 0;
     
     --box-shadow-color-scrollbar-track: 199, 199, 255, 0.133;
     --box-shadow-color-scrollbar-thumb: 118, 118, 162;
@@ -205,9 +201,6 @@
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;
 
-    --background-color-streak-0: 255, 15, 0;
-    --background-color-streak-1: 255, 122, 0;
-    
     --background-color-strength-li-1: 36, 186, 22;
     --background-color-strength-li-2: 27, 155, 22;
     --background-color-strength-li-3: 17, 123, 21;
@@ -239,6 +232,9 @@
 
     /* - Others - */
     --background-color-selection: 4, 98, 210;
+
+    --background-color-streak-0: 255, 100, 60;
+    --background-color-streak-1: 255, 150, 0;
     
     --box-shadow-color-scrollbar-track: 10, 10, 55, 0.13;
     --box-shadow-color-scrollbar-thumb: 136, 136, 184;
