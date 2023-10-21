@@ -22,7 +22,7 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
 
-    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isMobileLayout } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isTabletLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -53,7 +53,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
     const handleSchoolYearChange = (newValue, side) => {
         newValue = parseInt(newValue);
         settings.set("isSchoolYearEnabled", true);
-        
+
         let schoolYear = structuredClone(settings.get("schoolYear"));
         if (side === 0) {
             schoolYear[0] = newValue;
@@ -62,7 +62,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
             schoolYear[1] = newValue;
             schoolYear[0] = newValue - 1;
         }
-        
+
         resetUserData(false);
         settings.set("schoolYear", schoolYear)
     }
@@ -86,54 +86,58 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 </div>
 
                 <div className="setting" id="display-mode">
-                    <span>Mode d'affichage</span>
-                    <InfoButton className="setting-tooltip display-mode-ib">
-                        <table id="demo-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th className="column-header">Qualité</th>
-                                    <th className="column-header">Équilibré</th>
-                                    <th className="column-header">Performance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th className="row-header">Coins arrondis</th>
-                                    <td>Oui</td>
-                                    <td>Oui</td>
-                                    <td>Non</td>
-                                </tr>
+                    <div className="setting-label">
+                        <span>Mode d'affichage</span>
+                        <InfoButton className="setting-tooltip display-mode-ib">
+                            <table id="demo-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th className="column-header">Qualité</th>
+                                        <th className="column-header">Équilibré</th>
+                                        <th className="column-header">Performance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th className="row-header">Coins arrondis</th>
+                                        <td>Oui</td>
+                                        <td>Oui</td>
+                                        <td>Non</td>
+                                    </tr>
 
-                                <tr>
-                                    <th className="row-header">Ombres portées</th>
-                                    <td>Oui</td>
-                                    <td>Oui</td>
-                                    <td>Non</td>
-                                </tr>
+                                    <tr>
+                                        <th className="row-header">Ombres portées</th>
+                                        <td>Oui</td>
+                                        <td>Oui</td>
+                                        <td>Non</td>
+                                    </tr>
 
-                                <tr>
-                                    <th className="row-header">Effets graphiques</th>
-                                    <td>Oui</td>
-                                    <td>Oui</td>
-                                    <td>Non</td>
-                                </tr>
-                                <tr>
-                                    <th className="row-header">Transitions</th>
-                                    <td>Oui</td>
-                                    <td>Non</td>
-                                    <td>Non</td>
-                                </tr>
-                                <tr>
-                                    <th className="row-header">Animations</th>
-                                    <td>Oui</td>
-                                    <td>Non</td>
-                                    <td>Non</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </InfoButton>
-                    {isMobileLayout ? <DropDownMenu id="display-mode-sc" name="display-mode-dm" options={settings.object("displayMode").values} displayedOptions={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} /> : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
+                                    <tr>
+                                        <th className="row-header">Effets graphiques</th>
+                                        <td>Oui</td>
+                                        <td>Oui</td>
+                                        <td>Non</td>
+                                    </tr>
+                                    <tr>
+                                        <th className="row-header">Transitions</th>
+                                        <td>Oui</td>
+                                        <td>Non</td>
+                                        <td>Non</td>
+                                    </tr>
+                                    <tr>
+                                        <th className="row-header">Animations</th>
+                                        <td>Oui</td>
+                                        <td>Non</td>
+                                        <td>Non</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </InfoButton>
+                    </div>
+                    {isTabletLayout
+                        ? <DropDownMenu id="display-mode-dd" name="display-mode-dm" options={settings.object("displayMode").values} displayedOptions={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} />
+                        : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
                 </div>
 
                 <div className="setting disabled" id="luciole-font">
@@ -143,11 +147,11 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 <div className="setting" id="sepia-filter">
                     <CheckBox id="sepia-filter-cb" label={<span>Activer le filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
                 </div>
-                
+
                 <div className="setting" id="high-contrast-filter">
                     <CheckBox id="high-contrast-filter-cb" label={<span>Activer le mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
                 </div>
-                
+
                 <div className="setting" id="grayscale-filter">
                     <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
                 </div>
@@ -186,7 +190,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     </div>
 
                     <div className="setting" id="school-year">
-                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => {settings.set("isSchoolYearEnabled", event.target.checked); resetUserData(false);}} />
+                        <CheckBox id="school-year-cb" label={<span>Année scolaire (expérimental) </span>} checked={settings.get("isSchoolYearEnabled")} onChange={(event) => { settings.set("isSchoolYearEnabled", event.target.checked); resetUserData(false); }} />
                         <InfoButton className="school-year">Expérimental : permet d'obtenir les informations des années scolaires précédentes. Nous tentons de reconstruire les données perdues mais ne garantissons pas la véracité totale des informations</InfoButton>
                         <NumberInput min={1999} max={getCurrentSchoolYear()[0]} value={settings.get("schoolYear")[0]} onChange={(value) => handleSchoolYearChange(value, 0)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} /><span className="separator"> - </span><NumberInput min={1999} max={getCurrentSchoolYear()[1]} value={settings.get("schoolYear")[1]} onChange={(value) => handleSchoolYearChange(value, 1)} active={settings.get("isSchoolYearEnabled")} displayArrowsControllers={false} />
                     </div>

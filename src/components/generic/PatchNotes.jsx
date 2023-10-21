@@ -12,7 +12,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                 <li>Nouveau menu de connexion avec l'option "rester connecté"</li>
                 <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback (tout type de retours est le bienvenu, nous sommes très curieux de connaître votre avis)</li>
                 <li>Choix du thème d'affichage : sombre / clair</li>
-                <li>Page de paramètre : modifiez vos paramètres pour ajuster votre expérience comme bon vous semble</li>
+                <li>Page de paramètres : modifiez vos paramètres pour ajuster votre expérience comme bon vous semble</li>
                 <h3 className="sub-header">Page des notes :</h3>
                 <li>Système de Score de Streak pour vous pousser à toujours vous améliorer</li>
                 <li>Affichage de vos points forts</li>

@@ -29,7 +29,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { globalSettings, useUserData } = useContext(AppContext);
+    const { globalSettings, useUserData, isStandaloneApp } = useContext(AppContext);
 
     const { userId } = useParams();
     
@@ -204,7 +204,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     // JSX
     return (
         <div id="app">
-            {!isFullScreen && <div className="header-container">
+            {!isFullScreen && <div className={`header-container${isStandaloneApp ? " standalone" : ""}`}>
                 <header className="header-menu">
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>

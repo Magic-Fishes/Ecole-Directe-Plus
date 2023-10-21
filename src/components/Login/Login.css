@@ -84,7 +84,7 @@ p.policy {
     transform: translateX(-50%);
 }
 
- #login .policy-link {
+#login .policy-link {
     text-decoration: none;
     color: rgb(var(--border-color-1));
     font-size: var(--main-font-size-14);

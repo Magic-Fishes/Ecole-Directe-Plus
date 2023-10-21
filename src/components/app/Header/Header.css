@@ -188,15 +188,20 @@ main.content {
 }
 
 @media only screen and (max-width: 450px) {
-    .header-menu {
+    
+    .standalone .header-menu {
         padding-bottom: 25px;
+    }
+
+    :not(.standalone) .header-container {
+        max-height: 75px;
     }
     
     .header-button .icon-container svg {
         height: 45px
     }
     .header-button .notifications {
-        left: 35px;
+        left: 30px;
     }
 }
 
