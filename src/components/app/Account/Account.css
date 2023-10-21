@@ -21,7 +21,26 @@ body:has(#account) {
 }
 #account .frame .frame-heading {
     text-align: center;
-    font-size: var(--font-size-20);
+    font-size: var(--font-size-24);
+    padding-block: 20px;
+}
+
+#student-informations {
+    display: flex;
+}
+
+#profile-picture-container {
+    height: 180px;
+    width: 180px;
+    border-radius: 15px;
+    background-color: white;
+    overflow: hidden;
+    text-align: center;
+}
+
+#profile-picture-container img {
+    width: 100%;
+    transform: translateY(-10px);
 }
 
 #account #profile {
