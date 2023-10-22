@@ -25,6 +25,7 @@ import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./u
 import guestGrades from "./data/grades.json";
 
 const Museum = lazy(() => import("./components/Museum/Museum"));
+const UnsubscribeEmails = lazy(() => import("./components/UnsubscribeEmails/UnsubscribeEmails"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -1183,7 +1184,7 @@ export default function App() {
                     path: "/"
                 },
                 {
-                    element: <Feedback activeUser={(accountsListState && accountsListState[activeAccount])} isTabletLayout={isTabletLayout} />,
+                    element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} isTabletLayout={isTabletLayout} />,
                     path: "feedback"
                 },
                 {
@@ -1198,6 +1199,10 @@ export default function App() {
                 {
                     element: <Museum />,
                     path: "museum"
+                },
+                {
+                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} />,
+                    path: "unsubscribe-emails"
                 },
                 {
                     element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,

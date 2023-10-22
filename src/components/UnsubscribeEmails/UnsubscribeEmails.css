@@ -1,0 +1,57 @@
+
+#unsubscribe-emails {
+    max-width: 800px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+#unsubscribe-emails * {
+    color: rgb(var(--text-color-alt));
+}
+
+#unsubscribe-emails > h1 {
+    font-size: var(--font-size-24);
+    margin-bottom: 20px;
+}
+
+#unsubscribe-emails #loading-animation {
+    display: block;
+    height: 50px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#unsubscribe-emails #loading-animation circle {
+    stroke: rgb(var(--text-color-alt));
+}
+
+#unsubscribe-emails #error-message {
+    color: rgb(var(--text-color-soft-error-main));
+}
+
+
+#unsubscribe-emails #call-to-action {
+    display: block;
+    width: max-content;
+    margin: 0 auto;
+    appearance: none;
+    text-decoration: none;
+    padding: 15px 20px;
+    border: 2px solid rgb(var(--text-color-alt));
+    border-radius: 50px;
+    font-weight: 600;
+    margin-block: 20px;
+    transition: .2s;
+}
+
+#unsubscribe-emails #call-to-action:hover {
+    background-color: rgb(var(--text-color-alt));
+    color: #181829;
+}
+
+#unsubscribe-emails #call-to-action:active {
+    background-color: rgba(var(--text-color-alt), .6);
+}
