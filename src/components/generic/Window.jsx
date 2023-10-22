@@ -16,6 +16,7 @@ function useWindowsContainer(options) {
     const animateWindows = options?.animateWindows ?? true;
     const allowWindowsManagement = options?.allowWindowsManagement ?? true;
     const windows = [];
+    const fullscreenInfo = []
     const windowsLayouts = [];
     const moveableContainers = [];
 
@@ -23,6 +24,7 @@ function useWindowsContainer(options) {
         animateWindows,
         allowWindowsManagement,
         windows,
+        fullscreenInfo,
         windowsLayouts,
         moveableContainers
     })
@@ -54,6 +56,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
+    const latestClick = useRef(null);
+    const anyFullscreen = useRef(false);
 
     const isGrabbing = useRef(false);
 
@@ -111,7 +115,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
         } else {
             // reset the CSS "order" of the flex containers
-            const children = digChildren(windowsContainerRef.current,
+            digChildren(windowsContainerRef.current,
                 (el) => {
                     // action
                     if (el.classList.contains("windows-layout") || el.classList.contains("moveable-container")) {
@@ -414,6 +418,43 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         }, displayMode.get() === "quality" ? 400 : 0);
     }
 
+    const handleFullscreen = (targetWindow) => {
+        if (anyFullscreen.current) {
+            document.exitFullscreen();
+        }
+
+        let idx;
+        for (idx = 0; idx < windowsContainer.windows.length; idx++) {
+            if (windowsContainer.windows[idx].current === targetWindow) {
+                break;
+            }
+        }
+        if (windowsContainer.fullscreenInfo[idx].allowFullscreen) {
+            let targetElement;
+            if (windowsContainer.fullscreenInfo[idx].fullscreenTargetName === "self") {
+                targetElement = targetWindow;
+            } else {
+                targetElement = document.getElementsByName(windowsContainer.fullscreenInfo[idx].fullscreenTargetName)[0];
+            }
+            // console.log("windowsContainer.fullscreenInfo[idx].fullscreenTargetName:", windowsContainer.fullscreenInfo[idx].fullscreenTargetName)
+            // console.log("targetElements:", targetElement)
+            const handleFullscreenChange = () => {
+                anyFullscreen.current = !anyFullscreen.current;
+                if (window.getSelection) {
+                    var selection = window.getSelection();
+                    selection.removeAllRanges();
+                }
+            }
+            targetElement.onfullscreenchange = handleFullscreenChange;
+            targetElement.requestFullscreen(handleFullscreenChange);
+
+            // prevent from selecting
+
+            return true;
+        }
+
+        return false;
+    }
 
     function handleMouseDown(event) {
         if (isGrabbing.current) {
@@ -425,6 +466,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             var selection = window.getSelection();
             selection.removeAllRanges();
         }
+        // Check double click
+        let doubleClicked = false;
+        if (latestClick.current !== null && (Date.now() - latestClick.current) < 400) {
+            console.log("DOUBLE CLICKED!");
+            doubleClicked = true;
+        }
+        latestClick.current = Date.now();
 
         let reorderStarted = false;
         let oldWindowArrangement;
@@ -498,6 +546,9 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         }
 
         const startReorder = (targetWindow) => {
+            if (anyFullscreen.current) {
+                return 0;
+            }
             reorderStarted = true;
             if (!event.touches) {
                 // prevent from selecting
@@ -564,12 +615,15 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             moveableElements = sortMoveableElementsByCSSOrder(mapMoveableElements(targetWindow));
             orderMoveableElementsInDOM(moveableElements);
             // console.log("moveableElements:", moveableElements);
-
         }
 
 
         // setup
         const targetWindow = lookForClosestWindowParent(event.target);
+        let requestFullscreen = false;
+        if (doubleClicked) {
+            requestFullscreen = handleFullscreen(targetWindow);
+        }
         preventDraggingIssues(targetWindow);
         // console.log("target:", targetWindow, "| mousedown");
 
@@ -647,6 +701,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             document.removeEventListener("mouseup", handleMouseUp);
             document.removeEventListener("touchend", handleMouseUp);
             document.removeEventListener("keydown", handleKeyDown);
+        }
+
+        if (requestFullscreen) {
+            handleMouseUp();
+            return 0;
         }
 
 
@@ -915,7 +974,7 @@ export function MoveableContainer({ children, className = "", ...props }) {
 }
 
 
-export function Window({ children, growthFactor = 1, WIP = false, className = "", ...props }) {
+export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName="self", WIP = false, className = "", ...props }) {
 
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
@@ -926,16 +985,19 @@ export function Window({ children, growthFactor = 1, WIP = false, className = ""
     const windowRef = useRef(null);
 
     useEffect(() => {
-        // console.log("context.windows", context.windows)
+        console.log("context.windows", context.windows)
+        console.log("context.fullscreenInfo", context.fullscreenInfo)
         if (!context.windows.includes(windowRef)) {
             windowRef.current.name = "window" + context.windows.length;
             context.windows.push(windowRef);
+            context.fullscreenInfo.push({ allowFullscreen, fullscreenTargetName });
         }
 
         return () => {
             const index = context.windows.indexOf(windowRef);
             if (index > -1) { // only splice array when item found
                 context.windows.splice(index, 1);
+                context.fullscreenInfo.splice(index, 1);
             }
         }
     }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);

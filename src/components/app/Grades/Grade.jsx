@@ -78,21 +78,21 @@ export default function Grade({ grade, className = "", ...props }) {
                 }
                 if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
                     newClassList.push("mid-row");
-                    checkLineBreak(1);
-                    checkLineBreak(-1);
+                    // checkLineBreak(1);
+                    // checkLineBreak(-1);
                 } else {
                     if (!hasStreakGradeBefore(1)) {
                         newClassList.push("start-row");
-                        if (hasStreakGradeAfter(1)) {
-                            checkLineBreak(1);
-                        }
+                        // if (hasStreakGradeAfter(1)) {
+                        //     checkLineBreak(1);
+                        // }
                     }
                     
                     if (!hasStreakGradeAfter(1)) {
                         newClassList.push("end-row");
-                        if (hasStreakGradeBefore(1)) {
-                            checkLineBreak(-1);
-                        }
+                        // if (hasStreakGradeBefore(1)) {
+                        //     checkLineBreak(-1);
+                        // }
                     }
                 }
 

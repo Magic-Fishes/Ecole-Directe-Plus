@@ -35,7 +35,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
     }, [location, sortedGrades]);
 
     return (
-        <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} {...props}>
+        <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} name="results-utimate-container" {...props}>
             {!isTabletLayout ? <MoveableContainer style={{ display: "flex", flexFlow: "column nowrap", gap: "20px" }} >
                 <GradeScaleToggle />
                 <Tabs tabs={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} fieldsetName="displayType" dir="column" style={{ flex: 1 }} />
@@ -50,7 +50,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         </div>
                     }
                 </MoveableContainer>
-                <Window>
+                <Window allowFullscreen={true} fullscreenTargetName="results-utimate-container">
                     <WindowHeader className="results-header">
                         <div className="results-title">
                             <h2>Résultats</h2>

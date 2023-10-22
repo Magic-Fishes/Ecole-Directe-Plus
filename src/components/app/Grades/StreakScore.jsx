@@ -88,7 +88,7 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
     
 
     return (
-        <Window className={`streak-score ${className}`} {...props} growthFactor={.8}>
+        <Window className={`streak-score ${className}`} allowFullscreen={true} growthFactor={.8} {...props}>
             <WindowHeader>
                 <InfoButton className="streak-info" options={{ placement: "bottom" }} additionalSVG={<defs>
                         <linearGradient id="streak-info-gradient" gradientTransform="rotate(90)">
