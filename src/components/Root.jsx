@@ -106,6 +106,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // devChannel management
     useEffect(() => {
         function handleDevChannel() {
+            if (location.pathname === "/unsubscribe-emails") {
+                return 0;
+            }
             if (process.env.NODE_ENV !== "development") {
                 const url = new URL(entryURL.current);
                 const params = url.searchParams;

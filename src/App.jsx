@@ -232,7 +232,7 @@ export default function App() {
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
-    const [appKey, setAppKey] = useState(crypto.randomUUID());
+    const [appKey, setAppKey] = useState(() => crypto.randomUUID());
 
     // diverse
     const abortControllers = useRef([]);
