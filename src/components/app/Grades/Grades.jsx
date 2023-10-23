@@ -7,6 +7,7 @@ import StreakScore from "./StreakScore";
 import Information from "./Information";
 import Strengths from "./Strengths";
 import Results from "./Results";
+import MobileResults from "./MobileResults";
 
 import {
     WindowsContainer,
@@ -15,7 +16,7 @@ import {
 
 import "./Grades.css";
 
-export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades }) {
+export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
     // States
     const [selectedPeriod, setSelectedPeriod] = useState("");
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
@@ -42,6 +43,10 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
     useEffect(() => {
         document.title = "Notes • Ecole Directe Plus";
     }, [])
+
+    useEffect(() => {
+        console.log(isTabletLayout)
+    }, [isTabletLayout])
 
     useEffect(() => {
         const controller = new AbortController();
@@ -76,7 +81,15 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                         <Information sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                         <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                     </WindowsLayout>
-                    <WindowsLayout growthFactor={2}>
+                    {isTabletLayout ? <WindowsLayout growthFactor={2}>
+                        <MobileResults
+                            activeAccount={activeAccount}
+                            sortedGrades={sortedGrades}
+                            selectedPeriod={selectedPeriod}
+                            setSelectedPeriod={setSelectedPeriod}
+                            selectedDisplayType={selectedDisplayType}
+                            setSelectedDisplayType={setSelectedDisplayType} />
+                    </WindowsLayout> : <WindowsLayout growthFactor={2}>
                         <Results
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
@@ -84,7 +97,7 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                             setSelectedPeriod={setSelectedPeriod}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
-                    </WindowsLayout>
+                    </WindowsLayout>}
                 </WindowsLayout>
             </WindowsContainer>
         </div>
