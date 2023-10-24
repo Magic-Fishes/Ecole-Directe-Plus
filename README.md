@@ -1,10 +1,18 @@
-# Ecole-Directe-Plus
-## Aim of the project
-We were really driven to improve the experience of the online part of our school and give it a more pleasant and functional environment.
+<p align="center"><a href="https://ecole-directe.plus" target="_blank"><img src="https://i.ibb.co/XX4XwWM/Group-76.png" width="800" alt="Ecole Directe Plus logo"></a></p>
+<p align="center">
+<img src="https://github.com/Magic-Fishes/Ecole-Directe-Plus/actions/workflows/dev-build-deploy.yml/badge.svg" alt="Build Status (dev-channel)">
+<img alt="License MIT" src="https://img.shields.io/badge/license-MIT-green">
+<img src="https://github.com/Magic-Fishes/Ecole-Directe-Plus/actions/workflows/main-build-deploy.yml/badge.svg" alt="Build Status (dev-channel)">
+</p>
+
+## About Ecole Directe Plus
+
+Ecole Directe Plus is basically a better EcoleDirecte.
 The EcoleDirecte platform has been completely redesigned from scratch to offer the best comfort to all students.
 Enjoy the most-requested features and a ton of small but game changer improvements.
 
-## New features
+### New features
+
 - Dashboard
 - Grades average
 - Instant averages calculation
@@ -15,19 +23,34 @@ Enjoy the most-requested features and a ton of small but game changer improvemen
 - And so much more...
 
 ## Getting started
+
 - Visit the [Ecole Directe Plus](https://ecole-directe.plus/login) website
 - Use your EcoleDirecte credentials to login
 - That's it, enjoy!
 
 ## FAQ
+
 - A release date?<br>When it's ready.
 - My data?<br>We don't and will never collect any data about you.
 - Do I need an application?<br>No, you don't. Ecole Directe Plus is a web application therefore you just need a browser, however you can easily install it as an application (check out our tutorial).
 
 ## Join us
+
 Are you excited about this project ?<br>
 Please provide us feedbacks through the issues page :<br>
 [https://github.com/Magic-Fishes/Ecole-Directe-Plus/issues](https://github.com/Magic-Fishes/Ecole-Directe-Plus/issues)<br>
 Don't hesitate to take part into this project through the pull request page :<br>
 [https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls](https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls)<br>
 We'd be glad to collaborate with you 🤝<br>
+
+## Code of Conduct
+
+In order to ensure that the Ecole Directe Plus community is welcoming to all, please review and abide by the [Code of Conduct](https://github.com/Magic-Fishes/Ecole-Directe-Plus/blob/main/CODE_OF_CONDUCT.md).
+
+## Security Vulnerabilities
+
+If you find a vulnerability, please contact <contact@ecole-directe.plus> or send a feedback through the feedback page of EDP, do not disclose the vulnerability on the public issue tracker.
+
+## License
+
+The Ecole Directe Plus webapp is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
