@@ -2,6 +2,7 @@
 import { useRef, useEffect, useContext } from "react";
 import { AppContext } from "../../../App";
 
+import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 
 import "./Account.css";
 
@@ -22,7 +23,7 @@ export default function Account({ }) {
         profilePictureRefs.current = [...profilePictureRefs.current]; // Met à jour les références
 
         for (let profilePictureRef of profilePictureRefs.current) {
-            const imageLoaded = (event) => {
+            const imageLoaded = () => {
                 profilePictureRef?.classList.add("loaded");
                 profilePictureRef?.removeEventListener("load", imageLoaded);
             }
@@ -32,7 +33,7 @@ export default function Account({ }) {
 
     return (
         <div id="account">
-            <section className="frame" id="profile">
+            <HolographicDiv borderRadius={10} intensity={.2} className="frame" id="profile">
                 <h2 className="frame-heading">Profil</h2>
                 <div id="student-informations">
                     <div id="profile-picture-container">
@@ -44,7 +45,7 @@ export default function Account({ }) {
                         />
                     </div>
                 </div>
-            </section>
+            </HolographicDiv>
             <section className="frame" id="documents">
                 <h2 className="frame-heading">Documents</h2>
             </section>

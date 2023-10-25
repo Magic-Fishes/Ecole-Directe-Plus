@@ -18,6 +18,7 @@ const loadingScreenTips = [
     { message: <span>Astuce du jour : scrollez dans le bouton d'uniformisation des barèmes pour augmenter ou diminuer l'échelle</span>, weight: 1 },
     { message: <span>Astuce du jour : un site web, c'est bien. Une application, c'est mieux. Accédez aux paramètres pour installer Ecole Directe Plus en tant qu'application.</span>, weight: 1 },
     { message: <span>Astuce du jour : maintenez le clic sur l'en-tête des fenêtres pour réorganiser les pages comme bon vous semble.</span>, weight: 1 },
+    { message: <span>Astuce du jour : double cliquez sur l'en-tête de certaines fenêtres pour la mettre en plein écran</span>, weight: 1 },
     { message: <span>Nous avons pensé Ecole Directe Plus pour qu'il fonctionne sur tous les appareils, même votre réfrigérateur connecté.</span>, weight: 1 },
     { message: <span>Nous avons pensé à ceux qui ont un petit forfait. Accédez aux paramètres et activez le chargement dynamique.</span>, weight: 1 },
     { message: <span>Vous accédez à Ecole Directe Plus depuis un grille-pain ? Aidez-le un peu et diminuez la qualité de l'affichage dans les paramètres.</span>, weight: 1 },

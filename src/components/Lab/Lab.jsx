@@ -25,6 +25,7 @@ import {
     BadgeStreakInfo,
     BadgeMehInfo,
 } from "../generic/badges/BadgeInfo"
+import HolographicDiv from "../generic/CustomDivs/HolographicDiv"
 
 import "./Lab.css";
 
@@ -209,6 +210,14 @@ export default function Lab({ fetchGrades }) {
                 <BadgeStreakInfo/>
                 <BadgeMehInfo/>
             </div>
+
+            <h3>HolographicDiv</h3>
+            <HolographicDiv style={{ width: "500px", height: "800px", margin: "0 auto", marginBottom: "50px", border: "1px solid rgb(27, 31, 58)", borderRadius: "48px", background: "url('http://allyourhtml.club/carousel/image.webp') center / 80%" }}>
+            </HolographicDiv>
+
+            <HolographicDiv style={{ width: "800px", height: "500px", margin: "0 auto", border: "2px solid rgb(27, 31, 58)", borderRadius: "48px", backgroundColor: "rgba(var(--background-color-0), 1)" }}>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
+            </HolographicDiv>
             {/* FOOTER */}
             <div style={{height:"100px"}}></div>
         </div>
