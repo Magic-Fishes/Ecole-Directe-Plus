@@ -45,10 +45,6 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
     }, [])
 
     useEffect(() => {
-        console.log(isTabletLayout)
-    }, [isTabletLayout])
-
-    useEffect(() => {
         const controller = new AbortController();
         console.log("GRADES:", grades)
         if (isLoggedIn) {
@@ -81,23 +77,24 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                         <Information sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                         <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                     </WindowsLayout>
-                    {isTabletLayout ? <WindowsLayout growthFactor={2}>
-                        <MobileResults
+                    <WindowsLayout growthFactor={2}>
+                        {isTabletLayout
+                            ? <MobileResults
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
                             setSelectedPeriod={setSelectedPeriod}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
-                    </WindowsLayout> : <WindowsLayout growthFactor={2}>
-                        <Results
+                            : <Results
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
                             setSelectedPeriod={setSelectedPeriod}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
-                    </WindowsLayout>}
+                        }
+                    </WindowsLayout>
                 </WindowsLayout>
             </WindowsContainer>
         </div>

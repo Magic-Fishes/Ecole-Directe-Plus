@@ -18,6 +18,8 @@
 .mobile-grade-row {
     display: flex;
     padding: 10px;
+    flex-flow: row wrap;
+    row-gap: 10px;
 }
 
 .mobile-head-name {

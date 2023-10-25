@@ -135,7 +135,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                     <th className="head-cell">
                                                         {el.isCategory
                                                             ? <div className="head-name">{el.name}</div>
-                                                            : <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}>{isTabletLayout ? el.isCategory ? el.name : idx : el.name}</Link>
+                                                            : <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}>{el.name}</Link>
 
                                                         }
                                                     </th>
