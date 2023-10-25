@@ -144,18 +144,17 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             </div>
                                         ]
                                     } else {
-                                        return [
-                                            <div key={"subject-" + el.id.toString()} className="mobile-subject-row mobile-row">
+                                        return (el && el.grades && el.grades.length > 0 ? <><div key={"subject-" + el.id.toString()} className="mobile-subject-row mobile-row">
                                                 <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
-                                            </div>,
-                                            <>{el && el.grades && el.grades.length > 0 ? <div key={"grade-" + el.id.toString()} className="mobile-grade-row mobile-row">
+                                            </div>
+                                            <div key={"grade-" + el.id.toString()} className="mobile-grade-row mobile-row">
                                                 {el.grades.map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )
                                                 })}
-                                            </div> : <></>}</>
-                                        ]
+                                            </div></> : null)
+                                        
                                     }
                                     // < tr key = { el.id } >
                                     //     <th className="head-cell">

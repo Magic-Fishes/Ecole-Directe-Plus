@@ -13,10 +13,10 @@
 
 .mobile-category-row {
     display: flex;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: space-evenly;
+    flex-flow: row wrap;
     padding: 15px;
-    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -49,6 +49,7 @@
 .mobile-grade-row {
     display: flex;
     padding: 10px;
+    row-gap: 10px;
 }
 
 .mobile-subject-row .mobile-head-name {
