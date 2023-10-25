@@ -160,8 +160,8 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <span>Réinitialiser l'agencement des fenêtres</span> <Button onClick={() => settings.set("windowArrangement", [])}>Réinitialiser</Button>
                 </div>
 
-                <div className="setting disabled" id="animate-windows">
-                    <CheckBox id="animate-windows-cb" label={<span>Animer l'apparition des fenêtres</span>} />
+                <div className="setting" id="allow-windows-arrangement">
+                    <CheckBox id="allow-windows-arrangement-cb" label={<span>Permettre le réarrangement des fenêtres</span>} checked={settings.get("allowWindowsArrangement")} onChange={(event) => settings.set("allowWindowsArrangement", event.target.checked)} />
                 </div>
 
                 
@@ -197,6 +197,9 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
                     </div>
 
+                    <div className="setting" id="allow-anonymous-reports">
+                        <CheckBox id="allow-anonymous-reports-cb" label={<span>Autoriser les rapports d'erreurs anonymisés</span>} checked={settings.get("allowAnonymousReports")} onChange={(event) => settings.set("allowAnonymousReports", event.target.checked)} />
+                    </div>
 
                     <div className="setting disabled" id="info-persistence">
                         <CheckBox id="info-persistence-cb" label={<span>Activer la persistance des informations sur tous vos appareils</span>} /> <InfoButton className="setting-tooltip">Nous utilisons les serveurs d'EcoleDirecte pour stocker vos informations de configuration. Ainsi, vos informations EDP vous suiveront sur tous vos appareils dès lors que vous serez connectés à ce même compte</InfoButton>

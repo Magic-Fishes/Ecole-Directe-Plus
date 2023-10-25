@@ -36,7 +36,6 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
     const [closeFeedbackBottomSheet, setCloseFeedbackBottomSheet] = useState(false);
-    
 
     const headerLogoRef = useRef(null);
     const isFirstFrame = useRef(true);
@@ -62,7 +61,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         // reset notifications
         notifications.grades = 0;
         notifications.messaging = 0;
-        notifications.settings = 0;
+        notifications.account = 0;
 
         if (accountsList[activeAccount].accountType === "E") {
             for (const eventKey in timeline[activeAccount]) {
@@ -88,13 +87,13 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                     
                     case "VieScolaire":
                     case "Document":
-                        notifications.settings = (notifications.settings ?? 0) + 1;
+                        notifications.account = (notifications.account ?? 0) + 1;
                         break;
                 }
             }
 
         } else if (accountsList[activeAccount].accountType === "P") {
-
+            // TODO: notifications pour les comptes parents
         }
 
         useUserData().set("notifications", notifications)
@@ -154,6 +153,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const notifications = useUserData().get("notifications");
     const headerNavigationButtons = [
         {
+            enabled: true,
             id: 1,
             name: "dashboard",
             title: "Accueil",
@@ -162,6 +162,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             notifications: notifications?.dashboard || 0
         },
         {
+            enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "NOTES").map((item) => item.enable).includes(true) ?? true,
             id: 2,
             name: "grades",
             title: "Notes",
@@ -170,6 +171,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             notifications: notifications?.grades || 0
         },
         {
+            enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "CAHIER_DE_TEXTES").map((item) => item.enable).includes(true) ?? true,
             id: 3,
             name: "homeworks",
             title: "Cahier de texte",
@@ -178,6 +180,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             notifications: notifications?.homeworks || 0
         },
         {
+            enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "EDT").map((item) => item.enable).includes(true) ?? true,
             id: 4,
             name: "timetable",
             title: "Emploi du temps",
@@ -186,6 +189,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             notifications: notifications?.timetable || 0
         },
         {
+            enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "MESSAGERIE").map((item) => item.enable).includes(true) ?? true,
             id: 5,
             name: "messaging",
             title: "Messagerie",
@@ -215,10 +219,11 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
                     <nav className="navbar">
                         <ul className="header-button-list">
-                            {headerNavigationButtons.map((headerButton) =>
+                            {headerNavigationButtons.map((headerButton) => ( headerButton.enabled &&
                                 <li className={`header-button-container`} key={headerButton.id} id={headerButton.name}>
                                     <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} />
                                 </li>
+                            )
                             )}
                         </ul>
                     </nav>

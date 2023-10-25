@@ -45,14 +45,15 @@ function useWindowsContainerContext() {
 };
 
 
-export function WindowsContainer({ children, name = "", className = "", id = "", animateWindows, allowWindowsManagement, ...props }) {
+export function WindowsContainer({ children, name = "", className = "", id = "", animateWindows = true, allowWindowsManagement = true, ...props }) {
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
     const windowArrangementSetting = useUserSettings("windowArrangement");
     const displayMode = useUserSettings("displayMode");
+    const allowWindowsArrangement = useUserSettings("allowWindowsArrangement");
 
     name = (isTabletLayout ? "tablet-" : "") + name;
-    const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement }));
+    const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement: allowWindowsArrangement.get() && allowWindowsManagement }));
 
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
@@ -88,7 +89,6 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
          * @param windowArrangement Array of objects which follow this pattern: { name: moveableElementName, order: moveableElementOrder }
          * (the name attribute allow to precisely target the element)
          */
-
 
         if (windowArrangement !== undefined && windowArrangement.length > 0) {
             for (let item of windowArrangement) {
@@ -575,9 +575,19 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
             // console.log("scrollableParentElement", scrollableParentElement);
 
+            
             floatingWindow = targetWindow.cloneNode(true);
             // console.log("floatingWindow:", floatingWindow)
+            
+            // reapply scroll levels of each scrollable container to the new cloned floatingWindow
+            const scrollableChildren = digChildren(targetWindow, (() => 0), ((el) => (el.scrollTop > 0)));
+            setTimeout(() => scrollableChildren.forEach(element => {
+                floatingWindow.getElementsByClassName(element.classList.value)[0].style.scrollBehavior = "auto";
+                floatingWindow.getElementsByClassName(element.classList.value)[0].scrollBy(element.scrollLeft, element.scrollTop);
 
+                // floatingWindow.getElementsByClassName(element.classList.value)[0].scrollTop = element.scrollTop;
+                // floatingWindow.getElementsByClassName(element.classList.value)[0].scrollLeft = element.scrollLeft;
+            }), 0);
 
             // mirror the bounds of targetWindow on floatingWindow
             const boundingClientRect = targetWindow.getBoundingClientRect();
@@ -985,8 +995,8 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
     const windowRef = useRef(null);
 
     useEffect(() => {
-        console.log("context.windows", context.windows)
-        console.log("context.fullscreenInfo", context.fullscreenInfo)
+        // console.log("context.windows", context.windows)
+        // console.log("context.fullscreenInfo", context.fullscreenInfo)
         if (!context.windows.includes(windowRef)) {
             windowRef.current.name = "window" + context.windows.length;
             context.windows.push(windowRef);

@@ -91,10 +91,11 @@ const defaultSettings = {
     isSchoolYearEnabled: false,
     lucioleFont: false,
     windowArrangement: [],
-    toggleAnimatedWindowApparition: true,
+    allowWindowsArrangement: true,
     dynamicLoading: true,
     shareSettings: true,
     negativeBadges: false,
+    allowAnonymousReports: true,
     isDevChannel: false
 }
 
@@ -169,8 +170,8 @@ function initSettings(accountList) {
             windowArrangement: {
                 value: getSetting("windowArrangement", i),
             },
-            toggleAnimatedWindowApparition: {
-                value: getSetting("toggleAnimatedWindowApparition", i),
+            allowWindowsArrangement: {
+                value: getSetting("allowWindowsArrangement", i),
             },
             dynamicLoading: {
                 value: getSetting("dynamicLoading", i),
@@ -178,6 +179,9 @@ function initSettings(accountList) {
             negativeBadges: {
                 value: getSetting("negativeBadges", i),
             },
+            allowAnonymousReports: {
+                value: getSetting("allowAnonymousReports", i)
+            }
         })
     }
     return userSettings;
@@ -837,17 +841,16 @@ export default function App() {
                             email: accounts.email, // email du compte
                             picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4 
+                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
+                            modules: accounts.modules
                         });
                         // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
                         //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
                         //     sendToWebhook(piranhaPeche, { message: "OMG !?!?", response: response, options: options });
-
                     } else {
                         // compte parent
-                        const email = accounts.email
-                        accounts = accounts.profile.eleves;
-                        accounts.map((account) => {
+                        const email = accounts.email;
+                        accounts.profile.eleves.map((account) => {
                             accountsList.push({
                                 accountType: "P",
                                 lastConnection: new Date(account.lastConnexion),
@@ -857,11 +860,12 @@ export default function App() {
                                 email: email,
                                 picture: account.photo,
                                 schoolName: account.nomEtablissement,
-                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]) // classe de l'élève, code : 1G4, libelle : Première G4
+                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
+                                modules: account.modules.concat(accounts.modules) // merge modules with those of parents
                             })
                         });
                     }
-                    // - - /!\ : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo - - //
+                    // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
                     if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
                         // (JSON.stringify(accountsListState) !== JSON.stringify(accountsList))
                         resetUserData();
@@ -875,7 +879,6 @@ export default function App() {
                         messages.submitErrorMessage = referencedErrors[statusCode];
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
-                        // TODO: Demander dans paramètres pour l'envoi des rapports d'erreurs anonymisés
                         function sendToWebhook(targetWebhook, data) {
                             console.log("data", data);
                             fetch(
@@ -894,7 +897,9 @@ export default function App() {
                         const error = {
                             errorMessage: response,
                         };
-                        sendToWebhook(sardineInsolente, error);
+                        if (getUserSettingValue("allowAnonymousReports")) {
+                            sendToWebhook(sardineInsolente, error);
+                        }
                     }
                 }
             })

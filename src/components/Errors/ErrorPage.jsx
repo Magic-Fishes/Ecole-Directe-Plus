@@ -15,6 +15,20 @@ export default function ErrorPage() {
         localStorage.clear()
     }
     
+    function sendToWebhook(targetWebhook, data) {
+        fetch(
+            targetWebhook,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ content: JSON.stringify(data) })
+            }
+        );
+    }
+    
     if (error.status === 404) {
         return (
             <Error404 />
@@ -25,6 +39,10 @@ export default function ErrorPage() {
             safetyFunction();
             if (isDevChannel) {
                 globalSettings.isDevChannel.set(true);
+            }
+            if (getUserSettingValue("allowAnonymousReports")) {
+                const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
+                sendToWebhook(sardineInsolente, error);
             }
         }
         
