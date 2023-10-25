@@ -129,7 +129,18 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     if (el.isCategory) {
                                         return [
                                             <div key={"category-" + el.id.toString()} className="mobile-category-row mobile-row">
-                                                <span className="head-name">{el.name}</span>
+                                                <span className="mobile-head-name">{el.name}</span>
+                                                <span className="category-averages">
+                                                    <span>
+                                                        Classe : <Grade grade={{ value: el.classAverage }} />
+                                                    </span>
+                                                    <span>
+                                                        Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} />
+                                                    </span>
+                                                    <span>
+                                                        Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} />
+                                                    </span>
+                                                </span>
                                             </div>
                                         ]
                                     } else {
