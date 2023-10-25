@@ -44,10 +44,11 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
                 const userIds = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
         
                 if ( userIds.username && userIds.password ) {
+                    console.log("userIds:", userIds);
                     fetchLogin(userIds.username, userIds.password, true, (messages) => {
-                        setSubmitButtonText(messages.submitButtonText);
+                        setSubmitButtonText(messages.submitButtonText || "");
                         setErrorMessage(messages.submitErrorMessage || "");
-                        if (submitButtonAvailableStates[messages.submitButtonText] === "invalid") {
+                        if (submitButtonAvailableStates[messages.submitButtonText] === "invalid" && messages.submitErrorMessage !== "Error: Failed to fetch") {
                             console.log("INVALID AUTH INFO : LOGGED OUT");
                             logout();
                         }
@@ -65,21 +66,6 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
             }
         }
     }, [keepLoggedIn]);
-
-    function sendToWebhook(targetWebhook, data) {
-        fetch(
-            targetWebhook,
-            {
-                method: "POST",
-                headers: {
-                    "user-agent": navigator.userAgent,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ content: JSON.stringify(data) })
-            }
-        )
-    }
-
 
     function handleSubmit(event) {
         event.preventDefault();
