@@ -4,7 +4,6 @@ import "./HolographicDiv.css";
 import { applyZoom } from "../../../utils/zoom";
 
 export default function HolographicDiv({ children, borderRadius=48, intensity=1, className = "", ...props }) {
-    // TODO: gérer border radius
     const holographicDivRef = useRef(null);
     const timeoutId = useRef(null);
     const intervalId = useRef(null);
@@ -13,11 +12,11 @@ export default function HolographicDiv({ children, borderRadius=48, intensity=1,
     
     
     function smoothInterpolation(normalizedTargetCoords) {
-        if (time.current === null) {
+        const deltaTime = (Date.now() - time.current)/1000;
+        if (time.current === null || deltaTime > 1) {
             time.current = Date.now();
             return 0
         }
-        const deltaTime = (Date.now() - time.current)/1000;
         
         const normalizedCoords = {
             x: oldNormalizedCoords.current.x + (normalizedTargetCoords.x-oldNormalizedCoords.current.x)/.1*deltaTime,
