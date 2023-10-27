@@ -1,3 +1,8 @@
+
+.results-container :is(#periods-ddm, #display-type-ddm) {
+    animation: mobile-results-pop-in .2s ease forwards;
+}
+
 .mobile-results {
     padding-inline: 20px;
 }
@@ -83,4 +88,15 @@
     padding: 10px;
     flex-wrap: wrap;
     justify-content: flex-start;
+}
+
+@keyframes mobile-results-pop-in {
+    from {
+        scale: 0;
+        opacity: 0;
+    }
+    to {
+        scale: 1;
+        opacity: 1;
+    }
 }

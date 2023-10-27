@@ -7,6 +7,11 @@
     max-height: calc(2em + 20px + 4px); /* 2 padding + 1 font-size + 2*border-width */
 }
 
+.drop-down-menu.focus {
+    isolation: isolate;
+    z-index: 50;
+}
+
 .drop-down-menu.focus .main-container {
     box-shadow: var(--box-shadow-element);
 }

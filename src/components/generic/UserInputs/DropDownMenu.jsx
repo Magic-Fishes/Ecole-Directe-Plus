@@ -8,6 +8,8 @@ import NotSelectedOption from "../../graphics/NotSelectedOption";
 import "./DropDownMenu.css";
 
 export default function DropDownMenu({ name, options, displayedOptions=options, selected, onChange, id="", className="", ...props }) {
+    console.log("DropDownMenu ~ options:", options)
+    console.log("DropDownMenu ~ selected:", selected)
     const [isOpen, setIsOpen] = useState(false);
 
     const [needOverflowAuto, setNeedOverflowAuto] = useState(false);
@@ -83,7 +85,7 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
         <div className={`drop-down-menu ${className}` + (isOpen ? " focus" : "")} id={id}>
             <div className="main-container">
                 <button type="button" className="selected" onClick={handleClick} ref={dropDownMenuRef}>
-                    <span id="selected-option-value">{displayedOptions[options.indexOf(selected)]}</span>
+                    <span id="selected-option-value">{(options.length < 1 || options[0] === "") ? "...................." : displayedOptions[options.indexOf(selected)]}</span>
                     <DropDownArrow />
                 </button>
                 <div className="animation-wrapper">

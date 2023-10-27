@@ -198,7 +198,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     </div>
 
                     <div className="setting" id="allow-anonymous-reports">
-                        <CheckBox id="allow-anonymous-reports-cb" label={<span>Autoriser les rapports d'erreurs anonymisés</span>} checked={settings.get("allowAnonymousReports")} onChange={(event) => settings.set("allowAnonymousReports", event.target.checked)} />
+                        <CheckBox id="allow-anonymous-reports-cb" label={<span>Autoriser l'envoi de rapports d'erreurs anonymisés</span>} checked={settings.get("allowAnonymousReports")} onChange={(event) => settings.set("allowAnonymousReports", event.target.checked)} />
                     </div>
 
                     <div className="setting disabled" id="info-persistence">
