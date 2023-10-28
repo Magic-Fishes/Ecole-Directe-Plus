@@ -54,10 +54,9 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
                         }
                     });
                     console.log("LOGGED IN FROM USERNAME & PASSWORD");
-                }                
+                }
             }
-        }
-        else {
+        } else {
             // keep logged in using old token
             const oldToken = localStorage.getItem("token") ?? "";
             const oldAccountsList = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
