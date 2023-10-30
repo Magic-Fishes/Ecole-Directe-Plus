@@ -780,6 +780,7 @@ export default function App() {
                     
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
+                    break;
 
                 default:
                     break;
