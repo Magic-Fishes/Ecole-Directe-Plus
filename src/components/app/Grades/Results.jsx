@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import ContentLoader from "react-content-loader";
 import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../../../App";
@@ -20,6 +20,7 @@ import "./Results.css";
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
+    const contentLoadersRandomValues = useRef({ subjectNameWidth:  Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2)})
 
     const location = useLocation();
 
@@ -157,7 +158,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             )
                                         })
                                         : Array.from({ length: 13 }, (_, index) => {
-                                            const subjectNameWidth = Math.round(Math.random() * 100) + 100;
+                                            const subjectNameWidth = contentLoadersRandomValues.current.subjectNameWidth[index];
                                             return <tr key={crypto.randomUUID()} className={index % 7 < 1 ? "category-row" : "subject-row"}>
                                                 <th className="head-cell">
                                                     <ContentLoader
@@ -214,7 +215,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                             </ContentLoader>
                                                         </div>
                                                         : <div className="grades-values">
-                                                            {Array.from({ length: Math.floor(Math.random() * 8) + 2 }, (_) => {
+                                                            {Array.from({ length: contentLoadersRandomValues.current.gradeNumbers[index] }, (_) => {
                                                                 return (
                                                                     <ContentLoader
                                                                         animate={settings.get("displayMode") === "quality"}
