@@ -6,14 +6,12 @@ import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 
 import "./Account.css";
 
-export default function Account({ }) {
-    const { accountsListState, activeAccount, useUserData } = useContext(AppContext)
+export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, isLoggedIn, activeAccount }) {
+    const { accountsListState, useUserData } = useContext(AppContext)
 
     const userData = useUserData();
 
     const profilePictureRefs = useRef([]);
-
-    console.log(accountsListState)
 
     useEffect(() => {
         document.title = "Compte • Ecole Directe Plus";
@@ -30,6 +28,24 @@ export default function Account({ }) {
             profilePictureRef?.addEventListener("load", imageLoaded);
         }
     }, [profilePictureRefs.current]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (schoolLife.length < 1 || schoolLife[activeAccount] === undefined) {
+                console.log("fetchSchoolLife")
+                fetchSchoolLife(controller);
+            } else {
+                console.log("schoolLife:", schoolLife);
+                sortSchoolLife(schoolLife, activeAccount);
+            }
+        }
+
+        return () => {
+            // console.log("controller.abort")
+            controller.abort();
+        }
+    }, [schoolLife, isLoggedIn, activeAccount]);
 
     return (
         <div id="account">
@@ -51,6 +67,20 @@ export default function Account({ }) {
             </section>
             <section className="frame" id="behavior">
                 <h2 className="frame-heading">Comportement</h2>
+                <div className="behavior-types">
+                    <div className="behavior-type">
+                        <span>Retards</span>
+                        <span className="count">{userData.get("sortedSchoolLife")?.delays.length ?? "..."}</span>
+                    </div>
+                    <div className="behavior-type">
+                        <span>Absences</span>
+                        <span className="count">{userData.get("sortedSchoolLife")?.absences.length ?? "..."}</span>
+                    </div>
+                    <div className="behavior-type">
+                        <span>Sanctions</span>
+                        <span className="count">{userData.get("sortedSchoolLife")?.sanctions.length ?? "..."}</span>
+                    </div>
+                </div>
             </section>
         </div>
     )

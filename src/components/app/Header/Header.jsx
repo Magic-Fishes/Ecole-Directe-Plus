@@ -38,7 +38,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const [closeFeedbackBottomSheet, setCloseFeedbackBottomSheet] = useState(false);
 
     const headerLogoRef = useRef(null);
-    const isFirstFrame = useRef(true);
+    // const isFirstFrame = useRef(true);
 
 
     const handleUserId = (userId) => {

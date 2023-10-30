@@ -66,7 +66,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.1.5";
-const apiVersion = "4.38.0";
+const apiVersion = "4.43.0";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
 // const lsIdName = encrypt("userIds")
@@ -228,6 +228,7 @@ export default function App() {
     // user data
     const [grades, setGrades] = useState([]);
     const [timeline, setTimeline] = useState([]);
+    const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]);
 
     // utils
@@ -750,6 +751,45 @@ export default function App() {
     }
 
 
+    function sortSchoolLife(schoolLife, activeAccount) {
+        const sortedSchoolLife = {
+            delays: [],
+            absences: [],
+            sanctions: []
+        };
+        schoolLife[activeAccount]?.absencesRetards.concat(schoolLife[activeAccount].sanctionsEncouragements ?? []).forEach((item) => {
+            const newItem = {};
+            newItem.type = item.typeElement;
+            newItem.id = item.id;
+            newItem.isJustified = item.justifie;
+            newItem.date = new Date(item.date);
+            newItem.displayDate = item.displayDate;
+            newItem.duration = item.libelle;
+            newItem.reason = item.motif;
+            newItem.comment = item.commentaire;
+            newItem.todo = item.aFaire;
+            newItem.by = item.par;
+            switch (newItem.type) {
+                case "Retard":
+                    sortedSchoolLife.delays.push(newItem);
+                    break;
+                    
+                case "Absence":
+                    sortedSchoolLife.absences.push(newItem);
+                    break;
+                    
+                case "Punition":
+                    sortedSchoolLife.sanctions.push(newItem);
+
+                default:
+                    break;
+            }
+        });
+
+        changeUserData("sortedSchoolLife", sortedSchoolLife);
+    }
+
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -919,7 +959,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get%26v=${apiVersion}`,
+        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1014,6 +1054,50 @@ export default function App() {
             })
     }
 
+    async function fetchSchoolLife(controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const data = {
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+        }
+
+        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState,
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal
+            })
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 403;
+                } else {
+                    code = response.code;
+                }
+
+                console.log("RESPONSE:", response);
+                if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
+                    const oldSchoolLife = structuredClone(schoolLife);
+                    oldSchoolLife[activeAccount] = response.data;
+                    setSchoolLife(oldSchoolLife);
+                    setTokenState(response.token);
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else if (code === 403) {
+                    setTokenState((old) => (response.token || old));
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function createFolderStorage(name) {
         const data = {
             libelle: name,
@@ -1047,6 +1131,7 @@ export default function App() {
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
         setTimeline(createUserLists(accountsList.length));
+        setSchoolLife(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
         setUserData(initData(accountsList.length));
         // localStorage.setItem("token", token);
@@ -1063,6 +1148,7 @@ export default function App() {
         setUserData([])
         setGrades([]);
         setTimeline([]);
+        setSchoolLife([]);
         // setKeepLoggedIn(false);
     }
 
@@ -1245,7 +1331,7 @@ export default function App() {
                             path: "account",
                         },
                         {
-                            element: <Account />,
+                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
                             path: ":userId/account"
                         },
                         {
