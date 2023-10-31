@@ -51,8 +51,10 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { actualDisplayTheme, useUserSettings } = useContext(AppContext);
+    const { actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
+
     const settings = useUserSettings();
+    const grades = useUserData();
 
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
     if (sortedGrades && sortedGrades[selectedPeriod]) {
@@ -79,7 +81,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                    foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                     height="20"
                                     style={{ width: "70%" }}
                                 >
@@ -117,7 +119,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                                 animate={settings.get("displayMode") === "quality"}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "300px" }}
                             >
@@ -128,7 +130,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                                 animate={settings.get("displayMode") === "quality"}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "200px" }}
                             >
@@ -139,7 +141,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                                 animate={settings.get("displayMode") === "quality"}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "260px" }}
                             >
@@ -160,14 +162,14 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Moyenne</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
-                        <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.classMin.toString().replace(".", ",") && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div>
-                        </div>
-                        <div>
+                        </div>}
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.classMax.toString().replace(".", ",") && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
-                        </div>
+                        </div>}
                     </div>
                     <p className="selected-coefficient">coeficient : {selectedElement.coef}</p>
                     <hr />
@@ -206,14 +208,17 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Classe</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/20</sub>}</div>
                         </div>
-                        <div>
+                        {console.log("HERE")}
+                        {console.log(grades.get("gradesEnabledFeatures")?.moyenneMin)}
+                        {console.log(grades.get("gradesEnabledFeatures"))}
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.minAverage.toString().replace(".", ",") && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}{isNaN(selectedElement.minAverage) ? null : <sub>/20</sub>}</div>
-                        </div>
-                        <div>
+                        </div>}
+                        {grades.get("gradesEnabledFeatures")?.moyenneMax && !selectedElement.maxAverage.toString().replace(".", ",") && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
-                        </div>
+                        </div>}
                     </div>
                     <p className="selected-coefficient">coeficient : {selectedElement.coef}</p>
                     <hr />

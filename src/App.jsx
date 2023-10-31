@@ -629,8 +629,8 @@ export default function App() {
                 newGrade.coef = parseFloat(grade.coef);
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
                 newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = isNaN(parseFloat(grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
-                newGrade.classMax = isNaN(parseFloat(grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
+                newGrade.classMin = isNaN(parseFloat(grade.minClasse && grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat(grade.maxClasse && grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
                 newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse);
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
@@ -740,12 +740,16 @@ export default function App() {
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
-        changeUserData("totalBadges", totalBadges)
-        changeUserData("sortedGrades", periods) /*((oldSortedGrades) => {
-            const newSortedGrades = [...oldSortedGrades];
-            newSortedGrades[activeAccount] = periods;
-            return newSortedGrades;
-        });*/
+        
+        const settings = grades[activeAccount].parametrage;
+        const enabledFeatures = {};
+
+        enabledFeatures.moyenneMin = settings.moyenneMin;
+        enabledFeatures.moyenneMax = settings.moyenneMax;
+
+        changeUserData("totalBadges", totalBadges);
+        changeUserData("sortedGrades", periods);
+        changeUserData("gradesEnabledFeatures", enabledFeatures);
     }
 
 
