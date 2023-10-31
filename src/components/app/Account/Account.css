@@ -21,7 +21,7 @@ body:has(#account) {
 }
 #account .frame .frame-heading {
     text-align: center;
-    font-size: var(--font-size-24);
+    font-size: var(--font-size-20);
     padding-block: 20px;
 }
 
@@ -30,8 +30,8 @@ body:has(#account) {
 }
 
 #profile-picture-container {
-    height: 180px;
-    width: 180px;
+    aspect-ratio: 1/1;
+    width: 120px;
     border-radius: 15px;
     background-color: white;
     overflow: hidden;
@@ -58,8 +58,37 @@ body:has(#account) {
     grid-row: 1 / 3;
 }
 
+
+/* COMPORTEMENT */
+
 #account #behavior {
-    
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#account .behavior-types {
+    padding-block: 20px;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+}
+
+#account .behavior-type {
+    text-align: center;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    flex: 1;
+}
+#account .behavior-type:not(:last-child) {
+    border-right: 1px solid rgb(var(--border-color-0));
+}
+
+#account .behavior-type .count {
+    font-size: var(--font-size-36);
+    /* flex: 1; */
+    margin: auto;
 }
 
 @media only screen and (max-width: 869px) {

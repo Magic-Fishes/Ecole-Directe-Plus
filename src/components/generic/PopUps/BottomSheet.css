@@ -119,9 +119,6 @@ body:has(#bottom-sheet) {
     color: rgb(var(--border-color-1));
 }
 
-#bottom-sheet-heading:active {
-}
-
 /* content */
 #bottom-sheet-content {
     flex-grow: 1;
@@ -146,21 +143,21 @@ body:has(#bottom-sheet) {
 }
 
 @keyframes slide-in {
-  from {
-      bottom: -100%;
-  }
-  to { 
-      bottom: 0;
-  }
+    from {
+        bottom: -100%;
+    }
+    to { 
+        bottom: 0;
+    }
 }
 
 @keyframes slide-out {
-  from {
-      bottom: 0;
-  }
-  to { 
-      bottom: -100%;
-  }
+    from {
+        bottom: 0;
+    }
+    to { 
+        bottom: -100%;
+    }
 }
 
 @keyframes fade-in {

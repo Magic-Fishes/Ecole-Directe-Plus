@@ -61,11 +61,13 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // welcome pop-up
     useEffect(() => {
         function necessaryResets(oldVersion) {
-            if (oldVersion === "0.0.7") {
+            const parsedOldVersion = parseInt(oldVersion.split(".").join(""));
+            if (parsedOldVersion <= 7) { // v0.0.7
                 resetUserData();
-            } else if (oldVersion === "0.1.5") {
+            } else if (parsedOldVersion <= 15) { // v0.1.5
+                localStorage.removeItem("userIds");
                 return 0;
-            } else if (oldVersion === "0.2.1") {
+            } else if (parsedOldVersion <= 21) { // v0.2.1
                 return 0;
             } else {
                 localStorage.clear();
@@ -106,7 +108,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // devChannel management
     useEffect(() => {
         function handleDevChannel() {
-            if (location.pathname === "/unsubscribe-emails") {
+            if (location.pathname === "/unsubscribe-emails" || location.hostname === "localhost") {
                 return 0;
             }
             if (process.env.NODE_ENV !== "development") {

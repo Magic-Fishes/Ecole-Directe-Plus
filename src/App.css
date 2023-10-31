@@ -314,23 +314,6 @@ body {
     font-weight: var(--main-font-weight-regular);
 }
 
-/* @media only screen and (max-height: 750px) {
-    body {
-        font-size: 12px;
-        zoom: 0.8;
-    }
-} */
-@media only screen and (max-width: 1496px) {
-    /* font-size: 12px; */
-    /* zoom: calc(100vw / 1496); */
-    /* body {
-        zoom: .8;
-    }
-    :root {
-        font-size: 55%;
-    } */
-}
-
 body, input, button, textarea {
     font-family: Inter, sans-serif;
 }
