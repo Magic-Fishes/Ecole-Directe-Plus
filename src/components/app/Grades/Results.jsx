@@ -104,10 +104,10 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     speed={1}
                                     backgroundColor={'#4b48d9'}
                                     foregroundColor={'#6354ff'}
-                                    viewBox="0 0 70 30"
-                                    height="30"
+                                    viewBox="0 0 80 32"
+                                    height="32"
                                 >
-                                    <rect x="0" y="0" rx="10" ry="10" width="68" height="30" />
+                                    <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
                                 </ContentLoader>
                             }
                         </div>
