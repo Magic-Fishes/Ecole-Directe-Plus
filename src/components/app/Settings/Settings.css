@@ -326,7 +326,7 @@ body:has(#settings) {
 @media only screen and (max-width: 450px) {
     #settings .setting {
         justify-content: center;
-        margin-bottom: 50px;
+        margin-bottom: 40px;
     }
 
     #settings #display-theme {
