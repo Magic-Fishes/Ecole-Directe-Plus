@@ -378,7 +378,10 @@ export default function App() {
         localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
 
         const handleStorageChange = () => {
-            const newLsGlobalSettings = localStorage.getItem("globalSettings")
+            const newLsGlobalSettings = JSON.parse(localStorage.getItem("globalSettings"))
+            console.log("HERE")
+            console.log(newLsGlobalSettings)
+            console.log(globalSettings)
             if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
                 for (const i in globalSettings) {
                     globalSettings[i].set(newLsGlobalSettings[i])
