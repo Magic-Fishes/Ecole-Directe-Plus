@@ -64,7 +64,8 @@ export default function Policy({ onCloseNavigateURL }) {
             - React<br />
             - React Router<br />
             - Floating UI<br />
-            - content-loader<br /><br />
+            - CryptoJS <br />
+            - React Content Loader<br /><br />
 
             Testeurs de pré-lancement :<br />
             - Thon Humide<br />
@@ -73,6 +74,7 @@ export default function Policy({ onCloseNavigateURL }) {
 
             Remerciements spéciaux :<br />
             - Thon Humide<br />
+            - Jackp0t<br />
             - Nickro_01290<br />
             - Cthyllax<br />
             - Internet<br />
@@ -85,7 +87,7 @@ export default function Policy({ onCloseNavigateURL }) {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px"}}>Dernière révision le 14 août 2023</li>
+        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px"}}>Dernière révision le 30 octobre 2023</li>
         <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 
