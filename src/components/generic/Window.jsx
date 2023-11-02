@@ -349,6 +349,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             return 0;
         }
 
+        scrollableParentElement.style.scrollBehavior = "auto";
+
         const bounds = scrollableParentElement.getBoundingClientRect();
 
         const SCROLLING_EDGE_SHIFT = 100; // px
@@ -364,6 +366,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         } else if (mouse.x > (bounds.x + bounds.width) - SCROLLING_EDGE_SHIFT) {
             scrollableParentElement.scrollBy(SCROLLING_SPEED, 0);
         }
+
+        scrollableParentElement.style.scrollBehavior = "";
 
         return 0;
     }
