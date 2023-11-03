@@ -52,6 +52,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
 }
 
 .mobile-grade-row {
@@ -64,7 +65,9 @@
     display: inline-block;
     text-decoration: none;
     min-width: 0;
-    width: auto;
+    max-width: max-content;
+    flex-grow: 1;
+    margin: 0 auto;
     min-width: 0;
     outline: none;
     border: 2px solid transparent;
@@ -72,7 +75,6 @@
     -webkit-user-drag: none;
     transition: 0.15s;
     padding: 8px;
-    flex-grow: 1;
 }
 
 .mobile-subject-row .subject-average {
