@@ -193,9 +193,11 @@ main.content {
         padding-bottom: 25px;
     }
 
-    :not(.standalone) .header-container {
+    
+    .header-container:not(.standalone) {
         max-height: 75px;
     }
+    
     
     .header-button .icon-container svg {
         height: 45px
