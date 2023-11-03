@@ -58,7 +58,6 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
     const latestClick = useRef(null);
-    const anyFullscreen = useRef(false);
 
     const isGrabbing = useRef(false);
 
@@ -423,7 +422,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     }
 
     const handleFullscreen = (targetWindow) => {
-        if (anyFullscreen.current) {
+        if (document.webkitIsFullScreen ?? document.mozFullScreen) {
             document.exitFullscreen();
         }
 
@@ -443,16 +442,23 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             // console.log("windowsContainer.fullscreenInfo[idx].fullscreenTargetName:", windowsContainer.fullscreenInfo[idx].fullscreenTargetName)
             // console.log("targetElements:", targetElement)
             const handleFullscreenChange = () => {
-                anyFullscreen.current = !anyFullscreen.current;
+                // prevent from selecting
                 if (window.getSelection) {
                     var selection = window.getSelection();
                     selection.removeAllRanges();
                 }
             }
-            targetElement.onfullscreenchange = handleFullscreenChange;
-            targetElement.requestFullscreen(handleFullscreenChange);
 
-            // prevent from selecting
+            try {
+                targetElement.onfullscreenchange = handleFullscreenChange;
+                targetElement.requestFullscreen(handleFullscreenChange);
+                if ("webkitRequestFullScreen" in targetElement) {
+                    targetElement.webkitRequestFullScreen(handleFullscreenChange);
+                }
+                
+            } catch (error) {
+                document.innerHTML = "Fullscreen error: " + toString(error);                
+            }
 
             return true;
         }
@@ -550,7 +556,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         }
 
         const startReorder = (targetWindow) => {
-            if (anyFullscreen.current) {
+            if (document.webkitIsFullScreen ?? document.mozFullScreen) {
                 return 0;
             }
             reorderStarted = true;
