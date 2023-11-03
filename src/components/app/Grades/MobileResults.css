@@ -49,6 +49,9 @@
 .mobile-subject-row {
     text-align: center;
     padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .mobile-grade-row {
@@ -69,14 +72,29 @@
     -webkit-user-drag: none;
     transition: 0.15s;
     padding: 8px;
+    flex-grow: 1;
+}
+
+.mobile-subject-row .subject-average {
+    font-size: var(--font-size-18);
+    width: 68px;
+    padding-block: 5px;
+    border-radius: 10px;
+    background-color: rgba(var(--border-color-1), .5);
+    transition: 0.1s;
+    cursor: default;
+}
+
+.mobile-subject-row .subject-average:hover, .subject-average:active {
+    background-color: rgb(var(--border-color-0));
 }
 
 .subject-row .mobile-head-name:is(:hover, :focus-visible) {
-    background-color: rgba(var(--text-color-main), 0.10);
+    background-color: rgba(var(--text-color-main), .10);
 }
 
 .subject-row .mobile-head-name:active {
-    background-color: rgba(var(--text-color-main), 0.15);
+    background-color: rgba(var(--text-color-main), .15);
 }
 
 .mobile-head-name.selected {

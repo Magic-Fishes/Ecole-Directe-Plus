@@ -146,6 +146,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     } else {
                                         return (el && el.grades && el.grades.length > 0 ? <><div key={"subject-" + el.id.toString()} className="mobile-subject-row mobile-row">
                                                 <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
+                                                <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
                                             </div>
                                             <div key={"grade-" + el.id.toString()} className="mobile-grade-row mobile-row">
                                                 {el.grades.map((grade) => {
