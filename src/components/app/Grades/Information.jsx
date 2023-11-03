@@ -162,11 +162,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Moyenne</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.classMin.toString().replace(".", ",") && <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.classMax.toString().replace(".", ",") && <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
@@ -208,14 +208,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Classe</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/20</sub>}</div>
                         </div>
-                        {console.log("HERE")}
-                        {console.log(grades.get("gradesEnabledFeatures")?.moyenneMin)}
-                        {console.log(grades.get("gradesEnabledFeatures"))}
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && !selectedElement.minAverage.toString().replace(".", ",") && <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}{isNaN(selectedElement.minAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
-                        {grades.get("gradesEnabledFeatures")?.moyenneMax && !selectedElement.maxAverage.toString().replace(".", ",") && <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMax && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
