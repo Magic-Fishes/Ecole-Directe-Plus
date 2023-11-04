@@ -1,5 +1,4 @@
 export function getGradeValue(gradeValue) {
-    // cringe mb
     if (gradeValue.includes("Abs")) {
         return "Abs";
     } else if (gradeValue.includes("Disp")) {
@@ -8,6 +7,8 @@ export function getGradeValue(gradeValue) {
         return "NE";
     } else if (gradeValue.includes("EA")) {
         return "EA";
+    } else if (gradeValue === "") {
+        return "Comp"
     }
 
     return parseFloat(gradeValue.replace(",", "."));
