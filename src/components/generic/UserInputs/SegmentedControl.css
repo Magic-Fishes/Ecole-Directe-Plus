@@ -23,7 +23,7 @@ fieldset.segmented-control:focus-within {
 .segmented-control label.option {
     border: none;
     border-inline: 1px solid rgb(var(--border-color-0));
-    font-size: var(--main-font-size-18);
+    font-size: var(--font-size-18);
     padding: 0.5em;
     min-width: 0;
     text-align: center;
