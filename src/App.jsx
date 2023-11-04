@@ -18,7 +18,7 @@ import Canardman from "./components/Canardman/Canardman";
 import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
 import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./utils/functions"
 
 
@@ -719,6 +719,8 @@ export default function App() {
                     }
                 }
                 newGrade.badges = gradeBadges;
+                newGrade.skill = formatSkills(grade.elementsProgramme)
+
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
             }
         }
