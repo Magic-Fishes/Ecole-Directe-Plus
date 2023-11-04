@@ -13,20 +13,20 @@
     */
     
     /* - font - */
-    --main-font-size-12: 1.2rem;
-    --main-font-size-13: 1.3rem;
-    --main-font-size-14: 1.4rem;
-    --main-font-size-16: 1.6rem;
-    --main-font-size-18: 1.8rem;
-    --main-font-size-20: 2rem; /* window content */
-    --main-font-size-24: 2.4rem; /* window header */
-    --main-font-size-32: 3.2rem;
-    --main-font-size-36: 3.6rem;
-    --main-font-size-42: 4.2rem;
-    --main-font-size-48: 4.8rem;
-    --main-font-weight-regular: 400;
-    --main-font-weight-semi-bold: 600;
-    --main-font-weight-extra-bold: 800;
+    --font-size-12: 1.2rem;
+    --font-size-13: 1.3rem;
+    --font-size-14: 1.4rem;
+    --font-size-16: 1.6rem;
+    --font-size-18: 1.8rem;
+    --font-size-20: 2rem; /* window content */
+    --font-size-24: 2.4rem; /* window header */
+    --font-size-32: 3.2rem;
+    --font-size-36: 3.6rem;
+    --font-size-42: 4.2rem;
+    --font-size-48: 4.8rem;
+    --font-weight-regular: 400;
+    --font-weight-semi-bold: 600;
+    --font-weight-extra-bold: 800;
 
     /* - timing functions - */
     --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
@@ -310,8 +310,8 @@ body {
     /* min-height: 100%; */
     background-color: rgb(var(--background-color-0));
     /* color: rgb(var(--text-color-main)); */
-    font-size: var(--main-font-size-16);
-    font-weight: var(--main-font-weight-regular);
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-regular);
 }
 
 body, input, button, textarea {
