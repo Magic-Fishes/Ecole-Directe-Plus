@@ -74,3 +74,19 @@ export function calcGeneralAverage(period) {
 
     return calcAverage(list);
 }
+
+const skillsValues = ["Non atteint", "Partiellement atteint", "Atteints", "Dépassé"]
+
+export function formatSkills(skills) {
+    return skills.map(el => ({
+        id: el.idElemProg,
+        name: el.libelleCompetence,
+        description: el.descriptif,
+        // On ne connait pas encore les valeures lorsque les compétences ne sont pas valides 
+        // donc on utilisera isNaN() pour savoir si la valeure est un nombre ou non et si ce 
+        // n'est pas le cas on met la valeure à "non évaluée" dans le cas ou les absence, 
+        // les dispense et les non évalués soit aussi des nombres on ajoute la condition que 
+        // el.valeur soit entre 1 et 4 inclus
+        value: isNaN(parseInt(el.valeur)) || parseInt(el.valeur) < 1 || parseInt(el.valeur) > 4 ? "Non évaluée" : skillsValues[parseInt(el.valeur) - 1] // la pire compétence possible commence à 1 donc on ajuste pour les tableaux js
+    }))
+}
