@@ -142,11 +142,11 @@ export default function Grade({ grade, className = "", ...props }) {
                 ...props
             },
             <span className="grade-container">
-                <span>
+                {["Abs", "Disp", "NE", "EA", "Comp"].includes(grade.value) ? grade.value : <span>
                     {(isGradeScaleEnabled.get() && !isNaN(grade.value) ? Math.round((grade.value * gradeScale.get() / (grade.scale ?? 20)) * 100) / 100 : grade.value)?.toString().replace(".", ",")}
                     {isGradeScaleEnabled.get() || ((grade.scale ?? 20) != 20 && <sub>/{grade.scale}</sub>)}
                     {(grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
-                </span>
+                </span>}
             </span>
         )
     )
