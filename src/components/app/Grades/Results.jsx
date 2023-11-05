@@ -91,6 +91,10 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             <th>EA</th>
                                             <td>En attente</td>
                                         </tr>
+                                        <tr>
+                                            <th>Comp</th>
+                                            <td>Compétences</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </InfoButton>
