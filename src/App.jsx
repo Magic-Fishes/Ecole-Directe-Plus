@@ -434,6 +434,7 @@ export default function App() {
 
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
+            console.log("userIds:", userIds)
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }

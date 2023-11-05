@@ -374,7 +374,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
-                {isAdmin && <input type="button" onClick={() => resetUserData()} value="RESET USER DATA" />}
+                {isAdmin && <input type="button" onClick={() => resetUserData(false)} value="RESET USER DATA" />}
                 {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
                 {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
                 {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
