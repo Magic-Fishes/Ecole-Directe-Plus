@@ -18,7 +18,7 @@ import Canardman from "./components/Canardman/Canardman";
 import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools"
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
 import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./utils/functions"
 
 
@@ -219,7 +219,7 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
     const [keepLoggedIn, setKeepLoggedIn] = useState(/*() => {*/getSetting("keepLoggedIn", activeAccount, true)/*}*/);
-
+    
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
     const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
@@ -230,7 +230,7 @@ export default function App() {
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]);
-
+    
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
@@ -238,71 +238,19 @@ export default function App() {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
-
+    
     // diverse
     const abortControllers = useRef([]);
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme();
-
+    
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Gestion Storage                                                                                 //
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // fonctions pour modifier le userData
-    function changeUserData(data, value) {
-        console.log(userData);
-        setUserData((oldData) => {
-            const newData = [...oldData];
-            if (!newData[activeAccount]) {
-                newData[activeAccount] = {};
-            }
-            newData[activeAccount][data] = value;
-            return newData;
-        })
-    }
-
-    function getUserData(data) {
-        // return userData && userData[activeAccount] && userData[activeAccount][data]
-        return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
-    }
-
-    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
-
-
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
-
-    useEffect(() => {
-        if (!keepLoggedIn) {
-            localStorage.removeItem(lsIdName);
-        } else if (userIds.username && userIds.password) {
-            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: userIds.username, password: userIds.password })));
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, [keepLoggedIn]);
-
-
-    useEffect(() => {
-        if (!userIds.username || !userIds.password) {
-            console.log("userIds:", userIds)
-            console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
-            setKeepLoggedIn(false);
-        }
-    }, [userIds])
-
-
+    
     /////////// SETTINGS ///////////
 
     function changeUserSettings(setting, value, accountIdx = activeAccount) {
@@ -322,10 +270,6 @@ export default function App() {
             const newSettings = Array.from({ length: oldSettings.length }, (_) => structuredClone(selectedUserSetting));
             return newSettings;
         })
-    }
-
-    function defaultChangeUserSettings(setFunction) {
-        setUserSettings(setFunction);
     }
 
     function getUserSettingValue(setting) {
@@ -437,6 +381,49 @@ export default function App() {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
+    // fonctions pour modifier le userData
+    function changeUserData(data, value) {
+        console.log(userData);
+        setUserData((oldData) => {
+            const newData = [...oldData];
+            if (!newData[activeAccount]) {
+                newData[activeAccount] = {};
+            }
+            newData[activeAccount][data] = value;
+            return newData;
+        })
+    }
+
+    function getUserData(data) {
+        // return userData && userData[activeAccount] && userData[activeAccount][data]
+        return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
+    }
+    
+    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
+    
+    
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+    
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+
+    useEffect(() => {
+        if (!keepLoggedIn) {
+            localStorage.removeItem(lsIdName);
+        } else if (userIds.username && userIds.password) {
+            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: userIds.username, password: userIds.password })));
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [keepLoggedIn]);
+
     function applyConfigFromLocalStorage() {
         // informations de connexion
         const token = localStorage.getItem("token");
@@ -444,6 +431,13 @@ export default function App() {
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
         if (accountsList && accountsList.length > 0) setAccountsListState(accountsList);
     }
+
+    useEffect(() => {
+        if (!userIds.username || !userIds.password) {
+            console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
+            setKeepLoggedIn(false);
+        }
+    }, [userIds])
 
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
@@ -720,6 +714,8 @@ export default function App() {
                     }
                 }
                 newGrade.badges = gradeBadges;
+                newGrade.skill = formatSkills(grade.elementsProgramme)
+
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
             }
         }
@@ -1208,7 +1204,6 @@ export default function App() {
         if (displayTheme === "auto") {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
         }
-
         return displayTheme;
     }
 

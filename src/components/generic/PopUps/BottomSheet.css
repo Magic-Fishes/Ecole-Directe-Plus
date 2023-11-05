@@ -61,8 +61,8 @@ body:has(#bottom-sheet) {
     line-height: 22px;
     border: none;
     color: rgb(var(--background-color-2));
-    font-size: var(--main-font-size-24);
-    font-weight: var(--main-font-weight-extra-bold);
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-extra-bold);
     cursor: pointer;
     transition: 0.1s;
 }
@@ -115,7 +115,7 @@ body:has(#bottom-sheet) {
     text-align: center;
     margin-inline: 10px;
     margin-block: 12.5px 15px; /*= padding pop-up-background*/
-    font-size: var(--main-font-size-36);
+    font-size: var(--font-size-36);
     color: rgb(var(--border-color-1));
 }
 

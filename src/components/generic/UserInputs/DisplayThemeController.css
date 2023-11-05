@@ -43,7 +43,7 @@ fieldset.display-theme-controller:has(:focus-visible) {
 
 .display-theme-controller label.option {
     border: none;
-    font-size: var(--main-font-size-16);
+    font-size: var(--font-size-16);
     font-weight: var(--font-weight-semi-bold);
     min-width: 0;
     padding: 6px 12px;

@@ -198,6 +198,15 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></div>
                         </div> */}
                     </div>
+                    {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">
+                        <span className="skill-text">
+                            <p className="skill-name">{el.name}</p>
+                            <p>{el.description}</p>
+                        </span>
+                        <span className="skill-value" style={{"color": (actualDisplayTheme === "dark" ? (el.value === "Non atteint" ? "#FF0000" : el.value === "Partiellement atteint" ? "#FFC000" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#00B050" : "#FFF8") : (el.value === "Non atteint" ? "#F00" : el.value === "Partiellement atteint" ? "#DA8700" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#03a880" : "#0008"))}}>
+                            {el.value}
+                        </span>
+                    </div>].flat())}
                 </div> : <div className="element-information">
                     <div className="grade-zone">
                         <div>

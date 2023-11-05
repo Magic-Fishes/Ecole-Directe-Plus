@@ -17,16 +17,6 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import "./MobileResults.css";
 
-{/* <ContentLoader
-    animate={settings.get("displayMode") === "quality"}
-    speed={1}
-    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-    style={{ width: subjectNameWidth + "px", maxHeight: "30px" }}
->
-    <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
-</ContentLoader> */}
-
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();

@@ -49,7 +49,7 @@
     appearance: textfield;
     border: none;
     display: block;
-    font-size: var(--main-font-size-18);
+    font-size: var(--font-size-18);
     padding: 10px;
     padding-right: 0;
     flex-grow: 1;

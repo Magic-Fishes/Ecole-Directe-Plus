@@ -24,7 +24,7 @@ textarea#feedback-content {
     max-height: 400px;
     
     color: rgb(var(--text-color-main));
-    font-size: var(--main-font-size-16);
+    font-size: var(--font-size-16);
     background-color: transparent;
     border: 2px solid rgb(var(--border-color-0));
     border-radius: 15px;
@@ -164,7 +164,7 @@ div.drop-zone:focus-within {
 p#usage-info {
     color: rgb(var(--text-color-alt));
     text-align: right;
-    font-size: var(--main-font-size-14)
+    font-size: var(--font-size-14)
 }
 #feedback-box p.error-message {
     margin-top: 20px;
