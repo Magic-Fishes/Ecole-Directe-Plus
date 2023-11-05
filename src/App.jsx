@@ -118,9 +118,9 @@ let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{
 
 function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
-        const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "[{}]"));
+        const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "{}"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
+    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "{}"));
         return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
@@ -296,6 +296,7 @@ export default function App() {
 
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
+            console.log("userIds:", userIds)
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }
