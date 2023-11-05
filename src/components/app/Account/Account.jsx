@@ -70,15 +70,15 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                 <div className="behavior-types">
                     <div className="behavior-type">
                         <span>Retards</span>
-                        <span className="count">{userData.get("sortedSchoolLife")?.delays.length ?? "..."}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.delays.length ? " loading" : " loading") }>{userData.get("sortedSchoolLife")?.delays.length ?? <><span style={{"--index": 0}}>.</span><span style={{"--index": 1}}>.</span><span style={{"--index": 2}}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Absences</span>
-                        <span className="count">{userData.get("sortedSchoolLife")?.absences.length ?? "..."}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading") }>{userData.get("sortedSchoolLife")?.absences.length ?? <><span style={{"--index": 3}}>.</span><span style={{"--index": 4}}>.</span><span style={{"--index": 5}}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Sanctions</span>
-                        <span className="count">{userData.get("sortedSchoolLife")?.sanctions.length ?? "..."}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : " loading") }>{userData.get("sortedSchoolLife")?.sanctions.length ?? <><span style={{"--index": 6}}>.</span><span style={{"--index": 7}}>.</span><span style={{"--index": 8}}>.</span></>}</span>
                     </div>
                 </div>
             </section>
