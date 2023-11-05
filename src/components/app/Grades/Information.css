@@ -10,8 +10,8 @@
     background: none;
     border: none;
     color: rgba(var(--text-color-alt), .5);
-    font-size: var(--main-font-size-20);
-    font-weight: var(--main-font-weight-extra-bold);
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-extra-bold);
     cursor: pointer;
     pointer-events: auto;
     transition: all .1s, outline 0s;
@@ -83,7 +83,6 @@
 
 .information .info-zone {
     padding: 10px;
-    padding-bottom: 0;
     display: flex;
     flex-grow: 1;
     gap: 5px;
@@ -152,4 +151,30 @@
     text-align: center;
     width: 70%;
     color: rgb(var(--text-color-alt));
+}
+
+.skill-container {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.skill-text {
+    width: 75%;
+}
+
+.skill-text p {
+    color: rgb(var(--text-color-alt));
+}
+
+.skill-name {
+    font-weight: var(--font-weight-extra-bold);
+}
+
+.skill-value {
+    flex-grow: 1;
+    text-align: center;
+    font-weight: var(--font-weight-extra-bold);
 }

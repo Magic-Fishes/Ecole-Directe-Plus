@@ -381,8 +381,6 @@ export default function App() {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
-    const currentTheme = getCurrentDisplayTheme(getUserSettingValue("displayTheme"))
-
     // fonctions pour modifier le userData
     function changeUserData(data, value) {
         console.log(userData);

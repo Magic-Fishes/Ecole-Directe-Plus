@@ -75,7 +75,7 @@ export function calcGeneralAverage(period) {
     return calcAverage(list);
 }
 
-const skillsValues = ["Non atteint", "Partiellement atteint", "Atteints", "Dépassé"]
+const skillsValues = ["Non atteint", "Partiellement atteint", "Atteint", "Dépassé"]
 
 export function formatSkills(skills) {
     return skills.map(el => ({
