@@ -98,22 +98,7 @@ body:has(#account) {
 
 
 .loading span {
-    animation: loading-point 6s ease-in-out calc(0.5s * var(--index)) infinite;
-}
-
-
-@keyframes loading-point {
-    0% {
-        transform: translateY(0);
-    }
-    
-    5.5% {
-        transform: translateY(-5px);
-    }
-    
-    11% {
-        transform: translateY(0);
-    }
+    animation: loading-point 6s ease-in-out calc(0.4s * var(--index)) infinite;
 }
 
 @media only screen and (max-width: 869px) {
@@ -126,5 +111,19 @@ body:has(#account) {
     #account #documents {
         grid-column: auto;
         grid-row: 3 / 4;
+    }
+}
+
+@keyframes loading-point {
+    0% {
+        transform: translateY(0);
+    }
+
+    5.5% {
+        transform: translateY(-5px);
+    }
+
+    11% {
+        transform: translateY(0);
     }
 }
