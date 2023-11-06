@@ -62,7 +62,8 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                         />
                     </div>
                     <address id="informations-container">
-                        <span>Dernière connexion : <time dateTime={accountsListState[activeAccount].lastConnection.toISOString()}>{accountsListState[activeAccount].lastConnection.toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "numeric" })}</time></span>
+                        {console.log("accountsListState[activeAccount].lastConnection:", accountsListState[activeAccount].lastConnection.toISOString)}
+                        <span>Dernière connexion : <time dateTime={(new Date(accountsListState[activeAccount].lastConnection)).toISOString()}>{(new Date(accountsListState[activeAccount].lastConnection)).toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "numeric" })}</time></span>
                         <span>Email : {accountsListState[activeAccount].email}</span>
                         <span>Num. téléphone : {accountsListState[activeAccount].email ?? "N/A"}</span>
                     </address>
