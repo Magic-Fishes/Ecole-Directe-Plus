@@ -7,22 +7,22 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
     const patchNotesContent = <div>
         <hr />
         <p id="first-paragraph">
-            Vous vous trouvez sur la toute première version officielle d'Ecole Directe Plus. En compagnie de Canardman, nous avons ajouté autant de fonctionnalités que possibles pour que votre confort soit maximum. Découvrez les ici à chaque mise à jour du site.
+            Vous vous trouvez sur la toute première version officielle d'Ecole Directe Plus. En compagnie de Canardman, nous avons ajouté autant de fonctionnalités que possibles pour que votre confort soit maximal. Découvrez-les ici à chaque mise à jour du site.
         </p>
-        <h3 className="sub-header">Les nouveautés par rapport à EcoleDirecte :</h3>
+        <h3 className="sub-header">Nouveautés</h3>
         <ul>
             <li>Calcul automatique et instantané de la moyenne générale</li>
             <li>Un système de streak permettant de mesurer votre progression au fil des trimestres</li>
             <li>La possibilité de voir toutes ses notes sur le même barème</li>
             <li>Un système de badge pour flex sur votre nombre d'étoiles obtenues en cours d'Anglais</li>
             <li>Un thème clair et sombre dessiné par et pour de véritables artistes</li>
-            <li>Un calcul de vos point forts pour afin d'identifier les matières où vous excellez</li>
+            <li>Un calcul de vos points forts afin d'identifier les matières où vous excellez</li>
             <li>La possibilité de rester connecté de manière stable et durable</li>
-            <li>Et tant d'autres petits ajustements que l'on vous laisse découvrir par vous-même...</li>
+            <li>Et tant d'autres petits ajustements que nous vous laissons découvrir par vous-même...</li>
         </ul>
         <h3 className="sub-header">Divers</h3>
         <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
-        <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback (tout type de retours est le bienvenu, nous sommes très curieux de connaître votre avis)</li>
+        <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback (tout type de retour est le bienvenu, nous sommes très curieux de connaître votre avis)</li>
         {/* <ul>
             <li>Nouveau menu de connexion avec l'option "rester connecté"</li>
             <li>Choix du thème d'affichage : sombre / clair</li>
