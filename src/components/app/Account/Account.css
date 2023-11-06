@@ -47,6 +47,7 @@ body:has(#account) {
 }
 
 #informations-container {
+    font-style: normal;
     height: inherit;
     display: flex;
     flex-flow: column nowrap;
