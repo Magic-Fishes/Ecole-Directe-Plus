@@ -898,7 +898,7 @@ export default function App() {
                         accounts.profile.eleves.map((account) => {
                             accountsList.push({
                                 accountType: "P",
-                                lastConnection: new Date(account.lastConnexion),
+                                lastConnection: new Date(accounts.lastConnexion),
                                 id: account.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,
