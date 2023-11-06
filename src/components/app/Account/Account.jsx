@@ -3,6 +3,7 @@ import { useRef, useEffect, useContext } from "react";
 import { AppContext } from "../../../App";
 
 import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
+import Button from "../../generic/UserInputs/Button";
 
 import "./Account.css";
 
@@ -60,10 +61,22 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                             alt={"Photo de profil de " + accountsListState[activeAccount].firstName}
                         />
                     </div>
+                    <address id="informations-container">
+                        <span>Dernière connexion : <time dateTime={accountsListState[activeAccount].lastConnection.toISOString()}>{accountsListState[activeAccount].lastConnection.toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "numeric" })}</time></span>
+                        <span>Email : {accountsListState[activeAccount].email}</span>
+                        <span>Num. téléphone : {accountsListState[activeAccount].email ?? "N/A"}</span>
+                    </address>
+                    <Button disabled={true} id="statistics">Statistiques</Button>
+                </div>
+                <div className="coming-soon">
+                    En cours de développement (bientôt disponible)
                 </div>
             </HolographicDiv>
             <section className="frame" id="documents">
                 <h2 className="frame-heading">Documents</h2>
+                <div className="coming-soon">
+                    En cours de développement (bientôt disponible)
+                </div>
             </section>
             <section className="frame" id="behavior">
                 <h2 className="frame-heading">Comportement</h2>
