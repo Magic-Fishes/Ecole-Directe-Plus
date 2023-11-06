@@ -9,3 +9,7 @@
     border-color: rgb(var(--background-color-2));
     border-style: solid;
 }
+
+#first-paragraph {
+    margin-top: 15px;
+}
