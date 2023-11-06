@@ -65,7 +65,7 @@ function consoleLogEDPLogo() {
 }
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.1.5";
+const currentEDPVersion = "0.2.1";
 const apiVersion = "4.43.0";
 const apiUrl = "https://api.ecoledirecte.com/v3/";
 const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
