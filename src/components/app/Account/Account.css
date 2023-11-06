@@ -10,7 +10,6 @@ body:has(#account) {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 2fr 1fr;
     gap: clamp(20px, 3vw, 50px);
-    ;
 }
 
 #account .frame {
@@ -27,9 +26,10 @@ body:has(#account) {
 }
 
 #student-informations {
-    margin-top: 40px;
-    ;
+    margin-top: 20px;
     display: flex;
+    flex-flow: row wrap;
+    gap: 20px;
 }
 
 #profile-picture-container {
@@ -44,6 +44,43 @@ body:has(#account) {
 #profile-picture-container img {
     width: 100%;
     transform: translateY(-10px);
+}
+
+#informations-container {
+    height: inherit;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+}
+
+#statistics {
+    flex: 1;
+    min-width: max-content;
+}
+
+/* TODO: enlever quand plus WIP */
+#profile.frame {
+    display: flex;
+    flex-flow: column nowrap;
+}
+#documents.frame {
+    display: flex;
+    flex-flow: column nowrap;
+}
+.coming-soon {
+    height: 100%;
+    color: rgb(var(--text-color-alt));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid rgb(var(--text-color-alt));
+    border-radius: 8px;
+    opacity: .5;
+}
+#profile .coming-soon {
+    margin-top: 30px;
 }
 
 #account #profile {
@@ -112,6 +149,11 @@ body:has(#account) {
         grid-column: auto;
         grid-row: 3 / 4;
     }
+    
+    #account .frame .frame-heading {
+        padding-block: 10px;
+    }
+
 }
 
 @keyframes loading-point {

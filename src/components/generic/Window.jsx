@@ -479,7 +479,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         // Check double click
         let doubleClicked = false;
         if (latestClick.current !== null && (Date.now() - latestClick.current) < 400) {
-            console.log("DOUBLE CLICKED!");
+            // console.log("DOUBLE CLICKED!");
             doubleClicked = true;
         }
         latestClick.current = Date.now();
@@ -492,6 +492,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         let moveableElements;
 
         function constantDeltaScale(element, delta, reference = "height") {
+            console.log("constantDeltaScale ~ reference:", reference)
             const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
             const bounds = element.getBoundingClientRect();
             const scaledReference = bounds[reference] / scale;
@@ -618,8 +619,9 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             floatingWindow.style.left = target.x + "px";
             floatingWindow.style.top = target.y + "px";
             floatingWindow.style.scale = scale;
-            const FLOATING_SCALE_DELTA = 20;
-            setTimeout(() => (constantDeltaScale(floatingWindow, FLOATING_SCALE_DELTA, isTabletLayout ? "width" : "height")), 0);
+            const FLOATING_SCALE_DELTA = 30;
+            const floatingWindowBounds = targetWindow.getBoundingClientRect();
+            setTimeout(() => (constantDeltaScale(floatingWindow, FLOATING_SCALE_DELTA, floatingWindowBounds.width > floatingWindowBounds.height ? "width" : "height")), 0);
 
             windowOrigin.x = target.x;
             windowOrigin.y = target.y;
@@ -648,8 +650,9 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         // console.log("target:", targetWindow, "| mousedown");
 
         /* targetWindow.classList.add("grabbing"); */
-        const GRABBING_SCALE_DELTA = -20;
-        constantDeltaScale(targetWindow, GRABBING_SCALE_DELTA, isTabletLayout ? "width" : "height");
+        const GRABBING_SCALE_DELTA = -30;
+        const targetWindowBounds = targetWindow.getBoundingClientRect();
+        constantDeltaScale(targetWindow, GRABBING_SCALE_DELTA, targetWindowBounds.width > targetWindowBounds.height ? "width" : "height");
 
         const mouseOrigin = {
             x: applyZoom(event.clientX ?? event.touches[0].clientX),

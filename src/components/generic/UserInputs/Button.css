@@ -15,17 +15,22 @@
     cursor: pointer;
 }
 
+.button.disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
 .button svg {
     display: inline-block;
 }
 
-.button:hover, .button:focus-visible {
+.button:not(.disabled):hover, .button:not(.disabled):focus-visible {
     color: rgb(var(--text-color-main));
     background-color: rgba(var(--background-color-focus));
     border-color: rgb(var(--border-color-1));
 }
 
-.button:active, .button.submitter.submitting {
+.button:not(.disabled):active, .button.submitter.submitting {
     background-color: rgb(var(--border-color-0));
 }
 
@@ -33,7 +38,7 @@
     content: " ->";
 }
 
-.button.submitter:hover::after {
+.button.submitter:not(.disabled):hover::after {
     content: " -->";
 }
 
