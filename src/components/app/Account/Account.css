@@ -52,6 +52,7 @@ body:has(#account) {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
+    word-break: break-all;
 }
 
 #statistics {

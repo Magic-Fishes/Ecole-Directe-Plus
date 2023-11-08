@@ -66,6 +66,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 resetUserData();
             } else if (parsedOldVersion <= 15) { // v0.1.5
                 localStorage.removeItem("userIds");
+                localStorage.removeItem("encryptedUserIds");
                 return 0;
             } else if (parsedOldVersion <= 21) { // v0.2.1
                 return 0;
