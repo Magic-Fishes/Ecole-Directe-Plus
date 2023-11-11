@@ -138,7 +138,7 @@ export default function Grade({ grade, className = "", ...props }) {
                 replace: grade.id === undefined ? "" : true,
                 id: grade.id ?? "",
                 ref: gradeRef,
-                className: `grade${(grade.isSignificant ?? true) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""} ${className} ${classList.join(" ")}`,
+                className: `grade${((grade.isSignificant ?? true) && grade.isReal) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""} ${className} ${classList.join(" ")}`,
                 ...props
             },
             <span className="grade-container">

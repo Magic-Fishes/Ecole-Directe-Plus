@@ -524,6 +524,54 @@ export default function App() {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    function addNewGrade(value, coef, scale, name, type, periodKey, subjectKey) {
+        const sortedGrades = getUserData("sortedGrades")
+        console.log(sortedGrades)
+        sortedGrades[periodKey].subjects[subjectKey].grades.push({
+            value: value,
+            coef: coef,
+            scale: scale,
+            name: name,
+            badges: [],
+            classAverage: "N/A",
+            classMin: "N/A",
+            classMax: "N/A",
+            date: new Date(),
+            elementType: "grade",
+            entryDate: new Date(),
+            examCorrectionSRC: "",
+            examSubjectSRC: "",
+            id: crypto.randomUUID(),
+            isReal: false,
+            skill: [],
+            subjectName: sortedGrades[periodKey].subjects[subjectKey].name,
+            type: type,
+            upTheStreak: false,
+        })
+        changeUserData("sortedGrades", sortedGrades);
+        console.log(sortedGrades)
+        updatePeriodGrades(periodKey)
+    }
+
+    function updatePeriodGrades(periodKey) {
+        const sortedGrades = getUserData("sortedGrades")
+        const period = sortedGrades[periodKey]
+
+        for (const subject in period.subjects) {
+            if (!subject.includes("category")) {
+                period.subjects[subject].average = calcAverage(period.subjects[subject].grades)
+            }
+        }
+        for (const subject in period.subjects) {
+            if (subject.includes("category")) {
+                period.subjects[subject].average = calcCategoryAverage(period, subject);
+            }
+        }
+        period.generalAverage = calcGeneralAverage(period)
+        sortedGrades[periodKey] = period
+        changeUserData("sortedGrades", sortedGrades);
+    }
+
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
@@ -637,6 +685,25 @@ export default function App() {
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
                 newGrade.examCorrectionSRC = grade.uncCorrige;
+                newGrade.isReal = true;
+                /* Si c'est faux : 
+                    pas de :
+                        - badges
+                        - streak
+                        - moyenne de classe/min/max
+                        - correction ni sujet
+                        - date
+                    différences : 
+                        - id = randomUUID
+                    choisit par l'utilisateur : 
+                        - name
+                        - coef
+                        - scale
+                        - value
+                        - type
+
+                
+                */
                 if (!subjectDatas.hasOwnProperty(periodCode)) {
                     subjectDatas[periodCode] = {};
                 }
@@ -749,6 +816,8 @@ export default function App() {
 
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
+
+        console.log(periods);
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
@@ -1269,6 +1338,8 @@ export default function App() {
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
+
+                    addNewGrade={addNewGrade}
                 />
             ,
 
