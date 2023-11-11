@@ -16,6 +16,7 @@ import GradeScaleToggle from "./GradeScaleToggle";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import "./Results.css";
+import Graphics from "./Graphics.Jsx";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -242,9 +243,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <div>
-                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
-                            </div>
+                            : <Graphics sortedGrades={sortedGrades} />
                         }
                     </WindowContent>
                 </Window>

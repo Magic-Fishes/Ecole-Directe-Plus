@@ -8,8 +8,6 @@ import NotSelectedOption from "../../graphics/NotSelectedOption";
 import "./DropDownMenu.css";
 
 export default function DropDownMenu({ name, options, displayedOptions=options, selected, onChange, id="", className="", ...props }) {
-    console.log("DropDownMenu ~ options:", options)
-    console.log("DropDownMenu ~ selected:", selected)
     const [isOpen, setIsOpen] = useState(false);
 
     const [needOverflowAuto, setNeedOverflowAuto] = useState(false);

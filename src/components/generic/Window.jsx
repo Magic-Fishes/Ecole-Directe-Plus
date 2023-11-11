@@ -449,16 +449,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 }
             }
 
-            try {
-                targetElement.onfullscreenchange = handleFullscreenChange;
-                targetElement.requestFullscreen(handleFullscreenChange);
-                if ("webkitRequestFullScreen" in targetElement) {
-                    targetElement.webkitRequestFullScreen(handleFullscreenChange);
-                }
-                
-            } catch (error) {
-                document.innerHTML = "Fullscreen error: " + toString(error);                
+            targetElement.onfullscreenchange = handleFullscreenChange;
+            targetElement.requestFullscreen(handleFullscreenChange);
+            if ("webkitRequestFullScreen" in targetElement) {
+                targetElement.webkitRequestFullScreen(handleFullscreenChange);
             }
+
 
             return true;
         }
@@ -492,7 +488,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         let moveableElements;
 
         function constantDeltaScale(element, delta, reference = "height") {
-            console.log("constantDeltaScale ~ reference:", reference)
+            // console.log("constantDeltaScale ~ reference:", reference)
             const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
             const bounds = element.getBoundingClientRect();
             const scaledReference = bounds[reference] / scale;
