@@ -324,9 +324,6 @@ export default function App() {
 
         const handleStorageChange = () => {
             const newLsGlobalSettings = JSON.parse(localStorage.getItem("globalSettings"))
-            console.log("HERE")
-            console.log(newLsGlobalSettings)
-            console.log(globalSettings)
             if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
                 for (const i in globalSettings) {
                     globalSettings[i].set(newLsGlobalSettings[i])
@@ -383,7 +380,6 @@ export default function App() {
 
     // fonctions pour modifier le userData
     function changeUserData(data, value) {
-        console.log(userData);
         setUserData((oldData) => {
             const newData = [...oldData];
             if (!newData[activeAccount]) {
@@ -434,7 +430,7 @@ export default function App() {
 
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
-            console.log("userIds:", userIds)
+            // console.log("userIds:", userIds)
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }
@@ -526,7 +522,6 @@ export default function App() {
 
     function addNewGrade(value, coef, scale, name, type, periodKey, subjectKey) {
         const sortedGrades = getUserData("sortedGrades")
-        console.log(sortedGrades)
         sortedGrades[periodKey].subjects[subjectKey].grades.push({
             value: value,
             coef: coef,
@@ -549,7 +544,6 @@ export default function App() {
             upTheStreak: false,
         })
         changeUserData("sortedGrades", sortedGrades);
-        console.log(sortedGrades)
         updatePeriodGrades(periodKey)
     }
 
@@ -637,7 +631,6 @@ export default function App() {
             const subjectDatas = {};
 
             for (let grade of gradesFromJson) {
-                // console.log("grade", grade)
                 const periodCode = grade.codePeriode;
                 const subjectCode = grade.codeMatiere;
                 // créer la matière si elle n'existe pas
@@ -817,8 +810,6 @@ export default function App() {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
 
-        console.log(periods);
-
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
         changeUserData("gradesEnabledFeatures", enabledFeatures);
@@ -994,7 +985,6 @@ export default function App() {
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
                         function sendToWebhook(targetWebhook, data) {
-                            console.log("data", data);
                             fetch(
                                 targetWebhook,
                                 {
@@ -1198,8 +1188,6 @@ export default function App() {
 
     function getUserInfo(token, accountsList) {
         console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
-        console.log("token:", token);
-        console.log("accountsList:", accountsList);
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
