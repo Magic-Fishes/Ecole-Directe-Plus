@@ -118,7 +118,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     const el = sortedGrades[selectedPeriod].subjects[idx]
                                     if (el.isCategory) {
                                         return [
-                                            <div key={"category-" + el.id.toString()} className="mobile-category-row mobile-row">
+                                            <div key={"category-" + (el.id ? el.id.toString() : crypto.randomUUID())} className="mobile-category-row mobile-row">
                                                 <span className="mobile-head-name">{el.name}</span>
                                                 <span className="category-averages">
                                                     <span>
