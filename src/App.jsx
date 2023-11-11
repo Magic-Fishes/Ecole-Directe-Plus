@@ -717,7 +717,7 @@ export default function App() {
                     periods[periodCode].totalStreak += 1;
                     periods[periodCode].subjects[subjectCode].streak += 1;
                 } else {
-                    if (newGrade.isSignificant) {
+                    if (newGrade.isSignificant && !["Abs", "Disp", "NE", "EA", "Comp"].includes(newGrade.value)) {
                         periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
                         periods[periodCode].subjects[subjectCode].streak = 0;
 
