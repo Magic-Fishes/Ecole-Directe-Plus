@@ -463,12 +463,7 @@ export default function App() {
         isFirstFrame.current = false;
     }
 
-
     // TABLET / MOBILE LAYOUT
-
-    function useIsMobileLayout() {
-        return isMobileLayout;
-    }
 
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
@@ -558,7 +553,7 @@ export default function App() {
         }
         for (const subject in period.subjects) {
             if (subject.includes("category")) {
-                period.subjects[subject].average = calcCategoryAverage(period, subject);
+                period.subjects[subject].average = calcCategoryAverage(period, period.subjects[subject]);
             }
         }
         period.generalAverage = calcGeneralAverage(period)
@@ -734,6 +729,7 @@ export default function App() {
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
                     const categoryAverage = calcCategoryAverage(periods[periodCode], category);
+                    console.log(category)
                     periods[periodCode].subjects[category.code].average = categoryAverage;
                 }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
