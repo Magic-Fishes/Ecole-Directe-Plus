@@ -76,7 +76,8 @@ const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
     "505": "Identifiant et/ou mot de passe invalide",
     "522": "Identifiant et/ou mot de passe invalide",
-    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes"
+    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
+    "202": "accountCreationError",
 }
 const defaultSettings = {
     keepLoggedIn: false,

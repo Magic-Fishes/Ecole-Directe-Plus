@@ -87,7 +87,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
         <form onSubmit={handleSubmit} {...props} id="login-form">
             <TextInput className="login-input" textType="text" placeholder="Identifiant" autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
             <TextInput className="login-input" textType="password" placeholder="Mot de passe" autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errorMessage && errorMessage === "accountCreationError" ? <p className="error-message">Vous n'ayez pas encore créé votre compte Ecole Directe ?!<br/>Rendez vous sur le <a href="https://ecoledirecte.com/">site officiel</a> pour le configurer, nous vous attendons avec impatience !</p> : <p className="error-message">{errorMessage}</p>}
             <div className="login-option">
                 <Tooltip delay={400}>
                     <TooltipTrigger>
