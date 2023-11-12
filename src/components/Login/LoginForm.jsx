@@ -44,7 +44,6 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
                 const userIds = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
         
                 if ( userIds.username && userIds.password ) {
-                    console.log("userIds:", userIds);
                     fetchLogin(userIds.username, userIds.password, true, (messages) => {
                         setSubmitButtonText(messages.submitButtonText || "");
                         setErrorMessage(messages.submitErrorMessage || "");

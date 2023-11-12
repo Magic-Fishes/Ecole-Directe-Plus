@@ -97,18 +97,14 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         }
 
         useUserData().set("notifications", notifications)
-        console.log("calculateNotificationsNumber ~ notifications:", notifications)
     }
 
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
             if (timeline.length < 1 || timeline[activeAccount] === undefined) {
-                console.log("fetchUserTimeline")
                 fetchUserTimeline(controller);
             } else {
-                console.log("timeline:");
-                console.log(timeline);
                 calculateNotificationsNumber(timeline);
             }
         }
@@ -137,7 +133,6 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     }
 
     useEffect(() => {
-        console.log("Amazing feature incoming:", easterEggCounter + "/16");
         let audio;
         if (easterEggCounter >= 8) {
             // preload the audio to prevent the ping

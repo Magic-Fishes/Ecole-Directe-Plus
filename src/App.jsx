@@ -729,7 +729,6 @@ export default function App() {
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
                     const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                    console.log(category)
                     periods[periodCode].subjects[category.code].average = categoryAverage;
                 }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
@@ -926,7 +925,6 @@ export default function App() {
                         localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
                     }
                     let token = response.token // collecte du token
-                    console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
@@ -1036,8 +1034,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // const code = response.code;
-                console.log("RESPONSE:", response);
+                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     const oldTimeline = structuredClone(timeline);
                     oldTimeline[activeAccount] = response.data;
@@ -1084,9 +1081,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // const code = response.code;
-                console.log("RESPONSE:", response);
-                console.log("CODE:", code);
+                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
@@ -1137,8 +1132,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-
-                console.log("RESPONSE:", response);
+                // console.log("RESPONSE:", response);
                 if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
                     const oldSchoolLife = structuredClone(schoolLife);
                     oldSchoolLife[activeAccount] = response.data;
