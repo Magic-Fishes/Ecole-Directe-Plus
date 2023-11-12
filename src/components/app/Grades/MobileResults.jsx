@@ -119,7 +119,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     if (el.isCategory) {
                                         return [
                                             <div key={"category-" + (el.id ? el.id.toString() : crypto.randomUUID())} className="mobile-category-row mobile-row">
-                                                <span className="mobile-head-name">{el.name}</span>
+                                                <span className="mobile-head-name">{el.name}<span>Moyenne : <Grade grade={{ value: el.average }} /></span></span>
                                                 <span className="category-averages">
                                                     <span>
                                                         Classe : <Grade grade={{ value: el.classAverage }} />

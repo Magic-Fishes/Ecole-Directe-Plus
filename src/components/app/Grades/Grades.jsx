@@ -46,10 +46,8 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
 
     useEffect(() => {
         const controller = new AbortController();
-        console.log("GRADES:", grades)
         if (isLoggedIn) {
             if (grades.length < 1 || grades[activeAccount] === undefined) {
-                console.log("fetchUserGrades")
                 fetchUserGrades(controller);
             } else {
                 sortGrades(grades, activeAccount);

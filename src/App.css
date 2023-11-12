@@ -335,6 +335,10 @@ p.error-message {
     text-align: center;
 }
 
+p.error-message a {
+    color: rgb(var(--text-color-soft-error-alt));
+}
+
 .invalid {
     border-color: rgb(var(--border-color-soft-error)) !important;
     background-color: rgba(var(--background-color-soft-error), 0.1) !important;

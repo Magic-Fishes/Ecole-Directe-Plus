@@ -33,17 +33,26 @@
 }
 
 .mobile-category-row .mobile-head-name {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+    width: auto;
+    
+    text-decoration: none;
     font-size: var(--font-size-18);
     font-weight: var(--font-weight-extra-bold);
-    display: inline-block;
-    text-decoration: none;
-    min-width: 0;
-    width: auto;
-    min-width: 0;
+
     outline: none;
     border-radius: 10px;
+    
     -webkit-user-drag: none;
     transition: 0.15s;
+    gap: 10px 30px;
+}
+
+.mobile-category-row .mobile-head-name span {
+    font-weight: var(--font-weight-regular);
 }
 
 .mobile-subject-row {

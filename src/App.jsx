@@ -76,7 +76,8 @@ const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
     "505": "Identifiant et/ou mot de passe invalide",
     "522": "Identifiant et/ou mot de passe invalide",
-    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes"
+    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
+    "202": "accountCreationError",
 }
 const defaultSettings = {
     keepLoggedIn: false,
@@ -463,12 +464,7 @@ export default function App() {
         isFirstFrame.current = false;
     }
 
-
     // TABLET / MOBILE LAYOUT
-
-    function useIsMobileLayout() {
-        return isMobileLayout;
-    }
 
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
@@ -558,7 +554,7 @@ export default function App() {
         }
         for (const subject in period.subjects) {
             if (subject.includes("category")) {
-                period.subjects[subject].average = calcCategoryAverage(period, subject);
+                period.subjects[subject].average = calcCategoryAverage(period, period.subjects[subject]);
             }
         }
         period.generalAverage = calcGeneralAverage(period)
@@ -928,7 +924,6 @@ export default function App() {
                         localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
                     }
                     let token = response.token // collecte du token
-                    console.log("TOKEN FROM FETCH LOGIN", token)
                     let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
@@ -1038,8 +1033,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // const code = response.code;
-                console.log("RESPONSE:", response);
+                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     const oldTimeline = structuredClone(timeline);
                     oldTimeline[activeAccount] = response.data;
@@ -1086,9 +1080,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // const code = response.code;
-                console.log("RESPONSE:", response);
-                console.log("CODE:", code);
+                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
@@ -1139,8 +1131,7 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-
-                console.log("RESPONSE:", response);
+                // console.log("RESPONSE:", response);
                 if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
                     const oldSchoolLife = structuredClone(schoolLife);
                     oldSchoolLife[activeAccount] = response.data;
