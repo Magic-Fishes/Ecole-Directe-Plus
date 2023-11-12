@@ -679,7 +679,7 @@ export default function App() {
                 newGrade.examSubjectSRC = grade.uncSujet;
                 newGrade.examCorrectionSRC = grade.uncCorrige;
                 newGrade.isReal = true;
-                /* Si c'est faux : 
+                /* Si newGrade.isReal est faux :
                     pas de :
                         - badges
                         - streak
@@ -694,8 +694,6 @@ export default function App() {
                         - scale
                         - value
                         - type
-
-                
                 */
                 if (!subjectDatas.hasOwnProperty(periodCode)) {
                     subjectDatas[periodCode] = {};
