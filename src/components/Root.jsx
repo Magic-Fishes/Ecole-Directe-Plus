@@ -397,9 +397,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <form action="https://github.com/Magic-Fishes/Ecole-Directe-Plus" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
+                {isAdmin && <input type="button" onClick={() => addNewGrade(17, 1, 20, "Podcast", "DM", "A001", "ALL2")} value="ADD 17 ALL" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
-                {isAdmin && <input type="button" onClick={() => addNewGrade(17, 1, 20, "Podcast", "DM", "A001", "ALL2")} value="ADD 17 ALL" />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}

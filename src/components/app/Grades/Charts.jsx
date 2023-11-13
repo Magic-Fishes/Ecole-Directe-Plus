@@ -3,13 +3,13 @@ import { useState, useEffect, useRef } from "react";
 // import { Chart } from 'chart.js';
 
 
-import "./Graphics.css";
+import "./Charts.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 
-export default function Graphics({ sortedGrades }) {
+export default function Charts({ sortedGrades }) {
     /**
-     * Graphics types:
+     * Charts types:
      * 0: General average + streak history | line
      * 1: Subjects average | bar
      * 2: Subjects average | radar

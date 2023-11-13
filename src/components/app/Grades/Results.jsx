@@ -16,7 +16,7 @@ import GradeScaleToggle from "./GradeScaleToggle";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import "./Results.css";
-import Graphics from "./Graphics.Jsx";
+import Charts from "./Charts.jsx";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -243,7 +243,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <Graphics sortedGrades={sortedGrades} />
+                            : <Charts sortedGrades={sortedGrades} />
                         }
                     </WindowContent>
                 </Window>
