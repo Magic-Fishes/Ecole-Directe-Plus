@@ -9,7 +9,7 @@
 
 .drop-down-menu.focus {
     isolation: isolate;
-    z-index: 50;
+    z-index: 1;
 }
 
 .drop-down-menu.focus .main-container {
