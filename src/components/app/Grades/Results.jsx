@@ -16,12 +16,11 @@ import GradeScaleToggle from "./GradeScaleToggle";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import "./Results.css";
-import Graphics from "./Graphics.Jsx";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
-    const contentLoadersRandomValues = useRef({ subjectNameWidth:  Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2)})
+    const contentLoadersRandomValues = useRef({ subjectNameWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2) })
 
     const location = useLocation();
 
@@ -60,7 +59,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 <table style={{ textAlign: "left" }}>
                                     <caption style={{ fontWeight: "800" }}>Légende des notes</caption>
                                     <colgroup>
-                                        <col className="visual-demo-col" style={{ width: 80 }}/>
+                                        <col className="visual-demo-col" style={{ width: 80 }} />
                                         <col className="definition-col" />
                                     </colgroup>
                                     <tbody>
@@ -170,7 +169,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                         animate={settings.get("displayMode") === "quality"}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                         style={{ width: subjectNameWidth + "px", maxHeight: "30px" }}
                                                     >
                                                         <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
@@ -180,8 +179,8 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                     <ContentLoader
                                                         animate={settings.get("displayMode") === "quality"}
                                                         speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ?  "#7878ae" : "#75759a"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#9292d4" : "#9292c0"}
+                                                        backgroundColor={actualDisplayTheme === "dark" ? "#7878ae" : "#75759a"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ? "#9292d4" : "#9292c0"}
                                                         viewBox="0 0 50 50"
                                                         style={{ maxHeight: "30px" }}
                                                     >
@@ -195,7 +194,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -204,7 +203,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -213,7 +212,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 animate={settings.get("displayMode") === "quality"}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -226,7 +225,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                         animate={settings.get("displayMode") === "quality"}
                                                                         speed={1}
                                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                        foregroundColor={actualDisplayTheme === "dark" ?  "#7e7eb2" : "#bcbce3"}
+                                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                         viewBox="0 0 70 50"
                                                                         height="30"
                                                                         key={crypto.randomUUID()}
@@ -243,7 +242,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <Graphics sortedGrades={sortedGrades} />
+                            : <div>
+                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
+                            </div>
                         }
                     </WindowContent>
                 </Window>
