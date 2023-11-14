@@ -126,8 +126,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                     <div className="account">
                         <div className="pp-container">
                             <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
-                                ? "https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + accountsList[activeAccount].picture
-                                // ? "https://api.ecole-directe.plus/proxy?url=https:" + accountsList[activeAccount].picture
+                                ? "https://api.ecole-directe.plus/proxy?url=https:" + accountsList[activeAccount].picture
                                 : accountsList[activeAccount].picture
                             )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
                         </div>
