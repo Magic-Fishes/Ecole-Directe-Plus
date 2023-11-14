@@ -3,13 +3,13 @@ import { useState, useEffect, useRef } from "react";
 // import { Chart } from 'chart.js';
 
 
-import "./Graphics.css";
+import "./Charts.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 
-export default function Graphics({ sortedGrades }) {
+export default function Charts({ sortedGrades }) {
     /**
-     * Graphics types:
+     * Charts types:
      * 0: General average + streak history | line
      * 1: Subjects average | bar
      * 2: Subjects average | radar
@@ -121,7 +121,7 @@ export default function Graphics({ sortedGrades }) {
     return (
         <div className="graphics">
             <div className="top-container">
-                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale (courbe)", "Moyennes par matière (barres)", "Moyennes par matière (Radar)"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
