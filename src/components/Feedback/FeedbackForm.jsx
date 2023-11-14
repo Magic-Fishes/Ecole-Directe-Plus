@@ -155,11 +155,8 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
         const apiURL = `https://api.imgbb.com/1/upload?key=${apiKey}`;
         // const apiURL = "http://bit.ly/43iQj4d";
 
-        // pourquoi ça marche plus 
-
         let body = new FormData();
         body.append('image', file);
-
 
         let data = null;
 
@@ -214,7 +211,6 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
     const handlePaste = async () => {
         if (!navigator.clipboard.read) {
             setWarningMessage("Votre navigateur ne supporte pas la lecture du presse-papiers");
-            throw new Error("Could not write to clipboard.");
         }
 
         try {

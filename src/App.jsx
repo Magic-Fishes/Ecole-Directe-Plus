@@ -65,10 +65,8 @@ function consoleLogEDPLogo() {
 }
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.2.1";
-const apiVersion = "4.43.0";
-const apiUrl = "https://api.ecoledirecte.com/v3/";
-const apiLoginUrl = apiUrl + "login.awp?v=" + apiVersion;
+const currentEDPVersion = "0.2.2";
+const apiVersion = "4.44.0";
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
@@ -912,7 +910,7 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(apiLoginUrl, options)
+        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
             .then((response) => response.json())
             .then((response) => {
                 // GESTION DATA
