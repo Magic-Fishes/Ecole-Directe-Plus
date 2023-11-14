@@ -293,7 +293,7 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
                             color: parseInt("0x" + color),
                             author: {
                                 name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
-                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + activeUser.picture))
+                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://api.ecole-directe.plus/proxy?url=https:" + activeUser.picture))
                             },
                             title: "**__" + selectedFeedbackType + "__ : " + subject + "**",
                             description: feedbackContent,

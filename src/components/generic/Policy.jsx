@@ -53,7 +53,6 @@ export default function Policy({ onCloseNavigateURL }) {
 
             APIs et services tiers :<br />
             - EcoleDirecte<br />
-            - EcoleDirecte Neptunium<br />
             - ImgBB<br />
             - Discord Webhooks<br />
             - Pipedream<br />

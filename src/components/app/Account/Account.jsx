@@ -57,7 +57,7 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                         <img
                             ref={(el) => (profilePictureRefs.current[0] = el)}
                             className="profile-picture"
-                            src={((accountsListState[activeAccount].firstName !== "Guest") ? "https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + accountsListState[activeAccount].picture : accountsListState[activeAccount].picture)}
+                            src={((accountsListState[activeAccount].firstName !== "Guest") ? "https://api.ecole-directe.plus/proxy?url=https:" + accountsListState[activeAccount].picture : accountsListState[activeAccount].picture)}
                             alt={"Photo de profil de " + accountsListState[activeAccount].firstName}
                         />
                     </div>

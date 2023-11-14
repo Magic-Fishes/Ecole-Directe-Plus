@@ -32,7 +32,7 @@ export default function UnsubscribeEmails({ activeUser }) {
                             color: parseInt("0xB4B4F0"),
                             author: {
                                 name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (activeUser ? activeUser.email : "") + ")",
-                                icon_url: (!activeUser ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://server.ecoledirecte.neptunium.fr/api/user/avatar?url=https:" + activeUser.picture))
+                                icon_url: (!activeUser ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://api.ecole-directe.plus/proxy?url=https:" + activeUser.picture))
                             },
                             title: "Désabonnement aux emails",
                             description: "Cet utilisateur ne souhaite plus recevoir d'email d'Ecole Directe Plus",
