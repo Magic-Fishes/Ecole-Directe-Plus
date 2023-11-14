@@ -515,6 +515,15 @@ export default function App() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function addNewGrade(value, coef, scale, name, type, periodKey, subjectKey) {
+        /** 
+         * 
+         * - value : valeur de la note
+         * - coef : coefficient de la note
+         * - scale : note maximum de la note
+         * - name : nom du devoir
+         * - type : type de devoir (DS, DM, ...)
+         * 
+         */
         const sortedGrades = getUserData("sortedGrades")
         sortedGrades[periodKey].subjects[subjectKey].grades.push({
             value: value,
