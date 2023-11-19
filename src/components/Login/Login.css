@@ -1,4 +1,14 @@
 
+.disclaimer {
+    color: rgb(var(--text-color-soft-error-alt));
+    width: 100%;
+    max-width: 700px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    text-align: center;
+}
+
 .login-logo {
     position: absolute;
     left: 20px;
