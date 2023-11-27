@@ -903,15 +903,24 @@ export default function App() {
             return 0;
         }
 
+        // const payload = {
+        //     identifiant: username,
+        //     motdepasse: password,
+        //     isReLogin: false,
+        //     uuid: 0
+        // }
         const payload = {
-            identifiant: username,
-            motdepasse: password,
-            isReLogin: false,
-            uuid: 0
+            username,
+            password,
         }
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
         const options = {
-            "body": "data=" + JSON.stringify(payload),
-            "method": "POST"
+            // "body": "data=" + JSON.stringify(payload),
+            body: JSON.stringify(payload),
+            method: "POST",
+            headers: myHeaders,
+            redirect: 'follow'
         }
 
         const messages = {
@@ -919,7 +928,8 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
                 // GESTION DATA
@@ -1063,19 +1073,23 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
+            token: tokenState
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
                 headers: {
                     "user-agent": navigator.userAgent,
                     "x-token": tokenState,
+                    "Content-Type": "application/json"
                 },
-                body: `data=${JSON.stringify(data)}`,
+                // body: `data=${JSON.stringify(data)}`,
+                body: JSON.stringify(data),
                 signal: controller.signal
             },
         )
