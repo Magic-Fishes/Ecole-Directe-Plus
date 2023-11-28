@@ -126,7 +126,7 @@ export default function Charts({ sortedGrades }) {
                 <div className="artificial-horizontal-center"></div>
             </div>
             <div className="chart-container">
-                <canvas ref={chartRef} height="600"></canvas>
+                <canvas ref={chartRef} height="580"></canvas>
             </div>
         </div>
     )
