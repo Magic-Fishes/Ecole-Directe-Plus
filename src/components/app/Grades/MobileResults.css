@@ -96,7 +96,7 @@
     cursor: default;
 }
 
-.mobile-subject-row .subject-average:hover, .subject-average:active {
+.mobile-subject-row .subject-average:hover, .mobile-subject-row .subject-average:active {
     background-color: rgb(var(--border-color-0));
 }
 
