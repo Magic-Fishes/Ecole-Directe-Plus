@@ -65,7 +65,7 @@ function consoleLogEDPLogo() {
 }
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.2.2";
+const currentEDPVersion = "0.2.3";
 const apiVersion = "4.46.0";
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"

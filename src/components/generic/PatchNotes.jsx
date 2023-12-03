@@ -7,17 +7,12 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
     const patchNotesContent = <div>
         <hr />
         <p id="first-paragraph">
-            Salutations ! Des changements relatifs à l'API d'Ecoledirecte ont causé de nombreux dysfonctionnements le 14/11/2023. Nous nous excusons pour ce désagrément et avons fait preuve d'un maximum de réactivité pour rétablir le service au plus vite.
+            Ecole Directe Plus est de retour ! Des changements relatifs à l'API d'Ecoledirecte ont causé de nombreux dysfonctionnements depuis le 14/11/2023. Nous nous excusons pour ce désagrément et avons fait preuve d'un maximum de réactivité pour rétablir le service au plus vite.
         </p>
         <h3 className="sub-header">Correction de bugs</h3>
         <ul>
             <li>Correction d'un bug majeur qui empêchait la connexion au compte ainsi que toute interaction avec l'API d'Ecoledirecte</li>
-            <li>Correction d'un bug concernant les absences qui stoppaient la streak</li>
-            <li>Amélioration des performances et de la stabilité générale</li>
-        </ul>
-        <h3 className="sub-header">Nouveautés</h3>
-        <ul>
-            <li>Affichage des moyennes de section (ex : tronc commun, spécialités) sur les appareils mobiles</li>
+            <li>Correctio d'un bug d'affichage sur les points forts</li>
         </ul>
         <h3 className="sub-header">Divers</h3>
         <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>

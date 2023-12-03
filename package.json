@@ -1,6 +1,6 @@
 {
   "name": "ecole-directe-plus",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "module",
   "description": "Ecole Directe plus is a React web app that is designed to replace and improve EcoleDirecte",
   "dependencies": {
