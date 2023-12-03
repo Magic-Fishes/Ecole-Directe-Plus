@@ -66,7 +66,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.2";
-const apiVersion = "4.44.0";
+const apiVersion = "4.46.0";
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
@@ -903,24 +903,24 @@ export default function App() {
             return 0;
         }
 
-        // const payload = {
-        //     identifiant: username,
-        //     motdepasse: password,
-        //     isReLogin: false,
-        //     uuid: 0
-        // }
         const payload = {
-            username,
-            password,
+            identifiant: username,
+            motdepasse: password,
+            isReLogin: false,
+            uuid: 0
         }
+        // const payload = {
+        //     username,
+        //     password,
+        // }
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         const options = {
-            // "body": "data=" + JSON.stringify(payload),
-            body: JSON.stringify(payload),
+            body: "data=" + JSON.stringify(payload),
+            // body: JSON.stringify(payload),
             method: "POST",
-            headers: myHeaders,
-            redirect: 'follow'
+            // headers: myHeaders,
+            // redirect: 'follow'
         }
 
         const messages = {
@@ -929,7 +929,8 @@ export default function App() {
         };
 
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-        fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
+        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
                 // GESTION DATA
@@ -1032,7 +1033,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
+        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1073,23 +1074,24 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
-            token: tokenState
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+            // token: tokenState
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
+            `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            // `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
                 headers: {
                     "user-agent": navigator.userAgent,
-                    "x-token": tokenState,
-                    "Content-Type": "application/json"
+                    "x-token": tokenState
+                    // "Content-Type": "application/json"
                 },
-                // body: `data=${JSON.stringify(data)}`,
-                body: JSON.stringify(data),
+                body: `data=${JSON.stringify(data)}`,
+                // body: JSON.stringify(data),
                 signal: controller.signal
             },
         )
@@ -1134,7 +1136,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
+        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1175,7 +1177,7 @@ export default function App() {
         const data = {
             libelle: name,
         }
-        fetch("https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.39.0",
+        fetch("https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.46.0",
             {
                 method: "POST",
                 headers: {

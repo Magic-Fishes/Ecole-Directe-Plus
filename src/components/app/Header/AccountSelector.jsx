@@ -126,7 +126,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                     <div className="account">
                         <div className="pp-container">
                             <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
-                                ? "https://api.ecole-directe.plus/proxy?url=https:" + accountsList[activeAccount].picture
+                                ? "https://raspi.ecole-directe.plus:3000/proxy?url=https:" + accountsList[activeAccount].picture
                                 : accountsList[activeAccount].picture
                             )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
                         </div>
@@ -146,7 +146,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                                     return <div className="alt-account" key={account.id} role="button" tabIndex="0" onKeyDown={(event) => handleKeyDown2(event, () => { switchAccount(index); handleClose() })} onClick={() => { switchAccount(index); handleClose() }}>
                                         <div className="account">
                                             <div className="pp-container">
-                                                <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={"https://api.ecole-directe.plus/proxy?url=https:" + account.picture} alt={"Photo de profil de " + account.firstName} />
+                                                <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={"https://raspi.ecole-directe.plus:3000/proxy?url=https:" + account.picture} alt={"Photo de profil de " + account.firstName} />
                                             </div>
                                             <address className="account-info">
                                                 <span className="name"><span className="first-name">{account.firstName}</span> <span className="last-name">{account.lastName.toUpperCase()}</span></span>
