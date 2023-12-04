@@ -12,7 +12,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
         <h3 className="sub-header">Correction de bugs</h3>
         <ul>
             <li>Correction d'un bug majeur qui empêchait la connexion au compte ainsi que toute interaction avec l'API d'Ecoledirecte</li>
-            <li>Correctio d'un bug d'affichage sur les points forts</li>
+            <li>Correction d'un bug d'affichage sur les points forts</li>
         </ul>
         <h3 className="sub-header">Divers</h3>
         <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
@@ -54,9 +54,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
 
     return (
         <div id="patch-notes">
-            {/* "Nouvelle mise à jour ! 🎉 v" + currentEDPVersion */}
-            {/* 10 octobre 2023 */}
-            <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"14 novembre 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose} />
+            <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"3 décembre 2023"} contentTitle={"Patch notes :"} content={patchNotesContent} onClose={onClose} />
         </div>
     )
 }
