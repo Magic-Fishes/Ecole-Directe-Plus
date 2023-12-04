@@ -7,7 +7,7 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isTabletLayout, addNewGrade }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -131,7 +131,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     }
                     
                     navigate("/");
-                } else {
+                } else if (!isStandaloneApp) {
                     if (globalSettings.isDevChannel.value) {
                         if (window.location.hostname !== "dev.ecole-directe.plus") {
                             window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
@@ -140,6 +140,12 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                         if (window.location.hostname !== "ecole-directe.plus") {
                             window.location.href = "https://ecole-directe.plus/?verifiedOrigin=true";
                         }
+                    }
+                } else {
+                    if (window.location.hostname === "dev.ecole-directe.plus") {
+                        globalSettings.isDevChannel.set(true);
+                    } else {
+                        globalSettings.isDevChannel.set(false);
                     }
                 }
 

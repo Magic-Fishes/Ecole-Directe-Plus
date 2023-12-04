@@ -235,7 +235,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
-    const [isStandaloneApp, setIsStandaloneApp] = useState(window.navigator.standalone ?? false);
+    const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches));
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     
     // diverse
@@ -1329,6 +1329,7 @@ export default function App() {
                     activeAccount={activeAccount}
                     setActiveAccount={setActiveAccount}
                     logout={logout}
+                    isStandaloneApp={isStandaloneApp}
                     isTabletLayout={isTabletLayout}
 
                     setIsFullScreen={setIsFullScreen}

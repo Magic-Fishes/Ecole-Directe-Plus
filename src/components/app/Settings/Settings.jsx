@@ -21,7 +21,6 @@ import "./Settings.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
-
     const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isTabletLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
@@ -189,7 +188,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 <div id="advanced-settings">
                     <h2 className="heading">Paramètres avancés</h2>
                     {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
-                    <div className={`setting${(isStandaloneApp && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)) ? " disabled" : ""}`} id="dev-channel">
+                    <div className={`setting${isStandaloneApp ? " disabled" : ""}`} id="dev-channel">
                         <div className="setting-label">
                         <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
                         <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
