@@ -243,7 +243,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <p id="WIP-disclaimer">En cours de développement (bientôt disponible)</p>
+                            : <Charts sortedGrades={sortedGrades} />
                         }
                     </WindowContent>
                 </Window>

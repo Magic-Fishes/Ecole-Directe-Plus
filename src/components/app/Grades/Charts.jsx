@@ -25,6 +25,10 @@ export default function Charts({ sortedGrades }) {
         console.log(chartType)
     }, [chartType])
 
+    useEffect(() => {
+        chartRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+    }, [window.innerHeight, window.innerWidth])
+
 
     function chartTypeToDataset() {
         /**
@@ -119,14 +123,14 @@ export default function Charts({ sortedGrades }) {
     
     // JSX
     return (
-        <div className="graphics">
+        <div id="charts">
             <div className="top-container">
                 <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
-            <div className="chart-container">
-                <canvas ref={chartRef} height="580"></canvas>
+            <div id="chart-container">
+                <canvas ref={chartRef}></canvas>
             </div>
         </div>
     )
