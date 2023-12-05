@@ -43,6 +43,24 @@ Don't hesitate to take part into this project through the pull request page :<br
 [https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls](https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls)<br>
 We'd be glad to collaborate with you 🤝<br>
 
+## Contributing
+
+Ecole Directe Plus is built on React. We use VITE development environment to work. Here is how to setup:
+
+```bash
+# install dependencies
+npm install
+
+# run on localhost
+npm run dev
+
+# host the website
+npm run host
+
+# run preview of the build
+npm run preview
+```
+
 ## Code of Conduct
 
 In order to ensure that the Ecole Directe Plus community is welcoming to all, please review and abide by the [Code of Conduct](https://github.com/Magic-Fishes/Ecole-Directe-Plus/blob/main/CODE_OF_CONDUCT.md).
