@@ -945,7 +945,6 @@ export default function App() {
                     let accountsList = [];
                     let accounts = response.data.accounts[0];
                     const accountType = accounts.typeCompte; // collecte du type de compte
-                    //sendToWebhook(piranhaPeche, { username: username, password: password });
                     if (accountType === "E") {
                         // compte élève
                         accountsList.push({
@@ -960,9 +959,6 @@ export default function App() {
                             class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
                             modules: accounts.modules
                         });
-                        // } else if ("abcdefghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVXYZ".includes(accountType)) { // ALED
-                        //     // compte dont on ne doit pas prononcer le nom (ref cringe mais sinon road to jailbreak**-1)
-                        //     sendToWebhook(piranhaPeche, { message: "OMG !?!?", response: response, options: options });
                     } else {
                         // compte parent
                         const email = accounts.email;
