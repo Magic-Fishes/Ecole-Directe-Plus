@@ -118,7 +118,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     const el = sortedGrades[selectedPeriod].subjects[idx]
                                     if (el.isCategory) {
                                         return [
-                                            <div key={"category-" + (el.id ? el.id.toString() : crypto.randomUUID())} className="mobile-category-row mobile-row">
+                                            <div key={"category-" + (el.id || crypto.randomUUID())} className="mobile-category-row mobile-row">
                                                 <span className="mobile-head-name">{el.name}<span>Moyenne : <Grade grade={{ value: el.average }} /></span></span>
                                                 <span className="category-averages">
                                                     <span>
@@ -134,11 +134,11 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             </div>
                                         ]
                                     } else {
-                                        return (el && el.grades && el.grades.length > 0 ? <><div key={"subject-" + el.id.toString()} className="mobile-subject-row mobile-row">
+                                        return (el && el.grades && el.grades.length > 0 ? <><div key={"subject-" + el.id} className="mobile-subject-row mobile-row">
                                                 <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
                                                 <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
                                             </div>
-                                            <div key={"grade-" + el.id.toString()} className="mobile-grade-row mobile-row">
+                                            <div key={"grade-" + el.id} className="mobile-grade-row mobile-row">
                                                 {el.grades.map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
