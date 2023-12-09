@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 // import { Chart } from 'chart.js';
 
 
@@ -7,7 +7,9 @@ import "./Charts.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 
-export default function Charts({ sortedGrades }) {
+import { AppContext } from "../../../App";
+
+export default function Charts({ sortedGrades, selectedPeriod }) {
     /**
      * Charts types:
      * 0: General average + streak history | line
@@ -19,18 +21,29 @@ export default function Charts({ sortedGrades }) {
     const [chartType, setChartType] = useState(0);
 
     const chartRef = useRef(null);
+    const isChartInitialiased = useRef(null);
 
+    const { useUserData, actualDisplayTheme } = useContext(AppContext);
+    const userData = useUserData();
+
+    const generalAverageHistory = userData.get("generalAverageHistory");
+    const streakScoreHistory = userData.get("streakScoreHistory");
 
     useEffect(() => {
-        console.log(chartType)
-    }, [chartType])
+        const resizeChart = () => {
+            chartRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+        }
 
-    useEffect(() => {
-        chartRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
-    }, [window.innerHeight, window.innerWidth])
+        window.addEventListener("resize", resizeChart);
+        resizeChart();
+
+        return () => {
+            window.removeEventListener("resize", resizeChart);
+        }
+    }, [])
 
 
-    function chartTypeToDataset() {
+    function chartTypeToData() {
         /**
          * return the appropriate dataset according to the chartType
          */
@@ -56,63 +69,76 @@ export default function Charts({ sortedGrades }) {
 
     const options = {
         responsive: true,
+        scales: {
+            y: {
+                // beginAtZero: true,
+                suggestedMax: 20
+            }
+        },
         plugins: {
             legend: {
                 position: "top",
             },
-
         },
+        maintainAspectRatio: false
     };
 
     const data = {
+        labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
         datasets: [
             {
                 label: "Moyenne générale",
-                data: Array.from({ length: 5 }, () => Math.random() * 20),
+                data: generalAverageHistory[selectedPeriod].generalAverages,
+                orderWidth: 1,
                 borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
             },
             {
                 label: "Score de Streak",
-                data: Array.from({ length: 5 }, () => Math.random() * 20),
+                data: streakScoreHistory[selectedPeriod],
+                orderWidth: 1,
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
             },
         ],
     };
-
+    /*
+    {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            borderWidth: 1
+        }]
+    }
+    */
     const buildChart = () => {
         console.log("Building chart...")
+        isChartInitialiased.current = true;
         const ctx = chartRef.current.getContext("2d");
-        
+        Chart.defaults.color = actualDisplayTheme == "dark" ? "rgb(180, 180, 240)" : "rgb(76, 76, 184)";
         const chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
+            type: 'line',
+            data: data,
+            options: options
         });
+
+        return chart;
     }
-    
+
+    useEffect(() => {
+        console.log(chartType);
+        // if (isChartInitialiased.current) {
+        //     buildChart();
+        // }
+    }, [chartType])
+
     useEffect(() => {
         const script = document.createElement('script');
 
         script.src = "https://cdn.jsdelivr.net/npm/chart.js";
         script.async = true;
-        script.onload = buildChart
+        script.onload = buildChart;
 
         document.body.appendChild(script);
 
@@ -120,7 +146,7 @@ export default function Charts({ sortedGrades }) {
             document.body.removeChild(script);
         }
     }, []);
-    
+
     // JSX
     return (
         <div id="charts">

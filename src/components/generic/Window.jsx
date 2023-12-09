@@ -475,7 +475,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         // Check double click
         let doubleClicked = false;
         if (latestClick.current !== null && (Date.now() - latestClick.current) < 400) {
-            // console.log("DOUBLE CLICKED!");
+            console.log("DOUBLE CLICKED!");
             doubleClicked = true;
         }
         latestClick.current = Date.now();
@@ -642,7 +642,9 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         if (doubleClicked) {
             requestFullscreen = handleFullscreen(targetWindow);
         }
-        preventDraggingIssues(targetWindow);
+        if (event.touches) {
+            preventDraggingIssues(targetWindow);
+        }
         // console.log("target:", targetWindow, "| mousedown");
 
         /* targetWindow.classList.add("grabbing"); */

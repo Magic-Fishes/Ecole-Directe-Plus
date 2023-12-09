@@ -243,7 +243,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <Charts sortedGrades={sortedGrades} />
+                            : <Charts sortedGrades={sortedGrades} selectedPeriod={selectedPeriod} />
                         }
                     </WindowContent>
                 </Window>
