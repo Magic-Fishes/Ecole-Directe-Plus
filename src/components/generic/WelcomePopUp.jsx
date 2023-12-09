@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import PopUp from "./PopUps/PopUp";
+import InfoPopUp from "./PopUps/InfoPopUp";
 
 import "./WelcomePopUp.css";
 
@@ -13,7 +13,7 @@ export default function WelcomePopUp({ currentEDPVersion, onClose }) {
     const { globalSettings } = useContext(AppContext);
 
     return (
-        <PopUp header={<strong><em>Ecole Directe Plus{globalSettings.isDevChannel.value ? " • DEV" : null}</em></strong>} subHeader={globalSettings.isDevChannel.value ? "Bienvenue sur le canal développeur" : ("Bienvenue dans la version " + currentEDPVersion)} contentTitle={globalSettings.isDevChannel.value ? "Informations :" : "Guide premiers pas :"} onClose={onClose} >
+        <InfoPopUp header={<strong><em>Ecole Directe Plus{globalSettings.isDevChannel.value ? " • DEV" : null}</em></strong>} subHeader={globalSettings.isDevChannel.value ? "Bienvenue sur le canal développeur" : ("Bienvenue dans la version " + currentEDPVersion)} contentTitle={globalSettings.isDevChannel.value ? "Informations :" : "Guide premiers pas :"} onClose={onClose} >
             {globalSettings.isDevChannel.value ? <ul>
                 <li>Bienvenue sur le canal développeur d'<em>Ecole Directe Plus</em>, votre nouvelle plateforme éducative.</li>
                 <li>Merci de participer activement au développement d'Ecole Directe Plus. Nous sommes très curieux et nous vous invitons à <Link to="/feedback" className="welcome-pop-up-links">faire de nombreux retours</Link> pour nous signaler des bugs, suggérer de nouvelles fonctionnalités, ou simplement pour nous partager votre avis. Nous sommes très reconnaissant par avance du temps que vous passerez à faire évoluer le service.</li>
@@ -38,6 +38,6 @@ export default function WelcomePopUp({ currentEDPVersion, onClose }) {
                     </ul>
                 </ol>
             </ul>}
-        </PopUp>
+        </InfoPopUp>
     )
 }

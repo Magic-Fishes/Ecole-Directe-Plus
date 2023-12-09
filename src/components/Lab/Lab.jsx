@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import DropDownMenu from "../generic/UserInputs/DropDownMenu";
 import Button from "../generic/UserInputs/Button";
 import ScrollShadedDiv from "../generic/CustomDivs/ScrollShadedDiv";
-import PopUp from "../generic/PopUps/PopUp";
 import EDPLogo from "../graphics/EDPLogo"
 import BottomSheet from "../generic/PopUps/BottomSheet";
 import HeaderNavigationButton from "../app/Header/HeaderNavigationButton";
@@ -26,10 +25,11 @@ import {
     BadgeMehInfo,
 } from "../generic/badges/BadgeInfo"
 import HolographicDiv from "../generic/CustomDivs/HolographicDiv"
+import InfoPopUp from "../generic/PopUps/InfoPopUp";
+import PopUp from "../generic/PopUps/PopUp";
 
 
 import "./Lab.css";
-import InputPopUp from "../generic/PopUps/InputPopUp";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -92,7 +92,7 @@ export default function Lab({ fetchGrades }) {
             </ScrollShadedDiv>
             <h3>Avertissement de sécurité</h3>
             <Button value="! DANGER !" onClick={() => { setIsOpen(true) }} />
-            {isOpen && <PopUp type="warning" header="Avertissement de sécurité" subHeader="Veuillez lire attentivement" contentTitle="Rester connecté, un danger ?" onClose={() => { setIsOpen(false) }} >
+            {isOpen && <InfoPopUp type="warning" header="Avertissement de sécurité" subHeader="Veuillez lire attentivement" contentTitle="Rester connecté, un danger ?" onClose={() => { setIsOpen(false) }} >
                 <div>
                     <p>La fonctionnalité "rester connecté" peut présenter des failles de sécurité dans certaines circonstances. Nous souhaitons attirer votre attention sur ces éventuels dangers afin que vous puissiez prendre une décision éclairée concernant l'activation de cette fonctionnalité :</p>
                     <ol>
@@ -104,7 +104,7 @@ export default function Lab({ fetchGrades }) {
                     <p>En somme, si vous êtes un utilisateur éclairé et maniez avec dextérité la langue de turing, vous pouvez assurément activer "rester connecté". Si ce n'est pas le cas cependant, il est peut-être préférable de sacrifier un peu d'expérience utilisateur au profit de la garantie de la sécurité de votre compte</p>
                     <p>Chez Ecole Directe Plus, la transparence et la confiance que l'on entretient avec nos utilisateurs est une priorité.</p>
                 </div>
-            </PopUp>}
+            </InfoPopUp>}
             <h3>BottomSheet vide</h3>
             <Button value="Open BottomSheet" onClick={() => { setIsBottomSheetOpen(true) }} />
             {isBottomSheetOpen && <BottomSheet heading="prout" onClose={() => setIsBottomSheetOpen(false)}>
@@ -223,9 +223,9 @@ export default function Lab({ fetchGrades }) {
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
             <Button onClick={() => { setIsInputPopUpOpen(true) }} />
-            {isInputPopUpOpen && <InputPopUp onClose={() => { setIsInputPopUpOpen(false) }}>
+            {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
 
-            </InputPopUp>}
+            </PopUp>}
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
         </div>

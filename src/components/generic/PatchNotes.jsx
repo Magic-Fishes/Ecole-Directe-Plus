@@ -1,11 +1,11 @@
-import PopUp from "./PopUps/PopUp";
+import InfoPopUp from "./PopUps/InfoPopUp";
 import "./PatchNotes.css"
 
 export default function PatchNotes({ currentEDPVersion, onClose }) {
 
     return (
         <div id="patch-notes">
-            <PopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"3 décembre 2023"} contentTitle={"Patch notes :"} onClose={onClose} >
+            <InfoPopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"3 décembre 2023"} contentTitle={"Patch notes :"} onClose={onClose} >
                 <div>
                     <hr />
                     <p id="first-paragraph">
@@ -53,7 +53,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
             <li>Correction d'un bug affectant le système de reconnexion automatique</li>
         </ul> */}
                 </div>
-            </PopUp>
+            </InfoPopUp>
         </div>
     )
 }
