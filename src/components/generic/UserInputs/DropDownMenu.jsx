@@ -66,7 +66,7 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
         if (event.keyCode === 13 || event.keyCode === 32) {
             let newEvent = {
                 target: {
-                    value: event.target.outerText
+                    value: options[displayedOptions.indexOf(event.target.outerText)]
                 }
             }
             onChoose(newEvent);
