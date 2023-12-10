@@ -5,7 +5,7 @@ import "./PopUp.css"
 
 const closingCooldown = 300; // milliseconds
 
-export default function InputPopUp({ type, onClose, externalClosing=false, children }) {
+export default function PopUp({ type, onClose, externalClosing=false, children, ...props }) {
     const [isClosing, setIsClosing] = useState(false);
 
     const PopUpRef = useRef(null);
@@ -52,9 +52,15 @@ export default function InputPopUp({ type, onClose, externalClosing=false, child
         setTimeout(onClose, closingCooldown);
     }
 
+    useEffect(() => {
+        if (externalClosing) {
+            handleClose()
+        }
+    }, [externalClosing])
+
     return (
-        <div className={isClosing || externalClosing ? "closing" : ""} id="pop-up" onClick={handleClose}>
-            <div ref={PopUpRef} className={(isClosing || externalClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* Cancel clic detection by the background if user clic on pop-up */}
+        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose} {...props}>
+            <div ref={PopUpRef} className={(isClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* Cancel clic detection by the background if user clic on pop-up */}
                 {children}
             </div>
         </div>
