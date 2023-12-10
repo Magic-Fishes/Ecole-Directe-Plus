@@ -27,6 +27,7 @@ import {
 import HolographicDiv from "../generic/CustomDivs/HolographicDiv"
 import InfoPopUp from "../generic/PopUps/InfoPopUp";
 import PopUp from "../generic/PopUps/PopUp";
+import NumberInput from "../generic/UserInputs/NumberInput";
 
 
 import "./Lab.css";
@@ -38,8 +39,14 @@ export default function Lab({ fetchGrades }) {
     const [test2, setTest2] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-    const [isInputPopUpOpen, setIsInputPopUpOpen] = useState(false);
     const [testState, setTestState] = useState(false);
+    
+    const [isInputPopUpOpen, setIsInputPopUpOpen] = useState(false);
+    const [number1, setNumber1] = useState(0)
+    const [isInputPopUp2Open, setIsInputPopUp2Open] = useState(false);
+    const [number2, setNumber2] = useState(0)
+    const [formNumber2, setFormNumber2] = useState(0)
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
     // Behavior
     useEffect(() => {
@@ -222,10 +229,25 @@ export default function Lab({ fetchGrades }) {
             <HolographicDiv style={{ width: "800px", height: "500px", margin: "0 auto", border: "2px solid rgb(27, 31, 58)", borderRadius: "48px", backgroundColor: "rgba(var(--background-color-0), 1)" }}>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
-            <Button onClick={() => { setIsInputPopUpOpen(true) }} />
+            
+            
+            <Button onClick={() => { setIsInputPopUpOpen(true) }} value="number1" />
             {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
-
+                <NumberInput min={0} max={20} value={number1} onChange={setNumber1}/>
             </PopUp>}
+            {number1}
+
+
+            <Button onClick={() => {setIsInputPopUp2Open(true) }} value="number2" />
+            {isInputPopUp2Open && <PopUp onClose={() => { setIsInputPopUp2Open(false); setIsFormSubmitted(false) }} externalClosing={isFormSubmitted}>
+                <form onSubmit={(event) => {event.preventDefault(); setNumber2(formNumber2); setIsFormSubmitted(true)}}>
+                    <NumberInput min={0} max={20} value={formNumber2} onChange={setFormNumber2} />
+                    <Button buttonType="submit"/>
+                </form>
+            </PopUp>}
+            {number2}
+            
+            
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
         </div>
