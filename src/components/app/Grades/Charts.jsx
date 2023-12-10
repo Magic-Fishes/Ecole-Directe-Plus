@@ -20,10 +20,11 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
     // States
     const [chartType, setChartType] = useState(0);
 
-    const chartRef = useRef(null);
+    const chartContainerRef = useRef(null);
+    const chart = useRef(null);
     const isChartInitialiased = useRef(null);
 
-    const { useUserData, actualDisplayTheme } = useContext(AppContext);
+    const { activeAccount, useUserData, actualDisplayTheme } = useContext(AppContext);
     const userData = useUserData();
 
     const generalAverageHistory = userData.get("generalAverageHistory");
@@ -31,7 +32,7 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
 
     useEffect(() => {
         const resizeChart = () => {
-            chartRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+            chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
         }
 
         window.addEventListener("resize", resizeChart);
@@ -115,9 +116,9 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
     const buildChart = () => {
         console.log("Building chart...")
         isChartInitialiased.current = true;
-        const ctx = chartRef.current.getContext("2d");
+        const ctx = chartContainerRef.current.getContext("2d");
         Chart.defaults.color = actualDisplayTheme == "dark" ? "rgb(180, 180, 240)" : "rgb(76, 76, 184)";
-        const chart = new Chart(ctx, {
+        chart.current = new Chart(ctx, {
             type: 'line',
             data: data,
             options: options
@@ -126,12 +127,17 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
         return chart;
     }
 
+    function refreshChart() {
+        if (chart.current) {
+            chart.current.destroy();
+            buildChart();
+        }
+    }
+
     useEffect(() => {
         console.log(chartType);
-        // if (isChartInitialiased.current) {
-        //     buildChart();
-        // }
-    }, [chartType])
+        refreshChart();
+    }, [chartType, activeAccount, selectedPeriod]);
 
     useEffect(() => {
         const script = document.createElement('script');
@@ -156,7 +162,7 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
                 <div className="artificial-horizontal-center"></div>
             </div>
             <div id="chart-container">
-                <canvas ref={chartRef}></canvas>
+                <canvas ref={chartContainerRef}></canvas>
             </div>
         </div>
     )

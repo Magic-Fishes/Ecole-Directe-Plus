@@ -243,7 +243,23 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : <Charts sortedGrades={sortedGrades} selectedPeriod={selectedPeriod} />
+                            : sortedGrades && sortedGrades[selectedPeriod]
+                                ? <Charts sortedGrades={sortedGrades} selectedPeriod={selectedPeriod} />
+                                : <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
+                                    speed={1}
+                                    viewBox="0 0 145 210"
+                                    style={{width: "25%", margin: "100px 300px"}}
+                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                    
+                                >
+                                    <rect x="0" y="160" rx="10" ry="10" width="25" height="40" />
+                                    <rect x="30" y="145" rx="10" ry="10" width="25" height="55" />
+                                    <rect x="60" y="126" rx="10" ry="10" width="25" height="74" />
+                                    <rect x="90" y="80" rx="10" ry="10" width="25" height="120" />
+                                    <rect x="120" y="142" rx="10" ry="10" width="25" height="58" />
+                                </ContentLoader>
                         }
                     </WindowContent>
                 </Window>
