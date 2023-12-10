@@ -57,10 +57,30 @@ export default function Charts({ selectedPeriod }) {
                     scales: {
                         y: {
                             // beginAtZero: true,
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
                             suggestedMax: 20
-                        }
+                        },
+                        // y1: {
+                        //     type: 'linear',
+                        //     display: true,
+                        //     position: 'right',
+                        //     suggestedMax: 20
+                        // }
+                        // xAxes: [{
+                        //     type: 'time',
+                        //     ticks: {
+                        //         autoSkip: true,
+                        //         maxTicksLimit: 20
+                        //     }
+                        // }]
                     },
-                };
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                }
                 chartData.current = {
                     labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
                     datasets: [
@@ -70,7 +90,8 @@ export default function Charts({ selectedPeriod }) {
                             orderWidth: 1,
                             borderColor: 'rgb(53, 162, 235)',
                             backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                            tension: 0.2
+                            tension: 0.2,
+                            // yAxisID: "y"
                         },
                         {
                             label: "Score de Streak",
@@ -78,7 +99,8 @@ export default function Charts({ selectedPeriod }) {
                             orderWidth: 1,
                             borderColor: 'rgb(255, 99, 132)',
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            tension: 0.2
+                            tension: 0.2,
+                            // yAxisID: "y1"
                         },
                     ],
                 };
@@ -97,20 +119,6 @@ export default function Charts({ selectedPeriod }) {
                 break;
         }
     }
-
-
-
-    
-    /*
-    {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1
-        }]
-    }
-    */
 
     const buildChart = () => {
         console.log("Building chart...");
@@ -165,7 +173,7 @@ export default function Charts({ selectedPeriod }) {
     return (
         <div id="charts">
             <div className="top-container">
-                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+                <DropDownMenu name="chart-type" options={[0/*, 1, 2*/]} displayedOptions={["Moyenne générale Courbe"/*, "Moyennes par matière Barres", "Moyennes par matière Radar"*/]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
