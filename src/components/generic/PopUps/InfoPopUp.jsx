@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { clearAllBodyScrollLocks } from "body-scroll-lock";
+import { useState } from "react";
 import PopUp from "./PopUp"
 
 import "./InfoPopUp.css"
