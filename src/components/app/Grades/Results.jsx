@@ -244,7 +244,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 </tbody>
                             </table>
                             : sortedGrades && sortedGrades[selectedPeriod]
-                                ? <Charts sortedGrades={sortedGrades} selectedPeriod={selectedPeriod} />
+                                ? <Charts selectedPeriod={selectedPeriod} />
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}

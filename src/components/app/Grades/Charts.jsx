@@ -9,7 +9,7 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import { AppContext } from "../../../App";
 
-export default function Charts({ sortedGrades, selectedPeriod }) {
+export default function Charts({ selectedPeriod }) {
     /**
      * Charts types:
      * 0: General average + streak history | line
@@ -22,7 +22,8 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
 
     const chartContainerRef = useRef(null);
     const chart = useRef(null);
-    const isChartInitialiased = useRef(null);
+    const chartOptions = useRef(null);
+    const chartData = useRef(null);
 
     const { activeAccount, useUserData, actualDisplayTheme } = useContext(AppContext);
     const userData = useUserData();
@@ -44,7 +45,7 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
     }, [])
 
 
-    function chartTypeToData() {
+    function getChartData() {
         /**
          * return the appropriate dataset according to the chartType
          */
@@ -52,6 +53,35 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
         switch (chartType) {
             case 0:
                 // General average + streak history | line
+                chartOptions.current = {
+                    scales: {
+                        y: {
+                            // beginAtZero: true,
+                            suggestedMax: 20
+                        }
+                    },
+                };
+                chartData.current = {
+                    labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
+                    datasets: [
+                        {
+                            label: "Moyenne générale",
+                            data: generalAverageHistory[selectedPeriod].generalAverages,
+                            orderWidth: 1,
+                            borderColor: 'rgb(53, 162, 235)',
+                            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                            tension: 0.2
+                        },
+                        {
+                            label: "Score de Streak",
+                            data: streakScoreHistory[selectedPeriod],
+                            orderWidth: 1,
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            tension: 0.2
+                        },
+                    ],
+                };
                 break;
 
             case 1:
@@ -68,41 +98,9 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
         }
     }
 
-    const options = {
-        responsive: true,
-        scales: {
-            y: {
-                // beginAtZero: true,
-                suggestedMax: 20
-            }
-        },
-        plugins: {
-            legend: {
-                position: "top",
-            },
-        },
-        maintainAspectRatio: false
-    };
 
-    const data = {
-        labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
-        datasets: [
-            {
-                label: "Moyenne générale",
-                data: generalAverageHistory[selectedPeriod].generalAverages,
-                orderWidth: 1,
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-            {
-                label: "Score de Streak",
-                data: streakScoreHistory[selectedPeriod],
-                orderWidth: 1,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-        ],
-    };
+
+    
     /*
     {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -113,15 +111,25 @@ export default function Charts({ sortedGrades, selectedPeriod }) {
         }]
     }
     */
+
     const buildChart = () => {
-        console.log("Building chart...")
-        isChartInitialiased.current = true;
+        console.log("Building chart...");
+        getChartData();
         const ctx = chartContainerRef.current.getContext("2d");
         Chart.defaults.color = actualDisplayTheme == "dark" ? "rgb(180, 180, 240)" : "rgb(76, 76, 184)";
         chart.current = new Chart(ctx, {
             type: 'line',
-            data: data,
-            options: options
+            data: chartData.current,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "top",
+                    },
+                },
+                ...chartOptions.current
+            }
         });
 
         return chart;
