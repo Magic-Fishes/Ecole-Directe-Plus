@@ -572,6 +572,8 @@ export default function App() {
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
+        const generalAverageHistory = {};
+        const streakScoreHistory = {};
         const totalBadges = {
             "star": 0,
             "bestStudent": 0,
@@ -628,6 +630,8 @@ export default function App() {
                         newPeriod.subjects[subjectCode] = newSubject;
                     }
                     periods[period.codePeriode] = newPeriod;
+                    generalAverageHistory[period.codePeriode] = {generalAverages: [], dates: []};
+                    streakScoreHistory[period.codePeriode] = [];
                 }
             }
             const gradesFromJson = grades[activeAccount].notes;
@@ -636,7 +640,7 @@ export default function App() {
             for (let grade of gradesFromJson) {
                 const periodCode = grade.codePeriode;
                 const subjectCode = grade.codeMatiere;
-                // créer la matière si elle n'existe pas
+                // try to rebuild the subject if it doesn't exist (happen when changing school year)
                 if (periods[periodCode].subjects[subjectCode] === undefined) {
                     periods[periodCode].subjects[subjectCode] = {
                         code: subjectCode,
@@ -709,6 +713,8 @@ export default function App() {
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
                 const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
+
+                // streak management
                 newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
                 if (newGrade.upTheStreak) {
                     periods[periodCode].streak += 1;
@@ -730,6 +736,7 @@ export default function App() {
                         }
                     }
                 }
+                streakScoreHistory[periodCode].push(periods[periodCode].streak);
 
                 periods[periodCode].subjects[subjectCode].average = average;
                 const category = findCategory(periods[periodCode], subjectCode);
@@ -738,6 +745,8 @@ export default function App() {
                     periods[periodCode].subjects[category.code].average = categoryAverage;
                 }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
+                generalAverageHistory[periodCode].generalAverages.push(generalAverage);
+                generalAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].generalAverage = generalAverage;
 
                 // création des badges
@@ -813,6 +822,8 @@ export default function App() {
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
+        changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
+        changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
     }
 
