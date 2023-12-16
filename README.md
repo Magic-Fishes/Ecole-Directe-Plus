@@ -7,7 +7,7 @@
 
 ## About Ecole Directe Plus
 
-Ecole Directe Plus is basically a better EcoleDirecte.
+Ecole Directe Plus is basically a better EcoleDirecte. (unofficial)
 The EcoleDirecte platform has been completely redesigned from scratch to offer the best comfort to all students.
 Enjoy the most-requested features and a ton of small but game changer improvements.
 
