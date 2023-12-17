@@ -47,6 +47,7 @@
     border-radius: 10px;
     
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
     transition: 0.15s;
     gap: 10px 30px;
 }

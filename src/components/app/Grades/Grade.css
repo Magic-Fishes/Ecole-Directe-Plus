@@ -5,6 +5,7 @@ a.grade {
     height: 2.5em;
     outline: none;
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
     cursor: default;
 }
 
