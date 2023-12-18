@@ -233,7 +233,7 @@ export default function Lab({ fetchGrades }) {
             
             <Button onClick={() => { setIsInputPopUpOpen(true) }} value="number1" />
             {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
-                <NumberInput min={0} max={20} value={number1} onChange={setNumber1}/>
+                <NumberInput min={0} max={20} value={number1} onChange={setNumber1} step={0.1}/>
             </PopUp>}
             {number1}
 
@@ -246,7 +246,9 @@ export default function Lab({ fetchGrades }) {
                 </form>
             </PopUp>}
             {number2}
-            
+            {console.log(number1)}
+            {console.log(number1+100)}
+            {console.log(typeof number1)}
             
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
