@@ -162,6 +162,7 @@
     margin-block: 10px;
     border-radius: 10px;
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
     transition: 0.15s;
 }
 .category-row .head-name {

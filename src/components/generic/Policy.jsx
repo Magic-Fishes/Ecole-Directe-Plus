@@ -31,7 +31,7 @@ export default function Policy({ onCloseNavigateURL }) {
         <hr />
         <h3 className="part-header" >Conditions d'utilisations</h3>
         <h4 className="sub-header">1. Général</h4>
-        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
+        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus (non officiel) proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
         <h4 className="sub-header">2. Description du site et du service</h4>
         <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du service, temporairement ou définitivement.</li>
         <h4 className="sub-header">3. Usages acceptables du service</h4>
@@ -69,13 +69,13 @@ export default function Policy({ onCloseNavigateURL }) {
             Testeurs de pré-lancement :<br />
             - Thon Humide<br />
             - Jackp0t<br />
-            - Nickro_01290<br /><br />
 
             Remerciements spéciaux :<br />
             - Thon Humide<br />
             - Jackp0t<br />
             - Nickro_01290<br />
             - Cthyllax<br />
+            - EcoleDirecte Neptunium<br />
             - Internet<br />
         </li>
         <li className="legal-content">Curieux et motivé ? Rejoignez nous et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
