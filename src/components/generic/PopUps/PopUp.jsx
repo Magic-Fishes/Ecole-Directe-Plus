@@ -1,23 +1,23 @@
-
 import { useState, useEffect, useRef } from "react";
-import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
+import { clearAllBodyScrollLocks } from "body-scroll-lock";
 
 import "./PopUp.css"
 
-export default function PopUp({ type, header, subHeader, contentTitle, content, onClose }) {
+const closingCooldown = 300; // milliseconds
 
-    const closingCooldown = 300; // milliseconds
-    const types = ["info", "warning", "error"]
-
+export default function PopUp({ type, onClose, externalClosing=false, children, ...props }) {
     const [isClosing, setIsClosing] = useState(false);
-    const [typeState, setTypeState] = useState(types.includes(type) ? type : types[0]);
 
     const PopUpRef = useRef(null);
 
+    // fermeture avec échap
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown); /* fermeture avec echap */
-        // disableBodyScroll(PopUpRef.current)
-        // Utilise la fonction de nettoyage de useEffect pour supprimer le gestionnaire d'événements lorsque le composant est démonté
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") {
+                handleClose();
+            }
+        }
+        document.addEventListener('keydown', handleKeyDown);
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             clearAllBodyScrollLocks();
@@ -32,7 +32,7 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
             if (element !== PopUpRef.current && !PopUpRef.current.contains(element) && element.tabIndex !== -1) {
                 defaultTabIndex.push(element.tabIndex);
                 // tout tabIndex négatif empêche le focus, on utilise le -2 pour reconnaître les items dont le focus est désactivé
-                element.tabIndex = -2;
+                element.tabIndex = -2; 
             }
         });
 
@@ -52,27 +52,16 @@ export default function PopUp({ type, header, subHeader, contentTitle, content, 
         setTimeout(onClose, closingCooldown);
     }
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            handleClose();
+    useEffect(() => {
+        if (externalClosing) {
+            handleClose()
         }
-    }
+    }, [externalClosing])
 
     return (
-        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose}>
-            <div ref={PopUpRef} className={(isClosing ? "closing " : "") + typeState} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* empêche la détection du clique par le background si le pop-up est cliqué */}
-                <div className="relative-container">
-                    <button className="close-button" onClick={handleClose}>✕</button>
-                    <div id="pop-up-header">
-                        <h2 id="pop-up-sup-header">{header}</h2>
-                        <h4 id="pop-up-sub-header">{subHeader}</h4>
-                    </div>
-                    <div id="pop-up-content" tabIndex="0">
-                        <h3>{contentTitle}</h3>
-                        {content}
-                    </div>
-                </div>
-                <button id="close-pop-up" onClick={handleClose}>Fermer</button>
+        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose} {...props}>
+            <div ref={PopUpRef} className={(isClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* Cancel clic detection by the background if user clic on pop-up */}
+                {children}
             </div>
         </div>
     )
