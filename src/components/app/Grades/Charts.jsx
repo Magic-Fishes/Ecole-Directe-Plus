@@ -151,14 +151,7 @@ export default function Charts({ selectedPeriod }) {
     function refreshChart() {
         if (chart.current) {
             chart.current.destroy();
-            // prevent changing dataset glitch on hover
-            chartContainerRef.current.remove();
-            chartContainerRef.current = document.createElement("canvas");
-            chartContainerRef.current.id = "chart-container";
-            canvasContainerRef.current.appendChild(chartContainerRef.current);
             buildChart();
-            // resizeChart();
-            chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
         }
     }
 
