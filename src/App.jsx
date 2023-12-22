@@ -15,7 +15,6 @@ import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
 import Feedback from "./components/Feedback/Feedback";
 import Canardman from "./components/Canardman/Canardman";
-import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
@@ -24,6 +23,8 @@ import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./u
 
 import guestGrades from "./data/grades.json";
 
+// import Lab from "./components/Lab/Lab";
+const Lab = lazy(() => import("./components/Lab/Lab"))
 const Museum = lazy(() => import("./components/Museum/Museum"));
 const UnsubscribeEmails = lazy(() => import("./components/UnsubscribeEmails/UnsubscribeEmails"));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));

@@ -232,7 +232,9 @@ export default function Lab({ fetchGrades }) {
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
             
+            <div style={{ height: "100px" }}></div>
             
+            <h3>New PopUp</h3>
             <Button onClick={() => { setIsInputPopUpOpen(true) }} value="number1" />
             {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
                 <NumberInput min={0} max={20} value={number1} onChange={setNumber1} step={0.1}/>
@@ -247,21 +249,7 @@ export default function Lab({ fetchGrades }) {
                     <Button buttonType="submit"/>
                 </form>
             </PopUp>}
-            {number2}
-            {console.log(number1)}
-            {console.log(number1+100)}
-            {console.log(typeof number1)}
             
-            <div style={{height:"100px"}}></div>
-
-            <h3>ProxyErrorNotification</h3>
-            <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
-            {displayProxyErrorNotification && <ProxyErrorNotification />}
-
-
-            {/* FOOTER */}
-            <div style={{height:"100px"}}></div>
-
             <h3>ProxyErrorNotification</h3>
             <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
             {displayProxyErrorNotification && <ProxyErrorNotification />}
