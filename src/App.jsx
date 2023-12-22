@@ -237,6 +237,7 @@ export default function App() {
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches));
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
+    const [proxyError, setProxyError] = useState(false);
     
     // diverse
     const abortControllers = useRef([]);
@@ -1031,6 +1032,9 @@ export default function App() {
             .catch((error) => {
                 messages.submitButtonText = "Échec de la connexion";
                 messages.submitErrorMessage = "Error: " + error.message;
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
             })
             .finally(() => {
                 callback(messages)
@@ -1073,6 +1077,11 @@ export default function App() {
                     requireLogin();
                 } else if (code === 403) {
                     setTokenState((old) => (response.token || old));
+                }
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
                 }
             })
             .finally(() => {
@@ -1135,6 +1144,11 @@ export default function App() {
                 }
                 setTokenState((old) => (response?.token || old));
             })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             })
@@ -1176,6 +1190,11 @@ export default function App() {
                     requireLogin();
                 } else if (code === 403) {
                     setTokenState((old) => (response.token || old));
+                }
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
                 }
             })
             .finally(() => {
@@ -1351,6 +1370,7 @@ export default function App() {
                     createFolderStorage={createFolderStorage}
 
                     addNewGrade={addNewGrade}
+                    proxyError={proxyError}
                 />
             ,
 

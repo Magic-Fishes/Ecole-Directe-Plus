@@ -26,6 +26,7 @@ import {
     BadgeMehInfo,
 } from "../generic/badges/BadgeInfo"
 import HolographicDiv from "../generic/CustomDivs/HolographicDiv"
+import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 
 import "./Lab.css";
 
@@ -48,6 +49,7 @@ export default function Lab({ fetchGrades }) {
         <p>Chez Ecole Directe Plus, la transparence et la confiance que l'on entretient avec nos utilisateurs est une priorité.</p>
     </div>)
     const [testState, setTestState] = useState(false);
+    const [displayProxyErrorNotification, setDisplayProxyErrorNotification] = useState(false);
 
     // Behavior
     useEffect(() => {
@@ -218,6 +220,13 @@ export default function Lab({ fetchGrades }) {
             <HolographicDiv style={{ width: "800px", height: "500px", margin: "0 auto", border: "2px solid rgb(27, 31, 58)", borderRadius: "48px", backgroundColor: "rgba(var(--background-color-0), 1)" }}>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
+            <div style={{height:"100px"}}></div>
+
+            <h3>ProxyErrorNotification</h3>
+            <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
+            {displayProxyErrorNotification && <ProxyErrorNotification />}
+
+
             {/* FOOTER */}
             <div style={{height:"100px"}}></div>
         </div>

@@ -4,10 +4,11 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
+import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade, proxyError }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -412,6 +413,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
+            {proxyError && <ProxyErrorNotification />}
             <Outlet />
         </>
     );
