@@ -21,6 +21,7 @@ export default function Charts({ selectedPeriod }) {
     const [chartType, setChartType] = useState(0);
 
     const chartContainerRef = useRef(null);
+    const canvasContainerRef = useRef(null);
     const chart = useRef(null);
     const chartOptions = useRef(null);
     const chartData = useRef(null);
@@ -31,10 +32,11 @@ export default function Charts({ selectedPeriod }) {
     const generalAverageHistory = userData.get("generalAverageHistory");
     const streakScoreHistory = userData.get("streakScoreHistory");
 
+    const resizeChart = () => {
+        chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+    }
+
     useEffect(() => {
-        const resizeChart = () => {
-            chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
-        }
 
         window.addEventListener("resize", resizeChart);
         resizeChart();
@@ -129,6 +131,9 @@ export default function Charts({ selectedPeriod }) {
             type: 'line',
             data: chartData.current,
             options: {
+                animation: {
+                    duration: 0, // general animation time
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -177,8 +182,8 @@ export default function Charts({ selectedPeriod }) {
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
-            <div id="chart-container">
-                <canvas ref={chartContainerRef}></canvas>
+            <div id="canvas-container" ref={canvasContainerRef}>
+                <canvas id="chart-container" ref={chartContainerRef}></canvas>
             </div>
         </div>
     )
