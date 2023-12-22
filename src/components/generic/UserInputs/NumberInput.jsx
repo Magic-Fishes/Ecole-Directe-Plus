@@ -5,12 +5,15 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 
 import "./NumberInput.css";
 
-export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, displayArrowsControllers=true, className = "", id = "", ...props }) {
-
+export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, displayArrowsControllers=true, step=1, className = "", id = "", ...props }) {
     const timeoutId = useRef(0);
     const intervalId = useRef(0);
     const initialValue = useRef(value);
     const valueRef = useRef(value);
+
+    function submitValue(value) {
+        onChange(parseFloat(parseFloat(value).toFixed(3)))
+    }
 
     function handleChange(event) {
         let newValue = event.target.value;
@@ -22,11 +25,11 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             //     newValue = min;            
             // }
         }
-        onChange(newValue);
+        submitValue(newValue);
     }
 
     function handleBlur(event) {
-        let newValue = parseInt(event.target.value);
+        let newValue = parseFloat(event.target.value);
         if (initialValue.current === newValue) {
             return 0;
         }
@@ -37,7 +40,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
         } else {
             newValue = min;
         }
-        onChange(newValue);
+        submitValue(newValue);
     }
     
     useEffect(() => {
@@ -57,7 +60,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
 
     const changeValueBy = (delta) => {
         function test(delta) {
-            let newValue = parseInt(valueRef.current) + delta;
+            let newValue = parseFloat(valueRef.current) + delta;
             if (newValue < min) {
                 newValue =  min;
             } else if (newValue > max) {
@@ -65,7 +68,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             }
             return newValue
         }
-        onChange(test(delta));
+        submitValue(test(delta));
     }
 
     const clearAutoChange = () => {
@@ -84,17 +87,18 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
                 min={min}
                 max={max}
                 type="number"
-                value={!isNaN(value) ? parseInt(value) : ""}
+                value={!isNaN(value) ? parseFloat(value) : ""}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                step={step}
                 {...props}
             />
             {displayArrowsControllers
                 ? <div className="number-input-buttons">
-                    <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(1) } }} onPointerDown={() => {handleButtonPress(1)}} className="increase-button" >
+                    <button type="button" onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(1) } }} onPointerDown={() => {handleButtonPress(step)}} className="increase-button" >
                         <DropDownArrow />
                     </button>
-                    <button onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(-1) } }} onPointerDown={() => handleButtonPress(-1)} className="decrease-button" >
+                    <button type="button" onKeyDown={(event) => { if (event.key === "Enter") { changeValueBy(-1) } }} onPointerDown={() => handleButtonPress(-step)} className="decrease-button" >
                         <DropDownArrow />
                     </button>
                 </div>
