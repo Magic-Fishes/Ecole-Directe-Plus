@@ -328,7 +328,7 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
             <WarningMessage condition={feedbackContentWarningMessage} >{feedbackContentWarningMessage}</WarningMessage>
             <div className="file-input">
                 <div id="drop-zone-container">
-                    <div className={`drop-zone ${isFileInputHovered && "file-hovered"} ${warningMessage && "invalid"}`} onDragOver={handleDragOver} onDragLeave={handleDragOverStop} onDrop={handleDragOverStop}>
+                    <div className={`drop-zone ${isFileInputHovered ? "file-hovered" : ""} ${warningMessage && "invalid"}`} onDragOver={handleDragOver} onDragLeave={handleDragOverStop} onDrop={handleDragOverStop}>
                         <div id="preview-container">
                             <img id="file-preview" ref={imgRef} alt="Prévisualisation de l'image jointe" />
                             <label htmlFor="attached-file" ref={labelRef}>Ajouter une capture d'écran</label>
