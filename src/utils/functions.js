@@ -1,6 +1,8 @@
 import CryptoJS from 'crypto-js';
+import { v5 as uuidv5 } from "uuid";
 
 const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
+const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
 export function areOccurenciesEqual(obj1, obj2) {
     if (typeof obj1 !== "object" || typeof obj2 !== "object") {
@@ -66,4 +68,8 @@ export function decodeBase64(string) {
     const output = textDecoder.decode(bytes);
 
     return output;
+}
+
+export function generateUUID(string) {
+    return uuidv5(string, UUID_NAMESPACE);
 }

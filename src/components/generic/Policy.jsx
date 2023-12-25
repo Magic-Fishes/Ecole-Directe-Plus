@@ -68,7 +68,7 @@ export default function Policy({ onCloseNavigateURL }) {
 
             Testeurs de pré-lancement :<br />
             - Thon Humide<br />
-            - Jackp0t<br />
+            - Jackp0t<br /><br />
 
             Remerciements spéciaux :<br />
             - Thon Humide<br />

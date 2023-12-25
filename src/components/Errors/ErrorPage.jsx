@@ -3,12 +3,16 @@ import { useContext } from "react";
 import { useRouteError } from "react-router-dom";
 import { AppContext } from "../../App";
 
+import { generateUUID } from "../../utils/functions";
+
 import Error404 from "./Error404";
 import "./ErrorPage.css";
 
 export default function ErrorPage() {
     const error = useRouteError();
-    const { isDevChannel, globalSettings } = useContext(AppContext);
+    const { accountsListState, activeAccount, isDevChannel, globalSettings, useUserSettings } = useContext(AppContext);
+
+    const settings = useUserSettings();
 
     function safetyFunction() {
         console.log("safety function | reset")
@@ -16,6 +20,11 @@ export default function ErrorPage() {
     }
     
     function sendToWebhook(targetWebhook, data) {
+        const stringifiedData = JSON.stringify(data)
+        // prevent data from exceeding 2000 characters
+        while (stringifiedData.length > 1900) {
+            stringifiedData = stringifiedData.slice(0, stringifiedData.length);
+        }
         fetch(
             targetWebhook,
             {
@@ -24,7 +33,7 @@ export default function ErrorPage() {
                     "user-agent": navigator.userAgent,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ content: JSON.stringify(data) })
+                body: JSON.stringify({ content: stringifiedData })
             }
         );
     }
@@ -35,16 +44,25 @@ export default function ErrorPage() {
         );
     }
     else {
-        if (process.env.NODE_ENV !== "development") {
+        // if (process.env.NODE_ENV !== "development") {
             safetyFunction();
             if (isDevChannel) {
                 globalSettings.isDevChannel.set(true);
             }
-            if (getUserSettingValue("allowAnonymousReports")) {
+            if (settings.get("allowAnonymousReports")) {
                 const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
-                sendToWebhook(sardineInsolente, error);
+                const report = {
+                    uuid: generateUUID(accountsListState[activeAccount].firstName + accountsListState[activeAccount].lastName),
+                    error_name: error.name,
+                    error_message: error.message,
+                    error_code: error.error_code,
+                    stack_trace: error.stack,
+                    add_data: error.additional_data,
+                    location: location.href,
+                }
+                sendToWebhook(sardineInsolente, report);
             }
-        }
+        // }
         
         return (
             <div id="error-page">
