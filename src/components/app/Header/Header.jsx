@@ -63,39 +63,33 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         notifications.messaging = 0;
         notifications.account = 0;
 
-        if (accountsList[activeAccount].accountType === "E") {
-            for (const eventKey in timeline[activeAccount]) {
-                const event = timeline[activeAccount][eventKey];
-                // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
-                //     continue;
-                // }
-                switch (event.typeElement) {
-                    case "Note":
-                        // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
-                        if ((Date.now() - (new Date(event.date)).getTime()) < (3 * 1000 * 60 * 60 * 24)) {
-                            let newGradesNb = 1;
-                            if (event.titre === "Nouvelles évaluations") {
-                                newGradesNb = event.contenu.split("/").length;
-                            }
-                            notifications.grades = (notifications.grades ?? 0) + newGradesNb;
+        for (const eventKey in timeline[activeAccount]) {
+            const event = timeline[activeAccount][eventKey];
+            // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
+            //     continue;
+            // }
+            switch (event.typeElement) {
+                case "Note":
+                    // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
+                    if ((Date.now() - (new Date(event.date)).getTime()) < (3 * 1000 * 60 * 60 * 24)) {
+                        let newGradesNb = 1;
+                        if (event.titre === "Nouvelles évaluations") {
+                            newGradesNb = event.contenu.split("/").length;
                         }
-                        break;
+                        notifications.grades = (notifications.grades ?? 0) + newGradesNb;
+                    }
+                    break;
 
-                    case "Messagerie":
-                        notifications.messaging = (notifications.messaging ?? 0) + 1;
-                        break;
-                    
-                    case "VieScolaire":
-                    case "Document":
-                        notifications.account = (notifications.account ?? 0) + 1;
-                        break;
-                }
+                case "Messagerie":
+                    notifications.messaging = (notifications.messaging ?? 0) + 1;
+                    break;
+                
+                case "VieScolaire":
+                case "Document":
+                    notifications.account = (notifications.account ?? 0) + 1;
+                    break;
             }
-
-        } else if (accountsList[activeAccount].accountType === "P") {
-            // TODO: notifications pour les comptes parents
         }
-
         useUserData().set("notifications", notifications)
     }
 
