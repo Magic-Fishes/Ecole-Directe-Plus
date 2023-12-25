@@ -20,7 +20,7 @@ export default function ErrorPage() {
     }
     
     function sendToWebhook(targetWebhook, data) {
-        const stringifiedData = JSON.stringify(data)
+        let stringifiedData = JSON.stringify(data)
         // prevent data from exceeding 2000 characters
         while (stringifiedData.length > 1900) {
             stringifiedData = stringifiedData.slice(0, stringifiedData.length);
@@ -58,7 +58,7 @@ export default function ErrorPage() {
                     error_code: error.error_code,
                     stack_trace: error.stack,
                     add_data: error.additional_data,
-                    location: location.href,
+                    location: (location.hostname + location.pathname),
                 }
                 sendToWebhook(sardineInsolente, report);
             }
