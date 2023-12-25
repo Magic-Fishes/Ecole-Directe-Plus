@@ -44,7 +44,7 @@ export default function ErrorPage() {
         );
     }
     else {
-        // if (process.env.NODE_ENV !== "development") {
+        if (process.env.NODE_ENV !== "development") {
             safetyFunction();
             if (isDevChannel) {
                 globalSettings.isDevChannel.set(true);
@@ -62,7 +62,7 @@ export default function ErrorPage() {
                 }
                 sendToWebhook(sardineInsolente, report);
             }
-        // }
+        }
         
         return (
             <div id="error-page">
