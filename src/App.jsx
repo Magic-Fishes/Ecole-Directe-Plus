@@ -574,8 +574,9 @@ export default function App() {
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
-        const generalAverageHistory = {};
-        const streakScoreHistory = {};
+        const generalAverageHistory = {}; // used for charts
+        const streakScoreHistory = {}; // used for charts
+        const subjectsComparativeInformation = {};
         const totalBadges = {
             "star": 0,
             "bestStudent": 0,
@@ -588,6 +589,8 @@ export default function App() {
             for (let period of periodsFromJson) {
                 if (period) {
                     const newPeriod = {};
+                    subjectsComparativeInformation[period.codePeriode] = [];
+
                     newPeriod.streak = 0;
                     newPeriod.maxStreak = 0;
                     newPeriod.name = period.periode;
@@ -630,6 +633,12 @@ export default function App() {
                             meh: 0,
                         }
                         newPeriod.subjects[subjectCode] = newSubject;
+                        subjectsComparativeInformation[period.codePeriode].push({
+                            subjectFullname: newSubject.name,
+                            classAverage: newSubject.classAverage,
+                            minAverage: newSubject.minAverage,
+                            maxAverage: newSubject.maxAverage
+                        });
                     }
                     periods[period.codePeriode] = newPeriod;
                     generalAverageHistory[period.codePeriode] = {generalAverages: [], dates: []};
@@ -741,6 +750,7 @@ export default function App() {
                 streakScoreHistory[periodCode].push(periods[periodCode].streak);
 
                 periods[periodCode].subjects[subjectCode].average = average;
+
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
                     const categoryAverage = calcCategoryAverage(periods[periodCode], category);
@@ -822,10 +832,27 @@ export default function App() {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
 
+        // add the average of all subjects a special type of chart
+        for (const period in periods) {
+            for (const subject in periods[period].subjects) {
+                for (const subjectID in subjectsComparativeInformation[period]) {
+                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
+                        const newAverage = periods[period].subjects[subject].average;
+                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
+                            subjectsComparativeInformation[period].splice(subjectID, 1);
+                        }
+                        subjectsComparativeInformation[period][subjectID].average = newAverage;
+                        break;
+                    }
+                }
+            }
+        }
+
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
+        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
     }
 
