@@ -248,17 +248,11 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}
-                                    viewBox="0 0 145 210"
-                                    style={{width: "25%", margin: "100px 300px"}}
+                                    style={{width: "100%", height: "100%", padding: "20px"}}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                    
                                 >
-                                    <rect x="0" y="160" rx="10" ry="10" width="25" height="40" />
-                                    <rect x="30" y="145" rx="10" ry="10" width="25" height="55" />
-                                    <rect x="60" y="126" rx="10" ry="10" width="25" height="74" />
-                                    <rect x="90" y="80" rx="10" ry="10" width="25" height="120" />
-                                    <rect x="120" y="142" rx="10" ry="10" width="25" height="58" />
+                                    <rect x="0" y="0" rx="10" ry="10" style={{width: "100%", height: "100%"}} />
                                 </ContentLoader>
                         }
                     </WindowContent>
