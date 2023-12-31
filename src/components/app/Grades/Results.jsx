@@ -61,7 +61,6 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
 
     function changeGradeSimulationSettings(setting, value) {
         setGradeSimulationSettings(old => ({...old, [setting]: value}))
-        closeSimulationPopUp()
     }
     
     function closeSimulationPopUp() {
