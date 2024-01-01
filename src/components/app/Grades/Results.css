@@ -26,3 +26,79 @@
     max-width: 80%;
     color: rgb(var(--text-color-alt));
 }
+
+.grade-simulation-trigger {
+    background-color: rgb(var(--background-color-3));
+    opacity: 0.5;
+    padding: 10px;
+    border-radius: 12px;
+    height: 2.25em;
+    cursor: pointer;
+    transition: 0.15s;
+    margin-right: 10px;
+}
+
+.grade-simulation-trigger:hover {
+    opacity: 1;
+}
+
+#SUN-form h2 {
+    margin-bottom: 5px;
+}
+
+#SUN-form p {
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-13);
+}
+
+#SUN-form .grade-simulation-field {
+    display: flex;
+    margin-block: 20px;
+    align-items: center;
+    font-size: var(--font-size-16);
+    text-wrap: nowrap;
+}
+
+#SUN-form .simulation-input {
+    padding: 0;
+    margin-inline: 5px;
+    width: 52px;
+    border-radius: 10px;
+    height: min-content;
+    padding: 5px;
+}
+
+#SUN-form .simulation-input input {
+    font-size: var(--font-size-16);
+    padding: 0;
+    margin: 0;
+}
+
+#SUN-form .grade-simulation-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    font-size: var(--font-size-13);
+    margin-top: 25px;
+}
+
+#SUN-form .simulation-form-button {
+    margin: 0;
+    font-size: var(--font-size-15);
+    border: none;
+    border-radius: 10px;
+}
+
+#SUN-form .simulation-form-button.close, .simulation-form-button.close:hover {
+    background-color: #70707080;
+    padding: 6px 30px;
+}
+
+#SUN-form .simulation-form-button.submit, .simulation-form-button.submit:hover {
+    background-color: rgb(var(--border-color-0));
+    padding: 6px 30px;
+}
+
+#SUN-form .simulation-form-button:hover {
+    filter: brightness(0.9);
+}
