@@ -147,7 +147,7 @@ export default function Charts({ selectedPeriod }) {
                         // },
                         {
                             type: "line",
-                            label: "Moyennes élève",
+                            label: "Moyenne élève",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.average),
                             borderColor: 'rgb(255, 99, 132)',
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -157,7 +157,7 @@ export default function Charts({ selectedPeriod }) {
                         },
                         {
                             type: "line",
-                            label: "Moyennes classe",
+                            label: "Moyenne classe",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.classAverage),
                             borderColor: 'rgb(24, 24, 41)',
                             backgroundColor: 'rgba(24, 24, 41, 0.5)',
@@ -167,7 +167,7 @@ export default function Charts({ selectedPeriod }) {
                         },
                         {
                             type: "line",
-                            label: "Moyennes max classe",
+                            label: "Moyenne max classe",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.maxAverage),
                             borderColor: 'rgb(53, 162, 235)',
                             backgroundColor: 'rgba(53, 162, 235, 0.5)',
@@ -177,7 +177,7 @@ export default function Charts({ selectedPeriod }) {
                         },
                         {
                             type: "line",
-                            label: "Moyennes min classe",
+                            label: "Moyenne min classe",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.minAverage),
                             borderColor: 'rgb(53, 162, 235)',
                             backgroundColor: 'rgba(53, 162, 235, 0.5)',
@@ -216,7 +216,7 @@ export default function Charts({ selectedPeriod }) {
                     datasets: [
                         {
                             type: "radar",
-                            label: "Moyennes élève",
+                            label: "Moyenne élève",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.average),
                             borderColor: 'rgb(255, 99, 132)',
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -224,7 +224,7 @@ export default function Charts({ selectedPeriod }) {
                         },
                         {
                             type: "radar",
-                            label: "Moyennes classe",
+                            label: "Moyenne classe",
                             data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.classAverage),
                             borderColor: 'rgb(24, 24, 41)',
                             backgroundColor: 'rgba(24, 24, 41, 0.2)',

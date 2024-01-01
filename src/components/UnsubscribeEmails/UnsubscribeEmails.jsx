@@ -22,7 +22,7 @@ export default function UnsubscribeEmails({ activeUser }) {
         const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: "numeric" }
         const readableDate = date.toLocaleDateString('fr-FR', options);
         fetch(
-            "https://discord.com/api/webhooks/1165407472887021669/UvxYQnWqRz6UlooTwo83oL3E0MSspxcguYHYYkmD98PjlucXuZ8XMIsmIxNAmXL9uCk8",
+            "https://discord.com/api/webhooks/1191392918511030372/KSMEyDmoJfQtClT50OHl2GP1ZmmijFu91pKWYXaS7qsdKP4OHq7ZX-pe80e8p3hJopdn",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

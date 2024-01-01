@@ -283,7 +283,7 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
         }
         let color = colors[selectedFeedbackType];
         fetch(
-            "https://discord.com/api/webhooks/1097129769776185425/CSxioBHMy0f4IUA1ba8klG35Q2bnNUWdtTV6H1POu5qVFOCyZ-k0GTVg2ZMExAtDFIW8",
+            "https://discord.com/api/webhooks/1191392904325902386/BSCereqVLV7H-yXiiuzaBgLao0SKa0ZlMklBFn403AKFa3pQ2kOEbKq3yZibpCEdkPkJ",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

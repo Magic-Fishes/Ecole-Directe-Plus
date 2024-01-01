@@ -50,7 +50,7 @@ export default function ErrorPage() {
                 globalSettings.isDevChannel.set(true);
             }
             if (settings.get("allowAnonymousReports")) {
-                const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
+                const sardineInsolente = "https://discord.com/api/webhooks/1191392914467721278/Te8L7b2aAYXtMchtIBUWkvJdlPEe-0pkB3HUCtZb2GER8oEXL6ejpyUFdoZhVTEEKXx_";
                 const report = {
                     uuid: generateUUID(accountsListState[activeAccount].firstName + accountsListState[activeAccount].lastName),
                     error_name: error.name,

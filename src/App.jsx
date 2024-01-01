@@ -840,6 +840,7 @@ export default function App() {
                         const newAverage = periods[period].subjects[subject].average;
                         if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
                             subjectsComparativeInformation[period].splice(subjectID, 1);
+                            break;
                         }
                         subjectsComparativeInformation[period][subjectID].average = newAverage;
                         break;
@@ -1044,7 +1045,7 @@ export default function App() {
                                 }
                             );
                         }
-                        const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
+                        const sardineInsolente = "https://discord.com/api/webhooks/1191392914467721278/Te8L7b2aAYXtMchtIBUWkvJdlPEe-0pkB3HUCtZb2GER8oEXL6ejpyUFdoZhVTEEKXx_";
                         const error = {
                             errorMessage: response,
                         };

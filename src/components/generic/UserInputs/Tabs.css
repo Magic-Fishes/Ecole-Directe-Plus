@@ -55,6 +55,7 @@
 }
 .tabs-container .tab:hover {
     background-color: rgba(var(--background-color-1), 0.7);
+    color: rgb(var(--text-color-main), .8);
 }
 .tabs-container .tab:has(:focus-visible) {
     outline: 2px solid rgb(var(--background-color-2));
