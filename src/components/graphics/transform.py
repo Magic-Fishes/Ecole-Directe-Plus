@@ -11,6 +11,9 @@ definedColors = {
     "white": "text-main",
     "black": "text-main",
     "#ffffff": "text-main",
+    "#fff": "text-main",
+    "#FFFFFF": "text-main",
+    "#FFF": "text-main",
     "#181829": "background-0",
     "#4B48D9": "border-0",
     "#6865EC": "border-1",
@@ -110,7 +113,7 @@ def modifyChildren(parent):
         if len(child):
             modifyChildren(child)
 
-route = "../../../public/images/new/"
+route = "./public/images/new/"
 for i in os.listdir(route):
     if i[i.index("."):] == ".svg":
         fileName = i.replace(".svg", "")
@@ -141,15 +144,15 @@ export default function """ + fileName + """ ({ className="", id="", alt, ...pro
         except ValueError:
             pass
         
-        with open("./" + fileName + ".jsx", "w") as f:
+        with open("./src/components/graphics/" + fileName + ".jsx", "w") as f:
             f.write(inlineFile + svgFile + "\n\t)\n}")
 
 cssFile = ""
 
-with open("./graphics.css", "r") as css:
+with open("./src/components/graphics/graphics.css", "r") as css:
     cssFile = css.read()
 
-with open("./graphics.css", "w") as css:
+with open("./src/components/graphics/graphics.css", "w") as css:
     css.write(cssFile)
     for i in style:
         for n in style[i]:
