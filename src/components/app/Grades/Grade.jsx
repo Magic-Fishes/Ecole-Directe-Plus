@@ -2,12 +2,14 @@
 import { useState, useEffect, useRef, useContext, createElement } from "react";
 import { Link } from 'react-router-dom'
 
+import CloseButton from "../../graphics/CloseButton";
+
 import { AppContext } from "../../../App";
 
 import "./Grade.css";
 
 export default function Grade({ grade, className = "", ...props }) {
-    const { useUserSettings } = useContext(AppContext); // de même pour ça
+    const { useUserSettings, deleteFakeGrade } = useContext(AppContext); // de même pour ça
 
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
     const gradeScale = useUserSettings("gradeScale");
@@ -51,7 +53,7 @@ export default function Grade({ grade, className = "", ...props }) {
         }
         const siblingBounds = sibling.getBoundingClientRect();
         const selfBounds = gradeRef.current.getBoundingClientRect();
-        if (dir*Math.round(siblingBounds.left) <= dir*Math.round(selfBounds.left)) {
+        if (dir * Math.round(siblingBounds.left) <= dir * Math.round(selfBounds.left)) {
             setClassList((oldClassList) => {
                 const newClassList = structuredClone(oldClassList);
                 for (let className of ["before-line-break", "after-line-break"]) {
@@ -87,7 +89,7 @@ export default function Grade({ grade, className = "", ...props }) {
                         //     checkLineBreak(1);
                         // }
                     }
-                    
+
                     if (!hasStreakGradeAfter(1)) {
                         newClassList.push("end-row");
                         // if (hasStreakGradeBefore(1)) {
@@ -119,7 +121,7 @@ export default function Grade({ grade, className = "", ...props }) {
     // TODO: handle when resize
     useEffect(() => {
         window.addEventListener("resize", updateClassList);
-        
+
         return () => {
             window.removeEventListener("resize", updateClassList);
         }
@@ -147,6 +149,7 @@ export default function Grade({ grade, className = "", ...props }) {
                     {isGradeScaleEnabled.get() || ((grade.scale ?? 20) != 20 && <sub>/{grade.scale}</sub>)}
                     {(grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
                 </span>}
+                {grade.isReal === false && <CloseButton className="delete-grade-button" onClick={() => {deleteFakeGrade(grade.id, grade.subjectKey, grade.periodKey)}}/>}
             </span>
         )
     )

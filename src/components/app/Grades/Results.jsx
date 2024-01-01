@@ -184,12 +184,17 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                         </div>
                                                             :
                                                             <div className="grades-values">
-                                                                {el.grades.map((grade) => {
+                                                                {el.grades.filter(el => el.isReal).map((grade) => {
                                                                     return (
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                     )
                                                                 })}
                                                                 <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(idx) }}/>
+                                                                {el.grades.filter(el => !el.isReal).map((grade) => {
+                                                                    return (
+                                                                        <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
+                                                                    )
+                                                                })}
                                                             </div>}
                                                     </td>
                                                 </tr>

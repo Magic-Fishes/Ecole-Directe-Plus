@@ -35,6 +35,7 @@
     height: 2.25em;
     cursor: pointer;
     transition: 0.15s;
+    margin-right: 10px;
 }
 
 .grade-simulation-trigger:hover {
