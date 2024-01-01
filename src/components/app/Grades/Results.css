@@ -42,6 +42,10 @@
     opacity: 1;
 }
 
+#SUN-form h2 {
+    margin-bottom: 5px;
+}
+
 #SUN-form p {
     color: rgb(var(--text-color-alt));
     font-size: var(--font-size-13);
@@ -55,24 +59,19 @@
     text-wrap: nowrap;
 }
 
-.simulation-input {
+#SUN-form .simulation-input {
     padding: 0;
     margin-inline: 5px;
     width: 52px;
-    border-bottom: 3px solid rgb(var(--border-color-0));
     border-radius: 10px;
     height: min-content;
     padding: 5px;
 }
 
-.simulation-input input {
+#SUN-form .simulation-input input {
     font-size: var(--font-size-16);
     padding: 0;
     margin: 0;
-}
-
-.simulation-input div {
-    display: none;
 }
 
 #SUN-form .grade-simulation-buttons {
@@ -83,23 +82,23 @@
     margin-top: 25px;
 }
 
-.simulation-form-button {
+#SUN-form .simulation-form-button {
     margin: 0;
     font-size: var(--font-size-15);
     border: none;
     border-radius: 10px;
 }
 
-.simulation-form-button.close, .simulation-form-button.close:hover {
+#SUN-form .simulation-form-button.close, .simulation-form-button.close:hover {
     background-color: #70707080;
     padding: 6px 30px;
 }
 
-.simulation-form-button.submit, .simulation-form-button.submit:hover {
+#SUN-form .simulation-form-button.submit, .simulation-form-button.submit:hover {
     background-color: rgb(var(--border-color-0));
-    padding: 6px 15px;
+    padding: 6px 30px;
 }
 
-.simulation-form-button:hover {
+#SUN-form .simulation-form-button:hover {
     filter: brightness(0.9);
 }
