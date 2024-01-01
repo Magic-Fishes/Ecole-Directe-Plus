@@ -550,6 +550,13 @@ export default function App() {
         updatePeriodGrades(periodKey)
     }
 
+    function deleteFakeGrade(UUID, subjectKey, periodKey) {
+        const newGrades = {...getUserData("sortedGrades")}
+        newGrades[periodKey].subjects[subjectKey].grades = oldGrades[periodKey].subjects[subjectKey].grades.filter((el) => el.id === UUID)
+        changeUserData("sortedGrades", newGrades);
+        updatePeriodGrades(periodKey)
+    }
+
     function updatePeriodGrades(periodKey) {
         const sortedGrades = getUserData("sortedGrades")
         const period = sortedGrades[periodKey]
@@ -1483,6 +1490,7 @@ export default function App() {
         useUserSettings,
         refreshApp,
         addNewGrade,
+        deleteFakeGrade,
         activeAccount,
         accountsListState,
         isLoggedIn,
@@ -1498,6 +1506,7 @@ export default function App() {
         useUserSettings,
         refreshApp,
         addNewGrade,
+        deleteFakeGrade,
         activeAccount,
         accountsListState,
         isLoggedIn,
