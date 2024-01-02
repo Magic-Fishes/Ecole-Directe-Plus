@@ -986,9 +986,9 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-        // fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
@@ -1131,9 +1131,9 @@ export default function App() {
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
-            `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
