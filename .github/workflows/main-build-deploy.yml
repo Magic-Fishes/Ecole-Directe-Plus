@@ -29,10 +29,13 @@ jobs:
       - name: Build the website
         run: npm run build
       
-      - name: Checking compatibility
+      - name: Replacing environment secrets
         run: |
           fichier=$(find dist/assets/ -type f -name "index*.js")
           sed -i "s/THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY/${{secrets.SUPER_SECRET_KEY}}/g" $fichier
+          sed -i "s/CARPE_CONVIVIALE_WEBHOOK_URL/${{secrets.CARPE_CONVIVIALE_WEBHOOK_URL}}/g" $fichier
+          sed -i "s/SARDINE_INSOLENTE_WEBHOOK_URL/${{secrets.SARDINE_INSOLENTE_WEBHOOK_URL}}/g" $fichier
+          sed -i "s/THON_FRUSTRE_WEBHOOK_URL/${{secrets.THON_FRUSTRE_WEBHOOK_URL}}/g" $fichier
 
       - name: Deploy to the server
         uses: easingthemes/ssh-deploy@main
