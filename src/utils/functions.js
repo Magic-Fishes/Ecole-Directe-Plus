@@ -34,7 +34,7 @@ export function getCurrentSchoolYear() {
     if (month >= 8) {
         return [year, (year + 1)];
     }
-    
+
     return [(year - 1), year];
 }
 
@@ -46,7 +46,7 @@ export function encrypt(chain) {
     if (!chain) {
         return chain
     }
-    return  CryptoJS.AES.encrypt(chain, key).toString()
+    return CryptoJS.AES.encrypt(chain, key).toString()
 }
 
 export function decrypt(chain) {
@@ -72,4 +72,23 @@ export function decodeBase64(string) {
 
 export function generateUUID(string) {
     return uuidv5(string, UUID_NAMESPACE);
+}
+
+export function sendToWebhook(targetWebhook, data) {
+    let stringifiedData = JSON.stringify(data)
+    // prevent data from exceeding 2000 characters
+    while (stringifiedData.length > 1900) {
+        stringifiedData = stringifiedData.slice(0, stringifiedData.length);
+    }
+    fetch(
+        targetWebhook,
+        {
+            method: "POST",
+            headers: {
+                "user-agent": navigator.userAgent,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ content: stringifiedData })
+        }
+    );
 }

@@ -8,6 +8,8 @@ import {
     RouterProvider
 } from "react-router-dom";
 
+import { sendToWebhook } from "./utils/functions";
+
 import "./App.css";
 
 import Root from "./components/Root";
@@ -68,6 +70,12 @@ consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.3";
 const apiVersion = "4.46.0";
+
+// secret webhooks
+const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
+const sardineInsolente = "SARDINE_INSOLENTE_WEBHOOK_URL";
+const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
+
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
@@ -1042,20 +1050,6 @@ export default function App() {
                         messages.submitErrorMessage = referencedErrors[statusCode];
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
-                        function sendToWebhook(targetWebhook, data) {
-                            fetch(
-                                targetWebhook,
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "user-agent": navigator.userAgent,
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({ content: JSON.stringify(data) })
-                                }
-                            );
-                        }
-                        const sardineInsolente = "https://discord.com/api/webhooks/1191392914467721278/Te8L7b2aAYXtMchtIBUWkvJdlPEe-0pkB3HUCtZb2GER8oEXL6ejpyUFdoZhVTEEKXx_";
                         const error = {
                             errorMessage: response,
                         };
@@ -1413,14 +1407,14 @@ export default function App() {
                 />
             ,
 
-            errorElement: <ErrorPage />,
+            errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
                     element: <Navigate to="/login" />,
                     path: "/"
                 },
                 {
-                    element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} isTabletLayout={isTabletLayout} />,
+                    element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
                     path: "feedback"
                 },
                 {
@@ -1437,7 +1431,7 @@ export default function App() {
                     path: "museum"
                 },
                 {
-                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} />,
+                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} thonFrustre={thonFrustre} />,
                     path: "unsubscribe-emails"
                 },
                 {
@@ -1452,13 +1446,13 @@ export default function App() {
                     element: ((!tokenState || accountsListState.length < 1)
                         ? <Navigate to="/login" replace={true} />
                         : <>
-
                             <Header
                                 currentEDPVersion={currentEDPVersion}
                                 token={tokenState}
                                 accountsList={accountsListState}
                                 setActiveAccount={setActiveAccount}
                                 activeAccount={activeAccount}
+                                carpeConviviale={carpeConviviale}
                                 isLoggedIn={isLoggedIn}
                                 fetchUserTimeline={fetchUserTimeline}
                                 timeline={timeline}
