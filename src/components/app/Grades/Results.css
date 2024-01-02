@@ -29,21 +29,29 @@
 
 .grade-simulation-trigger {
     background-color: rgb(var(--background-color-3));
-    opacity: 0.5;
+    margin-right: 10px;
     padding: 10px;
     border-radius: 12px;
     height: 2.25em;
+    opacity: 0.5;
     cursor: pointer;
-    transition: 0.15s;
-    margin-right: 10px;
+    transition: 0.1s;
+    outline: none;
+}
+.grade-simulation-trigger:is(:hover, :focus-visible) {
+    opacity: 1;
+}
+.grade-simulation-trigger:active {
+    opacity: .8;
 }
 
-.grade-simulation-trigger:hover {
-    opacity: 1;
+
+#pop-up-background:has(#SUN-form) {
+    max-width: 370px;
 }
 
 #SUN-form h2 {
-    margin-bottom: 5px;
+    margin-bottom: 25px;
 }
 
 #SUN-form p {
@@ -53,7 +61,7 @@
 
 #SUN-form .grade-simulation-field {
     display: flex;
-    margin-block: 20px;
+    margin-block: 15px;
     align-items: center;
     font-size: var(--font-size-16);
     text-wrap: nowrap;
@@ -74,12 +82,19 @@
     margin: 0;
 }
 
+#SUN-form .grade-simulation-wrapper {
+    padding: 25px;
+    padding-bottom: 10px;
+}
+
 #SUN-form .grade-simulation-buttons {
+    font-size: var(--font-size-13);
+    padding: 12px;
+    backdrop-filter: brightness(.8);
+
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    font-size: var(--font-size-13);
-    margin-top: 25px;
 }
 
 #SUN-form .simulation-form-button {
@@ -87,18 +102,27 @@
     font-size: var(--font-size-15);
     border: none;
     border-radius: 10px;
+    padding: 6px 16px;
+    border: 2px solid transparent;
 }
 
-#SUN-form .simulation-form-button.close, .simulation-form-button.close:hover {
-    background-color: #70707080;
-    padding: 6px 30px;
+#SUN-form .simulation-form-button.close {
+    color: rgb(var(--text-color-alt));
+}
+#SUN-form .simulation-form-button.close:is(:hover, :focus-visible) {
+    background-color: transparent;
+    border-color: rgb(var(--text-color-alt));
+}
+#SUN-form .simulation-form-button.close:active {
+    background-color: rgb(var(--text-color-alt), .2);
 }
 
-#SUN-form .simulation-form-button.submit, .simulation-form-button.submit:hover {
+#SUN-form .simulation-form-button.submit {
     background-color: rgb(var(--border-color-0));
-    padding: 6px 30px;
 }
-
-#SUN-form .simulation-form-button:hover {
+#SUN-form .simulation-form-button.submit:is(:hover, :focus-visible) {
+    filter: brightness(1.15);
+}
+#SUN-form .simulation-form-button.submit:active {
     filter: brightness(0.9);
 }
