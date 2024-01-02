@@ -23,7 +23,7 @@ body:has(#bottom-sheet) {
     left: 50%;
     filter: blur(10px);
     transform: translate(-50%, -50%) scale(0.8);
-    padding: 25px;
+    /* padding: 25px; */
     border-radius: 20px;
     width: 100%;
     max-width: 400px;
@@ -35,6 +35,28 @@ body:has(#bottom-sheet) {
     animation: 0.3s ease-out 0s blur-in;
     animation-timing-function: var(--timing-function-spring-effect);
     animation-fill-mode: forwards;
+}
+
+#pop-up-background.info .default-closing-cross {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-weight: var(--font-weight-extra-bold);
+    color: rgb(var(--text-color-alt));
+    outline: none;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+}
+#pop-up-background.info .default-closing-cross:is(:hover, :focus-visible) {
+    color: rgb(var(--text-color-main));
+}
+#pop-up-background.info .default-closing-cross:active {
+    color: rgba(var(--text-color-main), .7);
 }
 
 #pop-up-background.info {
