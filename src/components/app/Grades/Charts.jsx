@@ -129,22 +129,18 @@ export default function Charts({ selectedPeriod }) {
                 chartData.current = {
                     labels: Array.from({ length: subjectsComparativeInformation[selectedPeriod].length }, (_, i) => subjectsComparativeInformation[selectedPeriod][i].subjectFullname),
                     datasets: [
-                        // {
-                        //     type: "bar",
-                        //     label: "Moyennes min et max de classe",
-                        //     base: subjectsComparativeInformation[selectedPeriod].map((subject) =>  subject.minAverage),
-                        //     // base: function (context) {
-                        //     //     console.log("context:", context);
-                        //     // },
-                        //     data: subjectsComparativeInformation[selectedPeriod].map((subject) =>  subject.maxAverage),
-                        //     borderWidth: 2,
-                        //     borderRadius: 7,
-                        //     borderColor: 'rgb(53, 162, 235)',
-                        //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                        //     // yAxisID: "y"
-                        //     borderSkipped: false,
-                        //     order: 2
-                        // },
+                        {
+                            type: "bar",
+                            label: "Moyennes min et max de classe",
+                            data: subjectsComparativeInformation[selectedPeriod].map((subject) =>  [subject.minAverage, subject.maxAverage]),
+                            borderWidth: 2,
+                            borderRadius: 7,
+                            borderColor: 'rgb(53, 162, 235)',
+                            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                            // yAxisID: "y"
+                            borderSkipped: false,
+                            order: 2
+                        },
                         {
                             type: "line",
                             label: "Moyennes élève",
@@ -165,26 +161,26 @@ export default function Charts({ selectedPeriod }) {
                             // yAxisID: "y1"
                             order: 1,
                         },
-                        {
-                            type: "line",
-                            label: "Moyennes max classe",
-                            data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.maxAverage),
-                            borderColor: 'rgb(53, 162, 235)',
-                            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                            tension: 0.2,
-                            // yAxisID: "y1"
-                            order: 2,
-                        },
-                        {
-                            type: "line",
-                            label: "Moyennes min classe",
-                            data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.minAverage),
-                            borderColor: 'rgb(53, 162, 235)',
-                            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                            tension: 0.2,
-                            // yAxisID: "y1"
-                            order: 3,
-                        },
+                        // {
+                        //     type: "line",
+                        //     label: "Moyennes max classe",
+                        //     data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.maxAverage),
+                        //     borderColor: 'rgb(53, 162, 235)',
+                        //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                        //     tension: 0.2,
+                        //     // yAxisID: "y1"
+                        //     order: 2,
+                        // },
+                        // {
+                        //     type: "line",
+                        //     label: "Moyennes min classe",
+                        //     data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.minAverage),
+                        //     borderColor: 'rgb(53, 162, 235)',
+                        //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                        //     tension: 0.2,
+                        //     // yAxisID: "y1"
+                        //     order: 3,
+                        // },
                     ],
                 };
                 break;
@@ -304,7 +300,7 @@ export default function Charts({ selectedPeriod }) {
     return (
         <div id="charts">
             <div className="top-container">
-                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Courbes", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
