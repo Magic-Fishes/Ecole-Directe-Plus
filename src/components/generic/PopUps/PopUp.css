@@ -23,7 +23,6 @@ body:has(#bottom-sheet) {
     left: 50%;
     filter: blur(10px);
     transform: translate(-50%, -50%) scale(0.8);
-    /* padding: 25px; */
     border-radius: 20px;
     width: 100%;
     max-width: 400px;

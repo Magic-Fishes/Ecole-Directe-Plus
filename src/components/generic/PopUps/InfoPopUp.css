@@ -2,6 +2,10 @@
     position: relative;
 }
 
+#pop-up-background:has(#info-pop-up) {
+    padding: 25px;
+}
+
 .close-button {
     position: absolute;
     top: -12px; /*valeurs négatives pour counter le padding du pop-up-background*/
