@@ -15,7 +15,7 @@ export default function InfoPopUp({ type, header = "", subHeader = "", contentTi
 
 
     return (
-        <PopUp type={type} externalClosing={isClosing} onClose={onClose}>
+        <PopUp type={type} externalClosing={isClosing} onClose={onClose} defaultClosingCross={false} >
             <div id="info-pop-up">
                 <div className="relative-container">
                     <button className="close-button" onClick={handleClose}>✕</button>

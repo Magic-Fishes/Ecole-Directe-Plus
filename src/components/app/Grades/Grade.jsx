@@ -119,13 +119,13 @@ export default function Grade({ grade, className = "", ...props }) {
     }
 
     // TODO: handle when resize
-    useEffect(() => {
-        window.addEventListener("resize", updateClassList);
+    // useEffect(() => {
+    //     window.addEventListener("resize", updateClassList);
 
-        return () => {
-            window.removeEventListener("resize", updateClassList);
-        }
-    }, [])
+    //     return () => {
+    //         window.removeEventListener("resize", updateClassList);
+    //     }
+    // }, [])
 
     useEffect(() => {
         updateClassList();

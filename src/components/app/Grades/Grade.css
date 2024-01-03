@@ -17,11 +17,11 @@ a.grade.selectable {
     cursor: pointer;
 }
 
-a.grade.not-significant {
-    /* opacity: .5 !important; */
-}
+/* a.grade.not-significant {
+    opacity: .5 !important;
+} */
 
-/* This part has for goal to replace the opacity: 0.5 and make the opacity not heritable */
+/* This part has for goal to replace the opacity: 0.5 and make the opacity not inheritable */
 
 a.grade.selectable.selected.not-significant {
     border-color: rgba(var(--text-color-main), .35);
@@ -31,11 +31,9 @@ a.grade.selectable.not-significant:is(:hover, :focus-visible) {
     background-color: rgba(var(--text-color-main), .05);
 }
 
-a.grade.selectable.not-significant :is(span, sub, sup){
+a.grade.selectable.not-significant * {
     color: rgba(var(--text-color-main), 0.5);
 }
-
-
 
 
 

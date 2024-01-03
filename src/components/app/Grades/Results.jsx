@@ -301,13 +301,13 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                     </WindowContent>
                 </Window>
             </MoveableContainer>
-            {gradeSimulationPopUp && <PopUp onClose={() => {setGradeSimulationPopUp(false)}} externalClosing={!gradeSimulationPopUpClosing}>
+            {gradeSimulationPopUp && <PopUp className="grade-simulation-pop-up" onClose={() => {setGradeSimulationPopUp(false)}} externalClosing={!gradeSimulationPopUpClosing}>
                 <form id="SUN-form" onSubmit={(e) => { e.preventDefault();addNewGrade(gradeSimulationSettings, selectedPeriod); closeSimulationPopUp() }} noValidate> {/* On utilise le noValidate pour éviter que les navigateurs valident pas le formulaire quand le number input contient un 10.01 au lieu d'un 10 parcequ'on a mis le step à 1 */}
                     <div className="grade-simulation-wrapper">
                         <h2>Simuler une note</h2>
                         <div className="grade-simulation-field">Note : <NumberInput className="simulation-input" min={0} max={1000} value={gradeSimulationSettings.value} onChange={value => {changeGradeSimulationSettings("value", value)}} displayArrowsControllers={false} />/<NumberInput className="simulation-input" min={1} max={1000} value={gradeSimulationSettings.scale} onChange={value => {changeGradeSimulationSettings("scale", value)}} displayArrowsControllers={false} /></div>
                         <div className="grade-simulation-field">Coefficient : <NumberInput className="simulation-input" min={0.1} max={100} step={0.1} value={gradeSimulationSettings.coef} onChange={value => {changeGradeSimulationSettings("coef", value)}} displayArrowsControllers={false} /></div>
-                        <p>Cette note disparaitra si vous quittez ou rechargez la page</p>
+                        <p>Cette note disparaîtra au rechargement de la page</p>
                     </div>
                     <div className="grade-simulation-buttons"><Button className="close simulation-form-button" value="Annuler" onClick={closeSimulationPopUp}/><Button className="submit simulation-form-button" value="Valider" type="submit"/></div>
                 </form>
