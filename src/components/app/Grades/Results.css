@@ -50,6 +50,19 @@
     max-width: 370px;
 }
 
+.grade-simulation-pop-up #pop-up-background.info .default-closing-cross {
+    width: 35px;
+    height: 35px;
+    background-color: rgb(var(--background-color-0), .5);
+    border-radius: 10px;
+}
+.grade-simulation-pop-up #pop-up-background.info .default-closing-cross:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-0), .4);
+}
+.grade-simulation-pop-up #pop-up-background.info .default-closing-cross:active {
+    background-color: rgb(var(--background-color-0), .8);
+}
+
 #SUN-form h2 {
     margin-bottom: 25px;
 }
@@ -90,7 +103,7 @@
 #SUN-form .grade-simulation-buttons {
     font-size: var(--font-size-13);
     padding: 12px;
-    backdrop-filter: brightness(.8);
+    background-color: rgb(var(--background-color-0), .5);
 
     display: flex;
     justify-content: flex-end;

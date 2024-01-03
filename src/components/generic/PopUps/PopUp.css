@@ -45,6 +45,8 @@ body:has(#bottom-sheet) {
     color: rgb(var(--text-color-alt));
     outline: none;
     cursor: pointer;
+    z-index: 1;
+    transition: .1s;
 
     display: flex;
     justify-content: center;
