@@ -21,20 +21,13 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
     const [selectedPeriod, setSelectedPeriod] = useState("");
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
 
-    const areGradesNew = useRef(true);
-
     const userData = useUserData();
 
     const sortedGrades = userData.get("sortedGrades");
-    
-    useEffect(() => {
-        if (!sortedGrades) {
-            areGradesNew.current = true
-        } 
-    }, [activeAccount])
+
 
     useEffect(() => {
-        if (sortedGrades && areGradesNew.current) { // We use areGradesNew to prevent the changement of selectedPeriod when we update sortedGrades in simulation  
+        if (sortedGrades) { // We use areGradesNew to prevent the changement of selectedPeriod when we update sortedGrades in simulation  
             let currentPeriod = 0;
             for (let periodCode in sortedGrades) {
                 if (Date.now() > sortedGrades[periodCode].endDate) {
@@ -44,7 +37,6 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                 }
             }
             setSelectedPeriod(Object.keys(sortedGrades)[currentPeriod]);
-            areGradesNew.current = false;
         }
     }, [sortedGrades])
     
