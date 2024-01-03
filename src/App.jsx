@@ -139,7 +139,7 @@ function initSettings(accountList) {
     // comment ajouter un setting :
     // userSettings ici ; defaultSettings
     const userSettings = [];
-    for (let i = 0; i < (accountList.length || 1); i++) {//Si au login, il y a aucun compte d'enregistré 'ce qui arrive souvent sur la page login bah on considère qu'il y a un seul compte pour pas que les displayTheme et compagnie fasse un AVC et donc soit il y a accountList.length soit il y a 1
+    for (let i = 0; i < (accountList?.length || 1); i++) { //Si au login, il y a aucun compte d'enregistré on considère qu'il y a un seul compte
         userSettings.push({
             displayTheme: {
                 value: getSetting("displayTheme", i),
@@ -226,11 +226,11 @@ export default function App() {
     const [userIds, setUserIds] = useState(userIdsFromLs);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
-    const [keepLoggedIn, setKeepLoggedIn] = useState(/*() => {*/getSetting("keepLoggedIn", activeAccount, true)/*}*/);
+    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true));
     
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
-    const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
+    const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
     const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true));
 
     // user data
@@ -349,40 +349,66 @@ export default function App() {
         isDevChannel])
 
     useEffect(() => {
+        // handle storing into localStorage
+        if (userSettings?.length > 0) {
+            const lsUserSettings = [];
+            for (let i = 0; i < userSettings.length; i++) {
+                lsUserSettings[i] = {};
+                for (let n in userSettings[i]) {
+                    lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
+                }
+            }
+            localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
+        }
+    }, [userSettings]);
+
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+    
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+    
+    useEffect(() => {
+        const handleStorageChange = () => {
+            // logout if the user has logout in any tab
+            if (accountsListState?.length > 0 && localStorage.getItem("accountsList") === null) {
+                logout();
+                return 0;
+            }
+            // handle getting from localStorage if it changes
+            applyConfigFromLocalStorage();
+            if (accountsListState?.length > 0) {
+                const newSettings = initSettings(accountsListState)
+                if (!areOccurenciesEqual(newSettings, userSettings)) {
+                    setUserSettings(newSettings);
+                }
+            }
+        }
+        
+        const timeoutHandleStorageChange = () => {
+            setTimeout(() => handleStorageChange(), 0); // timeout to prevent issues due to react async behavior
+        }
+        
+        window.addEventListener("storage", timeoutHandleStorageChange)
+
+        return (() => {
+            window.removeEventListener("storage", timeoutHandleStorageChange);
+        });
+    }, [accountsListState, userSettings, tokenState]);
+
+
+    useEffect(() => {
         if (shareSettings) {
             syncSettings();
         }
     }, [shareSettings])
-
-    useEffect(() => {
-
-        // handle storing into localStorage
-
-        const lsUserSettings = [];
-        for (let i = 0; i < accountsListState.length; i++) {
-            lsUserSettings[i] = {};
-            for (let n in userSettings[i]) {
-                lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
-            }
-        }
-        localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
-
-        // handle getting from localStorage if it changes
-
-        const handleStorageChange = () => {
-            applyConfigFromLocalStorage();
-            const newLsSettings = initSettings(accountsListState)
-            if (!areOccurenciesEqual(newLsSettings, userSettings)) {
-                setUserSettings(newLsSettings);
-            }
-        }
-        window.addEventListener("storage", handleStorageChange)
-
-        return (() => {
-            window.removeEventListener("storage", handleStorageChange);
-        });
-    }, [userSettings]);
-
+    
     useEffect(() => {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
@@ -405,19 +431,6 @@ export default function App() {
     }
     
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
-    
-    
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-    
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
 
     useEffect(() => {
         if (!keepLoggedIn) {
@@ -432,9 +445,14 @@ export default function App() {
     function applyConfigFromLocalStorage() {
         // informations de connexion
         const token = localStorage.getItem("token");
-        if (token && token !== "none") setTokenState(token);
+        if (token && token !== "none" && token !== tokenState) {
+            setTokenState(token);
+        }
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
-        if (accountsList && accountsList.length > 0) setAccountsListState(accountsList);
+        console.log("accountsList:", accountsList)
+        if (accountsList && accountsList.length > 0 && !areOccurenciesEqual(accountsList, accountsListState)) {
+            setAccountsListState(accountsList);
+        }
     }
 
     useEffect(() => {
@@ -443,7 +461,7 @@ export default function App() {
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }
-    }, [userIds])
+    }, [userIds]);
 
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
