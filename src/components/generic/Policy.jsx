@@ -79,6 +79,7 @@ export default function Policy({ onCloseNavigateURL }) {
             - Internet<br />
         </li>
         <li className="legal-content">Curieux et motivé ? Rejoignez nous et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
+        <li className="legal-content">Rencontrez la communauté d'Ecole Directe Plus en rejoignant le <a className="external-link" href="https://discord.gg/AKAqXfTgvE" target="blank">serveur Discord</a>.</li>
         <hr />
         <h3 className="part-header">License (MIT)</h3>
         <li className="legal-content">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
