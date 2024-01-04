@@ -281,7 +281,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : sortedGrades && sortedGrades[selectedPeriod] && false
+                            : sortedGrades && sortedGrades[selectedPeriod]
                                 ? <Charts selectedPeriod={selectedPeriod} />
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}

@@ -80,7 +80,7 @@ export function sendToWebhook(targetWebhook, data) {
     while (stringifiedData.length > 1900) {
         stringifiedData = stringifiedData.slice(0, stringifiedData.length);
     }
-    fetch(
+    return fetch(
         targetWebhook,
         {
             method: "POST",

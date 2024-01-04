@@ -16,7 +16,7 @@
     scroll-padding: 20px;
 }
 
-.results:has(svg) {
+.results:has(rect) {
     display: flex;
 }
 

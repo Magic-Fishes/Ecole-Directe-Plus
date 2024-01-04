@@ -1,5 +1,5 @@
 
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { useRouteError } from "react-router-dom";
 import { AppContext } from "../../App";
 
@@ -10,6 +10,7 @@ import "./ErrorPage.css";
 
 export default function ErrorPage({ sardineInsolente }) {
     const error = useRouteError();
+    const [reportSent, setReportSent] = useState(false);
     const { accountsListState, activeAccount, isDevChannel, globalSettings, useUserSettings } = useContext(AppContext);
 
     const settings = useUserSettings();
@@ -18,8 +19,8 @@ export default function ErrorPage({ sardineInsolente }) {
         console.log("safety function | reset")
         localStorage.clear()
     }
-    
-    
+
+
     if (error.status === 404) {
         return (
             <Error404 />
@@ -41,10 +42,12 @@ export default function ErrorPage({ sardineInsolente }) {
                     add_data: error.additional_data,
                     location: (location.hostname + location.pathname),
                 }
-                sendToWebhook(sardineInsolente, report);
+                sendToWebhook(sardineInsolente, report)
+                .then(() => setReportSent(true))
+                .catch((error) => setReportSent(error.toString()));
             }
         }
-        
+
         return (
             <div id="error-page">
                 <h1>Oops!</h1>
@@ -52,6 +55,10 @@ export default function ErrorPage({ sardineInsolente }) {
                 <p>
                     <i>{error.toString()}</i>
                 </p>
+                {typeof(reportSent) === "boolean"
+                    ? (reportSent ? <p>Rapport d'erreur envoyé avec succès.</p> : <p>Envoi du rapport d'erreur au support...</p>)
+                    : <p>Échec de l'envoi du rapport d'erreur : {reportSent}</p>
+                }
             </div>
         );
     }
