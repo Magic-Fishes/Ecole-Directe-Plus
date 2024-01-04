@@ -8,7 +8,7 @@ import {
     RouterProvider
 } from "react-router-dom";
 
-import { sendToWebhook } from "./utils/functions";
+import { sendToWebhook } from "./utils/utils";
 
 import "./App.css";
 
@@ -20,7 +20,7 @@ import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import { DOMNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
-import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./utils/functions"
+import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils"
 
 
 import guestGrades from "./data/grades.json";
@@ -109,20 +109,18 @@ const defaultSettings = {
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
-
-function createUserLists(accountNumber) {
-    const list = [];
-    for (let i = 0; i < accountNumber; i++) {
-        list.push(undefined);
-    }
-    return list;
-}
-
+// get data from localstorage
 const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
-const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
+const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
-
+const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
+let userIdsFromLs;
+if (keepLoggedInFromLs) {
+    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
+} else {
+    userIdsFromLs = {};
+}
 
 function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
@@ -208,50 +206,42 @@ function initData(length) {
     }))
 }
 
-const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
-let userIdsFromLs;
-if (keepLoggedInFromLs) {
-    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
-} else {
-    userIdsFromLs = {};
-}
-
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 
 export default function App() {
     // global account data
-    const [tokenState, setTokenState] = useState(tokenFromLs);
-    const [accountsListState, setAccountsListState] = useState(accountListFromLs);
-    const [userIds, setUserIds] = useState(userIdsFromLs);
+    const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
+    const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
+    const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
-    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true));
+    const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
+    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
     
     // user settings
-    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
+    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
     const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
-    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true));
+    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true)); // canal dev: redirige vers l'URL dev.ecole-directe.plus où on déploie beaucoup plus régulièrement les mises à jour, mais qui peut être un peu instable
 
-    // user data
+    // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [grades, setGrades] = useState([]);
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
     
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
-    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
+    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
-    const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches));
+    const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
-    const [proxyError, setProxyError] = useState(false);
+    const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
     
     // diverse
-    const abortControllers = useRef([]);
+    const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
-    const actualDisplayTheme = getActualDisplayTheme();
+    const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,9 +286,9 @@ export default function App() {
     function useUserSettings(setting = "") {
         if (setting === "") {
             return {
-                set: changeUserSettings, // dcp ça c'est la fonction de set qui marche avec les setState((oldState) => newState) (vu que c'est un objet pas trop le choix)
-                get: getUserSettingValue, // ça c'est la fonction pour get la value (tu peux l'utiliser dans les useEffect en mode useEffet(() => {}, [setting.get(settingName)]) et franchement les useEffect avaient l'air assez restreint sur ce qu'on pouvait mettre à la fin donc bonne surprise sinon ca aurait été un enfer)
-                object: getUserSettingObject, // Et ça c'est pour get tout l'objet du setting prcq desfois tu peux avoir besoin des autres caractéristiques du setting(surtout dans Setting.jsx pour les min max et les différent choix de displayMode par exemple)
+                set: changeUserSettings, // set((oldState) => newState = oldState)
+                get: getUserSettingValue, // get the value
+                object: getUserSettingObject, // get the entire object
             }
         } else {
             return {
@@ -413,7 +403,7 @@ export default function App() {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
-    // fonctions pour modifier le userData
+    // fonctions de type utils pour modifier le userData
     function changeUserData(data, value) {
         setUserData((oldData) => {
             const newData = [...oldData];
@@ -426,12 +416,13 @@ export default function App() {
     }
 
     function getUserData(data) {
-        // return userData && userData[activeAccount] && userData[activeAccount][data]
         return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
     
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
 
+
+    // gestion de la désactivation automatique du "rester connecté"
     useEffect(() => {
         if (!keepLoggedIn) {
             localStorage.removeItem(lsIdName);
@@ -442,6 +433,7 @@ export default function App() {
         }
     }, [keepLoggedIn]);
 
+    // réapplique les informations sauvegardées dans le localStorage (certaines ont déjà été appliquées à l'initialisation des States)
     function applyConfigFromLocalStorage() {
         // informations de connexion
         const token = localStorage.getItem("token");
@@ -455,6 +447,7 @@ export default function App() {
         }
     }
 
+    // sécurité qui empêche la reconnexion automatique s'il manque au moins un identifiant
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
             // console.log("userIds:", userIds)
@@ -467,7 +460,7 @@ export default function App() {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
         applyConfigFromLocalStorage();
 
-        // Thème
+        // Gestion thème
         const handleOSThemeChange = () => {
             console.clear();
             consoleLogEDPLogo();
@@ -484,14 +477,14 @@ export default function App() {
         });
     }, []);
 
+    // Applique les informations du localStorage dès la première frame pour éviter certains bugs
     const isFirstFrame = useRef(true);
     if (isFirstFrame.current) {
         applyConfigFromLocalStorage();
         isFirstFrame.current = false;
     }
 
-    // TABLET / MOBILE LAYOUT
-
+    // TABLET / MOBILE LAYOUT MANAGEMENT
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
         const handleWindowResize = () => {
@@ -500,10 +493,8 @@ export default function App() {
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
 
-            // dezoom
-            // const computedStyle = getComputedStyle(document.documentElement);
+            // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
             if (window.innerWidth > 869 && window.innerWidth < 1250) {
-                // document.documentElement.style.zoom = window.innerWidth / 1250;
                 if (window.innerWidth >= 995) {
                     document.documentElement.style.zoom = (.2 / 170) * window.innerWidth - .47;
                 } else {
@@ -512,7 +503,6 @@ export default function App() {
 
                 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 if (isSafari) {
-                    // const newFontSize = ((15 / 848) * window.innerWidth + 28.5) / 100 * 16;
                     const newFontSize = (.125 / 170) * window.innerWidth - .294;
                     if (newFontSize < 8) {
                         document.documentElement.style.fontSize = "8px";
@@ -536,6 +526,7 @@ export default function App() {
         }
     }, []);
 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Data Functions                                                                                 //
@@ -544,13 +535,12 @@ export default function App() {
 
     function addNewGrade({value, coef, scale, name, type, subjectKey, periodKey}) {
         /** 
-         * 
+         * Ajoute une nouvelle note à l'utilisateur (simulation)
          * - value : valeur de la note
          * - coef : coefficient de la note
          * - scale : note maximum posible
          * - name : nom du devoir
          * - type : type de devoir (DS, DM, ...)
-         * 
          */
         const sortedGrades = getUserData("sortedGrades")
         sortedGrades[periodKey].subjects[subjectKey].grades.push({
@@ -607,6 +597,9 @@ export default function App() {
     }
 
     function sortGrades(grades, activeAccount) {
+        /**
+         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
+         */
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
         const generalAverageHistory = {}; // used for charts
@@ -939,11 +932,13 @@ export default function App() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function requireLogin() {
+        // Affiche la BottomSheet de reconnexion
         setIsLoggedIn(false);
         localStorage.setItem("token", "none");
     }
 
     function loginFromOldAuthInfo(token, accountsList) {
+        // En cas de rafraichissement de la page, recovery des informations à partir du token s'il n'a pas expiré
         if (!!token && token !== "none" && accountsList.length > 0) {
             console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
             getUserInfo(token, accountsList);
@@ -972,7 +967,8 @@ export default function App() {
         getUserInfo(fakeToken, fakeAccountsList)
     }
 
-    async function fetchLogin(username, password, keepLoggedIn, callback) {
+    async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
         // guest management
         if (username === "guest" && password === "secret") {
             fakeLogin();
@@ -985,18 +981,12 @@ export default function App() {
             isReLogin: false,
             uuid: 0
         }
-        // const payload = {
-        //     username,
-        //     password,
-        // }
+
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         const options = {
             body: "data=" + JSON.stringify(payload),
-            // body: JSON.stringify(payload),
             method: "POST",
-            // headers: myHeaders,
-            // redirect: 'follow'
         }
 
         const messages = {
@@ -1056,7 +1046,6 @@ export default function App() {
                     }
                     // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
                     if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
-                        // (JSON.stringify(accountsListState) !== JSON.stringify(accountsList))
                         resetUserData();
                     }
                     getUserInfo(token, accountsList);
@@ -1116,7 +1105,6 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     const oldTimeline = structuredClone(timeline);
                     oldTimeline[activeAccount] = response.data;
@@ -1313,12 +1301,13 @@ export default function App() {
         // suppression des paramètres locaux et globaux
         localStorage.removeItem("userSettings");
         localStorage.removeItem("keepLoggedIn");
+        // réinitialisation des States
         setTokenState("");
         setAccountsListState([]);
         resetUserData();
         setKeepLoggedIn(false);
         setIsLoggedIn(false);
-        // abort tous les fetch en cours
+        // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
         for (let controller of abortControllers.current) {
             controller.abort();
         }

@@ -21,6 +21,14 @@ export function areOccurenciesEqual(obj1, obj2) {
     return true;
 }
 
+export function createUserLists(accountNumber) {
+    const list = [];
+    for (let i = 0; i < accountNumber; i++) {
+        list.push(undefined);
+    }
+    return list;
+}
+
 export function getCurrentSchoolYear() {
     /**
      * return an array:

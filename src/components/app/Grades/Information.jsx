@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/functions";
+import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 

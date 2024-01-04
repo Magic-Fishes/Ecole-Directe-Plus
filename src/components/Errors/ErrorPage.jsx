@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { useRouteError } from "react-router-dom";
 import { AppContext } from "../../App";
 
-import { generateUUID, sendToWebhook } from "../../utils/functions";
+import { generateUUID, sendToWebhook } from "../../utils/utils";
 
 import Error404 from "./Error404";
 import "./ErrorPage.css";

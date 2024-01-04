@@ -5,7 +5,7 @@ import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../generic/PopUps/Tooltip";
-import { decrypt, encrypt } from "../../utils/functions"
+import { decrypt, encrypt } from "../../utils/utils"
 
 import AccountIcon from "../graphics/AccountIcon"
 import KeyIcon from "../graphics/KeyIcon"
