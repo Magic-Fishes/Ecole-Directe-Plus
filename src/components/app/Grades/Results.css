@@ -16,15 +16,8 @@
     scroll-padding: 20px;
 }
 
-.results #WIP-disclaimer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 100%;
-    max-width: 80%;
-    color: rgb(var(--text-color-alt));
+.results:has(svg) {
+    display: flex;
 }
 
 .grade-simulation-trigger {

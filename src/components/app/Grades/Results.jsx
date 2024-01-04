@@ -281,21 +281,20 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : sortedGrades && sortedGrades[selectedPeriod]
+                            : sortedGrades && sortedGrades[selectedPeriod] && false
                                 ? <Charts selectedPeriod={selectedPeriod} />
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}
-                                    viewBox="0 0 145 210"
-                                    style={{ width: "25%", margin: "100px 300px" }}
+                                    style={{ width: "100%", height: "100%", padding: "25px"}}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 >
-                                    <rect x="0" y="160" rx="10" ry="10" width="25" height="40" />
-                                    <rect x="30" y="145" rx="10" ry="10" width="25" height="55" />
-                                    <rect x="60" y="126" rx="10" ry="10" width="25" height="74" />
-                                    <rect x="90" y="80" rx="10" ry="10" width="25" height="120" />
-                                    <rect x="120" y="142" rx="10" ry="10" width="25" height="58" />
+                                    <rect x="0" y="70%" rx="10" ry="10" style={{ width: "18%", height: "30%", padding: "10px" }} />
+                                    <rect x="20%" y="65%" rx="10" ry="10" style={{ width: "18%", height: "45%", padding: "10px" }} />
+                                    <rect x="40%" y="46%" rx="10" ry="10" style={{ width: "18%", height: "64%", padding: "10px" }} />
+                                    <rect x="60%" y="10%" rx="10" ry="10" style={{ width: "18%", height: "90%", padding: "10px" }} />
+                                    <rect x="80%" y="52%" rx="10" ry="10" style={{ width: "18%", height: "48%", padding: "10px" }} />
                                 </ContentLoader>
                         }
                     </WindowContent>

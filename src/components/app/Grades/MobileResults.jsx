@@ -248,7 +248,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 })
 
                             : <div>
-                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
+                                <p id="WIP-disclaimer">Indisponible en format mobile</p>
                             </div>
                         }
                     </WindowContent>
