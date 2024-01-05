@@ -716,10 +716,10 @@ export default function App() {
                 newGrade.entryDate = new Date(grade.dateSaisie);
                 newGrade.coef = parseFloat(grade.coef);
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
-                newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = isNaN(parseFloat(grade.minClasse && grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
-                newGrade.classMax = isNaN(parseFloat(grade.maxClasse && grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
-                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse);
+                newGrade.value = isNaN(getGradeValue(grade.valeur)) ? "N/A" : getGradeValue(grade.valeur);
+                newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat( grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
+                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
