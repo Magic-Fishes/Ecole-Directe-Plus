@@ -42,9 +42,11 @@ export default function ErrorPage({ sardineInsolente }) {
                     add_data: error.additional_data,
                     location: (location.hostname + location.pathname),
                 }
-                sendToWebhook(sardineInsolente, report)
-                .then(() => setReportSent(true))
-                .catch((error) => setReportSent(error.toString()));
+                if (!reportSent) {
+                    sendToWebhook(sardineInsolente, report)
+                    .then(() => setReportSent(true))
+                    .catch((error) => setReportSent(error.toString()));
+                }
             }
         }
 
@@ -56,8 +58,8 @@ export default function ErrorPage({ sardineInsolente }) {
                     <i>{error.toString()}</i>
                 </p>
                 {typeof(reportSent) === "boolean"
-                    ? (reportSent ? <p>Rapport d'erreur envoyé avec succès.</p> : <p>Envoi du rapport d'erreur au support...</p>)
-                    : <p>Échec de l'envoi du rapport d'erreur : {reportSent}</p>
+                    ? (reportSent ? <p>Error report sent successfully.</p> : <p>Sending error report to support...</p>)
+                    : <p>Failed to send error report: {reportSent}</p>
                 }
             </div>
         );
