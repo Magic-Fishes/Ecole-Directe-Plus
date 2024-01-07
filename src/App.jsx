@@ -15,20 +15,16 @@ import "./App.css";
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
-import Feedback from "./components/Feedback/Feedback";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
-import { DOMNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
-import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils"
+import DOMNotification from "./components/generic/PopUps/Notification";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
+import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
 
-
-import guestGrades from "./data/grades.json";
-
-// import Lab from "./components/Lab/Lab";
-const Lab = lazy(() => import("./components/Lab/Lab"))
-const Museum = lazy(() => import("./components/Museum/Museum"));
-const UnsubscribeEmails = lazy(() => import("./components/UnsubscribeEmails/UnsubscribeEmails"));
+// CODE-SPLITTING - DYNAMIC IMPORTS
+const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab }}));
+const Museum = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Museum }}));
+const UnsubscribeEmails = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.UnsubscribeEmails }}));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -37,6 +33,7 @@ const Timetable = lazy(() => import("./components/app/CoreApp").then((module) =>
 const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
 const Settings = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Settings } }));
 const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
+const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback }}));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
 
@@ -1178,8 +1175,10 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    usersGrades[userId] = guestGrades.data;
-                    setGrades(usersGrades);
+                    import("./data/grades.json").then((module) => {
+                        usersGrades[userId] = module.data;
+                        setGrades(usersGrades);
+                    })
                 }
                 setTokenState((old) => (response?.token || old));
             })

@@ -14,7 +14,7 @@ import AppLoading from "../generic/Loading/AppLoading";
 import ShiningDiv from "../generic/CustomDivs/ShiningDiv";
 import Star from "../graphics/Star";
 import WalkingCanardman from "../graphics/WalkingCanardman"
-import { DOMNotification, useCreateNotification } from "../generic/PopUps/Notification"
+import { useCreateNotification } from "../generic/PopUps/Notification"
 import StoreCallToAction from "../generic/StoreCallToAction"
 import {
     BadgePlusInfo,
