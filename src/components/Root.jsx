@@ -115,6 +115,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // devChannel management
     useEffect(() => {
         function handleDevChannel() {
+            console.log("handleDevChannel")
             if (location.pathname === "/unsubscribe-emails" || location.hostname === "localhost" || !location.hostname) {
                 return 0;
             }
@@ -124,8 +125,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
                 console.log("url.href:", url.href)
                 console.log("isVerifiedOrigin:", isVerifiedOrigin);
-                if (isVerifiedOrigin) {
+                if (isVerifiedOrigin || isStandaloneApp) {
                     console.log("verified origin");
+                    entryURL.current = "/";
                     
                     if (window.location.hostname === "dev.ecole-directe.plus") {
                         globalSettings.isDevChannel.set(true);
@@ -134,7 +136,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     }
                     
                     navigate("/");
-                } else if (!isStandaloneApp) {
+                } else {
                     if (globalSettings.isDevChannel.value) {
                         if (window.location.hostname !== "dev.ecole-directe.plus") {
                             window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
@@ -144,19 +146,12 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                             window.location.href = "https://ecole-directe.plus/?verifiedOrigin=true";
                         }
                     }
-                } else {
-                    if (window.location.hostname === "dev.ecole-directe.plus") {
-                        globalSettings.isDevChannel.set(true);
-                    } else {
-                        globalSettings.isDevChannel.set(false);
-                    }
                 }
-
             }
         }
 
         handleDevChannel();
-    }, []);
+    }, [globalSettings.isDevChannel.value]);
 
 
     // filters management

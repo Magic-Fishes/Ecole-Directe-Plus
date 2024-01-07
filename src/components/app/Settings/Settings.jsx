@@ -46,7 +46,6 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
 
     const handleDevChannelSwitchingToggle = () => {
         globalSettings.isDevChannel.set(!globalSettings.isDevChannel.value);
-        refreshApp();
     }
 
     const handleSchoolYearChange = (newValue, side) => {
