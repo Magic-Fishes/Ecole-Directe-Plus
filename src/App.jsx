@@ -1471,7 +1471,7 @@ export default function App() {
                     path: "app",
                     children: [
                         {
-                            element: <Navigate to={`/app/${activeAccount}/account`} />,
+                            element: <Navigate to={`/app/${activeAccount}/account`} replace={true} />,
                             path: "account",
                         },
                         {
@@ -1479,7 +1479,7 @@ export default function App() {
                             path: ":userId/account"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/settings`} />,
+                            element: <Navigate to={`/app/${activeAccount}/settings`} replace={true} />,
                             path: "settings",
                         },
                         {
@@ -1487,11 +1487,11 @@ export default function App() {
                             path: ":userId/settings"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                            element: <Navigate to={`/app/${activeAccount}/dashboard`} replace={true} />,
                             path: ":userId",
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                            element: <Navigate to={`/app/${activeAccount}/dashboard`} replace={true} />,
                             path: "dashboard",
                         },
                         {
@@ -1499,7 +1499,7 @@ export default function App() {
                             path: ":userId/dashboard"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/grades`} />,
+                            element: <Navigate to={`/app/${activeAccount}/grades`} replace={true} />,
                             path: "grades"
                         },
                         {
@@ -1507,7 +1507,7 @@ export default function App() {
                             path: ":userId/grades"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/homeworks`} />,
+                            element: <Navigate to={`/app/${activeAccount}/homeworks`} replace={true} />,
                             path: "homeworks"
                         },
                         {
@@ -1515,7 +1515,7 @@ export default function App() {
                             path: ":userId/homeworks"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/timetable`} />,
+                            element: <Navigate to={`/app/${activeAccount}/timetable`} replace={true} />,
                             path: "timetable"
                         },
                         {
@@ -1523,7 +1523,7 @@ export default function App() {
                             path: ":userId/timetable"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/messaging`} />,
+                            element: <Navigate to={`/app/${activeAccount}/messaging`} replace={true} />,
                             path: "messaging"
                         },
                         {
