@@ -126,7 +126,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 console.log("isVerifiedOrigin:", isVerifiedOrigin);
                 if (isVerifiedOrigin || isStandaloneApp) {
                     console.log("verified origin");
-                    entryURL.current = "/";
+                    entryURL.current = window.location.origin;
                     
                     if (window.location.hostname === "dev.ecole-directe.plus") {
                         globalSettings.isDevChannel.set(true);
