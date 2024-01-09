@@ -578,6 +578,25 @@ export default function App() {
         changeUserData("sortedGrades", sortedGrades);
     }
 
+    function setDefaultPeriod(sortedGrades=getUserData("sortedGrades")) {
+        let currentPeriod = 0;
+        for (let periodCode in sortedGrades) {
+            if (Date.now() > sortedGrades[periodCode].endDate) {
+                if (currentPeriod < Object.keys(sortedGrades).length - 1) {
+                    currentPeriod++;
+                }
+            }
+        }
+        changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
+    }
+
+
+    useEffect(() => {
+        console.log("HERE")
+        console.log(getUserData("activePeriod"))
+    }, [getUserData("activePeriod")])
+
+
     function sortGrades(grades, activeAccount) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
@@ -834,6 +853,7 @@ export default function App() {
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
+        setDefaultPeriod(periods)
     }
 
 

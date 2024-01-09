@@ -1,7 +1,4 @@
-
 import { useState, useRef, useEffect } from "react";
-
-import Button from "../../generic/UserInputs/Button";
 
 import StreakScore from "./StreakScore";
 import Information from "./Information";
@@ -17,37 +14,13 @@ import {
 import "./Grades.css";
 
 export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
-    // States
-    const [selectedPeriod, setSelectedPeriod] = useState("");
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
-
-    const areGradesNew = useRef(true);
 
     const userData = useUserData();
 
+    const selectedPeriod = userData.get("activePeriod")
     const sortedGrades = userData.get("sortedGrades");
-    
-    useEffect(() => {
-        if (!sortedGrades) {
-            areGradesNew.current = true
-        } 
-    }, [activeAccount])
 
-    useEffect(() => {
-        if (sortedGrades && areGradesNew.current) { // We use areGradesNew to prevent the changement of selectedPeriod when we update sortedGrades in simulation  
-            let currentPeriod = 0;
-            for (let periodCode in sortedGrades) {
-                if (Date.now() > sortedGrades[periodCode].endDate) {
-                    if (currentPeriod < Object.keys(sortedGrades).length - 1) {
-                        currentPeriod++;
-                    }
-                }
-            }
-            setSelectedPeriod(Object.keys(sortedGrades)[currentPeriod]);
-            areGradesNew.current = false;
-        }
-    }, [sortedGrades])
-    
     // Behavior
     useEffect(() => {
         document.title = "Notes • Ecole Directe Plus";
@@ -58,13 +31,12 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
         if (isLoggedIn) {
             if (grades.length < 1 || grades[activeAccount] === undefined) {
                 fetchUserGrades(controller);
-            } else {
+            } else if (!sortedGrades) {
                 sortGrades(grades, activeAccount);
             }
         }
 
         return () => {
-            // console.log("controller.abort")
             controller.abort();
         }
     }, [grades, isLoggedIn, activeAccount]);
@@ -75,11 +47,6 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
             <WindowsContainer name="grades">
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
-                        {/* {console.log(sortedGrades)}
-                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount])}
-                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod])}
-                        {console.log(sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.streak)}
-                        {console.log((sortedGrades.length > 0 && sortedGrades[activeAccount] && sortedGrades[activeAccount][selectedPeriod]?.streak) ?? 0)} */}
                         <StreakScore streakScore={(sortedGrades && sortedGrades[selectedPeriod]?.streak) ?? 0} streakHighScore={(sortedGrades && sortedGrades[selectedPeriod]?.maxStreak) ?? 0} />
                         <Information sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                         <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
@@ -90,14 +57,14 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={setSelectedPeriod}
+                            setSelectedPeriod={value => {userData.set("activePeriod", value)}}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
                             : <Results
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={setSelectedPeriod}
+                            setSelectedPeriod={value => {userData.set("activePeriod", value)}}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
                         }
