@@ -281,6 +281,22 @@ export default function App() {
     }
 
     function useUserSettings(setting = "") {
+        /*
+            use as a hook like location
+            
+            EX :
+            userSettings = useUserSettings()
+            console.log(userSettings.get("displayTheme"))
+            > Value of displayTheme of current user
+
+
+            You can pass the setting you wan in arguments of useUserSettings
+
+            EX : 
+            userDisplayTheme = useUserSettings("displayTheme")
+            console.log(userDisplayTheme.get())
+            > Value of displayTheme of current user
+        */
         if (setting === "") {
             return {
                 set: changeUserSettings, // set((oldState) => newState = oldState)
@@ -295,6 +311,8 @@ export default function App() {
             }
         }
     }
+
+
 
     const globalSettings = {
         keepLoggedIn: {
@@ -958,7 +976,7 @@ export default function App() {
         // En cas de rafraichissement de la page, recovery des informations à partir du token s'il n'a pas expiré
         if (!!token && token !== "none" && accountsList.length > 0) {
             console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
-            getUserInfo(token, accountsList);
+            setUserInfo(token, accountsList);
             setIsLoggedIn(true);
         } else {
             console.log("NO ACCOUNTSLIST: LOGGED OUT");
@@ -981,7 +999,7 @@ export default function App() {
             },
         ];
         resetUserData()
-        getUserInfo(fakeToken, fakeAccountsList)
+        setUserInfo(fakeToken, fakeAccountsList)
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
@@ -1065,7 +1083,7 @@ export default function App() {
                     if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
                         resetUserData();
                     }
-                    getUserInfo(token, accountsList);
+                    setUserInfo(token, accountsList);
                     setIsLoggedIn(true);
                 } else {
                     // si ED renvoie une erreur
@@ -1285,7 +1303,7 @@ export default function App() {
 
     /* ################################ CONNEXION/DÉCONNEXION ################################ */
 
-    function getUserInfo(token, accountsList) {
+    function setUserInfo(token, accountsList) {
         console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
         setTokenState(token);
         setAccountsListState(accountsList);
