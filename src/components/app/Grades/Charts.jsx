@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef, useContext } from "react";
 // import { Chart } from 'chart.js';
+import { applyZoom } from "../../../utils/zoom";
 
 
 import "./Charts.css";
@@ -132,7 +133,7 @@ export default function Charts({ selectedPeriod }) {
                         {
                             type: "bar",
                             label: "Moyennes min et max de classe",
-                            data: subjectsComparativeInformation[selectedPeriod].map((subject) =>  [subject.minAverage, subject.maxAverage]),
+                            data: subjectsComparativeInformation[selectedPeriod].map((subject) => [subject.minAverage, subject.maxAverage]),
                             borderWidth: 2,
                             borderRadius: 7,
                             borderColor: 'rgb(53, 162, 235)',
@@ -235,11 +236,23 @@ export default function Charts({ selectedPeriod }) {
         }
     }
 
+    function registerPlugin() {
+        Chart.register({
+            id: "zoomCSS", // allow the chart interactions to take into account the CSS zoom
+            beforeEvent(chart, ctx) {
+                const event = ctx.event;
+                event.x = applyZoom(event.x);
+                event.y = applyZoom(event.y);
+            }
+        });
+    }
+
     const buildChart = () => {
         console.log("Building chart...");
         getChartData();
         const ctx = chartContainerRef.current.getContext("2d");
         Chart.defaults.color = actualDisplayTheme == "dark" ? "rgb(180, 180, 240)" : "rgb(76, 76, 184)";
+        registerPlugin();
         chart.current = new Chart(ctx, {
             data: chartData.current,
             options: {
@@ -261,7 +274,8 @@ export default function Charts({ selectedPeriod }) {
                         titleColor: actualDisplayTheme == "dark" ? "white" : "black",
                         bodyColor: actualDisplayTheme == "dark" ? "white" : "black",
                         footerColor: actualDisplayTheme == "dark" ? "white" : "black"
-                    }
+                    },
+                    zoomCSS: true
                 },
                 ...chartOptions.current
             }

@@ -26,6 +26,7 @@
     padding: 10px;
     border-radius: 12px;
     height: 2.25em;
+    width: 2.25em;
     opacity: 0.5;
     cursor: pointer;
     transition: 0.1s;
