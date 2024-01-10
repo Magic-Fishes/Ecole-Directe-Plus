@@ -28,9 +28,9 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Diverses autres améliorations d'expérience et de performance</li>
                     </ul>
                     <h3 className="sub-header">Divers</h3>
+                    <li>Rejoignez la communauté Ecole Directe Plus en accédant au <a href="https://discord.gg/AKAqXfTgvE" target="blank">serveur Discord</a></li>
                     <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
                     <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback</li>
-                    <li>Rejoignez la communauté Ecole Directe Plus en accédant au <a href="https://discord.gg/AKAqXfTgvE" target="blank">serveur Discord</a></li>
 
                     {/* <ul>
             v0.2.3
