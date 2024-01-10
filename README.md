@@ -43,6 +43,8 @@ Don't hesitate to take part into this project through the pull request page :<br
 [https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls](https://github.com/Magic-Fishes/Ecole-Directe-Plus/pulls)<br>
 We'd be glad to collaborate with you 🤝<br>
 
+Meet the Ecole Directe Plus community by joining the [Discord server](https://discord.gg/AKAqXfTgvE).
+
 ## Contributing
 
 Ecole Directe Plus is built on React. We use VITE development environment to work. Here is how to setup:

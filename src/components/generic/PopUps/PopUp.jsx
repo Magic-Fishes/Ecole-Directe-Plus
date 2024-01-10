@@ -5,7 +5,7 @@ import "./PopUp.css"
 
 const closingCooldown = 300; // milliseconds
 
-export default function PopUp({ type, onClose, externalClosing=false, children, ...props }) {
+export default function PopUp({ type, onClose, externalClosing = false, defaultClosingCross = true, children, className = "", ...props }) {
     const [isClosing, setIsClosing] = useState(false);
 
     const PopUpRef = useRef(null);
@@ -32,7 +32,7 @@ export default function PopUp({ type, onClose, externalClosing=false, children, 
             if (element !== PopUpRef.current && !PopUpRef.current.contains(element) && element.tabIndex !== -1) {
                 defaultTabIndex.push(element.tabIndex);
                 // tout tabIndex négatif empêche le focus, on utilise le -2 pour reconnaître les items dont le focus est désactivé
-                element.tabIndex = -2; 
+                element.tabIndex = -2;
             }
         });
 
@@ -59,8 +59,11 @@ export default function PopUp({ type, onClose, externalClosing=false, children, 
     }, [externalClosing])
 
     return (
-        <div className={isClosing ? "closing" : ""} id="pop-up" onClick={handleClose} {...props}>
+        <div className={(isClosing ? "closing " : "") + className} id="pop-up" onClick={handleClose} {...props}>
             <div ref={PopUpRef} className={(isClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* Cancel clic detection by the background if user clic on pop-up */}
+                {defaultClosingCross
+                    ? <div className="default-closing-cross" onClick={handleClose} onKeyDown={(event) => event.key === "Enter" && handleClose() } role="button" tabIndex={0}>✕</div>
+                    : null}
                 {children}
             </div>
         </div>

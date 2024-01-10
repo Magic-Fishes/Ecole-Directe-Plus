@@ -16,7 +16,7 @@ import AtWhite from "../graphics/AtWhite"
 import "./FeedbackForm.css";
 
 
-export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
+export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() => {} }) {
     const allowedExtensions = /(\jpg|\jpeg|\png|\bmp|\gif|\tif|\webp|\heic|\pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche ; moi nn plus tqt
     const feedbackTips = [
         `### Description du problème :
@@ -283,7 +283,7 @@ export default function FeedbackForm({ activeUser, onSubmit=() => {} }) {
         }
         let color = colors[selectedFeedbackType];
         fetch(
-            "https://discord.com/api/webhooks/1097129769776185425/CSxioBHMy0f4IUA1ba8klG35Q2bnNUWdtTV6H1POu5qVFOCyZ-k0GTVg2ZMExAtDFIW8",
+            carpeConviviale,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

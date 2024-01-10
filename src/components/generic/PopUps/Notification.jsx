@@ -12,7 +12,7 @@ export function useCreateNotification() {
     return addNotification
 }
 
-export function DOMNotification({ children }) {
+export default function DOMNotification({ children }) {
     const [notificationList, setNotificationList] = useState([])
 
     const currentNotificationId = useRef(0);

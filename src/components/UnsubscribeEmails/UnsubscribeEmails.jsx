@@ -8,7 +8,7 @@ import LoadingAnimation from "../graphics/LoadingAnimation";
 import { Link } from "react-router-dom";
 
 
-export default function UnsubscribeEmails({ activeUser }) {
+export default function UnsubscribeEmails({ activeUser, thonFrustre }) {
     const [isUnsubscribed, setIsUnsubscribed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -22,7 +22,7 @@ export default function UnsubscribeEmails({ activeUser }) {
         const options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: "numeric" }
         const readableDate = date.toLocaleDateString('fr-FR', options);
         fetch(
-            "https://discord.com/api/webhooks/1165407472887021669/UvxYQnWqRz6UlooTwo83oL3E0MSspxcguYHYYkmD98PjlucXuZ8XMIsmIxNAmXL9uCk8",
+            thonFrustre,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

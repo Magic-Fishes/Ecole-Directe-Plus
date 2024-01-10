@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import BottomSheet from "../generic/PopUps/BottomSheet";
 import LoginForm from "./LoginForm";
-import { decrypt, encrypt } from "../../utils/functions";
+import { decrypt, encrypt } from "../../utils/utils";
 import "./LoginBottomSheet.css";
 
 // const lsIdName = encrypt("userIds")

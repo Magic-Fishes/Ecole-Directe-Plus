@@ -17,11 +17,11 @@ a.grade.selectable {
     cursor: pointer;
 }
 
-a.grade.not-significant {
-    /* opacity: .5 !important; */
-}
+/* a.grade.not-significant {
+    opacity: .5 !important;
+} */
 
-/* This part has for goal to replace the opacity: 0.5 and make the opacity not heritable */
+/* This part has for goal to replace the opacity: 0.5 and make the opacity not inheritable */
 
 a.grade.selectable.selected.not-significant {
     border-color: rgba(var(--text-color-main), .35);
@@ -31,11 +31,9 @@ a.grade.selectable.not-significant:is(:hover, :focus-visible) {
     background-color: rgba(var(--text-color-main), .05);
 }
 
-a.grade.selectable.not-significant :is(span, sub, sup){
+a.grade.selectable.not-significant * {
     color: rgba(var(--text-color-main), 0.5);
 }
-
-
 
 
 
@@ -189,18 +187,19 @@ a.grade.streak-grade.maybe-streak .grade-container {
     right: 15px;
     height: 0;
     opacity: 0;
-    transition: .2s;
+    transition: .1s;
 }
 
 :is(a:hover, a.selected) .delete-grade-button {
     opacity: 1;
-    top: -5px;
-    right: -5px;
-    height: 13px;
+    top: -7px;
+    right: -7px;
+    height: 20px;
 }
 
 .delete-grade-button path {
-    transition: .2s;
+    fill: rgb(var(--text-color-error));
+    transition: .1s;
 }
 
 a .delete-grade-button:hover path {

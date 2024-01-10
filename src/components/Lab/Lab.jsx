@@ -14,7 +14,7 @@ import AppLoading from "../generic/Loading/AppLoading";
 import ShiningDiv from "../generic/CustomDivs/ShiningDiv";
 import Star from "../graphics/Star";
 import WalkingCanardman from "../graphics/WalkingCanardman"
-import { DOMNotification, useCreateNotification } from "../generic/PopUps/Notification"
+import { useCreateNotification } from "../generic/PopUps/Notification"
 import StoreCallToAction from "../generic/StoreCallToAction"
 import {
     BadgePlusInfo,
@@ -29,6 +29,7 @@ import InfoPopUp from "../generic/PopUps/InfoPopUp";
 import PopUp from "../generic/PopUps/PopUp";
 import NumberInput from "../generic/UserInputs/NumberInput";
 
+import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 
 import "./Lab.css";
 
@@ -47,6 +48,7 @@ export default function Lab({ fetchGrades }) {
     const [number2, setNumber2] = useState(0)
     const [formNumber2, setFormNumber2] = useState(0)
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+    const [displayProxyErrorNotification, setDisplayProxyErrorNotification] = useState(false);
 
     // Behavior
     useEffect(() => {
@@ -230,7 +232,9 @@ export default function Lab({ fetchGrades }) {
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
             
+            <div style={{ height: "100px" }}></div>
             
+            <h3>New PopUp</h3>
             <Button onClick={() => { setIsInputPopUpOpen(true) }} value="number1" />
             {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
                 <NumberInput min={0} max={20} value={number1} onChange={setNumber1} step={0.1}/>
@@ -245,11 +249,12 @@ export default function Lab({ fetchGrades }) {
                     <Button buttonType="submit"/>
                 </form>
             </PopUp>}
-            {number2}
-            {console.log(number1)}
-            {console.log(number1+100)}
-            {console.log(typeof number1)}
             
+            <h3>ProxyErrorNotification</h3>
+            <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
+            {displayProxyErrorNotification && <ProxyErrorNotification />}
+
+
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
         </div>

@@ -11,7 +11,7 @@ export function getGradeValue(gradeValue) {
         return "Comp"
     }
 
-    return parseFloat(gradeValue.replace(",", "."));
+    return parseFloat(gradeValue?.replace(",", "."));
 }
 
 export function calcAverage(list) {

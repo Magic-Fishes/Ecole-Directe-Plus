@@ -450,9 +450,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
 
             targetElement.onfullscreenchange = handleFullscreenChange;
-            targetElement.requestFullscreen(handleFullscreenChange);
-            if ("webkitRequestFullScreen" in targetElement) {
+            if ("requestFullscreen" in targetElement) {
+                targetElement.requestFullscreen(handleFullscreenChange);
+            } else if ("webkitRequestFullScreen" in targetElement) {
                 targetElement.webkitRequestFullScreen(handleFullscreenChange);
+            } else {
+                return false;
             }
 
 

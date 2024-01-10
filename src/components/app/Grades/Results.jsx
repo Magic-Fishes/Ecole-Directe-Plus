@@ -189,7 +189,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                     )
                                                                 })}
-                                                                <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(idx) }}/>
+                                                                <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(idx) }} role="button" tabIndex={0} onKeyDown={(event) => event.key === "Enter" && openGradeSimulation(idx) } />
                                                                 {el.grades.filter(el => !el.isReal).map((grade) => {
                                                                     return (
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
@@ -286,29 +286,29 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}
-                                    viewBox="0 0 145 210"
-                                    style={{ width: "25%", margin: "100px 300px" }}
+                                    style={{ width: "100%", height: "100%", padding: "25px"}}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 >
-                                    <rect x="0" y="160" rx="10" ry="10" width="25" height="40" />
-                                    <rect x="30" y="145" rx="10" ry="10" width="25" height="55" />
-                                    <rect x="60" y="126" rx="10" ry="10" width="25" height="74" />
-                                    <rect x="90" y="80" rx="10" ry="10" width="25" height="120" />
-                                    <rect x="120" y="142" rx="10" ry="10" width="25" height="58" />
+                                    <rect x="0" y="70%" rx="10" ry="10" style={{ width: "18%", height: "30%", padding: "10px" }} />
+                                    <rect x="20%" y="65%" rx="10" ry="10" style={{ width: "18%", height: "45%", padding: "10px" }} />
+                                    <rect x="40%" y="46%" rx="10" ry="10" style={{ width: "18%", height: "64%", padding: "10px" }} />
+                                    <rect x="60%" y="10%" rx="10" ry="10" style={{ width: "18%", height: "90%", padding: "10px" }} />
+                                    <rect x="80%" y="52%" rx="10" ry="10" style={{ width: "18%", height: "48%", padding: "10px" }} />
                                 </ContentLoader>
                         }
                     </WindowContent>
                 </Window>
             </MoveableContainer>
-            {gradeSimulationPopUp && <PopUp onClose={() => {setGradeSimulationPopUp(false)}} externalClosing={!gradeSimulationPopUpClosing}>
-
+            {gradeSimulationPopUp && <PopUp className="grade-simulation-pop-up" onClose={() => {setGradeSimulationPopUp(false)}} externalClosing={!gradeSimulationPopUpClosing}>
                 <form id="SUN-form" onSubmit={(e) => { e.preventDefault();addNewGrade(gradeSimulationSettings, selectedPeriod); closeSimulationPopUp() }} noValidate> {/* On utilise le noValidate pour éviter que les navigateurs valident pas le formulaire quand le number input contient un 10.01 au lieu d'un 10 parcequ'on a mis le step à 1 */}
-                    <h2>Simulez une note</h2>
-                    <p>Cette note disparaitra lorsque vous quitterez ou rechargerez Ecole Directe Plus</p>
-                    <div className="grade-simulation-field">Note : <NumberInput className="simulation-input" min={0} max={1000} value={gradeSimulationSettings.value} onChange={value => {changeGradeSimulationSettings("value", value)}}/>/<NumberInput className="simulation-input" min={1} max={1000} value={gradeSimulationSettings.scale} onChange={value => {changeGradeSimulationSettings("scale", value)}}/></div>
-                    <div className="grade-simulation-field">Coefficient : <NumberInput className="simulation-input" min={0.1} max={100} step={0.1} value={gradeSimulationSettings.coef} onChange={value => {changeGradeSimulationSettings("coef", value)}}/></div>
-                    <div className="grade-simulation-buttons"><Button className="close simulation-form-button" value="fermer" onClick={closeSimulationPopUp}/><Button className="submit simulation-form-button" value="valider" type="submit"/></div>
+                    <div className="grade-simulation-wrapper">
+                        <h2>Simuler une note</h2>
+                        <div className="grade-simulation-field">Note : <NumberInput className="simulation-input" min={0} max={1000} value={gradeSimulationSettings.value} onChange={value => {changeGradeSimulationSettings("value", value)}} displayArrowsControllers={false} />/<NumberInput className="simulation-input" min={1} max={1000} value={gradeSimulationSettings.scale} onChange={value => {changeGradeSimulationSettings("scale", value)}} displayArrowsControllers={false} /></div>
+                        <div className="grade-simulation-field">Coefficient : <NumberInput className="simulation-input" min={0.1} max={100} step={0.1} value={gradeSimulationSettings.coef} onChange={value => {changeGradeSimulationSettings("coef", value)}} displayArrowsControllers={false} /></div>
+                        <p>Cette note disparaîtra au rechargement de la page</p>
+                    </div>
+                    <div className="grade-simulation-buttons"><Button className="close simulation-form-button" value="Annuler" onClick={closeSimulationPopUp}/><Button className="submit simulation-form-button" value="Valider" type="submit"/></div>
                 </form>
             </PopUp>}
         </MoveableContainer>

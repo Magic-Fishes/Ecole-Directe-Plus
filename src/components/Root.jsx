@@ -4,10 +4,11 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
+import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade, proxyError }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -73,6 +74,8 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 return 0;
             } else if (parsedOldVersion <= 22) { // v0.2.2
                 return 0;
+            } else if (parsedOldVersion <= 23) { // v0.2.3
+                return 0;
             } else {
                 localStorage.clear();
             }
@@ -112,7 +115,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // devChannel management
     useEffect(() => {
         function handleDevChannel() {
-            if (location.pathname === "/unsubscribe-emails" || location.hostname === "localhost") {
+            if (location.pathname === "/unsubscribe-emails" || window.location.hostname === "localhost" || !window.location.hostname) {
                 return 0;
             }
             if (process.env.NODE_ENV !== "development") {
@@ -121,8 +124,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 const isVerifiedOrigin = Boolean(params.get("verifiedOrigin"));
                 console.log("url.href:", url.href)
                 console.log("isVerifiedOrigin:", isVerifiedOrigin);
-                if (isVerifiedOrigin) {
+                if (isVerifiedOrigin || isStandaloneApp) {
                     console.log("verified origin");
+                    entryURL.current = window.location.origin;
                     
                     if (window.location.hostname === "dev.ecole-directe.plus") {
                         globalSettings.isDevChannel.set(true);
@@ -131,7 +135,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     }
                     
                     navigate("/");
-                } else if (!isStandaloneApp) {
+                } else {
                     if (globalSettings.isDevChannel.value) {
                         if (window.location.hostname !== "dev.ecole-directe.plus") {
                             window.location.href = "https://dev.ecole-directe.plus/?verifiedOrigin=true";
@@ -141,19 +145,12 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                             window.location.href = "https://ecole-directe.plus/?verifiedOrigin=true";
                         }
                     }
-                } else {
-                    if (window.location.hostname === "dev.ecole-directe.plus") {
-                        globalSettings.isDevChannel.set(true);
-                    } else {
-                        globalSettings.isDevChannel.set(false);
-                    }
                 }
-
             }
         }
 
         handleDevChannel();
-    }, []);
+    }, [globalSettings.isDevChannel.value]);
 
 
     // filters management
@@ -412,6 +409,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
+            {proxyError && <ProxyErrorNotification />}
             <Outlet />
         </>
     );

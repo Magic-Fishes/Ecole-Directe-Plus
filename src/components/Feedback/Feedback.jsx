@@ -6,7 +6,7 @@ import FeedbackForm from "./FeedbackForm"
 import "./Feedback.css";
 
 
-export default function Feedback({ activeUser, isTabletLayout }) {
+export default function Feedback({ activeUser, carpeConviviale, isTabletLayout }) {
     const navigate = useNavigate();
 
     const navigateBack = () => {
@@ -25,7 +25,7 @@ export default function Feedback({ activeUser, isTabletLayout }) {
                     {isTabletLayout && <BackArrow id="feedback-back-arrow" onClick={navigateBack} />}
                     <h1 className={isTabletLayout && "tablet-layout"} >Faire un retour</h1>
                 </div>
-                <FeedbackForm activeUser={activeUser} />
+                <FeedbackForm activeUser={activeUser} carpeConviviale={carpeConviviale} />
             </div>
         </div>
     )

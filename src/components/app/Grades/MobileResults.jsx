@@ -34,6 +34,12 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
         }
     }, [location, sortedGrades]);
 
+    useEffect(() => {
+        if (isTabletLayout && selectedDisplayType === "Graphiques") {
+            setSelectedDisplayType("Évaluations");
+        }
+    }, [isTabletLayout])
+
     return (
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} {...props}>
             {!isTabletLayout ? <MoveableContainer style={{ display: "flex", flexFlow: "column nowrap", gap: "20px" }} >
@@ -46,7 +52,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         ? <Tabs contentLoader={sortedGrades === undefined} tabs={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedTabs={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
                         : <div className="results-options-container">
                             <DropDownMenu id="periods-ddm" name="periods" options={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedOptions={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} />
-                            <DropDownMenu id="display-type-ddm" name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
+                            {/* <DropDownMenu id="display-type-ddm" name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} /> */}
                         </div>
                     }
                 </MoveableContainer>
@@ -242,7 +248,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 })
 
                             : <div>
-                                <p id="WIP-disclaimer">En cours de développement... (Bientôt disponible)</p>
+                                <p id="WIP-disclaimer">Indisponible en format mobile</p>
                             </div>
                         }
                     </WindowContent>

@@ -8,24 +8,23 @@ import {
     RouterProvider
 } from "react-router-dom";
 
+import { sendToWebhook } from "./utils/utils";
+
 import "./App.css";
 
 import Root from "./components/Root";
 import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
-import Feedback from "./components/Feedback/Feedback";
 import Canardman from "./components/Canardman/Canardman";
-import Lab from "./components/Lab/Lab";
 import AppLoading from "./components/generic/Loading/AppLoading";
-import { DOMNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools"
-import { areOccurenciesEqual, getCurrentSchoolYear, encrypt, decrypt } from "./utils/functions"
+import DOMNotification from "./components/generic/PopUps/Notification";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
+import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
 
-
-import guestGrades from "./data/grades.json";
-
-const Museum = lazy(() => import("./components/Museum/Museum"));
-const UnsubscribeEmails = lazy(() => import("./components/UnsubscribeEmails/UnsubscribeEmails"));
+// CODE-SPLITTING - DYNAMIC IMPORTS
+const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab }}));
+const Museum = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Museum }}));
+const UnsubscribeEmails = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.UnsubscribeEmails }}));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -34,6 +33,7 @@ const Timetable = lazy(() => import("./components/app/CoreApp").then((module) =>
 const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
 const Settings = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Settings } }));
 const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
+const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback }}));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
 
@@ -65,8 +65,14 @@ function consoleLogEDPLogo() {
 }
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.2.3";
+const currentEDPVersion = "0.2.4";
 const apiVersion = "4.46.0";
+
+// secret webhooks
+const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
+const sardineInsolente = "SARDINE_INSOLENTE_WEBHOOK_URL";
+const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
+
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
@@ -100,20 +106,18 @@ const defaultSettings = {
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
-
-function createUserLists(accountNumber) {
-    const list = [];
-    for (let i = 0; i < accountNumber; i++) {
-        list.push(undefined);
-    }
-    return list;
-}
-
+// get data from localstorage
 const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
-const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
+const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
-
+const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
+let userIdsFromLs;
+if (keepLoggedInFromLs) {
+    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
+} else {
+    userIdsFromLs = {};
+}
 
 function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
@@ -130,7 +134,7 @@ function initSettings(accountList) {
     // comment ajouter un setting :
     // userSettings ici ; defaultSettings
     const userSettings = [];
-    for (let i = 0; i < (accountList.length || 1); i++) {//Si au login, il y a aucun compte d'enregistré 'ce qui arrive souvent sur la page login bah on considère qu'il y a un seul compte pour pas que les displayTheme et compagnie fasse un AVC et donc soit il y a accountList.length soit il y a 1
+    for (let i = 0; i < (accountList?.length || 1); i++) { //Si au login, il y a aucun compte d'enregistré on considère qu'il y a un seul compte
         userSettings.push({
             displayTheme: {
                 value: getSetting("displayTheme", i),
@@ -199,49 +203,42 @@ function initData(length) {
     }))
 }
 
-const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
-let userIdsFromLs;
-if (keepLoggedInFromLs) {
-    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
-} else {
-    userIdsFromLs = {};
-}
-
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 
 export default function App() {
     // global account data
-    const [tokenState, setTokenState] = useState(tokenFromLs);
-    const [accountsListState, setAccountsListState] = useState(accountListFromLs);
-    const [userIds, setUserIds] = useState(userIdsFromLs);
+    const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
+    const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
+    const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [activeAccount, setActiveAccount] = useState(oldActiveAccount);
-    const [keepLoggedIn, setKeepLoggedIn] = useState(/*() => {*/getSetting("keepLoggedIn", activeAccount, true)/*}*/);
+    const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
+    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
     
     // user settings
-    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs));
-    const [shareSettings, setShareSettings] = useState(/*() =>{*/getSetting("shareSettings", activeAccount, true)/*}*/);
-    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true));
+    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
+    const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
+    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true)); // canal dev: redirige vers l'URL dev.ecole-directe.plus où on déploie beaucoup plus régulièrement les mises à jour, mais qui peut être un peu instable
 
-    // user data
+    // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [grades, setGrades] = useState([]);
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
     
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
-    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
+    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
-    const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches));
+    const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
+    const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
     
     // diverse
-    const abortControllers = useRef([]);
+    const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
-    const actualDisplayTheme = getActualDisplayTheme();
+    const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,9 +283,9 @@ export default function App() {
     function useUserSettings(setting = "") {
         if (setting === "") {
             return {
-                set: changeUserSettings, // dcp ça c'est la fonction de set qui marche avec les setState((oldState) => newState) (vu que c'est un objet pas trop le choix)
-                get: getUserSettingValue, // ça c'est la fonction pour get la value (tu peux l'utiliser dans les useEffect en mode useEffet(() => {}, [setting.get(settingName)]) et franchement les useEffect avaient l'air assez restreint sur ce qu'on pouvait mettre à la fin donc bonne surprise sinon ca aurait été un enfer)
-                object: getUserSettingObject, // Et ça c'est pour get tout l'objet du setting prcq desfois tu peux avoir besoin des autres caractéristiques du setting(surtout dans Setting.jsx pour les min max et les différent choix de displayMode par exemple)
+                set: changeUserSettings, // set((oldState) => newState = oldState)
+                get: getUserSettingValue, // get the value
+                object: getUserSettingObject, // get the entire object
             }
         } else {
             return {
@@ -339,45 +336,71 @@ export default function App() {
         isDevChannel])
 
     useEffect(() => {
+        // handle storing into localStorage
+        if (userSettings?.length > 0) {
+            const lsUserSettings = [];
+            for (let i = 0; i < userSettings.length; i++) {
+                lsUserSettings[i] = {};
+                for (let n in userSettings[i]) {
+                    lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
+                }
+            }
+            localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
+        }
+    }, [userSettings]);
+
+    useEffect(() => {
+        if (tokenState !== "") {
+            localStorage.setItem("token", tokenState);
+        }
+    }, [tokenState]);
+    
+    useEffect(() => {
+        if (accountsListState?.length > 0) {
+            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
+        }
+    }, [accountsListState]);
+    
+    useEffect(() => {
+        const handleStorageChange = () => {
+            // logout if the user has logout in any tab
+            if (accountsListState?.length > 0 && localStorage.getItem("accountsList") === null) {
+                logout();
+                return 0;
+            }
+            // handle getting from localStorage if it changes
+            applyConfigFromLocalStorage();
+            if (accountsListState?.length > 0) {
+                const newSettings = initSettings(accountsListState)
+                if (!areOccurenciesEqual(newSettings, userSettings)) {
+                    setUserSettings(newSettings);
+                }
+            }
+        }
+        
+        const timeoutHandleStorageChange = () => {
+            setTimeout(() => handleStorageChange(), 0); // timeout to prevent issues due to react async behavior
+        }
+        
+        window.addEventListener("storage", timeoutHandleStorageChange)
+
+        return (() => {
+            window.removeEventListener("storage", timeoutHandleStorageChange);
+        });
+    }, [accountsListState, userSettings, tokenState]);
+
+
+    useEffect(() => {
         if (shareSettings) {
             syncSettings();
         }
     }, [shareSettings])
-
-    useEffect(() => {
-
-        // handle storing into localStorage
-
-        const lsUserSettings = [];
-        for (let i = 0; i < accountsListState.length; i++) {
-            lsUserSettings[i] = {};
-            for (let n in userSettings[i]) {
-                lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
-            }
-        }
-        localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
-
-        // handle getting from localStorage if it changes
-
-        const handleStorageChange = () => {
-            applyConfigFromLocalStorage();
-            const newLsSettings = initSettings(accountsListState)
-            if (!areOccurenciesEqual(newLsSettings, userSettings)) {
-                setUserSettings(newLsSettings);
-            }
-        }
-        window.addEventListener("storage", handleStorageChange)
-
-        return (() => {
-            window.removeEventListener("storage", handleStorageChange);
-        });
-    }, [userSettings]);
-
+    
     useEffect(() => {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
-    // fonctions pour modifier le userData
+    // fonctions de type utils pour modifier le userData
     function changeUserData(data, value) {
         setUserData((oldData) => {
             const newData = [...oldData];
@@ -390,25 +413,13 @@ export default function App() {
     }
 
     function getUserData(data) {
-        // return userData && userData[activeAccount] && userData[activeAccount][data]
         return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
     
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
-    
-    
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-    
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
 
+
+    // gestion de la désactivation automatique du "rester connecté"
     useEffect(() => {
         if (!keepLoggedIn) {
             localStorage.removeItem(lsIdName);
@@ -419,27 +430,34 @@ export default function App() {
         }
     }, [keepLoggedIn]);
 
+    // réapplique les informations sauvegardées dans le localStorage (certaines ont déjà été appliquées à l'initialisation des States)
     function applyConfigFromLocalStorage() {
         // informations de connexion
         const token = localStorage.getItem("token");
-        if (token && token !== "none") setTokenState(token);
+        if (token && token !== "none" && token !== tokenState) {
+            setTokenState(token);
+        }
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
-        if (accountsList && accountsList.length > 0) setAccountsListState(accountsList);
+        console.log("accountsList:", accountsList)
+        if (accountsList && accountsList.length > 0 && !areOccurenciesEqual(accountsList, accountsListState)) {
+            setAccountsListState(accountsList);
+        }
     }
 
+    // sécurité qui empêche la reconnexion automatique s'il manque au moins un identifiant
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
             // console.log("userIds:", userIds)
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }
-    }, [userIds])
+    }, [userIds]);
 
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
         applyConfigFromLocalStorage();
 
-        // Thème
+        // Gestion thème
         const handleOSThemeChange = () => {
             console.clear();
             consoleLogEDPLogo();
@@ -456,14 +474,14 @@ export default function App() {
         });
     }, []);
 
+    // Applique les informations du localStorage dès la première frame pour éviter certains bugs
     const isFirstFrame = useRef(true);
     if (isFirstFrame.current) {
         applyConfigFromLocalStorage();
         isFirstFrame.current = false;
     }
 
-    // TABLET / MOBILE LAYOUT
-
+    // TABLET / MOBILE LAYOUT MANAGEMENT
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
         const handleWindowResize = () => {
@@ -472,10 +490,8 @@ export default function App() {
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
 
-            // dezoom
-            // const computedStyle = getComputedStyle(document.documentElement);
+            // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
             if (window.innerWidth > 869 && window.innerWidth < 1250) {
-                // document.documentElement.style.zoom = window.innerWidth / 1250;
                 if (window.innerWidth >= 995) {
                     document.documentElement.style.zoom = (.2 / 170) * window.innerWidth - .47;
                 } else {
@@ -484,7 +500,6 @@ export default function App() {
 
                 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 if (isSafari) {
-                    // const newFontSize = ((15 / 848) * window.innerWidth + 28.5) / 100 * 16;
                     const newFontSize = (.125 / 170) * window.innerWidth - .294;
                     if (newFontSize < 8) {
                         document.documentElement.style.fontSize = "8px";
@@ -508,6 +523,7 @@ export default function App() {
         }
     }, []);
 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Data Functions                                                                                 //
@@ -516,13 +532,12 @@ export default function App() {
 
     function addNewGrade({value, coef, scale, name, type, subjectKey, periodKey}) {
         /** 
-         * 
+         * Ajoute une nouvelle note à l'utilisateur (simulation)
          * - value : valeur de la note
          * - coef : coefficient de la note
          * - scale : note maximum posible
          * - name : nom du devoir
          * - type : type de devoir (DS, DM, ...)
-         * 
          */
         const sortedGrades = getUserData("sortedGrades")
         sortedGrades[periodKey].subjects[subjectKey].grades.push({
@@ -598,10 +613,14 @@ export default function App() {
 
 
     function sortGrades(grades, activeAccount) {
+        /**
+         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
+         */
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
-        const generalAverageHistory = {};
-        const streakScoreHistory = {};
+        const generalAverageHistory = {}; // used for charts
+        const streakScoreHistory = {}; // used for charts
+        const subjectsComparativeInformation = {};
         const totalBadges = {
             "star": 0,
             "bestStudent": 0,
@@ -614,6 +633,8 @@ export default function App() {
             for (let period of periodsFromJson) {
                 if (period) {
                     const newPeriod = {};
+                    subjectsComparativeInformation[period.codePeriode] = [];
+
                     newPeriod.streak = 0;
                     newPeriod.maxStreak = 0;
                     newPeriod.name = period.periode;
@@ -656,6 +677,12 @@ export default function App() {
                             meh: 0,
                         }
                         newPeriod.subjects[subjectCode] = newSubject;
+                        subjectsComparativeInformation[period.codePeriode].push({
+                            subjectFullname: newSubject.name,
+                            classAverage: newSubject.classAverage,
+                            minAverage: newSubject.minAverage,
+                            maxAverage: newSubject.maxAverage
+                        });
                     }
                     periods[period.codePeriode] = newPeriod;
                     generalAverageHistory[period.codePeriode] = {generalAverages: [], dates: []};
@@ -705,10 +732,10 @@ export default function App() {
                 newGrade.entryDate = new Date(grade.dateSaisie);
                 newGrade.coef = parseFloat(grade.coef);
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
-                newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = isNaN(parseFloat(grade.minClasse && grade.minClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse.replace(",", "."));
-                newGrade.classMax = isNaN(parseFloat(grade.maxClasse && grade.maxClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse.replace(",", "."));
-                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse);
+                newGrade.value = isNaN(getGradeValue(grade.valeur)) ? "N/A" : getGradeValue(grade.valeur);
+                newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat( grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
+                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
@@ -767,6 +794,7 @@ export default function App() {
                 streakScoreHistory[periodCode].push(periods[periodCode].streak);
 
                 periods[periodCode].subjects[subjectCode].average = average;
+
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
                     const categoryAverage = calcCategoryAverage(periods[periodCode], category);
@@ -848,10 +876,28 @@ export default function App() {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
 
+        // add the average of all subjects a special type of chart
+        for (const period in periods) {
+            for (const subject in periods[period].subjects) {
+                for (const subjectID in subjectsComparativeInformation[period]) {
+                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
+                        const newAverage = periods[period].subjects[subject].average;
+                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
+                            subjectsComparativeInformation[period].splice(subjectID, 1);
+                            break;
+                        }
+                        subjectsComparativeInformation[period][subjectID].average = newAverage;
+                        break;
+                    }
+                }
+            }
+        }
+
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
+        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
         setDefaultPeriod(periods)
     }
@@ -903,11 +949,13 @@ export default function App() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function requireLogin() {
+        // Affiche la BottomSheet de reconnexion
         setIsLoggedIn(false);
         localStorage.setItem("token", "none");
     }
 
     function loginFromOldAuthInfo(token, accountsList) {
+        // En cas de rafraichissement de la page, recovery des informations à partir du token s'il n'a pas expiré
         if (!!token && token !== "none" && accountsList.length > 0) {
             console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
             getUserInfo(token, accountsList);
@@ -936,7 +984,8 @@ export default function App() {
         getUserInfo(fakeToken, fakeAccountsList)
     }
 
-    async function fetchLogin(username, password, keepLoggedIn, callback) {
+    async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
         // guest management
         if (username === "guest" && password === "secret") {
             fakeLogin();
@@ -949,18 +998,12 @@ export default function App() {
             isReLogin: false,
             uuid: 0
         }
-        // const payload = {
-        //     username,
-        //     password,
-        // }
+
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         const options = {
             body: "data=" + JSON.stringify(payload),
-            // body: JSON.stringify(payload),
             method: "POST",
-            // headers: myHeaders,
-            // redirect: 'follow'
         }
 
         const messages = {
@@ -968,9 +1011,9 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-        // fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
@@ -1020,7 +1063,6 @@ export default function App() {
                     }
                     // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
                     if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
-                        // (JSON.stringify(accountsListState) !== JSON.stringify(accountsList))
                         resetUserData();
                     }
                     getUserInfo(token, accountsList);
@@ -1032,20 +1074,6 @@ export default function App() {
                         messages.submitErrorMessage = referencedErrors[statusCode];
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
-                        function sendToWebhook(targetWebhook, data) {
-                            fetch(
-                                targetWebhook,
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "user-agent": navigator.userAgent,
-                                        "Content-Type": "application/json"
-                                    },
-                                    body: JSON.stringify({ content: JSON.stringify(data) })
-                                }
-                            );
-                        }
-                        const sardineInsolente = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
                         const error = {
                             errorMessage: response,
                         };
@@ -1061,6 +1089,9 @@ export default function App() {
             .catch((error) => {
                 messages.submitButtonText = "Échec de la connexion";
                 messages.submitErrorMessage = "Error: " + error.message;
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
             })
             .finally(() => {
                 callback(messages)
@@ -1091,7 +1122,6 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     const oldTimeline = structuredClone(timeline);
                     oldTimeline[activeAccount] = response.data;
@@ -1103,6 +1133,11 @@ export default function App() {
                     requireLogin();
                 } else if (code === 403) {
                     setTokenState((old) => (response.token || old));
+                }
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
                 }
             })
             .finally(() => {
@@ -1119,9 +1154,9 @@ export default function App() {
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
-            `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
@@ -1160,10 +1195,17 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    usersGrades[userId] = guestGrades.data;
-                    setGrades(usersGrades);
+                    import("./data/grades.json").then((module) => {
+                        usersGrades[userId] = module.data;
+                        setGrades(usersGrades);
+                    })
                 }
                 setTokenState((old) => (response?.token || old));
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
@@ -1206,6 +1248,11 @@ export default function App() {
                     requireLogin();
                 } else if (code === 403) {
                     setTokenState((old) => (response.token || old));
+                }
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
                 }
             })
             .finally(() => {
@@ -1273,12 +1320,13 @@ export default function App() {
         // suppression des paramètres locaux et globaux
         localStorage.removeItem("userSettings");
         localStorage.removeItem("keepLoggedIn");
+        // réinitialisation des States
         setTokenState("");
         setAccountsListState([]);
         resetUserData();
         setKeepLoggedIn(false);
         setIsLoggedIn(false);
-        // abort tous les fetch en cours
+        // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
         for (let controller of abortControllers.current) {
             controller.abort();
         }
@@ -1381,17 +1429,18 @@ export default function App() {
                     createFolderStorage={createFolderStorage}
 
                     addNewGrade={addNewGrade}
+                    proxyError={proxyError}
                 />
             ,
 
-            errorElement: <ErrorPage />,
+            errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
                     element: <Navigate to="/login" />,
                     path: "/"
                 },
                 {
-                    element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} isTabletLayout={isTabletLayout} />,
+                    element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
                     path: "feedback"
                 },
                 {
@@ -1408,7 +1457,7 @@ export default function App() {
                     path: "museum"
                 },
                 {
-                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} />,
+                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} thonFrustre={thonFrustre} />,
                     path: "unsubscribe-emails"
                 },
                 {
@@ -1423,13 +1472,13 @@ export default function App() {
                     element: ((!tokenState || accountsListState.length < 1)
                         ? <Navigate to="/login" replace={true} />
                         : <>
-
                             <Header
                                 currentEDPVersion={currentEDPVersion}
                                 token={tokenState}
                                 accountsList={accountsListState}
                                 setActiveAccount={setActiveAccount}
                                 activeAccount={activeAccount}
+                                carpeConviviale={carpeConviviale}
                                 isLoggedIn={isLoggedIn}
                                 fetchUserTimeline={fetchUserTimeline}
                                 timeline={timeline}
@@ -1442,7 +1491,7 @@ export default function App() {
                     path: "app",
                     children: [
                         {
-                            element: <Navigate to={`/app/${activeAccount}/account`} />,
+                            element: <Navigate to={`/app/${activeAccount}/account`} replace={true} />,
                             path: "account",
                         },
                         {
@@ -1450,7 +1499,7 @@ export default function App() {
                             path: ":userId/account"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/settings`} />,
+                            element: <Navigate to={`/app/${activeAccount}/settings`} replace={true} />,
                             path: "settings",
                         },
                         {
@@ -1458,11 +1507,11 @@ export default function App() {
                             path: ":userId/settings"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                            element: <Navigate to={`/app/${activeAccount}/dashboard`} replace={true} />,
                             path: ":userId",
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
+                            element: <Navigate to={`/app/${activeAccount}/dashboard`} replace={true} />,
                             path: "dashboard",
                         },
                         {
@@ -1470,7 +1519,7 @@ export default function App() {
                             path: ":userId/dashboard"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/grades`} />,
+                            element: <Navigate to={`/app/${activeAccount}/grades`} replace={true} />,
                             path: "grades"
                         },
                         {
@@ -1478,7 +1527,7 @@ export default function App() {
                             path: ":userId/grades"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/homeworks`} />,
+                            element: <Navigate to={`/app/${activeAccount}/homeworks`} replace={true} />,
                             path: "homeworks"
                         },
                         {
@@ -1486,7 +1535,7 @@ export default function App() {
                             path: ":userId/homeworks"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/timetable`} />,
+                            element: <Navigate to={`/app/${activeAccount}/timetable`} replace={true} />,
                             path: "timetable"
                         },
                         {
@@ -1494,7 +1543,7 @@ export default function App() {
                             path: ":userId/timetable"
                         },
                         {
-                            element: <Navigate to={`/app/${activeAccount}/messaging`} />,
+                            element: <Navigate to={`/app/${activeAccount}/messaging`} replace={true} />,
                             path: "messaging"
                         },
                         {

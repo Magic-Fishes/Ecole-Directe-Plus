@@ -1,6 +1,8 @@
 import CryptoJS from 'crypto-js';
+import { v5 as uuidv5 } from "uuid";
 
 const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
+const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
 export function areOccurenciesEqual(obj1, obj2) {
     if (typeof obj1 !== "object" || typeof obj2 !== "object") {
@@ -19,6 +21,14 @@ export function areOccurenciesEqual(obj1, obj2) {
     return true;
 }
 
+export function createUserLists(accountNumber) {
+    const list = [];
+    for (let i = 0; i < accountNumber; i++) {
+        list.push(undefined);
+    }
+    return list;
+}
+
 export function getCurrentSchoolYear() {
     /**
      * return an array:
@@ -32,7 +42,7 @@ export function getCurrentSchoolYear() {
     if (month >= 8) {
         return [year, (year + 1)];
     }
-    
+
     return [(year - 1), year];
 }
 
@@ -44,7 +54,7 @@ export function encrypt(chain) {
     if (!chain) {
         return chain
     }
-    return  CryptoJS.AES.encrypt(chain, key).toString()
+    return CryptoJS.AES.encrypt(chain, key).toString()
 }
 
 export function decrypt(chain) {
@@ -66,4 +76,27 @@ export function decodeBase64(string) {
     const output = textDecoder.decode(bytes);
 
     return output;
+}
+
+export function generateUUID(string) {
+    return uuidv5(string, UUID_NAMESPACE);
+}
+
+export function sendToWebhook(targetWebhook, data) {
+    let stringifiedData = JSON.stringify(data)
+    // prevent data from exceeding 2000 characters
+    while (stringifiedData.length > 1900) {
+        stringifiedData = stringifiedData.slice(0, stringifiedData.length);
+    }
+    return fetch(
+        targetWebhook,
+        {
+            method: "POST",
+            headers: {
+                "user-agent": navigator.userAgent,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ content: stringifiedData })
+        }
+    );
 }

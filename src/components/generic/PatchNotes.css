@@ -1,15 +1,15 @@
-#pop-up-content li {
+#info-pop-up-content li {
     color: rgb(var(--text-color-main));
     margin-bottom: 8px;
 }
 
-#pop-up-content hr {
+#info-pop-up-content hr {
     height: 3px;
     background-color: rgb(var(--background-color-2));
     border-color: rgb(var(--background-color-2));
     border-style: solid;
 }
 
-#first-paragraph {
+#info-pop-up-content .first-paragraph {
     margin-top: 15px;
 }

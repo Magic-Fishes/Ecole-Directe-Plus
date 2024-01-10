@@ -46,7 +46,7 @@ async function sendToDiscordWebhook(webhookURL, content, message) {
 }
 
 
-const webhookURL = "https://discord.com/api/webhooks/1097234793504190574/Vib1uvjsNtIeuecgSJAeo-OgqQeWCHvLoWWKXd0VOQWkz1lBVrnZCd9RVGDpJYwlZcUx";
+const webhookURL = "WEBHOOK_URL_PLACEHOLDER";
 const domainToCheck = "api.ecoledirecte.com";
 
 isDomainReachable(domainToCheck)

@@ -35,7 +35,7 @@ const ShiningDiv = forwardRef(function ShiningDiv({ children, shiningIconsList, 
 
         setShiningElements((oldShiningElements) => oldShiningElements.concat(newElement));
         setTimeout(() => {
-            setShiningElements((oldShiningElements) => oldShiningElements.toSpliced(oldShiningElements.indexOf(newElement), 1));
+            setShiningElements((oldShiningElements) => {oldShiningElements.splice(oldShiningElements.indexOf(newElement), 1); return oldShiningElements});
         }, growDuration);
     }
 
