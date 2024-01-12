@@ -20,6 +20,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     const [currentHeight, setCurrentHeight] = useState(targetSheetHeight);
     
     const targetSheetHeightVar = useRef(false);
+    const openingTime = useRef(Date.now());
 
     const bottomSheetRef = useRef(null);
     const resizeHandlerRef = useRef(null);
@@ -301,7 +302,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     }
 
     return (isOpen &&
-        <div className={(isClosing ? "closing " : "") + className} id="bottom-sheet" onPointerDown={(event) => !isResizing && !clickedInsideBottomSheet.current ? handleClose() : undefined} {...props}>
+        <div className={(isClosing ? "closing " : "") + className} id="bottom-sheet" onPointerDown={(event) => !isResizing && !clickedInsideBottomSheet.current && (Date.now() - openingTime.current > closingCooldown ) ? handleClose() : null} {...props}>
             <div ref={bottomSheetRef} style={{ height: targetSheetHeight.toString() + "%" }} className={isClosing ? "closing" : ""} id="bottom-sheet-box" onPointerDown={() => clickedInsideBottomSheet.current = true} onPointerUp={() => setTimeout(() => clickedInsideBottomSheet.current = false, 0)} >
                 <div id="bottom-sheet-container">
                     <div id="resize-handle" tabIndex="0" ref={resizeHandlerRef} onMouseDown={handleGrab} onTouchStart={handleGrab}>

@@ -43,7 +43,7 @@ const loadingScreenTips = [
     { message: <span>Nous sommes désolés pour l'attente, mais il y a un prix à payer pour la perfection.</span>, weight: 1 },
     { message: <span>Le chargement est une expérience zen. Respirez profondément et relaxez-vous.</span>, weight: 1 },
     { message: <span>Canardman vous encourage à prendre une profonde respiration pendant ce chargement.<br/>Inspirez...<br/>Expirez...</span>, weight: 1 },
-    { message: <span>Vous aimez le chargement ? Nous aussi. C’est pourquoi nous en avons mis autant.</span>, weight: 1 },
+    { message: <span>Vous aimez le chargement ? Nous aussi. C’est pour ça que nous en avons mis autant.</span>, weight: 1 },
     { message: <span>Le chargement est une plaisanterie. Mais vous n’êtes pas obligé de rire.</span>, weight: 1 },
     { message: <span>Le chargement est une illusion. Il n’existe pas vraiment. C’est juste dans votre tête...</span>, weight: 1 },
     { message: <span>Le chargement est un art.<br/>Il faut savoir l’apprécier à sa juste valeur.</span>, weight: 1 },
