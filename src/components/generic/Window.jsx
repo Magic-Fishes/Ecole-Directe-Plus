@@ -38,7 +38,7 @@ function useWindowsContainerContext() {
     const context = useContext(WindowsContainerContext);
 
     if (context === null) {
-        throw new Error("WindowsLayout, Window, WindowHeader or WindowContent components must be wrapped in <WindowsContainer />");
+        throw new Error("WindowsLayout, MoveableContainer, Window, WindowHeader or WindowContent components must be wrapped in <WindowsContainer />");
     }
 
     return context;

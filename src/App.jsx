@@ -626,13 +626,6 @@ export default function App() {
         changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
     }
 
-
-    useEffect(() => {
-        console.log("HERE")
-        console.log(getUserData("activePeriod"))
-    }, [getUserData("activePeriod")])
-
-
     function sortGrades(grades, activeAccount) {
         /**
          * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
@@ -916,6 +909,7 @@ export default function App() {
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
+        console.log("changeUserData sortedGrades")
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
@@ -1020,11 +1014,10 @@ export default function App() {
             uuid: 0
         }
 
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
         const options = {
             body: "data=" + JSON.stringify(payload),
             method: "POST",
+            signal: controller.signal
         }
 
         const messages = {
@@ -1115,7 +1108,8 @@ export default function App() {
                 }
             })
             .finally(() => {
-                callback(messages)
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+                callback(messages);
             })
     }
 

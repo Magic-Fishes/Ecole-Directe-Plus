@@ -14,12 +14,21 @@ import {
 import "./Grades.css";
 
 export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
-    const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
-
     const userData = useUserData();
-
-    const selectedPeriod = userData.get("activePeriod")
+    
+    const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
+    const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
+    
     const sortedGrades = userData.get("sortedGrades");
+
+    useEffect(() => {
+        setSelectedPeriod(userData.get("activePeriod"))
+    }, [sortedGrades]);
+
+    useEffect(() => {
+        userData.set("activePeriod", selectedPeriod);
+    }, [selectedPeriod])
+
 
     // Behavior
     useEffect(() => {
@@ -57,14 +66,14 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={value => {userData.set("activePeriod", value)}}
+                            setSelectedPeriod={setSelectedPeriod}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
                             : <Results
                             activeAccount={activeAccount}
                             sortedGrades={sortedGrades}
                             selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={value => {userData.set("activePeriod", value)}}
+                            setSelectedPeriod={setSelectedPeriod}
                             selectedDisplayType={selectedDisplayType}
                             setSelectedDisplayType={setSelectedDisplayType} />
                         }
