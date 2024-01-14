@@ -9,6 +9,8 @@ import { decrypt, encrypt } from "../../utils/utils"
 
 import AccountIcon from "../graphics/AccountIcon"
 import KeyIcon from "../graphics/KeyIcon"
+import EyeVisible from "../graphics/EyeVisible"
+import EyeHidden from "../graphics/EyeHidden"
 
 import "./LoginForm.css";
 
@@ -27,6 +29,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     // States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassowrd] = useState(false);
     const [submitButtonText, setSubmitButtonText] = useState("Se connecter");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -34,6 +37,15 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     const updateUsername = (event) => { setUsername(event.target.value); setSubmitButtonText("Se connecter") }
     const updatePassword = (event) => { setPassword(event.target.value); setSubmitButtonText("Se connecter") }
     const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
+    const passwordClickHandler = () => setShowPassowrd((prev) => !prev);
+    const PasswordIcon = (
+        <>
+            {showPassword ?
+                <EyeVisible onClick={passwordClickHandler} /> :
+                <EyeHidden onClick={passwordClickHandler} />}
+            <KeyIcon />
+        </>
+    );
     
     // Keep logged in OU reco car valid token
     useEffect(() => {
@@ -86,7 +98,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     return (
         <form onSubmit={handleSubmit} {...props} id="login-form">
             <TextInput className="login-input" textType="text" placeholder="Identifiant" autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
-            <TextInput className="login-input" textType="password" placeholder="Mot de passe" autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
+            <TextInput className="login-input" textType={showPassword ? "text" : "password"} placeholder="Mot de passe" autoComplete="current-password" value={password} icon={PasswordIcon} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
             {errorMessage && errorMessage === "accountCreationError" ? <p className="error-message">Vous n'avez pas encore créé votre compte EcoleDirecte ?!<br/>Rendez-vous sur le <a href="https://ecoledirecte.com/">site officiel</a> pour le configurer, nous vous attendons avec impatience !</p> : <p className="error-message">{errorMessage}</p>}
             <div className="login-option">
                 <Tooltip delay={400}>
