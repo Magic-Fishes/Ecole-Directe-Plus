@@ -20,7 +20,7 @@ export default function WelcomePopUp({ currentEDPVersion, onClose }) {
                 <li>Avertissement : ce canal peut être instable et est susceptible de dysfonctionner. Si vous n'êtes pas certain de vouloir y accéder, <a className="welcome-pop-up-links" href="https://ecole-directe.plus/?verifiedOrigin=true" onClick={() => globalSettings.isDevChannel.set(false)}>cliquez ici</a> pour retourner sur le canal stable d'Ecole Directe Plus.</li>
                 <li>Note : les paramètres du canal stable et du canal développeur sont dissociés.</li>
             </ul> : <ul>
-                <li>Bienvenue sur <em>Ecole Directe Plus</em>, votre nouvelle plateforme éducative (service non officiel indépendant d'EcoleDirecte). Suivez ce guide et faites vos premiers pas :</li>
+                <li>Bienvenue sur <em>Ecole Directe Plus</em>, votre nouvelle plateforme éducative libre et open-source (service non officiel indépendant d'EcoleDirecte). Suivez ce guide et faites vos premiers pas :</li>
                 <ol>
                     <li>Dans le menu de connexion, connectez vous simplement à l'aide de vos identifiants EcoleDirecte</li>
                     <li>Félicitations, vous êtes connecté et prêt à utiliser ED+ ! Profitez d'une multitude de fonctionnalités inédites :</li>
