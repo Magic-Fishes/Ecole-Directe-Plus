@@ -1,14 +1,30 @@
 import { useState } from "react";
 import "./TextInput.css";
 import WarningMessage from "../Informative/WarningMessage";
+import EyeVisible from "../../graphics/EyeVisible";
+import EyeHidden from "../../graphics/EyeHidden";
 
 export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon="", onWarning, className="", id="", ...props }) {
     const [warningMessageState, setWarningMessageState] = useState("");
+    const [showPassword, setShowPassowrd] = useState(false);
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
-    if (!allowedTextTypes.includes(textType)) {
+    const showPasswordIcon = textType === allowedTextTypes[1];
+
+    if (!allowedTextTypes.includes(textType) || showPassword) {
         textType = "text";
     }
     
+    const passwordClickHandler = () => setShowPassowrd((prev) => !prev);
+    const PasswordIcon = (
+        <>
+            {showPassword ?
+                <EyeVisible onClick={passwordClickHandler} /> :
+                <EyeHidden onClick={passwordClickHandler} />
+            }
+            {icon}
+        </>
+    );
+
     function handleInvalid(event) {
         event.preventDefault();
         setWarningMessageState(warningMessage);
@@ -34,7 +50,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     onInvalid={handleInvalid}
                     {...props}
                 />
-                {icon}
+                {showPasswordIcon ? PasswordIcon : icon}
             </div>
             {!disabled && <WarningMessage condition={warningMessageState}>
                 {warningMessageState}
