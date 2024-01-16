@@ -36,6 +36,10 @@
     outline: none;
 }
 
+.text-input::-ms-reveal {
+    display: none;
+}
+
 div.text-input-container:has(:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
@@ -50,4 +54,8 @@ input.text-input:disabled {
     width: auto;
     max-width: 50px;
     padding: 10px;
+}
+
+.eye-slash {
+    cursor: pointer;
 }

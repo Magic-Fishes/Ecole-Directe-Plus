@@ -364,12 +364,6 @@ p.error-message a {
     color: rgba(var(--text-color-soft-error-alt), 0.7);
 }
 
-
-.dark ::-ms-reveal {
-    /* bouton de reveal du mdp (ms edge only) */
-    filter: invert(100%);
-}
-
 ::selection {
     background-color: rgba(var(--background-color-selection), 0.4);
 }
