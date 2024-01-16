@@ -56,6 +56,10 @@ input.text-input:disabled {
     padding: 10px;
 }
 
+.text-input-container svg.eye-slash {
+    padding: 9px !important;
+}
+
 .eye-slash {
     cursor: pointer;
 }

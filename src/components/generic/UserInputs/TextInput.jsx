@@ -6,7 +6,7 @@ import EyeHidden from "../../graphics/EyeHidden";
 
 export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon="", onWarning, className="", id="", ...props }) {
     const [warningMessageState, setWarningMessageState] = useState("");
-    const [showPassword, setShowPassowrd] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
     const showPasswordIcon = textType === allowedTextTypes[1];
 
@@ -14,7 +14,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
         textType = "text";
     }
     
-    const passwordClickHandler = () => setShowPassowrd((prev) => !prev);
+    const passwordClickHandler = () => setShowPassword((prev) => !prev);
     const PasswordIcon = (
         <>
             {showPassword ?
@@ -34,6 +34,9 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
     function handleChange(event) {
         onChange(event);
         setWarningMessageState("");
+        if (event.target?.value === "") {
+            setShowPassword(false);
+        }
     }
 
     return (
@@ -50,7 +53,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     onInvalid={handleInvalid}
                     {...props}
                 />
-                {showPasswordIcon ? PasswordIcon : icon}
+                {showPasswordIcon && value !== "" ? PasswordIcon : icon}
             </div>
             {!disabled && <WarningMessage condition={warningMessageState}>
                 {warningMessageState}
