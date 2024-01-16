@@ -1,4 +1,4 @@
-const serviceWorkerVersion = "V1.19";
+const serviceWorkerVersion = "V1.2";
 const CACHED_FILES = [
     "/cache/NetworkError.html",
     "/cache/SplashScreen.html"
@@ -53,6 +53,7 @@ self.addEventListener("fetch", (event) => {
     if (event.request.mode === "navigate" &&
         !event.request.url.includes("/awstats/awstats.pl") &&
         !event.request.url.includes("/stats-report.html") &&
+        !event.request.url.includes("/roundcube") &&
         !event.request.url.includes("/sitemap.xml") &&
         !event.request.url.includes("/robots.txt")) {
         event.respondWith(
