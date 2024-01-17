@@ -661,7 +661,7 @@ export default function App() {
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
                         let subjectCode = matiere.codeMatiere;
-                        if (!subjectCode) {
+                        if (matiere.groupeMatiere || !subjectCode) {
                             subjectCode = "category" + i.toString();
                             i++;
                         }
