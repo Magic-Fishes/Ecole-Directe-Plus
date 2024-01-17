@@ -596,21 +596,18 @@ export default function App() {
     }
 
     function updatePeriodGrades(periodKey) {
-        const sortedGrades = getUserData("sortedGrades")
-        const period = sortedGrades[periodKey]
+        const sortedGrades = getUserData("sortedGrades");
+        const period = sortedGrades[periodKey];
 
         for (const subject in period.subjects) {
             if (!subject.includes("category")) {
-                period.subjects[subject].average = calcAverage(period.subjects[subject].grades)
-            }
-        }
-        for (const subject in period.subjects) {
-            if (subject.includes("category")) {
+                period.subjects[subject].average = calcAverage(period.subjects[subject].grades);
+            } else {
                 period.subjects[subject].average = calcCategoryAverage(period, period.subjects[subject]);
             }
         }
         period.generalAverage = calcGeneralAverage(period)
-        sortedGrades[periodKey] = period
+        sortedGrades[periodKey] = period;
         changeUserData("sortedGrades", sortedGrades);
     }
 
@@ -661,7 +658,7 @@ export default function App() {
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
                         let subjectCode = matiere.codeMatiere;
-                        if (matiere.groupeMatiere || !subjectCode) {
+                        if (matiere.groupeMatiere) {
                             subjectCode = "category" + i.toString();
                             i++;
                         }
