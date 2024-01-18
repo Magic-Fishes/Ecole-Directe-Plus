@@ -23,7 +23,7 @@ export default function Feedback({ activeUser, carpeConviviale, isTabletLayout }
             <div id="feedback-box">
                 <div className="feedback-head">
                     {isTabletLayout && <BackArrow id="feedback-back-arrow" onClick={navigateBack} />}
-                    <h1 className={isTabletLayout && "tablet-layout"} >Faire un retour</h1>
+                    <h1 className={isTabletLayout ? "tablet-layout" : ""} >Faire un retour</h1>
                 </div>
                 <FeedbackForm activeUser={activeUser} carpeConviviale={carpeConviviale} />
             </div>
