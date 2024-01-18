@@ -19,8 +19,20 @@ export function calcAverage(list) {
     let coef = 0;
     for (let i of list) {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {
-            average += (i.value * 20 / i.scale) * i.coef;
             coef += i.coef;
+        }
+    }
+
+    const noCoef = !coef
+
+    for (let i of list) {
+        if ((i.isSignificant ?? true) && !isNaN(i.value)) {
+            if (noCoef) {
+                average += (i.value * 20 / i.scale);
+                coef += 1;
+            } else {
+                average += (i.value * 20 / i.scale) * i.coef;
+            }
         }
     }
 
