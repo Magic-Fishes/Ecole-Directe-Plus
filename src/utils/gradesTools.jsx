@@ -18,23 +18,13 @@ export function calcAverage(list) {
     let average = 0;
     let coef = 0;
     for (let i of list) {
-        coef += i.coef;
-    }
-
-    const noCoef = !coef
-
-    for (let i of list) {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {
-            if (noCoef) {
-                average += (i.value * 20 / i.scale) * 1;
-                coef += 1
-            } else {
-                average += (i.value * 20 / i.scale) * i.coef;
-            }
+            average += (i.value * 20 / i.scale) * i.coef;
+            coef += i.coef;
         }
     }
-    
-    if (list.length > 0) {
+
+    if (coef > 0 && list.length > 0) {
         return Math.round(average / coef * 100) / 100;
     } else {
         return "N/A"
