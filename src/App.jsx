@@ -657,6 +657,9 @@ export default function App() {
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
+                        if (matiere.sousMatiere) {
+                            continue;
+                        }
                         let subjectCode = matiere.codeMatiere;
                         if (matiere.groupeMatiere) {
                             subjectCode = "category" + i.toString();
@@ -703,7 +706,7 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
-            for (let grade of gradesFromJson) {
+            for (let grade of (gradesFromJson ?? [])) {
                 const periodCode = grade.codePeriode;
                 const subjectCode = grade.codeMatiere;
                 // try to rebuild the subject if it doesn't exist (happen when changing school year)
@@ -1207,7 +1210,7 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    import("./data/grades.json").then((module) => {
+                    import("./data/test_grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
                     })
