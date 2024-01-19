@@ -14,6 +14,7 @@ import Tabs from "../../generic/UserInputs/Tabs";
 import Grade from "./Grade";
 import GradeScaleToggle from "./GradeScaleToggle";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
+import { GradeSimulationTrigger } from "./GradeSimulation"
 
 import "./MobileResults.css";
 
@@ -145,7 +146,13 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
                                             </div>
                                             <div key={"grade-" + el.id} className="mobile-grade-row mobile-row">
-                                                {el.grades.map((grade) => {
+                                                {el.grades.filter(el => el.isReal).map((grade) => {
+                                                    return (
+                                                        <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
+                                                    )
+                                                })}
+                                                <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod}/>
+                                                {el.grades.filter(el => !el.isReal).map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )

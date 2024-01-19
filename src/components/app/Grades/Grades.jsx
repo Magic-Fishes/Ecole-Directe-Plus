@@ -12,13 +12,14 @@ import {
 } from "../../generic/Window";
 
 import "./Grades.css";
+import DOMSimulation from "./GradeSimulation";
 
 export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
     const userData = useUserData();
-    
+
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
-    
+
     const sortedGrades = userData.get("sortedGrades");
 
     useEffect(() => {
@@ -61,22 +62,24 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
                         <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                     </WindowsLayout>
                     <WindowsLayout growthFactor={2}>
-                        {isTabletLayout
-                            ? <MobileResults
-                            activeAccount={activeAccount}
-                            sortedGrades={sortedGrades}
-                            selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={setSelectedPeriod}
-                            selectedDisplayType={selectedDisplayType}
-                            setSelectedDisplayType={setSelectedDisplayType} />
-                            : <Results
-                            activeAccount={activeAccount}
-                            sortedGrades={sortedGrades}
-                            selectedPeriod={selectedPeriod}
-                            setSelectedPeriod={setSelectedPeriod}
-                            selectedDisplayType={selectedDisplayType}
-                            setSelectedDisplayType={setSelectedDisplayType} />
-                        }
+                        <DOMSimulation>
+                            {isTabletLayout
+                                ? <MobileResults
+                                    activeAccount={activeAccount}
+                                    sortedGrades={sortedGrades}
+                                    selectedPeriod={selectedPeriod}
+                                    setSelectedPeriod={setSelectedPeriod}
+                                    selectedDisplayType={selectedDisplayType}
+                                    setSelectedDisplayType={setSelectedDisplayType} />
+                                : <Results
+                                    activeAccount={activeAccount}
+                                    sortedGrades={sortedGrades}
+                                    selectedPeriod={selectedPeriod}
+                                    setSelectedPeriod={setSelectedPeriod}
+                                    selectedDisplayType={selectedDisplayType}
+                                    setSelectedDisplayType={setSelectedDisplayType} />
+                            }
+                        </DOMSimulation>
                     </WindowsLayout>
                 </WindowsLayout>
             </WindowsContainer>

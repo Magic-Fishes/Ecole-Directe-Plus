@@ -15,30 +15,17 @@ import Grade from "./Grade";
 import GradeScaleToggle from "./GradeScaleToggle";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import Charts from "./Charts";
-import PopUp from "../../generic/PopUps/PopUp";
-import Plus from "../../graphics/Plus"
-import Button from "../../generic/UserInputs/Button";
-import NumberInput from "../../generic/UserInputs/NumberInput";
+import { GradeSimulationTrigger } from "./GradeSimulation"
 
 import "./Results.css";
 
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
-    const { isTabletLayout, actualDisplayTheme, useUserSettings, addNewGrade } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
     const contentLoadersRandomValues = useRef({ subjectNameWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2) })
     const location = useLocation();
 
-    const [gradeSimulationPopUp, setGradeSimulationPopUp] = useState(false);
-    const [gradeSimulationPopUpClosing, setGradeSimulationPopUpClosing] = useState(false);
-    const [gradeSimulationSettings, setGradeSimulationSettings] = useState({
-        value: 10,
-        coef: 1,
-        scale: 20,
-        name: "",
-        type: "",
-        subjectKey: "",
-        periodKey: selectedPeriod,
-    });
+
     useEffect(() => {
         if (location.hash) {
             const element = document.getElementById(location.hash.slice(1));
@@ -50,23 +37,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
         }
     }, [location, sortedGrades]);
 
-    function openGradeSimulation(subjectKey) {
-        setGradeSimulationSettings((oldSettings) => {
-            const newSettings = {...oldSettings, subjectKey: subjectKey, periodKey: selectedPeriod}
-            return newSettings
-        });
-        setGradeSimulationPopUp(true);
-        setGradeSimulationPopUpClosing(true);
-    }
 
-    function changeGradeSimulationSettings(setting, value) {
-        setGradeSimulationSettings(old => ({...old, [setting]: value}))
-    }
-    
-    function closeSimulationPopUp() {
-        setGradeSimulationPopUpClosing(false);
-        setTimeout(() => {setGradeSimulationPopUp(false)}, 500)  
-    }
 
     return (
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} name="results-utimate-container" {...props}>
@@ -189,7 +160,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                     )
                                                                 })}
-                                                                <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(idx) }} role="button" tabIndex={0} onKeyDown={(event) => event.key === "Enter" && openGradeSimulation(idx) } />
+                                                                <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod} />
                                                                 {el.grades.filter(el => !el.isReal).map((grade) => {
                                                                     return (
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
@@ -286,7 +257,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                 : <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
                                     speed={1}
-                                    style={{ width: "100%", height: "100%", padding: "25px"}}
+                                    style={{ width: "100%", height: "100%", padding: "25px" }}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 >
@@ -300,17 +271,6 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                     </WindowContent>
                 </Window>
             </MoveableContainer>
-            {gradeSimulationPopUp && <PopUp className="grade-simulation-pop-up" onClose={() => {setGradeSimulationPopUp(false)}} externalClosing={!gradeSimulationPopUpClosing}>
-                <form id="SUN-form" onSubmit={(e) => { e.preventDefault();addNewGrade(gradeSimulationSettings, selectedPeriod); closeSimulationPopUp() }} noValidate> {/* On utilise le noValidate pour éviter que les navigateurs valident pas le formulaire quand le number input contient un 10.01 au lieu d'un 10 parcequ'on a mis le step à 1 */}
-                    <div className="grade-simulation-wrapper">
-                        <h2>Simuler une note</h2>
-                        <div className="grade-simulation-field">Note : <NumberInput className="simulation-input" min={0} max={1000} value={gradeSimulationSettings.value} onChange={value => {changeGradeSimulationSettings("value", value)}} displayArrowsControllers={false} />/<NumberInput className="simulation-input" min={1} max={1000} value={gradeSimulationSettings.scale} onChange={value => {changeGradeSimulationSettings("scale", value)}} displayArrowsControllers={false} /></div>
-                        <div className="grade-simulation-field">Coefficient : <NumberInput className="simulation-input" min={0.1} max={100} step={0.1} value={gradeSimulationSettings.coef} onChange={value => {changeGradeSimulationSettings("coef", value)}} displayArrowsControllers={false} /></div>
-                        <p>Cette note disparaîtra au rechargement de la page</p>
-                    </div>
-                    <div className="grade-simulation-buttons"><Button className="close simulation-form-button" value="Annuler" onClick={closeSimulationPopUp}/><Button className="submit simulation-form-button" value="Valider" type="submit"/></div>
-                </form>
-            </PopUp>}
         </MoveableContainer>
     )
 }
