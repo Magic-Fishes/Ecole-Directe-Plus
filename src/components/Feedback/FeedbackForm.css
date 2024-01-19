@@ -161,10 +161,29 @@ div.drop-zone:focus-within {
     flex-grow: 1;
 }
 
+#publish {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#publish p {
+    margin-top: 10px;
+    margin-left: 10px;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14)
+}
+
+#publish span {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 p#usage-info {
     color: rgb(var(--text-color-alt));
     text-align: right;
-    font-size: var(--font-size-14)
+    font-size: var(--font-size-14);
 }
 #feedback-box p.error-message {
     margin-top: 20px;

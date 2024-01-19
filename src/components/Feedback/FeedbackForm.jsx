@@ -6,6 +6,7 @@ import TextInput from "../generic/UserInputs/TextInput";
 import Button from "../generic/UserInputs/Button";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import WarningMessage from "../generic/Informative/WarningMessage";
+import InfoButton from "../generic/Informative/InfoButton";
 
 import { AppContext } from "../../App";
 
@@ -17,7 +18,7 @@ import "./FeedbackForm.css";
 
 
 export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() => {} }) {
-    const allowedExtensions = /(\jpg|\jpeg|\png|\bmp|\gif|\tif|\webp|\heic|\pdf)$/i; // hop la regex cancérigène ; je comprends mm aps commetn ca marche ; moi nn plus tqt
+    const allowedExtensions = /(\jpg|\jpeg|\png|\bmp|\gif|\tif|\webp|\heic|\pdf)$/i; // la regex cancérigène ; je comprends mm pas comment ca marche ; moi nn plus tqt
     const feedbackTips = [
         `### Description du problème :
 
@@ -66,6 +67,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
     const [warningMessage, setWarningMessage] = useState(""); // pour input file
     const [errorMessage, setErrorMessage] = useState("");
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
+    const [allowSharing, setAllowSharing] = useState(true);
 
     const { isDevChannel, currentEDPVersion } = useContext(AppContext);
 
@@ -288,6 +290,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                    content: "botActions:[VERIFY]",
                     embeds: [
                         {
                             color: parseInt("0x" + color),
@@ -342,6 +345,13 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 </div>
             </div>
             <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
+            <div id="publish">
+                <span>
+                    <CheckBox id="remain-allow-sharing" label="Autoriser la publication" checked={allowSharing} onChange={() => setAllowSharing(!allowSharing)} />
+                    <InfoButton>Si votre retour est publié, il sera toujours anonyme</InfoButton>
+                </span>
+                <p id="publish-info">Accepter la publication sur notre <a href="https://discord.gg/AKAqXfTgvE">Discord</a> communautaire.</p>
+            </div>
             <div id="contact">
                 <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
                 <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
