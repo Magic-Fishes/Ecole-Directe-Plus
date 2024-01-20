@@ -72,7 +72,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             <td>Note coefficientée</td>
                                         </tr>
                                         <tr>
-                                            <th>Note<sub className="x-unknown">(x)</sub></th>
+                                            <th>Note<sub className="x-unknown">/x</sub></th>
                                             <td>Note sur <span className="x-unknown">x</span></td>
                                         </tr>
                                         <tr>
