@@ -437,7 +437,7 @@ export default function App() {
         return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
     }
     
-    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
+    const useUserData = (data="") => (data == "" ? { set: changeUserData, get: getUserData, full: () => userData[activeAccount] } : { set: (value) => changeUserData(data, value), get: () => getUserData(data), full: () => userData[activeAccount][data] })
 
 
     // gestion de la désactivation automatique du "rester connecté"
