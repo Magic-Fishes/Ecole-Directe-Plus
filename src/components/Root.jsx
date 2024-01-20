@@ -8,7 +8,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade, proxyError }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -403,7 +403,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <form action="https://github.com/Magic-Fishes/Ecole-Directe-Plus" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
-                {isAdmin && <input type="button" onClick={() => addNewGrade(17, 1, 20, "Podcast", "DM", "A001", "ALL2")} value="ADD 17 ALL" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

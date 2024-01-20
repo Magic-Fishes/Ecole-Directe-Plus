@@ -1443,7 +1443,6 @@ export default function App() {
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
 
-                    addNewGrade={addNewGrade}
                     proxyError={proxyError}
                 />
             ,
