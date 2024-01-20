@@ -13,7 +13,7 @@
 }
 
 
-.window-header.results-header {
+.window-header.results-header:has(+ .mobile-results > .mobile-category-row:first-child) {
     box-shadow: var(--box-shadow-window), 0 12px 0 rgb(var(--background-color-3));
 }
 .mobile-category-row {
