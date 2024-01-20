@@ -226,7 +226,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
                     </div>
-                    <p className="selected-coefficient">coeficient : {selectedElement.coef}</p>
+                    <p className="selected-coefficient">coefficient : {selectedElement.coef}</p>
                     <hr />
                     <div className="info-zone">
                         <div className="text">
