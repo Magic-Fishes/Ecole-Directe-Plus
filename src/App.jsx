@@ -880,7 +880,8 @@ export default function App() {
                 delete periods[key];
             }
         }
-        if (Object.keys(periods).length < 1) {
+        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
+        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
         
@@ -909,7 +910,6 @@ export default function App() {
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
-        console.log("changeUserData sortedGrades")
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
