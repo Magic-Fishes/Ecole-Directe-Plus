@@ -162,7 +162,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 }).flat()
                                 : Array.from({ length: 13 }, (_, index) => {
-                                    const subjectNameWidth = Math.round(Math.random() * 100) + 100;
+                                    const subjectNameWidth = contentLoadersRandomValues.current.subjectNameWidth[index];
                                     return (index % 7 < 1)
                                         ? <div key={crypto.randomUUID()} className="mobile-category-row mobile-row">
                                             <ContentLoader

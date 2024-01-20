@@ -171,7 +171,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
                     </div>
-                    <p className="selected-coefficient">coeficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>
+                    <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>
                     <hr />
                     <div className="info-zone">
                         <div className="text">
