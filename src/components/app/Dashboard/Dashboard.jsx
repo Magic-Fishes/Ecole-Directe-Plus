@@ -11,6 +11,7 @@ import {
 } from "../../generic/Window";
 
 import "./Dashboard.css";
+import LastGrades from "./lastGrades";
 
 export default function Dashboard({ }) {
     const navigate = useNavigate();
@@ -28,14 +29,15 @@ export default function Dashboard({ }) {
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column" growthFactor={2.5}>
                         <WindowsLayout direction="row">
-                            <Window WIP={true}>
+                            <LastGrades/>
+                            {/* <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../grades")}>
                                     <h2>Dernière notes</h2>
                                 </WindowHeader>
                                 <WindowContent>
                                     
                                 </WindowContent>
-                            </Window>
+                            </Window> */}
                             
                             <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>

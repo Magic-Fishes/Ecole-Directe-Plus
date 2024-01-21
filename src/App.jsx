@@ -22,9 +22,9 @@ import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGene
 import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
-const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab }}));
-const Museum = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Museum }}));
-const UnsubscribeEmails = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.UnsubscribeEmails }}));
+const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
+const Museum = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Museum } }));
+const UnsubscribeEmails = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.UnsubscribeEmails } }));
 const Header = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Header } }));
 const Dashboard = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Dashboard } }));
 const Grades = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Grades } }));
@@ -33,7 +33,7 @@ const Timetable = lazy(() => import("./components/app/CoreApp").then((module) =>
 const Messaging = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Messaging } }));
 const Settings = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Settings } }));
 const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
-const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback }}));
+const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback } }));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
 
@@ -63,7 +63,7 @@ function consoleLogEDPLogo() {
           https://github.com/Magic-Fishes/Ecole-Directe-Plus 
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
-    `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
+        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
 
 }
 consoleLogEDPLogo();
@@ -126,7 +126,8 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
         const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "{}"));
         return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "{}"));
+    } else if (userSettingsFromLs[accountIdx]) {
+        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "{}"));
         return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
     }
     return defaultSettings[setting];
@@ -217,7 +218,7 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
     const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
-    
+
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
     const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", activeAccount, true));
@@ -228,7 +229,7 @@ export default function App() {
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
-    
+
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
@@ -237,19 +238,19 @@ export default function App() {
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
-    
+
     // diverse
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
-    
-    
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Gestion Storage                                                                                 //
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     /////////// SETTINGS ///////////
 
     function changeUserSettings(setting, value, accountIdx = activeAccount) {
@@ -375,13 +376,13 @@ export default function App() {
             localStorage.setItem("token", tokenState);
         }
     }, [tokenState]);
-    
+
     useEffect(() => {
         if (accountsListState?.length > 0) {
             localStorage.setItem("accountsList", JSON.stringify(accountsListState));
         }
     }, [accountsListState]);
-    
+
     useEffect(() => {
         const handleStorageChange = () => {
             // logout if the user has logout in any tab
@@ -398,11 +399,11 @@ export default function App() {
                 }
             }
         }
-        
+
         const timeoutHandleStorageChange = () => {
             setTimeout(() => handleStorageChange(), 0); // timeout to prevent issues due to react async behavior
         }
-        
+
         window.addEventListener("storage", timeoutHandleStorageChange)
 
         return (() => {
@@ -416,7 +417,7 @@ export default function App() {
             syncSettings();
         }
     }, [shareSettings])
-    
+
     useEffect(() => {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
@@ -434,10 +435,10 @@ export default function App() {
     }
 
     function getUserData(data) {
-        return (userData ? (userData[activeAccount] ?  userData[activeAccount][data] : undefined) : undefined);
+        return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
-    
-    const useUserData = (data="") => (data == "" ? { set: changeUserData, get: getUserData, full: () => userData[activeAccount] } : { set: (value) => changeUserData(data, value), get: () => getUserData(data), full: () => userData[activeAccount][data] })
+
+    const useUserData = (data = "") => (data == "" ? { set: changeUserData, get: getUserData, full: () => userData[activeAccount] } : { set: (value) => changeUserData(data, value), get: () => getUserData(data), full: () => userData[activeAccount][data] })
 
 
     // gestion de la désactivation automatique du "rester connecté"
@@ -551,7 +552,7 @@ export default function App() {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function addNewGrade({value, coef, scale, name, type, subjectKey, periodKey}) {
+    function addNewGrade({ value, coef, scale, name, type, subjectKey, periodKey }) {
         /** 
          * Ajoute une nouvelle note à l'utilisateur (simulation)
          * - value : valeur de la note
@@ -589,7 +590,7 @@ export default function App() {
     }
 
     function deleteFakeGrade(UUID, subjectKey, periodKey) {
-        const newGrades = {...getUserData("sortedGrades")}
+        const newGrades = { ...getUserData("sortedGrades") }
         newGrades[periodKey].subjects[subjectKey].grades = newGrades[periodKey].subjects[subjectKey].grades.filter((el) => el.id !== UUID)
         changeUserData("sortedGrades", newGrades);
         updatePeriodGrades(periodKey)
@@ -611,7 +612,7 @@ export default function App() {
         changeUserData("sortedGrades", sortedGrades);
     }
 
-    function setDefaultPeriod(sortedGrades=getUserData("sortedGrades")) {
+    function setDefaultPeriod(sortedGrades = getUserData("sortedGrades")) {
         let currentPeriod = 0;
         for (let periodCode in sortedGrades) {
             if (Date.now() > sortedGrades[periodCode].endDate) {
@@ -640,6 +641,7 @@ export default function App() {
             "keepOnFire": 0,
             "meh": 0,
         };
+        const newLastGrades = []
         if (periodsFromJson !== undefined) {
             for (let period of periodsFromJson) {
                 if (period) {
@@ -699,12 +701,15 @@ export default function App() {
                         });
                     }
                     periods[period.codePeriode] = newPeriod;
-                    generalAverageHistory[period.codePeriode] = {generalAverages: [], dates: []};
+                    generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
                     streakScoreHistory[period.codePeriode] = [];
                 }
             }
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
+
+            const lastGrades = gradesFromJson.slice(-3)
+
 
             for (let grade of (gradesFromJson ?? [])) {
                 const periodCode = grade.codePeriode;
@@ -748,7 +753,7 @@ export default function App() {
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
                 newGrade.value = isNaN(getGradeValue(grade.valeur)) ? "N/A" : getGradeValue(grade.valeur);
                 newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
-                newGrade.classMax = isNaN(parseFloat( grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
+                newGrade.classMax = isNaN(parseFloat(grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
                 newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
@@ -838,7 +843,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.greatStudent++
                         totalBadges.greatStudent++
                     }
-                    if ((newGrade.value/newGrade.scale*20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
+                    if ((newGrade.value / newGrade.scale * 20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
                         gradeBadges.push("stonks");
                         periods[periodCode].subjects[subjectCode].badges.stonks++
                         totalBadges.stonks++
@@ -848,7 +853,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.keepOnFire++
                         totalBadges.keepOnFire++
                     }
-                    if ((newGrade.value/newGrade.scale*20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
+                    if ((newGrade.value / newGrade.scale * 20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
                         gradeBadges.push("meh");
                         periods[periodCode].subjects[subjectCode].badges.meh++
                         totalBadges.meh++
@@ -858,6 +863,9 @@ export default function App() {
                 newGrade.skill = formatSkills(grade.elementsProgramme)
 
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
+                if (lastGrades.includes(grade)) {
+                    newLastGrades.push(newGrade)
+                }
             }
         }
 
@@ -883,7 +891,7 @@ export default function App() {
         if (Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
-        
+
         const settings = grades[activeAccount].parametrage;
         const enabledFeatures = {};
 
@@ -914,6 +922,7 @@ export default function App() {
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
+        changeUserData("lastGrades", newLastGrades);
         setDefaultPeriod(periods)
     }
 
@@ -940,11 +949,11 @@ export default function App() {
                 case "Retard":
                     sortedSchoolLife.delays.push(newItem);
                     break;
-                    
+
                 case "Absence":
                     sortedSchoolLife.absences.push(newItem);
                     break;
-                    
+
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
                     break;
@@ -1028,7 +1037,7 @@ export default function App() {
         // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-        // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
+            // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
                 // GESTION DATA
@@ -1210,7 +1219,7 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    import("./data/test_grades.json").then((module) => {
+                    import("./data/grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
                     })
@@ -1313,7 +1322,7 @@ export default function App() {
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
 
-    function resetUserData(hard=true) {
+    function resetUserData(hard = true) {
         if (hard) {
             setUserIds({});
             setActiveAccount(0);

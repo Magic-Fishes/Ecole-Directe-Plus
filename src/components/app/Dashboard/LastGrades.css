@@ -1,0 +1,41 @@
+.last-grades .window-content {
+    container-type: size;
+}
+
+.last-grades-container {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    list-style-type: none;
+    gap: 20px;
+}
+
+.last-grade-container {
+    height: 100%;
+    width: 100%;
+}
+
+.last-grade-wrapper {
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    gap: 20px;
+}
+
+.last-grade-value {
+    flex: 1;
+    height: 40%;
+}
+
+.last-grade-name {
+    flex: 5;
+}
+
+.badge-list-container {
+    flex: 3;
+}
