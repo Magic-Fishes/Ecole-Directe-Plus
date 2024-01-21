@@ -560,14 +560,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 return 0;
             }
             reorderStarted = true;
-            if (!event.touches) {
-                // prevent from selecting
-                if (window.getSelection) {
-                    var selection = window.getSelection();
-                    selection.removeAllRanges();
-                }
-                preventDraggingIssues(targetWindow);
+            // prevent from selecting
+            if (window.getSelection) {
+                var selection = window.getSelection();
+                selection.removeAllRanges();
             }
+            preventDraggingIssues(targetWindow);
 
             // vibrate (android only)
             if ("vibrate" in navigator) {
@@ -646,7 +644,12 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             requestFullscreen = handleFullscreen(targetWindow);
         }
         if (event.touches) {
-            preventDraggingIssues(targetWindow);
+            const allElements = document.querySelectorAll('*');
+            allElements.forEach(element => {
+                element.style.userSelect = "none";
+                element.style.webkitUserSelect = "none";
+            });
+            // preventDraggingIssues(targetWindow);
         }
         // console.log("target:", targetWindow, "| mousedown");
 
