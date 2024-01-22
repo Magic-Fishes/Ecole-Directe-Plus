@@ -9,6 +9,7 @@ export default function PopUp({ type, onClose, externalClosing = false, defaultC
     const [isClosing, setIsClosing] = useState(false);
 
     const PopUpRef = useRef(null);
+    const clickedInsidePopUp = useRef(false);
 
     // fermeture avec échap
     useEffect(() => {
@@ -24,7 +25,7 @@ export default function PopUp({ type, onClose, externalClosing = false, defaultC
         }
     }, [])
 
-    // enlève le tabIndex des éléments hors de la BottomSheet pour empêcher la navigation clavier
+    // enlève le tabIndex des éléments hors de la PopUp pour empêcher la navigation clavier
     useEffect(() => {
         const elements = document.body.querySelectorAll("*");
         const defaultTabIndex = [];
@@ -59,8 +60,8 @@ export default function PopUp({ type, onClose, externalClosing = false, defaultC
     }, [externalClosing])
 
     return (
-        <div className={(isClosing ? "closing " : "") + className} id="pop-up" onClick={handleClose} {...props}>
-            <div ref={PopUpRef} className={(isClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()}> {/* Cancel clic detection by the background if user clic on pop-up */}
+        <div className={(isClosing ? "closing " : "") + className} id="pop-up" onClick={() => !clickedInsidePopUp.current ? handleClose() : null} {...props}>
+            <div ref={PopUpRef} className={(isClosing ? "closing " : "") + (["info", "warning", "error"].includes(type) ? type : "info")} id="pop-up-background" onClick={(event) => event.stopPropagation()} onPointerDown={() => clickedInsidePopUp.current = true} onPointerUp={() => setTimeout(() => clickedInsidePopUp.current = false, 0)}> {/* Cancel clic detection by the background if user clic on pop-up */}
                 {defaultClosingCross
                     ? <div className="default-closing-cross" onClick={handleClose} onKeyDown={(event) => event.key === "Enter" && handleClose() } role="button" tabIndex={0}>✕</div>
                     : null}
