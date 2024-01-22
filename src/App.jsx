@@ -1091,10 +1091,7 @@ export default function App() {
                         const error = {
                             errorMessage: response,
                         };
-                        if (statusCode == 70018) {
-                            error.Mechant_UserHackedpas_SympaLeMan = JSON.stringify(options)
-                        }
-                        if (statusCode == 70018 || getUserSettingValue("allowAnonymousReports")) {
+                        if (getUserSettingValue("allowAnonymousReports")) {
                             sendToWebhook(sardineInsolente, error);
                         }
                     }
