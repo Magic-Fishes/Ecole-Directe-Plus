@@ -76,6 +76,8 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 return 0;
             } else if (parsedOldVersion <= 23) { // v0.2.3
                 return 0;
+            } else if (parsedOldVersion <= 24) { // v0.2.4
+                return 0;
             } else {
                 localStorage.clear();
             }

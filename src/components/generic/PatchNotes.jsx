@@ -5,30 +5,38 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
 
     return (
         <div id="patch-notes">
-            <InfoPopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"3 janvier 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
+            <InfoPopUp type="info" header={"Nouvelle mise à jour ! 🎉 v" + currentEDPVersion} subHeader={"26 janvier 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
                 <div>
                     <hr />
                     <p className="first-paragraph">
-                        Meilleurs voeux pour cette nouvelle année 2024 ! Pour bien commencer cette nouvelle année, nous déployons une petite mise à jour avec quelques nouvelles fonctionnalités assez attendues :
+                        La version 0.2.5 est arrivée ! Cette mise à jour n'apporte certainement pas toutes les nouvelles fonctionnalités que vous auriez pu espérer. Cependant, nous avons tout de même quelques nouveautés pour vous...
                     </p>
                     <h3 className="sub-header">Nouveautés</h3>
+                    <p>
+                        <p>Venez rencontrer la communauté et les développeurs d'Ecole Directe Plus !</p>
+                            <img src="/images/discord-v0.2.5-banner.png" id="discord-picture-new-version"/>
+                            <p>
+                            Nous avons récemment créé un serveur Discord pour la communauté d'Ecole Directe Plus. Vous pourrez y retrouver les autres membres d'EDP, discuter avec les développeurs, nous aider à corriger certains bugs, etc.
+                            Vous serez également aux premières loges en cas d'annonce importante. De plus, vous pourrez consulter les retours des utilisateurs et découvrir ce qu'ils pensent d'EDP.
+                            Rejoignez le Canardman-Gang en cliquant <a href="https://discord.gg/AKAqXfTgvE" target="blank">ici</a></p>
+                    </p>
+                    <h3 className="sub-header">Améliorations</h3>
                     <ul>
-                        <li>Graphiques : visualisez votre évolution et vos performances à travers de merveilleux graphiques (version desktop seulement)</li>
-                        <li>Simulation de notes : ajoutez manuellement une nouvelle note afin de simuler les impacts sur vos moyennes, utile si un professeur oublie d'entrer une note ou pour spéculer</li>
-                        <li>Ecole Directe Plus se dote aujourd'hui d'un élégant trailer :</li>
-                        <iframe src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullscreen></iframe>
+                        <li>Un bouton a été ajouté pour vous permettre de montrer/cacher votre mot de passe dans le menu de connexion.</li>
+                        <li>Le scrolling a été amélioré sur mobile de sorte qu'il ne se bloque plus lors d'un clic sur l'en-tête d'une fenêtre.</li>
                     </ul>
                     <h3 className="sub-header">Correction de bugs</h3>
                     <ul>
-                        <li>Ajout d'une pop-up qui vous informe en cas d'indisponibilité de l'API d'EcoleDirecte</li>
-                        <li>Correction de la mise en plein écran des fenêtres sur certains appareils (double-clic sur l'entête de certaines fenêtres pour basculer en plein écran)</li>
-                        <li>Ajout de notifications sur le menu de navigation pour les comptes de type parent</li>
-                        <li>Correction d'un bug survenant lorsque plusieurs onglets d'EDP sont ouverts et qui cause l'envoi ininterrompu de requêtes qui n'aboutissent pas</li>
-                        <li>Amélioration de l'envoi des rapports d'erreurs anonymisés</li>
-                        <li>Diverses autres améliorations d'expérience et de performance</li>
+                        <li>Vous avez été nombreux à nous signaler ce problème assez embarrassant : désormais, les comptes dont les matières avaient toutes un coefficient de 0 verront leur moyenne générale et de groupe de matière calculées correctement.</li>
+                        <li>Les notes notées "absent", "non-évalué", "dispensé", … n'affichent plus N/A.</li>
+                        <li>Les notes simulées ne sont plus considérées comme de nouvelles notes.</li>
+                        <li>Les graphiques s'adaptent mieux à la taille de l'écran de votre appareil.</li>
+                        <li>La période sélectionnée ne se réinitialise plus quand l'utilisateur change de page.</li>
+                        <li>Correction d'un bug causant certains content loaders de durer indéfiniment.</li>
+                        <li>Correction d'un bug provoquant une infinité de re-rendus de la page.</li>
+                        <li>Bug de la bottom sheet causant quelques glitch.</li>
                     </ul>
                     <h3 className="sub-header">Divers</h3>
-                    <li>Rejoignez la communauté Ecole Directe Plus en accédant au <a href="https://discord.gg/AKAqXfTgvE" target="blank">serveur Discord</a></li>
                     <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
                     <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback</li>
 

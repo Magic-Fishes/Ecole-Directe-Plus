@@ -13,3 +13,13 @@
 #info-pop-up-content .first-paragraph {
     margin-top: 15px;
 }
+
+#info-pop-up-content {
+    text-align: justify;
+}
+
+
+#discord-picture-new-version {
+    width: 100%;
+    padding: 15px;
+}
