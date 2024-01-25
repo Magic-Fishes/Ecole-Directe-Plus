@@ -51,7 +51,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
+    const { actualDisplayTheme, useUserSettings, useUserData, fetchCorrection } = useContext(AppContext);
 
     const settings = useUserSettings();
     const grades = useUserData();
@@ -65,6 +65,14 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     newGrade.examSubjectSRC = grade.uncSujet;
     newGrade.examCorrectionSRC = grade.uncCorrige;
     */
+
+    async function openPDF(file, id) {
+        fetchCorrection(file, id)
+        .then((href) => {
+            console.log(href)
+            window.open(href, '_blank');
+        })
+    }
 
     return (
         <Window className="information">
@@ -162,7 +170,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Moyenne</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
+                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div> {/* Pour le bug de Label avec certaines notes ne contenant pas la moyenne min et max */}
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
@@ -194,8 +202,8 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         </div>
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
                         {/* <div className="files">
-                            <div style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></div>
-                            <div style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></div>
+                            <a style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></a>
+                            <div target="_blank" onClick={async () => {openPDF(selectedElement.examCorrectionSRC, selectedElement.id)}} style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}><svg>caca</svg></div>
                         </div> */}
                     </div>
                     {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">
