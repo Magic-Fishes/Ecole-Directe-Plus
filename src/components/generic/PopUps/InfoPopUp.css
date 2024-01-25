@@ -93,7 +93,10 @@
     border-radius: 20px;
     padding: 15px;
     padding-top: 0;
-    max-height: 300px;
+    /* max-height: 300px; */
+    max-height: 425px;
+    /* max-height: 500px; */
+    /* max-height: 640px; */
     overflow-y: auto;
     list-style-position: inside;
 }
