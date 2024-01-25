@@ -8,6 +8,7 @@ import {
     WindowContent
 } from "../../generic/Window";
 
+import InfoButton from "../../generic/Informative/InfoButton";
 import Grade from "./Grade";
 
 import "./Strengths.css";
@@ -53,6 +54,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
     return (<Window className={`strengths ${className}`} {...props}>
         <WindowHeader>
             <h2>Vos points forts</h2>
+            <InfoButton className="strengths-info">Calculés en fonction de la différence entre votre moyenne et celle de la classe</InfoButton>
         </WindowHeader>
         <WindowContent>
             {sortedGrades && sortedGrades[selectedPeriod]

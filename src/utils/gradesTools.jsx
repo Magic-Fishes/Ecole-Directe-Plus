@@ -11,7 +11,9 @@ export function getGradeValue(gradeValue) {
         return "Comp"
     }
 
-    return parseFloat(gradeValue?.replace(",", "."));
+    const output = parseFloat(gradeValue?.replace(",", "."));
+
+    return isNaN(output) ? "N/A" : output;
 }
 
 export function calcAverage(list) {

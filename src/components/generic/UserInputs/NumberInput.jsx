@@ -5,14 +5,22 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 
 import "./NumberInput.css";
 
-export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, displayArrowsControllers=true, step=1, className = "", id = "", ...props }) {
+export default function NumberInput({ min, max, value, onChange, active=true, disabled=false, displayArrowsControllers=true, instantFocus=false, step=1, className = "", id = "", ...props }) {
     const timeoutId = useRef(0);
     const intervalId = useRef(0);
     const initialValue = useRef(value);
     const valueRef = useRef(value);
+    
+    const numberInputRef = useRef(null);
+    useEffect(() => {
+        if (instantFocus) {
+            numberInputRef.current?.focus();
+            numberInputRef.current?.select();
+        }
+    }, [])
 
     function submitValue(value) {
-        onChange(parseFloat(parseFloat(value).toFixed(3)))
+        onChange(parseFloat(parseFloat(value).toFixed(2)))
     }
 
     function handleChange(event) {
@@ -46,6 +54,10 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     useEffect(() => {
         valueRef.current = value;
     }, [value])
+    
+    useEffect(() => {
+        changeValueBy(0);
+    }, [min, max])
     
     const handleButtonPress = (delta) => {
         changeValueBy(delta);
@@ -84,6 +96,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             <input
                 className={`number-input`}
                 disabled={disabled}
+                ref={numberInputRef}
                 min={min}
                 max={max}
                 type="number"

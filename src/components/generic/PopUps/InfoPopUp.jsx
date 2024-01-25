@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PopUp from "./PopUp"
 
-import "./InfoPopUp.css"
+import "./InfoPopUp.css";
 
 const closingCooldown = 300; // milliseconds
 

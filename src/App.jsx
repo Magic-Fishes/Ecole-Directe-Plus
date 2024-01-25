@@ -746,7 +746,7 @@ export default function App() {
                 newGrade.entryDate = new Date(grade.dateSaisie);
                 newGrade.coef = parseFloat(grade.coef);
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
-                newGrade.value = isNaN(getGradeValue(grade.valeur)) ? "N/A" : getGradeValue(grade.valeur);
+                newGrade.value = getGradeValue(grade.valeur);
                 newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
                 newGrade.classMax = isNaN(parseFloat( grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
                 newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
@@ -880,7 +880,8 @@ export default function App() {
                 delete periods[key];
             }
         }
-        if (Object.keys(periods).length < 1) {
+        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
+        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
         
@@ -909,7 +910,6 @@ export default function App() {
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
-        console.log("changeUserData sortedGrades")
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
@@ -1091,10 +1091,7 @@ export default function App() {
                         const error = {
                             errorMessage: response,
                         };
-                        if (statusCode == 70018) {
-                            error.Mechant_UserHackedpas_SympaLeMan = JSON.stringify(options)
-                        }
-                        if (statusCode == 70018 || getUserSettingValue("allowAnonymousReports")) {
+                        if (getUserSettingValue("allowAnonymousReports")) {
                             sendToWebhook(sardineInsolente, error);
                         }
                     }
@@ -1443,7 +1440,6 @@ export default function App() {
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
 
-                    addNewGrade={addNewGrade}
                     proxyError={proxyError}
                 />
             ,

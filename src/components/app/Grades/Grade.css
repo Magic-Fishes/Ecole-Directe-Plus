@@ -60,7 +60,7 @@ a.grade.selectable .grade-container {
     justify-content: center;
 }
 
-a.grade.new-grade {
+a.grade:is(.new-grade, .sim-grade) {
     position: relative;
 }
 

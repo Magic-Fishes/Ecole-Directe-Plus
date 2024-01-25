@@ -83,7 +83,7 @@ export default function DropDownMenu({ name, options, displayedOptions=options, 
         <div className={`drop-down-menu ${className}` + (isOpen ? " focus" : "")} id={id}>
             <div className="main-container">
                 <button type="button" className="selected" onClick={handleClick} ref={dropDownMenuRef}>
-                    <span id="selected-option-value">{(options.length < 1 || options[0] === "") ? "...................." : displayedOptions[options.indexOf(selected)]}</span>
+                    <span id="selected-option-value">{(options.length < 1 || options[0] === "") ? "•••••••••••••" : displayedOptions[options.indexOf(selected)]}</span>
                     <DropDownArrow />
                 </button>
                 <div className="animation-wrapper">

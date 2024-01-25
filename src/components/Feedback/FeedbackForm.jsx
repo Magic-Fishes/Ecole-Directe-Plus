@@ -347,10 +347,9 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
             <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
             <div id="publish">
                 <span>
-                    <CheckBox id="remain-allow-sharing" label="Autoriser la publication" checked={allowSharing} onChange={() => setAllowSharing(!allowSharing)} />
-                    <InfoButton>Si votre retour est publié, il sera toujours anonyme</InfoButton>
+                    <CheckBox id="remain-allow-sharing" label={<span id="publish-info">Autoriser la publication sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">Discord communautaire</a></span>} checked={allowSharing} onChange={() => setAllowSharing(!allowSharing)} />
+                    <InfoButton>Tous les retours sont modérés et anonymisés avant publication</InfoButton>
                 </span>
-                <p id="publish-info">Accepter la publication sur notre <a href="https://discord.gg/AKAqXfTgvE">Discord</a> communautaire.</p>
             </div>
             <div id="contact">
                 <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />

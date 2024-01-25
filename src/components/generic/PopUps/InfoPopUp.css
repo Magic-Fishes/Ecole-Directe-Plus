@@ -106,8 +106,10 @@
     #info-pop-up-header {
         margin-inline: 10px;
     }
-    
-    .close-button {
+    #pop-up-background:has(#info-pop-up) {
+        padding-inline: 15px;
+    }
+    #info-pop-up .close-button {
         right: 0;
     }
 }
