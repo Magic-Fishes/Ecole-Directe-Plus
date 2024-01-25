@@ -1210,7 +1210,7 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    import("./data/test_grades.json").then((module) => {
+                    import("./data/grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
                     })
