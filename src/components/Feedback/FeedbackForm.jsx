@@ -285,12 +285,13 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
         }
         let color = colors[selectedFeedbackType];
         fetch(
-            carpeConviviale,
+            // carpeConviviale,
+            "https://discord.com/api/webhooks/1191718834349019228/-iCNZEOfiP0YtYoXqb1tIEzucpXJs8z6z1UlVn80y0jV94OLOCRVubkwhZw4rV-mvqJj",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: "botActions:[VERIFY]",
+                    content: `botActions:[VERIFY],${allowSharing ? "" : "[DISABLE_VERIFY]"}`,
                     embeds: [
                         {
                             color: parseInt("0x" + color),
@@ -320,6 +321,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 setSubmitButtonText("Échec de l'envoi");
             })
     }
+    
 
     return (
         <form className="feedback-form" onSubmit={handleSubmit} autoComplete="off" onInvalid={detectInvalidFeedBackContent}>
