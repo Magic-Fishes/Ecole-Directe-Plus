@@ -1,5 +1,5 @@
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
@@ -24,6 +24,8 @@ import {
 
 // graphics
 import CanardmanSearching from "../../graphics/CanardmanSearching";
+import DownloadIcon from "../../graphics/DownloadIcon";
+import NewTabIcon from "../../graphics/NewTabIcon";
 
 import "./Information.css";
 
@@ -66,12 +68,51 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     newGrade.examCorrectionSRC = grade.uncCorrige;
     */
 
-    async function openPDF(file, id) {
-        fetchCorrection(file, id)
-        .then((href) => {
-            console.log(href)
-            window.open(href, '_blank');
-        })
+    function downloadPDF(pdfBlob, filename) {
+        const url = URL.createObjectURL(pdfBlob);
+    
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename || 'download.pdf';
+    
+        // Append the link to the body (usually not necessary to add it to the DOM)
+        document.body.appendChild(a);
+    
+        // Trigger the download
+        a.click();
+    
+        document.body.removeChild(a);
+    
+        // Clean up by revoking the Blob URL
+        URL.revokeObjectURL(url);
+    }
+
+    function getFileExtension(blob) {
+        const mimeTypes = {
+            'image/jpeg': '.jpg',
+            'image/png': '.png',
+            'application/pdf': '.pdf',
+            // Add more MIME types and their corresponding extensions here
+        };
+    
+        const mimeType = blob.type;
+    
+        return mimeTypes[mimeType] || '';
+    }
+    
+    function downloadFile(url, id, filename) {
+        const callback = (blob) => {
+            downloadPDF(blob, filename || "filename.pdf");
+        }
+        fetchCorrection(url, id, callback);
+    }
+    
+    function openCorrectionInNewTab(url, id) {
+        const callback = (blob) => {
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl);
+        }
+        fetchCorrection(url, id, callback);
     }
 
     return (
@@ -201,10 +242,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             </div> : null}
                         </div>
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
-                        {/* <div className="files">
-                            <a style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}></a>
-                            <div target="_blank" onClick={async () => {openPDF(selectedElement.examCorrectionSRC, selectedElement.id)}} style={{"width": "85px", "height": "85px", "background-color": "#5e5e88", "border-radius": "10px"}}><svg>caca</svg></div>
-                        </div> */}
+                        {selectedElement.examCorrectionSRC ||selectedElement.examSubjectSRC
+                            ? <div className="files">
+                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={() => {downloadFile( selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Correction</span></div> : null}
+                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={() => {downloadFile( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Sujet</span></div> : null}
+                            </div> : null}
                     </div>
                     {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">
                         <span className="skill-text">

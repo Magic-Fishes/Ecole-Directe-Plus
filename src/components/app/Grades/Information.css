@@ -84,8 +84,8 @@
 .information .info-zone {
     padding: 10px;
     display: flex;
-    flex-grow: 1;
-    gap: 5px;
+    flex-flow: column nowrap;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
@@ -96,11 +96,39 @@
 }
 
 .information .files {
-    padding-block: 10px;
     display: flex;
     flex-grow: 1;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.information .file {
+    flex: 1;
+    height: 85px;
+    background-color: rgb(var(--background-color-3));
+    border-radius: 10px;
+    
+    cursor: pointer;
+    
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
     gap: 5px;
+}
+.information .file:is(:focus-visible, :hover) {
+    background-color: rgba(var(--background-color-3), .6);
+}
+.information .file:active {
+    background-color: rgba(var(--background-color-3), .8);    
+}
+
+.information .file .download-icon {
+    height: 40px;
+}
+
+.information .file .sub-text {
+    color: rgb(var(--text-color-alt));
 }
 
 .information .badges-zone {

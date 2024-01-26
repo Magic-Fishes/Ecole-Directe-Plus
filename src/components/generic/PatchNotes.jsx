@@ -9,16 +9,16 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                 <div>
                     <hr />
                     <p className="first-paragraph">
-                        La version 0.2.5 est arrivée ! Cette mise à jour n'apporte certainement pas toutes les nouvelles fonctionnalités que vous auriez pu espérer. Cependant, nous avons tout de même quelques nouveautés pour vous...
+                        La version 0.2.5 est arrivée ! Cette mise à jour n'apporte certainement pas toutes les nouvelles fonctionnalités que vous auriez pu espérer. Toutefois, nous avons quelques nouveautés pour vous...
                     </p>
                     <h3 className="sub-header">Nouveautés</h3>
                     <p>
-                        <p>Venez rencontrer la communauté et les développeurs d'Ecole Directe Plus !</p>
+                        <p>Rencontrez la communauté et les développeurs d'Ecole Directe Plus en rejoignant le <a target="_blank" href="https://discord.gg/AKAqXfTgvE">serveur Discord</a> !</p>
                             <img src="/images/discord-v0.2.5-banner.png" id="discord-picture-new-version"/>
                             <p>
-                            Nous avons récemment créé un serveur Discord pour la communauté d'Ecole Directe Plus. Vous pourrez y retrouver les autres membres d'EDP, discuter avec les développeurs, nous aider à corriger certains bugs, etc.
+                            Nous avons récemment créé un serveur Discord communautaire pour Ecole Directe Plus. Vous pourrez y retrouver les autres adeptes d'EDP, discuter avec les développeurs, nous aider à corriger les bugs que vous rencontrez, etc.
                             Vous serez également aux premières loges en cas d'annonce importante. De plus, vous pourrez consulter les retours des utilisateurs et découvrir ce qu'ils pensent d'EDP.
-                            Rejoignez le Canardman-Gang en cliquant <a href="https://discord.gg/AKAqXfTgvE" target="blank">ici</a></p>
+                            Rejoignez le <span style={{ fontStyle: "italic"}}>Canardman-Gang</span> en <a href="https://discord.gg/AKAqXfTgvE" target="_blank">cliquant ici</a></p>
                     </p>
                     <h3 className="sub-header">Améliorations</h3>
                     <ul>
@@ -32,9 +32,10 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Les notes simulées ne sont plus considérées comme de nouvelles notes.</li>
                         <li>Les graphiques s'adaptent mieux à la taille de l'écran de votre appareil.</li>
                         <li>La période sélectionnée ne se réinitialise plus quand l'utilisateur change de page.</li>
-                        <li>Correction d'un bug causant certains content loaders de durer indéfiniment.</li>
-                        <li>Correction d'un bug provoquant une infinité de re-rendus de la page.</li>
+                        <li>Correction d'un bug causant une animation de chargement infinie.</li>
+                        <li>Correction d'un bug provoquant une infinité de ré-rendus de la page.</li>
                         <li>Bug de la bottom sheet causant quelques glitch.</li>
+                        <li>Amélioration générale des performances et de la stabilité</li>
                     </ul>
                     <h3 className="sub-header">Divers</h3>
                     <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>

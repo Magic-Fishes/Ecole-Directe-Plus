@@ -1158,37 +1158,42 @@ export default function App() {
             })
     }
 
-    async function fetchCorrection(file, id, callback, controller = (new AbortController())) {
+    async function fetchCorrection(file, id, callback=(() => {}), controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        const userId = activeAccount;
         const data = {
             forceDownload: 0,
             idDevoir: id
         }
         return await fetch(
-            `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
+            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
+            `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
+            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
                     "user-agent": navigator.userAgent,
                     "x-token": tokenState
                 },
+                cors: "no-cors",
                 body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal
+                signal: controller.signal,
+                redirect: 'follow'
             },
         )
             .then(response => response.blob())
-            .then(blob => {
-                console.log(blob.type)
-                const blobUrl = URL.createObjectURL(blob);
-                return blobUrl
-            })
+            .then(blob => callback(blob))
+            // .then(blob => {
+            //     console.log(blob.type)
+            //     const blobUrl = URL.createObjectURL(blob);
+            //     return blobUrl
+            // })
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             })
 
     }
+
     async function fetchUserGrades(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
