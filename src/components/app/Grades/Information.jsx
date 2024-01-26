@@ -1,5 +1,5 @@
 
-import { useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
@@ -25,7 +25,7 @@ import {
 // graphics
 import CanardmanSearching from "../../graphics/CanardmanSearching";
 import DownloadIcon from "../../graphics/DownloadIcon";
-import NewTabIcon from "../../graphics/NewTabIcon";
+import LoadingAnimation from "../../graphics/LoadingAnimation";
 
 import "./Information.css";
 
@@ -50,6 +50,9 @@ function findGradesObjectById(list, value) {
 }
 
 export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
+    const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
+    const [isSubjectLoading, setIsSubjectLoading] = useState(false);
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -100,11 +103,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
         return mimeTypes[mimeType] || '';
     }
     
-    function downloadFile(url, id, filename) {
+    async function downloadFile(url, id, filename) {
         const callback = (blob) => {
             downloadPDF(blob, filename || "filename.pdf");
         }
-        fetchCorrection(url, id, callback);
+        await fetchCorrection(url, id, callback);
     }
     
     function openCorrectionInNewTab(url, id) {
@@ -244,8 +247,8 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
                         {selectedElement.examCorrectionSRC ||selectedElement.examSubjectSRC
                             ? <div className="files">
-                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={() => {downloadFile( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Sujet</span></div> : null}
-                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={() => {downloadFile( selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Correction</span></div> : null}
+                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={async () => {setIsSubjectLoading(true); await downloadFile( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examSubjectSRC?.split(".").at(-1)); setIsSubjectLoading(false)}}><DownloadIcon className="download-icon" /><span className="sub-text">Sujet</span></div> : null}
+                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={async () => {setIsCorrectionLoading(true); await downloadFile(selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examCorrectionSRC?.split(".").at(-1)); setIsCorrectionLoading(false)}}>{isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Correction</span></div> : null}
                             </div> : null}
                     </div>
                     {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">

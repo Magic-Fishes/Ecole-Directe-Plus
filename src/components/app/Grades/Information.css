@@ -127,6 +127,14 @@
     height: 40px;
 }
 
+.information .file .download-loading-animation {
+    height: 40px;
+}
+.information .file .download-loading-animation circle {
+    height: 40px;
+    stroke: rgb(var(--text-color-alt));
+}
+
 .information .file .sub-text {
     color: rgb(var(--text-color-alt));
 }
