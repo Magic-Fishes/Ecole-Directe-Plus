@@ -244,8 +244,8 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
                         {selectedElement.examCorrectionSRC ||selectedElement.examSubjectSRC
                             ? <div className="files">
-                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={() => {downloadFile( selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Correction</span></div> : null}
                                 {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={() => {downloadFile( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Sujet</span></div> : null}
+                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={() => {downloadFile( selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + ".pdf")}}><DownloadIcon className="download-icon" /><span className="sub-text">Correction</span></div> : null}
                             </div> : null}
                     </div>
                     {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">

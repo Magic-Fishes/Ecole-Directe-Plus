@@ -15,11 +15,16 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                     <p>
                         <p>Rencontrez la communauté et les développeurs d'Ecole Directe Plus en rejoignant le <a target="_blank" href="https://discord.gg/AKAqXfTgvE">serveur Discord</a> !</p>
                             <img src="/images/discord-v0.2.5-banner.png" id="discord-picture-new-version"/>
-                            <p>
-                            Nous avons récemment créé un serveur Discord communautaire pour Ecole Directe Plus. Vous pourrez y retrouver les autres adeptes d'EDP, discuter avec les développeurs, nous aider à corriger les bugs que vous rencontrez, etc.
-                            Vous serez également aux premières loges en cas d'annonce importante. De plus, vous pourrez consulter les retours des utilisateurs et découvrir ce qu'ils pensent d'EDP.
-                            Rejoignez le <span style={{ fontStyle: "italic"}}>Canardman-Gang</span> en <a href="https://discord.gg/AKAqXfTgvE" target="_blank">cliquant ici</a></p>
+                            <details>
+                                <summary>Plus d'informations</summary>
+                                <p>
+                                Nous avons récemment créé un serveur Discord communautaire pour Ecole Directe Plus. Vous pourrez y retrouver les autres adeptes d'EDP, discuter avec les développeurs, nous aider à corriger les bugs que vous rencontrez, etc.
+                                Vous serez également aux premières loges en cas d'annonce importante. De plus, vous pourrez consulter les retours des utilisateurs et découvrir ce qu'ils pensent d'EDP.
+                                Rejoignez le <span style={{ fontStyle: "italic"}}>Canardman-Gang</span> en <a href="https://discord.gg/AKAqXfTgvE" target="_blank">cliquant ici</a></p>
+                            </details>
                     </p>
+                    <br />
+                    <li>Ajout de boutons dans la catégorie "Informations" pour télécharger le sujet et la correction d'une évaluation s'ils sont disponibles.</li>
                     <h3 className="sub-header">Améliorations</h3>
                     <ul>
                         <li>Un bouton a été ajouté pour vous permettre de montrer/cacher votre mot de passe dans le menu de connexion.</li>
@@ -35,11 +40,13 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Correction d'un bug causant une animation de chargement infinie.</li>
                         <li>Correction d'un bug provoquant une infinité de ré-rendus de la page.</li>
                         <li>Bug de la bottom sheet causant quelques glitch.</li>
-                        <li>Amélioration générale des performances et de la stabilité</li>
+                        <li>Amélioration générale des performances et de la stabilité.</li>
                     </ul>
                     <h3 className="sub-header">Divers</h3>
                     <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
                     <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback</li>
+                    <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
+                    <iframe style={ { display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" } } src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullscreen></iframe>
 
                     {/* <ul>
             v0.2.3
