@@ -51,6 +51,10 @@ export default function Policy({ onCloseNavigateURL }) {
             - {leadDeveloppers[firstLeadDeveloppersDisplayedIdx]}<br />
             - {leadDeveloppers[leadDeveloppers.length-firstLeadDeveloppersDisplayedIdx-1]}<br /><br />
 
+            Autres contributeurs :<br />
+            - Akash Banchhor<br />
+            - Oeil-de-Lynx<br /><br />
+
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - ImgBB<br />
@@ -63,7 +67,9 @@ export default function Policy({ onCloseNavigateURL }) {
             - React<br />
             - React Router<br />
             - Floating UI<br />
-            - CryptoJS <br />
+            - CryptoJS<br />
+            - UUID<br />
+            - Body Scroll Lock<br />
             - React Content Loader<br /><br />
 
             Testeurs de pré-lancement :<br />
