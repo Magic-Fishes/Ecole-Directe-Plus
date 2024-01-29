@@ -46,7 +46,7 @@ export default function DOMSimulation({ children }) {
     
     function closeSimulationPopUp() {
         setGradeSimulationPopUpClosing(false);
-        setTimeout(() => {setGradeSimulationPopUp(false)}, 500)  
+        setTimeout(() => {setGradeSimulationPopUp(false)}, 500);
     }
     
     return (

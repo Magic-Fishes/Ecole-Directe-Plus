@@ -1053,7 +1053,7 @@ export default function App() {
                         // compte élève
                         accountsList.push({
                             accountType: "E", // type de compte
-                            lastConnection: new Date(accounts.lastConnexion),
+                            lastConnection: accounts.lastConnexion,
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
                             lastName: accounts.nom, // nom de famille de l'élève
@@ -1069,7 +1069,7 @@ export default function App() {
                         accounts.profile.eleves.map((account) => {
                             accountsList.push({
                                 accountType: "P",
-                                lastConnection: new Date(accounts.lastConnexion),
+                                lastConnection: accounts.lastConnexion,
                                 id: account.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,

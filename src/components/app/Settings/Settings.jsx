@@ -21,7 +21,7 @@ import "./Settings.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
-    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isTabletLayout } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
