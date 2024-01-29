@@ -154,6 +154,10 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
                 </div>
 
+                <div className="setting" id="photo-blur">
+                    <CheckBox id="photo-blur-cb" label={<span>Activer le floutage de la photo</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
+                </div>
+
                 <div className="setting" id="reset-windows-layouts">
                     <span>Réinitialiser l'agencement des fenêtres</span> <Button onClick={() => settings.set("windowArrangement", [])}>Réinitialiser</Button>
                 </div>
