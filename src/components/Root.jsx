@@ -160,8 +160,10 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         const isSepiaEnabled = settings.get("isSepiaEnabled");
         const isHighContrastEnabled = settings.get("isHighContrastEnabled");
         const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
+        const isPhotoBlurEnabled = settings.get("isPhotoBlurEnabled");
 
         let filters = "";
+        let photoFilters = "";
         if (isSepiaEnabled) {
             filters += "sepia(.5) ";
         }
@@ -171,9 +173,15 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         if (isGrayscaleEnabled) {
             filters += "grayscale(1) ";
         }
+        if (isPhotoBlurEnabled) {
+            photoFilters += "blur(5px) ";
+        }
 
         document.documentElement.style.filter = filters;
-    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled")])
+        if (localStorage.token) {
+            document.querySelector(".profile-picture").style.filter = photoFilters;
+        }
+    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled"), settings.get("isPhotoBlurEnabled")])
 
 
     // - - - - - - - - - - - - - - - - - - - - //

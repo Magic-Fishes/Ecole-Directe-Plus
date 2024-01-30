@@ -427,3 +427,10 @@ p.error-message a {
 ::-webkit-scrollbar-corner {
     background-color: transparent;
 }
+
+@-moz-document url-prefix() {
+    body {
+        scrollbar-color: rgb(var(--background-color-3)) transparent;
+        scrollbar-size: auto;
+    }
+}
