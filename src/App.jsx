@@ -833,7 +833,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.star++
                         totalBadges.star++
                     }
-                    if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
+                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
                         gradeBadges.push("bestStudent");
                         periods[periodCode].subjects[subjectCode].badges.bestStudent++
                         totalBadges.bestStudent++
