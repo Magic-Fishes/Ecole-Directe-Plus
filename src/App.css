@@ -34,6 +34,8 @@
     --font-weight-regular: 400;
     --font-weight-semi-bold: 600;
     --font-weight-extra-bold: 800;
+    
+    --font-family: Inter, sans-serif; /* Default value */
 
     /* responsive */
     --max-width-mobile: 450px;
@@ -302,7 +304,7 @@ body {
 }
 
 body, input, button, textarea {
-    font-family: Inter, sans-serif;
+    font-family: var(--font-family);
 }
 
 /* Button admin root.jsx */

@@ -138,7 +138,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
                 </div>
 
-                <div className="setting disabled" id="luciole-font">
+                <div className="setting" id="luciole-font">
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
