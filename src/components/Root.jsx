@@ -44,6 +44,14 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/login");
     }
 
+
+    function changeFont() {
+        let font = prompt("Enter the font name:", document.documentElement.style.getPropertyValue("--font-family"));
+        if (!(font == null || font == "")) {
+            document.documentElement.style.setProperty("--font-family", font);
+        }
+    }
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
@@ -421,6 +429,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 </form>}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
+                {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
             </div>
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
