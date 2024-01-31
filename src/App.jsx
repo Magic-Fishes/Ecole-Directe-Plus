@@ -93,6 +93,7 @@ const defaultSettings = {
     isSepiaEnabled: false,
     isHighContrastEnabled: false,
     isGrayscaleEnabled: false,
+    isPhotoBlurEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
@@ -156,6 +157,9 @@ function initSettings(accountList) {
             },
             isGrayscaleEnabled: {
                 value: getSetting("isGrayscaleEnabled", i),
+            },
+            isPhotoBlurEnabled: {
+                value: getSetting("isPhotoBlurEnabled", i),
             },
             gradeScale: {
                 value: getSetting("gradeScale", i),
