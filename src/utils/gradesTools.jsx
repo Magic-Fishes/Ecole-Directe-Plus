@@ -25,7 +25,7 @@ export function calcAverage(list) {
         }
     }
 
-    const noCoef = !coef
+    const noCoef = !coef;
 
     for (let i of list) {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {

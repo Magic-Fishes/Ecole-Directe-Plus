@@ -2,7 +2,7 @@
 import { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
+import { capitalizeFirstLetter, decodeBase64, downloadFile } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 
@@ -71,53 +71,13 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     newGrade.examCorrectionSRC = grade.uncCorrige;
     */
 
-    function downloadPDF(pdfBlob, filename) {
-        const url = URL.createObjectURL(pdfBlob);
-    
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename || 'download.pdf';
-    
-        // Append the link to the body (usually not necessary to add it to the DOM)
-        document.body.appendChild(a);
-    
-        // Trigger the download
-        a.click();
-    
-        document.body.removeChild(a);
-    
-        // Clean up by revoking the Blob URL
-        URL.revokeObjectURL(url);
-    }
-
-    function getFileExtension(blob) {
-        const mimeTypes = {
-            'image/jpeg': '.jpg',
-            'image/png': '.png',
-            'application/pdf': '.pdf',
-            // Add more MIME types and their corresponding extensions here
-        };
-    
-        const mimeType = blob.type;
-    
-        return mimeTypes[mimeType] || '';
-    }
-    
-    async function downloadFile(url, id, filename) {
+    async function downloadCorrection(url, id, filename) {
         const callback = (blob) => {
-            downloadPDF(blob, filename || "filename.pdf");
+            downloadFile(blob, filename || "filename.pdf");
         }
         await fetchCorrection(url, id, callback);
     }
     
-    function openCorrectionInNewTab(url, id) {
-        const callback = (blob) => {
-            const blobUrl = URL.createObjectURL(blob);
-            window.open(blobUrl);
-        }
-        fetchCorrection(url, id, callback);
-    }
-
     return (
         <Window className="information">
             <WindowHeader>
@@ -247,8 +207,8 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
                         {selectedElement.examCorrectionSRC ||selectedElement.examSubjectSRC
                             ? <div className="files">
-                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={async () => {setIsSubjectLoading(true); await downloadFile( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examSubjectSRC?.split(".").at(-1)); setIsSubjectLoading(false)}}>{isSubjectLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Sujet</span></div> : null}
-                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={async () => {setIsCorrectionLoading(true); await downloadFile(selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examCorrectionSRC?.split(".").at(-1)); setIsCorrectionLoading(false)}}>{isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Correction</span></div> : null}
+                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={async () => {setIsSubjectLoading(true); await downloadCorrection( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examSubjectSRC?.split(".").at(-1)); setIsSubjectLoading(false)}}>{isSubjectLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Sujet</span></div> : null}
+                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={async () => {setIsCorrectionLoading(true); await downloadCorrection(selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examCorrectionSRC?.split(".").at(-1)); setIsCorrectionLoading(false)}}>{isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Correction</span></div> : null}
                             </div> : null}
                     </div>
                     {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">

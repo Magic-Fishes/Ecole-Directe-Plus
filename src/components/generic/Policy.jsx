@@ -53,7 +53,7 @@ export default function Policy({ onCloseNavigateURL }) {
 
             Autres contributeurs :<br />
             - Akash Banchhor<br />
-            - Oeil-de-Lynx<br /><br />
+            - Oeildelynx<br /><br />
 
             APIs et services tiers :<br />
             - EcoleDirecte<br />
