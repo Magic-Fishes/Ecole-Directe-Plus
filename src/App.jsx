@@ -658,6 +658,7 @@ export default function App() {
                     newPeriod.code = period.codePeriode;
                     newPeriod.startDate = new Date(period.dateDebut);
                     newPeriod.endDate = new Date(period.dateFin);
+                    newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
                     newPeriod.subjects = {};
@@ -713,7 +714,17 @@ export default function App() {
             const subjectDatas = {};
 
             for (let grade of (gradesFromJson ?? [])) {
-                const periodCode = grade.codePeriode;
+                // handle mock exam periods
+                let tempPeriodCode = grade.codePeriode;
+                let newPeriodCode = tempPeriodCode;
+                if (periods[tempPeriodCode].isMockExam) {
+                    newPeriodCode = tempPeriodCode.slice(0, 4);
+                    if (periods[newPeriodCode] === undefined) {
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode)-1];
+                    }
+                }
+
+                const periodCode = newPeriodCode;
                 const subjectCode = grade.codeMatiere;
                 // try to rebuild the subject if it doesn't exist (happen when changing school year)
                 if (periods[periodCode].subjects[subjectCode] === undefined) {
@@ -867,7 +878,7 @@ export default function App() {
             }
         }
 
-        // supprime les périodes vides
+        // supprime les périodes vides et examens blancs
         let i = 0;
         let firstPeriod;
         for (const key in periods) {
@@ -882,7 +893,7 @@ export default function App() {
                         isEmpty = false;
                     }
                 }
-            if (isEmpty) {
+            if (isEmpty || periods[key].isMockExam) {
                 delete periods[key];
             }
         }
@@ -1249,7 +1260,7 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = [...grades];
-                    import("./data/grades.json").then((module) => {
+                    import("./data/test_grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
                     })
