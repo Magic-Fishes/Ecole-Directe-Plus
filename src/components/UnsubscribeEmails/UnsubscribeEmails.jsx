@@ -32,7 +32,7 @@ export default function UnsubscribeEmails({ activeUser, thonFrustre }) {
                             color: parseInt("0xB4B4F0"),
                             author: {
                                 name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (activeUser ? activeUser.email : "") + ")",
-                                icon_url: (!activeUser ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://raspi.ecole-directe.plus:3000/proxy?url=https:" + activeUser.picture))
+                                icon_url: (!activeUser ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : getProxiedURL("https:" + activeUser.picture))
                             },
                             title: "Désabonnement aux emails",
                             description: "Cet utilisateur ne souhaite plus recevoir d'email d'Ecole Directe Plus",

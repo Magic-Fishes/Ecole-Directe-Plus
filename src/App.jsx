@@ -20,6 +20,7 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import DOMNotification from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
+import { getProxiedURL } from "./utils/requests";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -1002,11 +1003,6 @@ export default function App() {
         ];
         resetUserData()
         setUserInfo(fakeToken, fakeAccountsList)
-    }
-
-    function getProxiedURL(url) {
-        const proxyURL = "https://raspi.ecole-directe.plus:3000/proxy?url=";
-        return proxyURL + encodeURIComponent(url);
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
