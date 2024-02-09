@@ -1,6 +1,16 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
+@font-face {
+    font-family: 'Luciole';
+    src: url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.eot'); /* IE9 Compat Modes */
+    src: url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.woff') format('woff'), /* Modern Browsers */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.svg#Luciole-Regular') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
 /* body {
     background-color: lightblue !important;
 } */

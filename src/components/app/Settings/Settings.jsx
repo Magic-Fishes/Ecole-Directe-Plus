@@ -155,7 +155,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 </div>
 
                 <div className="setting" id="photo-blur">
-                    <CheckBox id="photo-blur-cb" label={<span>Activer le floutage de la photo</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
+                    <CheckBox id="photo-blur-cb" label={<span>Flouter la photo de profil</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">

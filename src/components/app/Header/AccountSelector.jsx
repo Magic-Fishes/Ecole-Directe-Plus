@@ -25,7 +25,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
 
     const { useUserSettings } = useContext(AppContext);
 
-    const displayTheme = useUserSettings("displayTheme")
+    const settings = useUserSettings();
     
     const [isOpen, setIsOpen] = useState(false);
 
@@ -36,15 +36,25 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
     useEffect(() => {
         profilePictureRefs.current = [...profilePictureRefs.current]; // Met à jour les références
 
+        const isPhotoBlurEnabled = settings.get("isPhotoBlurEnabled");
+
         for (let profilePictureRef of profilePictureRefs.current) {
-            const imageLoaded = (event) => {
+            const imageLoaded = () => {
                 profilePictureRef?.classList.add("loaded");
                 profilePictureRef?.removeEventListener("load", imageLoaded);
             }
             profilePictureRef?.addEventListener("load", imageLoaded);
+
+            if (profilePictureRef) {
+                if (isPhotoBlurEnabled) {
+                    profilePictureRef.style.filter = "blur(5px)";
+                } else {
+                    profilePictureRef.style.filter = "";
+                }
+            }
         }
 
-    }, [profilePictureRefs.current]);
+    }, [profilePictureRefs.current, settings.get("isPhotoBlurEnabled")]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -166,7 +176,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                             <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
                         </div>
                         <div className="change-display-theme-shortcut">
-                            <DisplayThemeController selected={displayTheme.get()} onChange={displayTheme.set} fieldsetName="display-theme-shortcut" />
+                            <DisplayThemeController selected={settings.get("displayTheme")} onChange={(newValue) => settings.set("displayTheme", newValue)} fieldsetName="display-theme-shortcut" />
                         </div>
                         <div className="logout">
                             <button id="logout-button" onClick={logout}><span>Se déconnecter</span><LogoutIcon className="logout-icon" /></button>

@@ -169,11 +169,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         const isHighContrastEnabled = settings.get("isHighContrastEnabled");
         const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
         const isLucioleFontEnabled = settings.get("lucioleFont");
-        const isPhotoBlurEnabled = settings.get("isPhotoBlurEnabled");
 
         let filters = "";
         let fontFamily = ""
-        let photoFilters = "";
         if (isSepiaEnabled) {
             filters += "sepia(.5) ";
         }
@@ -186,15 +184,10 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         if (isLucioleFontEnabled) {
             fontFamily = "Luciole, sans-serif";
         }
-        if (isPhotoBlurEnabled) {
-            photoFilters += "blur(5px) ";
-        }
 
-        document.documentElement.style.setProperty("--font-family", fontFamily) // J'ai pas trouvé de meilleure alternative
+
+        document.documentElement.style.setProperty("--font-family", fontFamily);
         document.documentElement.style.filter = filters;
-        if (localStorage.token) {
-            document.querySelector(".profile-picture").style.filter = photoFilters;
-        }
     }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled"), settings.get("lucioleFont"), settings.get("isPhotoBlurEnabled")])
 
 
