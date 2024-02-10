@@ -6,6 +6,7 @@ import "./UnsubscribeEmails.css";
 // graphics
 import LoadingAnimation from "../graphics/LoadingAnimation";
 import { Link } from "react-router-dom";
+import { getProxiedURL } from "../../utils/requests";
 
 
 export default function UnsubscribeEmails({ activeUser, thonFrustre }) {

@@ -13,6 +13,7 @@ import { AppContext } from "../../App";
 // graphics
 import PasteIcon from "../graphics/PasteIcon"
 import AtWhite from "../graphics/AtWhite"
+import { getProxiedURL } from "../../utils/requests";
 
 import "./FeedbackForm.css";
 

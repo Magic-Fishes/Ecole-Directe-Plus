@@ -4,6 +4,7 @@ import { AppContext } from "../../../App";
 
 import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 import Button from "../../generic/UserInputs/Button";
+import { getProxiedURL } from "../../../utils/requests";
 
 import "./Account.css";
 
