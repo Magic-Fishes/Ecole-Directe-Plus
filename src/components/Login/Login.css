@@ -1,13 +1,8 @@
-/* 
-.temp-disclaimer {
-    color: rgb(var(--text-color-soft-error-alt));
-    width: 100%;
-    max-width: 700px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    text-align: center;
-} */
+
+#proxy-error-notification.temp-disclaimer {
+    width: 95%;
+    max-width: 750px;
+}
 
 .login-logo {
     position: absolute;

@@ -32,9 +32,9 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
             <p className="policy">
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
-            {/* <p className="temp-disclaimer">
-                Nous rencontrons des problèmes liés à l'API d'EcoleDirecte. L'accès aux notes est rétabli pour le moment, mais certaines fonctionnalités sont encore indisponibles. Nous travaillons activement sur ce problème, revenez dans quelques heures/jours.
-            </p> */}
+            <p className="temp-disclaimer" id="proxy-error-notification">
+                Nous rencontrons des problèmes liés à l'API d'EcoleDirecte. Si vous obtenez le message d'erreur "Identifiant et/ou mot de passe invalide" avec des identifiants valides, c'est que notre proxy est down. Nous travaillons activement sur ce problème, revenez dans quelques heures/jours.
+            </p>
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />

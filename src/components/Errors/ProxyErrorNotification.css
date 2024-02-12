@@ -18,7 +18,7 @@
     animation: proxy-error-notification-pop-in .3s var(--timing-function-spring-effect) forwards;
     transition: background-color .2s;
     cursor: default;
-    backdrop-filter: blur(4px) brightness(.5);
+    backdrop-filter: blur(8px) brightness(.5);
     z-index: 50;
 }
 
