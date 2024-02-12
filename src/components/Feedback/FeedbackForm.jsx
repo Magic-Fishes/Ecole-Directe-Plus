@@ -296,7 +296,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                         {
                             color: parseInt("0x" + color),
                             author: {
-                                name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
+                                name: ((activeUser && isAnonymous) ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
                                 icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : getProxiedURL("https:" + activeUser.picture))
                             },
                             title: "**__" + selectedFeedbackType + "__ : " + subject + "**",
