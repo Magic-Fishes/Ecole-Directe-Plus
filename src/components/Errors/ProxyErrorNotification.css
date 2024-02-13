@@ -4,22 +4,28 @@
     top: 15px;
     left: 50%;
     transform: translate(-50%, calc(-100% - 10px));
-
+    
     padding: 10px;
     text-align: center;
     width: max-content;
     max-width: 80vw;
-
+    
     color: rgb(var(--text-color-soft-error-alt));
-    background-color: rgba(var(--background-color-soft-error), .2);
+    
     border: 2px solid rgb(var(--background-color-soft-error));
     border-radius: 10px;
     
     animation: proxy-error-notification-pop-in .3s var(--timing-function-spring-effect) forwards;
     transition: background-color .2s;
     cursor: default;
-    backdrop-filter: blur(8px) brightness(.5);
     z-index: 50;
+}
+.dark #proxy-error-notification {
+    background-color: rgba(var(--background-color-soft-error), .2);
+    backdrop-filter: blur(8px) brightness(.5);
+}
+.light #proxy-error-notification {
+    background-color: rgba(var(--background-color-1));
 }
 
 #proxy-error-notification:hover {
