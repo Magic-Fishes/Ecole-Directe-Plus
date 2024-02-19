@@ -46,6 +46,14 @@ export function getCurrentSchoolYear() {
     return [(year - 1), year];
 }
 
+export function getISODate(date) {
+    return date.getUTCFullYear() +
+    "-" +
+    (date.getUTCMonth() + 1 + "").padStart(2, "0") +
+    "-" +
+    date.getUTCDate().toString().padStart(2, "0")
+}
+
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }

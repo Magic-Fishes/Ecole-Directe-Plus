@@ -52,7 +52,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
                             logout();
                         }
                     });
-                    console.log("LOGGED IN FROM USERNAME & PASSWORD");
+                    console.log("LOGIN FROM USERNAME & PASSWORD...");
                 }
             }
         } else {

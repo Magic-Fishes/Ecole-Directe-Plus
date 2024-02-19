@@ -13,7 +13,7 @@ import {
 import "./Homeworks.css";
 
 
-export default function Homeworks() {
+export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks, homeworks, setHomeworks }) {
     // States
 
     // behavior
@@ -21,13 +21,29 @@ export default function Homeworks() {
         document.title = "Cahier de texte • Ecole Directe Plus";
     }, []);
 
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (homeworks.length < 1 || homeworks[activeAccount] === undefined) {
+                fetchHomeworks(controller);
+            } else if (false/*!sortedHomeworks*/) {
+                sortHomeworks(homeworks, activeAccount);
+            }
+        }
+        console.log("HOMEWORKS:", homeworks)
+
+        return () => {
+            controller.abort();
+        }
+    }, [homeworks, isLoggedIn, activeAccount]);
+
     // JSX
     return (
         <div id="homeworks">
             <WindowsContainer name="homeworks">
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
-                        <Window WIP={true}>
+                        <Window>
                             <WindowHeader>
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
@@ -35,7 +51,7 @@ export default function Homeworks() {
                                 
                             </WindowContent>
                         </Window>
-                        <Window WIP={true}>
+                        <Window growthFactor={1.2}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
@@ -44,7 +60,7 @@ export default function Homeworks() {
                             </WindowContent>
                         </Window>                        
                     </WindowsLayout>
-                    <Window growthFactor={2.5} WIP={true}>
+                    <Window growthFactor={2.2}>
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>

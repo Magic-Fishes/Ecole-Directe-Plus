@@ -8,7 +8,7 @@ import {
     RouterProvider
 } from "react-router-dom";
 
-import { sendToWebhook } from "./utils/utils";
+import { getISODate, sendToWebhook } from "./utils/utils";
 
 import "./App.css";
 
@@ -231,6 +231,7 @@ export default function App() {
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [grades, setGrades] = useState([]);
+    const [homeworks, setHomeworks] = useState([]);
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
@@ -1259,10 +1260,88 @@ export default function App() {
                     let usersGrades = structuredClone(grades);
                     setGrades(usersGrades);
                 } else if (code === 49969) {
-                    let usersGrades = [...grades];
+                    let usersGrades = structuredClone(grades);
                     import("./data/grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
+                    })
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
+    async function fetchHomeworks(controller = (new AbortController()), date="incoming") {
+        /**
+         * Fetch user homeworks
+         * @param controller AbortController
+         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
+         */
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+        }
+
+        let endpoint;
+        if (date === "incoming") {
+            endpoint = "cahierdetexte";
+        } else {
+            endpoint = "cahierdetexte/" + getISODate(date);
+        }
+
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`),
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState
+                },
+                body: "data={}",
+                signal: controller.signal
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                // console.log("HOMEWORKS:", response);
+                if (code === 200) {
+                    let userHomeworks = structuredClone(homeworks);
+                    if (date === "incoming") {
+                        userHomeworks[userId] = { ...userHomeworks[userId], ...response.data};
+                    } else {
+                        if (userHomeworks[userId] === undefined) {
+                            userHomeworks[userId] = {}
+                        }
+                        userHomeworks[userId][response.data.date] = response.data.matieres;
+                    }
+                    console.log("userHomeworks:", userHomeworks)
+                    setHomeworks(userHomeworks);
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else if (code === 403) {
+                    let userHomeworks = structuredClone(homeworks);
+                    setHomeworks(userHomeworks);
+                } else if (code === 49969) {
+                    let userHomeworks = structuredClone(homeworks);
+                    import("./data/homeworks.json").then((module) => {
+                        userHomeworks[userId] = module.data;
+                        setHomeworks(userHomeworks);
                     })
                 }
                 setTokenState((old) => (response?.token || old));
@@ -1355,6 +1434,7 @@ export default function App() {
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
+        setHomeworks(createUserLists(accountsList.length));
         setTimeline(createUserLists(accountsList.length));
         setSchoolLife(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
@@ -1372,6 +1452,7 @@ export default function App() {
         }
         setUserData([])
         setGrades([]);
+        setHomeworks([]);
         setTimeline([]);
         setSchoolLife([]);
         // setKeepLoggedIn(false);
@@ -1595,7 +1676,7 @@ export default function App() {
                             path: "homeworks"
                         },
                         {
-                            element: <Homeworks />,
+                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchHomeworks={fetchHomeworks} homeworks={homeworks} setHomeworks={setHomeworks} />,
                             path: ":userId/homeworks"
                         },
                         {

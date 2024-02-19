@@ -47,7 +47,7 @@ export default function Dashboard({ }) {
                             </Window>
                         </WindowsLayout>
 
-                        <Window WIP={true}>
+                        <Window WIP={true} growthFactor={1.2}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
