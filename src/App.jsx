@@ -1148,7 +1148,7 @@ export default function App() {
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 403;
+                    code = 49969;
                 } else {
                     code = response.code;
                 }
@@ -1161,9 +1161,8 @@ export default function App() {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-                } else if (code === 403) {
-                    setTokenState((old) => (response.token || old));
                 }
+                setTokenState((old) => (response?.token || old));
             })
             .catch((error) => {
                 if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
@@ -1256,9 +1255,6 @@ export default function App() {
                     requireLogin();
                     // setTokenState("");
                     // logout();
-                } else if (code === 403) {
-                    let usersGrades = structuredClone(grades);
-                    setGrades(usersGrades);
                 } else if (code === 49969) {
                     let usersGrades = structuredClone(grades);
                     import("./data/grades.json").then((module) => {
@@ -1286,9 +1282,6 @@ export default function App() {
          */
         abortControllers.current.push(controller);
         const userId = activeAccount;
-        const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
-        }
 
         let endpoint;
         if (date === "incoming") {
@@ -1334,9 +1327,6 @@ export default function App() {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-                } else if (code === 403) {
-                    let userHomeworks = structuredClone(homeworks);
-                    setHomeworks(userHomeworks);
                 } else if (code === 49969) {
                     let userHomeworks = structuredClone(homeworks);
                     import("./data/homeworks.json").then((module) => {
