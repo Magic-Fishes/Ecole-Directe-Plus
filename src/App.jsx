@@ -70,7 +70,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
-const apiVersion = "4.49.0";
+const apiVersion = "4.51.1";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
