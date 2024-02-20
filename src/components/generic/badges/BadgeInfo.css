@@ -1,6 +1,9 @@
 .badge-container {
     transition: .3s;
-    display: inline-block;
+    height: 100%;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    align-items: center;
 }
 
 .badge {

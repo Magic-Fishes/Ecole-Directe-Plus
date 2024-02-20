@@ -1,41 +1,98 @@
+
 .last-grades .window-content {
     container-type: size;
 }
 
-.last-grades-container {
-    padding: 20px;
+.last-grades .last-grades-container {
+    padding-block: 20px;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    flex-flow: column nowrap;
+    justify-content: space-around;
     list-style-type: none;
     gap: 20px;
 }
 
-.last-grade-container {
+.last-grades .last-grade-container {
     height: 100%;
     width: 100%;
 }
 
-.last-grade-wrapper {
+.last-grades .last-grade-container:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    width: 80%;
+    height: 2px;
+    background-color: rgba(var(--text-color-alt), .5);
+    left: 50%;
+    transform: translate(-50%, 10px);
+}
+
+.last-grades .last-grade-wrapper {
     height: 100%;
     width: 100%;
+    padding-inline: 20px;
     text-decoration: none;
     display: flex;
-    flex-direction: row;
-    justify-content: baseline;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
     gap: 20px;
+    transition: .1s;
+}
+.last-grades .last-grade-wrapper:is(:hover, :focus-visible) {
+    background: rgba(var(--background-color-0), .2);
+}
+.last-grades .last-grade-wrapper:active {
+    background: rgba(var(--background-color-0), .3);
 }
 
-.last-grade-value {
+.last-grades .last-grade-value {
+    flex-basis: auto;
+    background-color: rgb(var(--border-color-0));
+    /* padding: 6px 22px; */
+    padding: 6px 0;
+    width: 72px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.last-grades .last-grade-name {
+    flex-basis: auto;
+}
+
+.last-grades .badges-container {
+    overflow: hidden;
+    text-overflow: ellipsis;
     flex: 1;
-    height: 40%;
+    
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 7px;
 }
 
-.last-grade-name {
-    flex: 5;
+.last-grades .badges-container > div {
+    flex-basis: auto;
+    min-width: auto;
 }
 
-.badge-list-container {
-    flex: 3;
+.last-grades .last-grade-date {
+    flex-basis: auto;
+    color: rgb(var(--text-color-alt));
+}
+
+@container (max-height: 175px) {
+    .last-grades .last-grades-container {
+        height: auto;        
+    }
+}
+
+@media only screen and (max-width: 869px) {
+    .last-grades .window-content {
+        container-type: normal;
+    }
+    
+    .last-grades .last-grades-container {
+        height: auto;
+    }
 }

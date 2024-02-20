@@ -55,7 +55,7 @@ export function BadgeMehInfo ({ className="", id="", activated, ...props }) {
 
 export function BadgeStarInfo ({ className="", id="", activated, ...props }) {
     return (
-            <Tooltip id={id} {...props}>
+            <Tooltip id={id}  {...props}>
                 <TooltipTrigger>
                     <span className="badge-container">
                         <BadgeStar className="badge"/>

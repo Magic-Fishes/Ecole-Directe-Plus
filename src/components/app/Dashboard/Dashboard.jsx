@@ -13,14 +13,31 @@ import {
 import "./Dashboard.css";
 import LastGrades from "./lastGrades";
 
-export default function Dashboard({ }) {
+export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLoggedIn, useUserData, sortGrades }) {
     const navigate = useNavigate();
-    // States
+    const userData = useUserData();
+
+    const sortedGrades = userData.get("sortedGrades");
 
     // Behavior
     useEffect(() => {
         document.title = "Accueil • Ecole Directe Plus";
     }, [])
+    
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (grades.length < 1 || grades[activeAccount] === undefined) {
+                fetchUserGrades(controller);
+            } else if (!sortedGrades) {
+                sortGrades(grades, activeAccount);
+            }
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [grades, isLoggedIn, activeAccount]);
 
     // JSX DISCODO
     return (
@@ -29,7 +46,7 @@ export default function Dashboard({ }) {
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column" growthFactor={2.5}>
                         <WindowsLayout direction="row">
-                            <LastGrades/>
+                            <LastGrades activeAccount={activeAccount} />
                             {/* <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../grades")}>
                                     <h2>Dernière notes</h2>

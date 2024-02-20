@@ -19,7 +19,8 @@ import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import DOMNotification from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
+import { areOccurenciesEqual, createUserLists, encrypt, decrypt } from "./utils/utils";
+import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
@@ -714,8 +715,7 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
-            const lastGrades = gradesFromJson.slice(-3)
-
+            const lastGrades = gradesFromJson.slice(-3);
 
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods
@@ -938,7 +938,7 @@ export default function App() {
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
-        changeUserData("lastGrades", newLastGrades);
+        changeUserData("lastGrades", newLastGrades.reverse());
         setDefaultPeriod(periods)
     }
 
@@ -1587,7 +1587,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard />,
+                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -1595,7 +1595,7 @@ export default function App() {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
                             path: ":userId/grades"
                         },
                         {
