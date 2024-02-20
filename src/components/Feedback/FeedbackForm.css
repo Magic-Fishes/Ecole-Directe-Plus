@@ -167,17 +167,16 @@ div.drop-zone:focus-within {
     flex-direction: column;
 }
 
-#publish p {
-    margin-top: 10px;
-    margin-left: 10px;
-    color: rgb(var(--text-color-alt));
-    font-size: var(--font-size-14)
+#publish #publish-info a {
+    text-decoration: none;
+    border-bottom: 1px solid rgb(var(--text-color-main));
 }
 
-#publish span {
+#publish > span {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    align-items: center;
 }
 
 p#usage-info {

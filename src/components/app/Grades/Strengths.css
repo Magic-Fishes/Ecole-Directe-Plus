@@ -3,6 +3,29 @@
     container-type: size;
 }
 
+.strengths .strengths-info * {
+    pointer-events: auto;
+}
+.strengths .strengths-info {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: auto;
+}
+.strengths .strengths-info .fill {
+    fill: rgba(var(--background-color-strength-li-1), 0.8);
+}
+.strengths .strengths-info .stroke {
+    stroke: rgba(var(--background-color-strength-li-1), 0.8);
+}
+.strengths .strengths-info:is(:hover, :focus-within) .fill {
+    fill: rgb(var(--background-color-strength-li-3));
+}
+.strengths .strengths-info:is(:hover, :focus-within) .stroke {
+    stroke: rgb(var(--background-color-strength-li-3));
+}
+
 ol.strengths-container {
     height: 100%;
     padding: 15px;

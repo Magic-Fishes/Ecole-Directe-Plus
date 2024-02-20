@@ -25,7 +25,10 @@ body:has(#bottom-sheet) {
     transform: translate(-50%, -50%) scale(0.8);
     border-radius: 20px;
     width: 100%;
-    max-width: 400px;
+    /* max-width: 400px; */
+    max-width: 425px;
+    /* max-width: 450px; */
+    /* max-width: 500px; */
     max-height: 100%;
     overflow-y: auto;
     box-shadow: var(--box-shadow-window);
@@ -77,12 +80,6 @@ body:has(#bottom-sheet) {
 #pop-up-background.closing {
     animation: 0.3s ease-out 0s blur-out;
     animation-fill-mode: forwards;
-}
-
-@media only screen and (max-width: 400px) {
-    #pop-up-background {
-        padding-inline: 15px;
-    }
 }
 
 @keyframes fade-in {

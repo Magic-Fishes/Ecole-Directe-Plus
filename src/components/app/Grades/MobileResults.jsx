@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import ContentLoader from "react-content-loader";
 import { Link, useLocation } from "react-router-dom";
 import { AppContext } from "../../../App";
@@ -21,7 +21,7 @@ import "./MobileResults.css";
 export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
-
+    const contentLoadersRandomValues = useRef({ subjectNameWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2) });
     const location = useLocation();
 
     useEffect(() => {
@@ -102,7 +102,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                             </InfoButton>
                         </div>
                         <div className="general-average">
-                            <span>{isMobileLayout ? "Moy. G." : "Moyenne Générale" }</span>
+                            <span>{isMobileLayout ? "Moy. G." : "Moyenne Générale"}</span>
                             {sortedGrades && sortedGrades[selectedPeriod]
                                 ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
                                 : <ContentLoader
@@ -141,117 +141,113 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             </div>
                                         ]
                                     } else {
-                                        return (el && el.grades && el.grades.length > 0 ? <><div key={"subject-" + el.id} className="mobile-subject-row mobile-row">
-                                                <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
-                                                <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
-                                            </div>
+                                        return (el && el.grades ? <><div key={"subject-" + el.id} className="mobile-subject-row mobile-row">
+                                            <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
+                                            <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
+                                        </div>
                                             <div key={"grade-" + el.id} className="mobile-grade-row mobile-row">
                                                 {el.grades.filter(el => el.isReal).map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )
                                                 })}
-                                                <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod}/>
+                                                <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod} />
                                                 {el.grades.filter(el => !el.isReal).map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )
                                                 })}
                                             </div></> : null)
-                                        
+
                                     }
-                                    // < tr key = { el.id } >
-                                    //     <th className="head-cell">
-                                    //         {el.isCategory
-                                    //             ? <div className="head-name">{el.name}</div>
-                                    //             : <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}>{isTabletLayout ? el.isCategory ? el.name : idx : el.name}</Link>
-                                    //         }
-                                    //     </th>
-                                    //     <td className="moyenne-cell"><Grade grade={{ value: el.average }} /></td>
-                                    //     <td className="grades-cell">
-                                    //         {el.isCategory ? <div className="category-info">
-                                    //             <span>Classe : <Grade grade={{ value: el.classAverage }} /></span><span>Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} /></span><span>Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} /></span>
-                                    //         </div>
-                                    //             :
-                                    //             <div className="grades-values">
-                                    // {el.grades.map((grade) => {
-                                    //     return (
-                                    //         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
-                                    //     )
-                                    // })}
-                                    //             </div>}
-                                    //     </td>
-                                    // <tr/>
                                 }).flat()
                                 : Array.from({ length: 13 }, (_, index) => {
-                                    const subjectNameWidth = Math.round(Math.random() * 100) + 100;
-                                    return <tr key={crypto.randomUUID()} className={index % 7 < 1 ? "category-row" : "subject-row"}>
-                                        <th className="head-cell">
-
-                                        </th>
-                                        <td className="moyenne-cell">
+                                    const subjectNameWidth = contentLoadersRandomValues.current.subjectNameWidth[index];
+                                    return (index % 7 < 1)
+                                        ? <div key={crypto.randomUUID()} className="mobile-category-row mobile-row">
                                             <ContentLoader
                                                 animate={settings.get("displayMode") === "quality"}
                                                 speed={1}
-                                                backgroundColor={actualDisplayTheme === "dark" ? "#7878ae" : "#75759a"}
-                                                foregroundColor={actualDisplayTheme === "dark" ? "#9292d4" : "#9292c0"}
-                                                viewBox="0 0 50 50"
-                                                style={{ maxHeight: "30px" }}
+                                                backgroundColor={actualDisplayTheme === "dark" ? "#7979aa" : "#9d9dbd"}
+                                                foregroundColor={actualDisplayTheme === "dark" ? "#9494d0" : "#bcbce3"}
+                                                style={{ width: subjectNameWidth + "px", maxHeight: "30px" }}
                                             >
-                                                <rect x="0" y="0" rx="25" ry="25" width="50" height="50" />
+                                                <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
                                             </ContentLoader>
-                                        </td>
-                                        <td className="grades-cell">
-                                            {index % 7 < 1
-                                                ? <div className="category-info">
-                                                    <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
-                                                        speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                        style={{ width: "80px", maxHeight: "25px" }}
-                                                    >
-                                                        <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
-                                                    </ContentLoader>
-                                                    <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
-                                                        speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                        style={{ width: "80px", maxHeight: "25px" }}
-                                                    >
-                                                        <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
-                                                    </ContentLoader>
-                                                    <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
-                                                        speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                        style={{ width: "80px", maxHeight: "25px" }}
-                                                    >
-                                                        <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
-                                                    </ContentLoader>
-                                                </div>
-                                                : <div className="grades-values">
-                                                    {Array.from({ length: Math.floor(Math.random() * 8) + 2 }, (_) => {
-                                                        return (
-                                                            <ContentLoader
-                                                                animate={settings.get("displayMode") === "quality"}
-                                                                speed={1}
-                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                                viewBox="0 0 70 50"
-                                                                height="30"
-                                                                key={crypto.randomUUID()}
-                                                            >
-                                                                <rect x="0" y="0" rx="25" ry="25" width="50" height="50" />
-                                                            </ContentLoader>
-                                                        )
-                                                    })}
-                                                </div>
-                                            }
-                                        </td>
-                                    </tr>
+                                            <div className="category-info">
+                                                <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={actualDisplayTheme === "dark" ? "#7979aa" : "#9d9dbd"}
+                                                    foregroundColor={actualDisplayTheme === "dark" ? "#9494d0" : "#bcbce3"}
+                                                    style={{ width: "80px", maxHeight: "25px" }}
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
+                                                </ContentLoader>
+                                                <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={actualDisplayTheme === "dark" ? "#7979aa" : "#9d9dbd"}
+                                                    foregroundColor={actualDisplayTheme === "dark" ? "#9494d0" : "#bcbce3"}
+                                                    style={{ width: "80px", maxHeight: "25px" }}
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
+                                                </ContentLoader>
+                                                <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={actualDisplayTheme === "dark" ? "#7979aa" : "#9d9dbd"}
+                                                    foregroundColor={actualDisplayTheme === "dark" ? "#9494d0" : "#bcbce3"}
+                                                    style={{ width: "80px", maxHeight: "25px" }}
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
+                                                </ContentLoader>
+                                            </div>
+
+                                        </div>
+                                        : <>
+                                            <div key={crypto.randomUUID()} className="mobile-subject-row mobile-row content-loader">
+                                                <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                    style={{ width: subjectNameWidth + "px", maxHeight: "30px", margin: "0 auto" }}
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
+                                                </ContentLoader>
+                                                <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={'#4b48d9'}
+                                                    foregroundColor={'#6354ff'}
+                                                    viewBox="0 0 50 32"
+                                                    height="32"
+                                                    style
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" width="50" height="32" />
+                                                </ContentLoader>
+                                            </div>
+                                            <div key={crypto.randomUUID()} className="mobile-grade-row mobile-row">
+                                                {Array.from({ length: contentLoadersRandomValues.current.gradeNumbers[index] }, (_) => {
+                                                    return (
+                                                        <ContentLoader
+                                                            animate={settings.get("displayMode") === "quality"}
+                                                            speed={1}
+                                                            backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                            foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                            viewBox="0 0 70 50"
+                                                            height="30"
+                                                            key={crypto.randomUUID()}
+                                                        >
+                                                            <rect x="0" y="0" rx="25" ry="25" width="50" height="50" />
+                                                        </ContentLoader>
+                                                    )
+                                                })}
+                                            </div>
+
+                                        </>
+
                                 })
 
                             : <div>

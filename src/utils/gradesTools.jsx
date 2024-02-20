@@ -11,7 +11,9 @@ export function getGradeValue(gradeValue) {
         return "Comp"
     }
 
-    return parseFloat(gradeValue?.replace(",", "."));
+    const output = parseFloat(gradeValue?.replace(",", "."));
+
+    return isNaN(output) ? "N/A" : output;
 }
 
 export function calcAverage(list) {
@@ -23,7 +25,7 @@ export function calcAverage(list) {
         }
     }
 
-    const noCoef = !coef
+    const noCoef = !coef;
 
     for (let i of list) {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {

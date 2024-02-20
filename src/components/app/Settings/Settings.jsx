@@ -21,7 +21,7 @@ import "./Settings.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
-    const { isStandaloneApp, useUserSettings, globalSettings, refreshApp, isTabletLayout } = useContext(AppContext);
+    const { isStandaloneApp, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -138,7 +138,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         : <SegmentedControl id="display-mode-sc" segments={settings.object("displayMode").values} displayedSegments={["Qualité", "Équilibré", "Performance"]} selected={settings.get("displayMode")} onChange={(value) => { settings.set("displayMode", value) }} fieldsetName="display-mode" />}
                 </div>
 
-                <div className="setting disabled" id="luciole-font">
+                <div className="setting" id="luciole-font">
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
@@ -152,6 +152,10 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
 
                 <div className="setting" id="grayscale-filter">
                     <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
+                </div>
+
+                <div className="setting" id="photo-blur">
+                    <CheckBox id="photo-blur-cb" label={<span>Flouter la photo de profil</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">

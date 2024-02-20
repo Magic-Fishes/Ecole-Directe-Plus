@@ -8,7 +8,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, addNewGrade, proxyError }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -44,6 +44,14 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/login");
     }
 
+
+    function changeFont() {
+        let font = prompt("Enter the font name:", document.documentElement.style.getPropertyValue("--font-family"));
+        if (!(font == null || font == "")) {
+            document.documentElement.style.setProperty("--font-family", font);
+        }
+    }
+
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
@@ -75,6 +83,8 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             } else if (parsedOldVersion <= 22) { // v0.2.2
                 return 0;
             } else if (parsedOldVersion <= 23) { // v0.2.3
+                return 0;
+            } else if (parsedOldVersion <= 24) { // v0.2.4
                 return 0;
             } else {
                 localStorage.clear();
@@ -158,8 +168,10 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         const isSepiaEnabled = settings.get("isSepiaEnabled");
         const isHighContrastEnabled = settings.get("isHighContrastEnabled");
         const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
+        const isLucioleFontEnabled = settings.get("lucioleFont");
 
         let filters = "";
+        let fontFamily = ""
         if (isSepiaEnabled) {
             filters += "sepia(.5) ";
         }
@@ -169,9 +181,14 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         if (isGrayscaleEnabled) {
             filters += "grayscale(1) ";
         }
+        if (isLucioleFontEnabled) {
+            fontFamily = "Luciole, sans-serif";
+        }
 
+
+        document.documentElement.style.setProperty("--font-family", fontFamily);
         document.documentElement.style.filter = filters;
-    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled")])
+    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled"), settings.get("lucioleFont"), settings.get("isPhotoBlurEnabled")])
 
 
     // - - - - - - - - - - - - - - - - - - - - //
@@ -403,7 +420,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <form action="https://github.com/Magic-Fishes/Ecole-Directe-Plus" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
-                {isAdmin && <input type="button" onClick={() => addNewGrade(17, 1, 20, "Podcast", "DM", "A001", "ALL2")} value="ADD 17 ALL" />}
+                {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

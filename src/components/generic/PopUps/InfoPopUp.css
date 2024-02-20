@@ -93,7 +93,10 @@
     border-radius: 20px;
     padding: 15px;
     padding-top: 0;
-    max-height: 300px;
+    /* max-height: 300px; */
+    max-height: 375px;
+    /* max-height: 500px; */
+    /* max-height: 640px; */
     overflow-y: auto;
     list-style-position: inside;
 }
@@ -106,8 +109,10 @@
     #info-pop-up-header {
         margin-inline: 10px;
     }
-    
-    .close-button {
+    #pop-up-background:has(#info-pop-up) {
+        padding-inline: 15px;
+    }
+    #info-pop-up .close-button {
         right: 0;
     }
 }

@@ -20,6 +20,7 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import DOMNotification from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
+import { getProxiedURL } from "./utils/requests";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -68,8 +69,8 @@ function consoleLogEDPLogo() {
 }
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.2.4";
-const apiVersion = "4.46.0";
+const currentEDPVersion = "0.2.5";
+const apiVersion = "4.51.1";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -93,6 +94,7 @@ const defaultSettings = {
     isSepiaEnabled: false,
     isHighContrastEnabled: false,
     isGrayscaleEnabled: false,
+    isPhotoBlurEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
@@ -156,6 +158,9 @@ function initSettings(accountList) {
             },
             isGrayscaleEnabled: {
                 value: getSetting("isGrayscaleEnabled", i),
+            },
+            isPhotoBlurEnabled: {
+                value: getSetting("isPhotoBlurEnabled", i),
             },
             gradeScale: {
                 value: getSetting("gradeScale", i),
@@ -437,8 +442,8 @@ export default function App() {
     function getUserData(data) {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
-
-    const useUserData = (data = "") => (data == "" ? { set: changeUserData, get: getUserData, full: () => userData[activeAccount] } : { set: (value) => changeUserData(data, value), get: () => getUserData(data), full: () => userData[activeAccount][data] })
+    
+    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
 
 
     // gestion de la désactivation automatique du "rester connecté"
@@ -654,6 +659,7 @@ export default function App() {
                     newPeriod.code = period.codePeriode;
                     newPeriod.startDate = new Date(period.dateDebut);
                     newPeriod.endDate = new Date(period.dateFin);
+                    newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
                     newPeriod.subjects = {};
@@ -712,7 +718,17 @@ export default function App() {
 
 
             for (let grade of (gradesFromJson ?? [])) {
-                const periodCode = grade.codePeriode;
+                // handle mock exam periods
+                let tempPeriodCode = grade.codePeriode;
+                let newPeriodCode = tempPeriodCode;
+                if (periods[tempPeriodCode].isMockExam) {
+                    newPeriodCode = tempPeriodCode.slice(0, 4);
+                    if (periods[newPeriodCode] === undefined) {
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode)-1];
+                    }
+                }
+
+                const periodCode = newPeriodCode;
                 const subjectCode = grade.codeMatiere;
                 // try to rebuild the subject if it doesn't exist (happen when changing school year)
                 if (periods[periodCode].subjects[subjectCode] === undefined) {
@@ -751,7 +767,7 @@ export default function App() {
                 newGrade.entryDate = new Date(grade.dateSaisie);
                 newGrade.coef = parseFloat(grade.coef);
                 newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
-                newGrade.value = isNaN(getGradeValue(grade.valeur)) ? "N/A" : getGradeValue(grade.valeur);
+                newGrade.value = getGradeValue(grade.valeur);
                 newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
                 newGrade.classMax = isNaN(parseFloat(grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
                 newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
@@ -833,7 +849,7 @@ export default function App() {
                         periods[periodCode].subjects[subjectCode].badges.star++
                         totalBadges.star++
                     }
-                    if (newGrade.value === newGrade.classMax) { // si la note est la mielleure de la classe on donne le plus
+                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
                         gradeBadges.push("bestStudent");
                         periods[periodCode].subjects[subjectCode].badges.bestStudent++
                         totalBadges.bestStudent++
@@ -869,7 +885,7 @@ export default function App() {
             }
         }
 
-        // supprime les périodes vides
+        // supprime les périodes vides et examens blancs
         let i = 0;
         let firstPeriod;
         for (const key in periods) {
@@ -884,11 +900,12 @@ export default function App() {
                         isEmpty = false;
                     }
                 }
-            if (isEmpty) {
+            if (isEmpty || periods[key].isMockExam) {
                 delete periods[key];
             }
         }
-        if (Object.keys(periods).length < 1) {
+        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
+        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
             periods[firstPeriod.key] = firstPeriod.value;
         }
 
@@ -917,7 +934,6 @@ export default function App() {
 
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
-        console.log("changeUserData sortedGrades")
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
@@ -1036,7 +1052,7 @@ export default function App() {
 
         // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`), options)
             // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
@@ -1056,7 +1072,7 @@ export default function App() {
                         // compte élève
                         accountsList.push({
                             accountType: "E", // type de compte
-                            lastConnection: new Date(accounts.lastConnexion),
+                            lastConnection: accounts.lastConnexion,
                             id: accounts.id, // id du compte
                             firstName: accounts.prenom, // prénom de l'élève
                             lastName: accounts.nom, // nom de famille de l'élève
@@ -1072,7 +1088,7 @@ export default function App() {
                         accounts.profile.eleves.map((account) => {
                             accountsList.push({
                                 accountType: "P",
-                                lastConnection: new Date(accounts.lastConnexion),
+                                lastConnection: accounts.lastConnexion,
                                 id: account.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,
@@ -1100,10 +1116,7 @@ export default function App() {
                         const error = {
                             errorMessage: response,
                         };
-                        if (statusCode == 70018) {
-                            error.Mechant_UserHackedpas_SympaLeMan = JSON.stringify(options)
-                        }
-                        if (statusCode == 70018 || getUserSettingValue("allowAnonymousReports")) {
+                        if (getUserSettingValue("allowAnonymousReports")) {
                             sendToWebhook(sardineInsolente, error);
                         }
                     }
@@ -1128,7 +1141,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
+        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`),
             {
                 method: "POST",
                 headers: {
@@ -1169,6 +1182,42 @@ export default function App() {
             })
     }
 
+    async function fetchCorrection(file, id, callback=(() => {}), controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const data = {
+            forceDownload: 0,
+            idDevoir: id
+        }
+        return await fetch(
+            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
+            getProxiedURL(`https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`),
+            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "user-agent": navigator.userAgent,
+                    "x-token": tokenState
+                },
+                cors: "no-cors",
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal,
+                redirect: 'follow'
+            },
+        )
+            .then(response => response.blob())
+            .then(blob => callback(blob))
+            // .then(blob => {
+            //     console.log(blob.type)
+            //     const blobUrl = URL.createObjectURL(blob);
+            //     return blobUrl
+            // })
+            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+
+    }
+
     async function fetchUserGrades(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
@@ -1180,7 +1229,7 @@ export default function App() {
         fetch(
             // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
+            getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`),
             // `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
@@ -1242,7 +1291,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(`https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
+        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`),
             {
                 method: "POST",
                 headers: {
@@ -1288,7 +1337,7 @@ export default function App() {
         const data = {
             libelle: name,
         }
-        fetch("https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.46.0",
+        fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.46.0"),
             {
                 method: "POST",
                 headers: {
@@ -1452,7 +1501,6 @@ export default function App() {
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
 
-                    addNewGrade={addNewGrade}
                     proxyError={proxyError}
                 />
             ,
@@ -1581,6 +1629,7 @@ export default function App() {
     ]);
 
     const appContextValue = useMemo(() => ({
+        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,
@@ -1597,6 +1646,7 @@ export default function App() {
         actualDisplayTheme,
         currentEDPVersion,
     }), [
+        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,

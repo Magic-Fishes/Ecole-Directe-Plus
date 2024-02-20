@@ -100,3 +100,22 @@ export function sendToWebhook(targetWebhook, data) {
         }
     );
 }
+
+export function downloadFile(blobFile, filename) {
+    const url = URL.createObjectURL(blobFile);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'download.pdf';
+
+    // Append the link to the body (usually not necessary to add it to the DOM)
+    document.body.appendChild(a);
+
+    // Trigger the download
+    a.click();
+
+    document.body.removeChild(a);
+
+    // Clean up by revoking the Blob URL
+    URL.revokeObjectURL(url);
+}

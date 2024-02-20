@@ -12,7 +12,7 @@
     max-width: min(250px, calc(100% - 20px));
     cursor: help;
     isolation: isolate;
-    z-index: 50;
+    z-index: 99;
 }
 
 :root.quality .tooltip-content,

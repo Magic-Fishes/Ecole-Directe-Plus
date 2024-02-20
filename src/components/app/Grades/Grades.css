@@ -68,6 +68,7 @@
     background: none !important;
 }
 #grades .general-average .grade > span {
+    display: inline-block;
     font-size: var(--font-size-20);
     padding: 4px 16px;
     border-radius: 10px;

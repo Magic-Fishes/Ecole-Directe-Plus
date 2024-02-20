@@ -13,6 +13,7 @@ import { AppContext } from "../../App";
 // graphics
 import PasteIcon from "../graphics/PasteIcon"
 import AtWhite from "../graphics/AtWhite"
+import { getProxiedURL } from "../../utils/requests";
 
 import "./FeedbackForm.css";
 
@@ -290,13 +291,13 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: "botActions:[VERIFY]",
+                    content: `botActions:[VERIFY],${allowSharing ? "" : "[DISABLE_VERIFY]"}`,
                     embeds: [
                         {
                             color: parseInt("0x" + color),
                             author: {
-                                name: (activeUser ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
-                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : ("https://raspi.ecole-directe.plus:3000/proxy?url=https:" + activeUser.picture))
+                                name: ((activeUser && isAnonymous) ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
+                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : getProxiedURL("https:" + activeUser.picture))
                             },
                             title: "**__" + selectedFeedbackType + "__ : " + subject + "**",
                             description: feedbackContent,
@@ -320,6 +321,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 setSubmitButtonText("Échec de l'envoi");
             })
     }
+    
 
     return (
         <form className="feedback-form" onSubmit={handleSubmit} autoComplete="off" onInvalid={detectInvalidFeedBackContent}>
@@ -347,10 +349,9 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
             <WarningMessage condition={warningMessage}>{warningMessage}</WarningMessage>
             <div id="publish">
                 <span>
-                    <CheckBox id="remain-allow-sharing" label="Autoriser la publication" checked={allowSharing} onChange={() => setAllowSharing(!allowSharing)} />
-                    <InfoButton>Si votre retour est publié, il sera toujours anonyme</InfoButton>
+                    <CheckBox id="remain-allow-sharing" label={<span id="publish-info">Autoriser la publication sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">Discord communautaire</a></span>} checked={allowSharing} onChange={() => setAllowSharing(!allowSharing)} />
+                    <InfoButton>Tous les retours sont modérés et anonymisés avant publication</InfoButton>
                 </span>
-                <p id="publish-info">Accepter la publication sur notre <a href="https://discord.gg/AKAqXfTgvE">Discord</a> communautaire.</p>
             </div>
             <div id="contact">
                 <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />

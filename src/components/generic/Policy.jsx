@@ -16,7 +16,7 @@ export default function Policy({ onCloseNavigateURL }) {
     
     const legalNotice = <ul id="legal-notice">
         <h3 className="part-header">Politique de confidentialité</h3>
-        <h4 className="sub-header">Ecole Directe Plus utilise des données provenants des serveurs d'EcoleDirecte, héritant ainsi de leur politique de confidentialité qui sont présentées ci-dessous :</h4>
+        <h4 className="sub-header">Ecole Directe Plus utilise des données qui sont fournis par <a href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>, héritant ainsi de leur politique de confidentialité qui sont présentées ci-dessous :</h4>
         <li className="legal-content">Les données personnelles sécurisées figurant sur ce site Internet concernent des élèves et les familles, et sont fournies par le logiciel Charlemagne des établissements scolaires au sein desquels ceux-ci sont scolarisés.</li>
         <li className="legal-content">EcoleDirecte ne collecte aucune donnée personnelle directement sur le site Internet, ni cookie, à l’exception des email et téléphone mobile, utilisés EXCLUSIVEMENT pour la récupération des identifiants.</li>
         <li className="legal-content">Ces établissements scolaires se sont engagés à apporter tous leurs soins dans la qualité des informations diffusées. Il s’agit toutefois d’indications qui, en aucun cas, ne pourraient faire foi en lieu et place des documents usuels (bulletins de notes, relevés de notes, relevés d’absences et de sanctions).</li>
@@ -51,6 +51,10 @@ export default function Policy({ onCloseNavigateURL }) {
             - {leadDeveloppers[firstLeadDeveloppersDisplayedIdx]}<br />
             - {leadDeveloppers[leadDeveloppers.length-firstLeadDeveloppersDisplayedIdx-1]}<br /><br />
 
+            Autres contributeurs :<br />
+            - Akash Banchhor<br />
+            - Oeildelynx<br /><br />
+
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - ImgBB<br />
@@ -63,7 +67,9 @@ export default function Policy({ onCloseNavigateURL }) {
             - React<br />
             - React Router<br />
             - Floating UI<br />
-            - CryptoJS <br />
+            - CryptoJS<br />
+            - UUID<br />
+            - Body Scroll Lock<br />
             - React Content Loader<br /><br />
 
             Testeurs de pré-lancement :<br />
@@ -87,7 +93,7 @@ export default function Policy({ onCloseNavigateURL }) {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px 2px"}}>Dernière révision le 30 octobre 2023</li>
+        <li className="legal-content" style={{listStyle: "none", marginBlock: "20px 2px"}}>Dernière révision le 4 févirer 2024</li>
         <li className="legal-content" style={{listStyle: "none", marginBlock: "2px 20px"}}>Nous contacter : <a href="mailto:contact@ecole-directe.plus" style={{ color: "rgb(var(--text-color-alt))"}} >contact@ecole-directe.plus</a></li>
         <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>

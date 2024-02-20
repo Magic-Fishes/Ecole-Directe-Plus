@@ -109,7 +109,7 @@ export default function Grade({ grade, className = "", ...props }) {
                 const newClassList = [...oldClassList];
                 const MAX_TIME_DIFFERENCE = 3 * 1000 * 60 * 60 * 24; // 3 jours en ms
                 let isNewGrade = (Date.now() - (grade.entryDate ?? grade.date)) <= MAX_TIME_DIFFERENCE;
-                if (isNewGrade) {
+                if (isNewGrade && grade.isReal) {
                     newClassList.push("new-grade");
                 }
 
@@ -140,7 +140,7 @@ export default function Grade({ grade, className = "", ...props }) {
                 replace: grade.id === undefined ? "" : true,
                 id: grade.id ?? "",
                 ref: gradeRef,
-                className: `grade${((grade.isSignificant ?? true) && grade.isReal) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""} ${className} ${classList.join(" ")}`,
+                className: `grade${((grade.isSignificant ?? true) && grade.isReal) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""}${(grade.isReal ?? true) ? "" : " sim-grade"} ${className} ${classList.join(" ")}`,
                 ...props
             },
             <span className="grade-container">
