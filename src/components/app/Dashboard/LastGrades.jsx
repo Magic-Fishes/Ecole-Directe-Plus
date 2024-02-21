@@ -13,13 +13,14 @@ import {
 } from "../../generic/badges/BadgeInfo";
 
 import "./LastGrades.css"
-import { formatDateRelative } from "../../../utils/date"
+import { formatDateRelative } from "../../../utils/date";
 
 export default function LastGrades({ activeAccount, className = "", ...props }) {
     const navigate = useNavigate();
 
     const { useUserData } = useContext(AppContext)
     const lastGrades = useUserData().get("lastGrades");
+    console.log("window match media:", window.matchMedia("(max-width: 1850px)").matches)
 
     return (<Window className={`last-grades ${className}`}>
         <WindowHeader onClick={() => navigate("../grades")}>
@@ -40,7 +41,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                                 {el.badges.includes("meh") && <BadgeMehInfo />}
                                 {el.badges.includes("keepOnFire") && <BadgeStreakInfo />}
                             </span>
-                            <span className="last-grade-date">{formatDateRelative(el.date)}</span>
+                            <span className="last-grade-date">{formatDateRelative(el.date, window.matchMedia("(max-width: 1850px)").matches)}</span>
                         </Link>
                     </li>)
                     : <p>Chargement en cours...</p>

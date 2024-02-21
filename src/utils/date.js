@@ -1,5 +1,5 @@
 
-export function formatDateRelative(date) {
+export function formatDateRelative(date, short=true) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
@@ -12,9 +12,9 @@ export function formatDateRelative(date) {
     } else if (comparedDate.getTime() === yesterday.getTime()) {
         return "Hier";
     } else if (now.getTime() - comparedDate.getTime() < 7*(24*3600*1000) ) {
-        return `${Math.floor((now.getTime() - comparedDate.getTime()) / (24*3600*1000))} jours`;
+        return (short ? "" : "Il y a ") + `${Math.floor((now.getTime() - comparedDate.getTime()) / (24*3600*1000))} jours`;
     } else if (now.getTime() - comparedDate.getTime() < 14*(24*3600*1000) ) {
-        return `1 semaine`;
+        return (short ? "" : "Il y a ") + `1 semaine`;
     } else {
         return date.toLocaleDateString();
     }
