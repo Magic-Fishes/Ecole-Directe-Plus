@@ -1,0 +1,14 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Ecole Directe Plus server side",
+  "main": "edp-api.js",
+  "scripts": {
+    "dev": "nodemon edp-api.js"
+  },
+  "author": "Magic-Fishes",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
