@@ -55,9 +55,9 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
         valueRef.current = value;
     }, [value])
     
-    useEffect(() => {
-        changeValueBy(0);
-    }, [min, max])
+    // useEffect(() => {
+    //     changeValueBy(0);
+    // }, [min, max])
     
     const handleButtonPress = (delta) => {
         changeValueBy(delta);
@@ -71,7 +71,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     }
 
     const changeValueBy = (delta) => {
-        function test(delta) {
+        function checkBounds(delta) {
             let newValue = parseFloat(valueRef.current) + delta;
             if (newValue < min) {
                 newValue =  min;
@@ -80,7 +80,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             }
             return newValue
         }
-        submitValue(test(delta));
+        submitValue(checkBounds(delta));
     }
 
     const clearAutoChange = () => {
