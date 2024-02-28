@@ -10,6 +10,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     const intervalId = useRef(0);
     const initialValue = useRef(value);
     const valueRef = useRef(value);
+    const minMaxRef = useRef([min, max]);
     
     const numberInputRef = useRef(null);
     useEffect(() => {
@@ -55,9 +56,12 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
         valueRef.current = value;
     }, [value])
     
-    // useEffect(() => {
-    //     changeValueBy(0);
-    // }, [min, max])
+    useEffect(() => {
+        if (min !== minMaxRef.current[0] || max !== minMaxRef.current[1]) {
+            changeValueBy(0);
+            minMaxRef.current = [min, max];
+        }
+    }, [min, max])
     
     const handleButtonPress = (delta) => {
         changeValueBy(delta);
@@ -65,7 +69,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
         const TICK_DURACTION = 50;
         timeoutId.current = setTimeout(() => {
             intervalId.current = setInterval(changeValueBy, TICK_DURACTION, delta);
-        } , SLEEP_DURATION)
+        }, SLEEP_DURATION)
         document.addEventListener("mouseup", clearAutoChange);
         document.addEventListener("touchend", clearAutoChange);
     }
