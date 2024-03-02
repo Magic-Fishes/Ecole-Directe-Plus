@@ -70,7 +70,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
-const apiVersion = "4.52.0";
+const apiVersion = "4.52.1";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -1139,7 +1139,7 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    "user-agent": navigator.userAgent,
+                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,
@@ -1191,7 +1191,7 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    "user-agent": navigator.userAgent,
+                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState
                 },
                 cors: "no-cors",
@@ -1218,7 +1218,7 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
             // token: tokenState
         }
         // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
@@ -1231,14 +1231,12 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    "user-agent": navigator.userAgent,
+                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState
                 },
                 body: `data=${JSON.stringify(data)}`,
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
-                mode: "cors",
-                "Sec-Fetch-Mode": "cors"
             },
         )
             .then((response) => response.json())
@@ -1294,7 +1292,7 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    "user-agent": navigator.userAgent,
+                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,
@@ -1342,7 +1340,7 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    "user-agent": navigator.userAgent,
+                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,
