@@ -33,7 +33,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
             <p className="temp-disclaimer" id="proxy-error-notification">
-                Nous rencontrons quelques problèmes liés à l'API d'EcoleDirecte. Si le chargement dure, ne perdez pas votre temps à attendre la fin (elle n'arrivera pas). Nous travaillons activement sur ce problème, veuillez revenir dans quelques heures/jours.
+                Nous rencontrons quelques problèmes liés à l'API d'EcoleDirecte. Nous travaillons activement sur ce problème, veuillez revenir dans quelques heures/jours.
             </p>
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
