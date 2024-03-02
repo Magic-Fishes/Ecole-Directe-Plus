@@ -291,7 +291,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    content: `botActions:[VERIFY],${allowSharing ? "" : "[DISABLE_VERIFY]"}`,
+                    content: `botActions:[VERIFY],${allowSharing ? "" : "[DISABLE_VERIFY]"} <@1192136509567016990>`, // allow us to handle feedback sharing on our discord server
                     embeds: [
                         {
                             color: parseInt("0x" + color),

@@ -10,6 +10,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     const intervalId = useRef(0);
     const initialValue = useRef(value);
     const valueRef = useRef(value);
+    const minMaxRef = useRef([min, max]);
     
     const numberInputRef = useRef(null);
     useEffect(() => {
@@ -56,7 +57,10 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
     }, [value])
     
     useEffect(() => {
-        changeValueBy(0);
+        if (min !== minMaxRef.current[0] || max !== minMaxRef.current[1]) {
+            changeValueBy(0);
+            minMaxRef.current = [min, max];
+        }
     }, [min, max])
     
     const handleButtonPress = (delta) => {
@@ -65,13 +69,13 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
         const TICK_DURACTION = 50;
         timeoutId.current = setTimeout(() => {
             intervalId.current = setInterval(changeValueBy, TICK_DURACTION, delta);
-        } , SLEEP_DURATION)
+        }, SLEEP_DURATION)
         document.addEventListener("mouseup", clearAutoChange);
         document.addEventListener("touchend", clearAutoChange);
     }
 
     const changeValueBy = (delta) => {
-        function test(delta) {
+        function checkBounds(delta) {
             let newValue = parseFloat(valueRef.current) + delta;
             if (newValue < min) {
                 newValue =  min;
@@ -80,7 +84,7 @@ export default function NumberInput({ min, max, value, onChange, active=true, di
             }
             return newValue
         }
-        submitValue(test(delta));
+        submitValue(checkBounds(delta));
     }
 
     const clearAutoChange = () => {
