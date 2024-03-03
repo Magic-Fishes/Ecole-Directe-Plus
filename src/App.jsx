@@ -445,7 +445,11 @@ export default function App() {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
 
-    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
+    const useUserData = (data = "") => (
+        data
+            ? { set: (value) => changeUserData(data, value), get: () => getUserData(data) } // If the data is choosen, there is no need to get the full
+            : { set: changeUserData, get: getUserData }
+    )
 
 
     // gestion de la désactivation automatique du "rester connecté"
