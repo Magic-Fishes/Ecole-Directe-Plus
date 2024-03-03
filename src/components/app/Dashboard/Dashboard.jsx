@@ -9,7 +9,7 @@ import {
     WindowHeader,
     WindowContent
 } from "../../generic/Window";
-import LastGrades from "./lastGrades";
+import LastGrades from "./LastGrades";
 
 import "./Dashboard.css";
 
