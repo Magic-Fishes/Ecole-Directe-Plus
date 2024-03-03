@@ -20,7 +20,6 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
 
     const { useUserData } = useContext(AppContext)
     const lastGrades = useUserData().get("lastGrades");
-    console.log("window match media:", window.matchMedia("(max-width: 1850px)").matches)
 
     return (<Window className={`last-grades ${className}`}>
         <WindowHeader onClick={() => navigate("../grades")}>
@@ -31,7 +30,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                 {lastGrades !== undefined && lastGrades.length > 0
                     ? lastGrades.map((el) => <li key={el.id} className="last-grade-container">
                         <Link to={`/app/${activeAccount}/grades#` + el.id} className="last-grade-wrapper">
-                            <span className="last-grade-value"><Grade grade={{ value: el.value ?? "N/A" }} /></span>
+                            <span className="last-grade-value"><Grade grade={{ value: el.value ?? "N/A", scale: el.scale }} /></span>
                             <span className="last-grade-name">{el.subjectName}</span>
                             <span className="badges-container">
                                 {el.badges.includes("star") && <BadgeStarInfo />}

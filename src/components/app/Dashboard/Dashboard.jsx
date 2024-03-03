@@ -9,9 +9,9 @@ import {
     WindowHeader,
     WindowContent
 } from "../../generic/Window";
+import LastGrades from "./lastGrades";
 
 import "./Dashboard.css";
-import LastGrades from "./lastGrades";
 
 export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLoggedIn, useUserData, sortGrades }) {
     const navigate = useNavigate();
@@ -66,7 +66,7 @@ export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLo
                             </Window>
                         </WindowsLayout>
 
-                        <Window WIP={true}>
+                        <Window WIP={true} growthFactor={1.5}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>

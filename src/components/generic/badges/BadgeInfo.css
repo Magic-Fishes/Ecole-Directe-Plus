@@ -6,6 +6,34 @@
     align-items: center;
 }
 
+.badge-container {
+    outline: none;
+    transition: .1s;
+}
+
+.badge-container:hover {
+    transform: translate(0, -4px) scale(1.15);
+}
+
+.badge-container:has(.fill-FFE600):hover {
+    filter: drop-shadow(0 0 6px #FFE600);
+}
+.badge-container:has(.fill-09D504):hover {
+    filter: drop-shadow(0 0 6px #09D504);
+}
+.badge-container:has(.fill-03A981):hover {
+    filter: drop-shadow(0 0 6px #03A981);
+}
+.badge-container:has(.fill-61FF5E):hover {
+    filter: drop-shadow(0 0 6px #61FF5E);
+}
+.badge-container:has(.fill-AFB5C7):hover {
+    filter: drop-shadow(0 0 6px #AFB5C7);
+}
+.badge-container:has(.fill-FF9900):hover {
+    filter: drop-shadow(0 0 6px #FF9900);
+}
+
 .badge {
     height: 20px;
 }

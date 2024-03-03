@@ -4,13 +4,13 @@
 }
 
 .last-grades .last-grades-container {
-    padding-block: 20px;
+    /* padding-block: 20px; */
     height: 100%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
     list-style-type: none;
-    gap: 20px;
+    /* gap: 20px; */
 }
 
 .last-grades .last-grade-container {
@@ -25,7 +25,7 @@
     height: 2px;
     background-color: rgba(var(--text-color-alt), .5);
     left: 50%;
-    transform: translate(-50%, 10px);
+    transform: translate(-50%, -1px);
 }
 
 .last-grades .last-grade-wrapper {
@@ -39,6 +39,7 @@
     align-items: center;
     gap: 20px;
     transition: .1s;
+    outline: none;
 }
 .last-grades .last-grade-wrapper:is(:hover, :focus-visible) {
     background: rgba(var(--background-color-0), .2);
@@ -53,18 +54,24 @@
     /* padding: 6px 22px; */
     padding: 6px 0;
     width: 72px;
+    min-width: 55px;
     text-align: center;
     border-radius: 10px;
 }
 
 .last-grades .last-grade-name {
     flex-basis: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
 }
 
 .last-grades .badges-container {
-    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
     flex: 1;
+    min-width: 20px;
     
     display: flex;
     flex-flow: row nowrap;
@@ -78,6 +85,8 @@
 
 .last-grades .last-grade-date {
     flex-basis: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
     color: rgb(var(--text-color-alt));
 }
 
@@ -94,5 +103,11 @@
     
     .last-grades .last-grades-container {
         height: auto;
+        padding-block: 5px;
+    }
+
+    .last-grades .last-grade-wrapper {
+        padding: 20px 15px;
+        gap: 10px;
     }
 }
