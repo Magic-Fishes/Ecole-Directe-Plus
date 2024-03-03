@@ -938,6 +938,23 @@ export default function App() {
         setDefaultPeriod(periods)
     }
 
+    function sortHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
+            return [day[0], day[1].map((homework) => {
+                const { aFaire, codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
+                return ({
+                    id: idDevoir,
+                    subjectCode: codeMatiere,
+                    subject: matiere,
+                    addDate: donneLe,
+                    isInterrogation: interrogation,
+                    toDo: (aFaire), // Will be used to sortGrades content in the future commits
+                    isDone: effectue,
+                })
+            })]
+        }))
+        return sortedHomeworks
+    }
 
     function sortSchoolLife(schoolLife, activeAccount) {
         const sortedSchoolLife = {
@@ -1273,7 +1290,7 @@ export default function App() {
             })
     }
 
-    async function fetchHomeworks(controller = (new AbortController()), date="incoming") {
+    async function fetchHomeworks(controller = (new AbortController()), date = "incoming") {
         /**
          * Fetch user homeworks
          * @param controller AbortController
@@ -1310,15 +1327,10 @@ export default function App() {
                 }
                 if (code === 200) {
                     if (date === "incoming") {
-                        userHomeworks[userId] = { ...userHomeworks[userId], ...response.data};
+                        changeUserData("sortedHomeworks", { ...sortHomeworks(response.data), ...getUserData("sortedHomeworks") })
                     } else {
-                        if (userHomeworks[userId] === undefined) {
-                            userHomeworks[userId] = {}
-                        }
-                        userHomeworks[userId][response.data.date] = response.data.matieres;
+                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortHomeworks({[response.data.date]: response.data.matieres}) })
                     }
-                    console.log("userHomeworks:", userHomeworks)
-                    setHomeworks(userHomeworks);
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
@@ -1349,7 +1361,6 @@ export default function App() {
         }
 
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
-        // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1368,7 +1379,6 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // console.log("RESPONSE:", response);
                 if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
                     const oldSchoolLife = structuredClone(schoolLife);
                     oldSchoolLife[activeAccount] = response.data;
@@ -1400,7 +1410,6 @@ export default function App() {
             {
                 method: "POST",
                 headers: {
-                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,

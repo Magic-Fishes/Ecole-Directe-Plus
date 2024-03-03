@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 import {
     WindowsContainer,
@@ -11,11 +11,15 @@ import {
 
 
 import "./Homeworks.css";
+import { AppContext } from "../../../App";
 
 
-export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks, homeworks, setHomeworks }) {
+export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
+    const { useUserData } = useContext(AppContext);
+    const homeworks = useUserData("sortedHomeworks");
+    
     // behavior
     useEffect(() => {
         document.title = "Cahier de texte • Ecole Directe Plus";
@@ -24,18 +28,15 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks, h
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
-            if (homeworks.length < 1 || homeworks[activeAccount] === undefined) {
+            if (homeworks.get() === undefined) {
                 fetchHomeworks(controller);
-            } else if (false/*!sortedHomeworks*/) {
-                sortHomeworks(homeworks, activeAccount);
             }
         }
-        console.log("HOMEWORKS:", homeworks)
 
         return () => {
             controller.abort();
         }
-    }, [homeworks, isLoggedIn, activeAccount]);
+    }, [isLoggedIn, activeAccount]);
 
     // JSX
     return (
@@ -65,7 +66,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks, h
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
                         <WindowContent>
-                            
+                            {JSON.stringify(homeworks.get())}
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
