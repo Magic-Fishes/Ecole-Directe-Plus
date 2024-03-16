@@ -17,7 +17,8 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import EdpUnblock from "./components/edp-unblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
+import { areOccurenciesEqual, createUserLists, encrypt, decrypt } from "./utils/utils";
+import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
@@ -62,7 +63,7 @@ function consoleLogEDPLogo() {
           https://github.com/Magic-Fishes/Ecole-Directe-Plus 
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
-    `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
+        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
 
 }
 consoleLogEDPLogo();
@@ -440,7 +441,7 @@ export default function App() {
     function getUserData(data) {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
-
+    
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
 
 
@@ -644,6 +645,7 @@ export default function App() {
             "keepOnFire": 0,
             "meh": 0,
         };
+        const newLastGrades = []
         if (periodsFromJson !== undefined) {
             for (let period of periodsFromJson) {
                 if (period) {
@@ -710,6 +712,8 @@ export default function App() {
             }
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
+
+            const lastGrades = gradesFromJson.toSorted((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
 
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods
@@ -873,6 +877,9 @@ export default function App() {
                 newGrade.skill = formatSkills(grade.elementsProgramme)
 
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
+                if (lastGrades.includes(grade)) {
+                    newLastGrades.push(newGrade)
+                }
             }
         }
 
@@ -929,6 +936,7 @@ export default function App() {
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
+        changeUserData("lastGrades", newLastGrades.reverse());
         setDefaultPeriod(periods)
     }
 
@@ -1606,7 +1614,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard />,
+                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -1614,7 +1622,7 @@ export default function App() {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
                             path: ":userId/grades"
                         },
                         {

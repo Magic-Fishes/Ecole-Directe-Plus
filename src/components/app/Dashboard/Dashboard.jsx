@@ -9,17 +9,35 @@ import {
     WindowHeader,
     WindowContent
 } from "../../generic/Window";
+import LastGrades from "./LastGrades";
 
 import "./Dashboard.css";
 
-export default function Dashboard({ }) {
+export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLoggedIn, useUserData, sortGrades }) {
     const navigate = useNavigate();
-    // States
+    const userData = useUserData();
+
+    const sortedGrades = userData.get("sortedGrades");
 
     // Behavior
     useEffect(() => {
         document.title = "Accueil • Ecole Directe Plus";
     }, [])
+    
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (grades.length < 1 || grades[activeAccount] === undefined) {
+                fetchUserGrades(controller);
+            } else if (!sortedGrades) {
+                sortGrades(grades, activeAccount);
+            }
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [grades, isLoggedIn, activeAccount]);
 
     // JSX DISCODO
     return (
@@ -28,14 +46,15 @@ export default function Dashboard({ }) {
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column" growthFactor={2.5}>
                         <WindowsLayout direction="row">
-                            <Window WIP={true}>
+                            <LastGrades activeAccount={activeAccount} />
+                            {/* <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../grades")}>
                                     <h2>Dernière notes</h2>
                                 </WindowHeader>
                                 <WindowContent>
                                     
                                 </WindowContent>
-                            </Window>
+                            </Window> */}
                             
                             <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>
@@ -47,7 +66,7 @@ export default function Dashboard({ }) {
                             </Window>
                         </WindowsLayout>
 
-                        <Window WIP={true}>
+                        <Window WIP={true} growthFactor={1.5}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
