@@ -119,3 +119,16 @@ export function downloadFile(blobFile, filename) {
     // Clean up by revoking the Blob URL
     URL.revokeObjectURL(url);
 }
+
+export function getBrowser() { // I didn't check all browsers, see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#browser_name_and_version
+    const UA = navigator.userAgent
+    return (
+        (UA.includes("OPR/") || UA.includes("Opera/")) ? "Opera" : // verified on my computer
+        (UA.includes("Chromium/")) ? "Chromium" : // not verified
+        (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
+        (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
+        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
+        (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
+        "Safari" // not verified
+    )
+}
