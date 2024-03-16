@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import EDPVersion from "../generic/EDPVersion";
+import EDPVersion from "../generic/buttons/EDPVersion";
 import Policy from "../generic/Policy";
 
 import LoginForm from "./LoginForm";

@@ -1,0 +1,25 @@
+.go-back-arrow {
+    height: 50px;
+    margin: 10px 20px;
+    border-radius: 7px;
+    transition: 0.1s;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.go-back-arrow:hover {
+    background-color: rgba(var(--text-color-main), 0.1);
+}
+.go-back-arrow:active {
+    background-color: rgba(var(--text-color-main), 0.2);
+}
+
+.go-back-arrow path {
+    transition: 0.15s;
+}
+.go-back-arrow:hover path {
+    transform: translateX(10px);
+}
+.go-back-arrow:active path {
+    transform: translateX(-10px);
+}
