@@ -1,6 +1,3 @@
-// npm run build
-// zip -r build_history/build-<année>-<mois>-<jour>.zip dist
-
 import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
@@ -17,7 +14,8 @@ import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
-import DOMNotification from "./components/generic/PopUps/Notification";
+import EdpUnblock from "./components/edp-unblock/EdpUnblock"
+import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
 import { getProxiedURL } from "./utils/requests";
@@ -1509,7 +1507,7 @@ export default function App() {
             children: [
                 {
                     element: <Navigate to="/login" />,
-                    path: "/"
+                    path: "/",
                 },
                 {
                     element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
@@ -1517,24 +1515,23 @@ export default function App() {
                 },
                 {
                     element: <Canardman />,
-                    path: "quackquack"
-                    // path: "coincoin",
+                    path: "quackquack",
                 },
                 {
                     element: <Lab fetchGrades={fetchUserGrades} />,
-                    path: "lab"
+                    path: "lab",
                 },
                 {
                     element: <Museum />,
-                    path: "museum"
+                    path: "museum",
                 },
                 {
                     element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} thonFrustre={thonFrustre} />,
-                    path: "unsubscribe-emails"
+                    path: "unsubscribe-emails",
                 },
                 {
                     element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
-                    path: "login"
+                    path: "login",
                 },
                 {
                     element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
@@ -1667,9 +1664,7 @@ export default function App() {
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
             <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
-                <DOMNotification>
-                    <RouterProvider router={router} />
-                </DOMNotification>
+                <RouterProvider router={router} />
             </Suspense>
         </AppContext.Provider>
     );
