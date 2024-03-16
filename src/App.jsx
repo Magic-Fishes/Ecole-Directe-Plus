@@ -246,7 +246,7 @@ export default function App() {
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
-
+    const createNotification = useCreateNotification();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -1014,6 +1014,18 @@ export default function App() {
         setUserInfo(fakeToken, fakeAccountsList)
     }
 
+    function handleEdBan() {
+        // Will summon a notification with JSX in it
+        createNotification(<>
+            <h4>
+                Ecole Directe Plus a besoin de son extension pour fonctionner !
+            </h4>
+            <p>
+                Afin d'accéder à l'API de EcoleDirecte et donc de vous permettre d'accéder à vos données, Ecole Directe Plus nécessite l'installation d'une extension web.</p>
+            <a href="/edp-unblock#about">En savoir plus</a>
+        </>, "extension-warning")
+    }
+
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
         abortControllers.current.push(controller);
         // guest management
@@ -1047,68 +1059,72 @@ export default function App() {
             // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
-                // GESTION DATA
-                let statusCode = response.code;
-                if (statusCode === 200) {
-                    messages.submitButtonText = "Connecté";
-                    setUserIds({ username: username, password: password })
-                    if (keepLoggedIn) {
-                        localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
-                    }
-                    let token = response.token // collecte du token
-                    let accountsList = [];
-                    let accounts = response.data.accounts[0];
-                    const accountType = accounts.typeCompte; // collecte du type de compte
-                    if (accountType === "E") {
-                        // compte élève
-                        accountsList.push({
-                            accountType: "E", // type de compte
-                            lastConnection: accounts.lastConnexion,
-                            id: accounts.id, // id du compte
-                            firstName: accounts.prenom, // prénom de l'élève
-                            lastName: accounts.nom, // nom de famille de l'élève
-                            email: accounts.email, // email du compte
-                            picture: accounts.profile.photo, // url de la photo
-                            schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
-                            modules: accounts.modules
-                        });
-                    } else {
-                        // compte parent
-                        const email = accounts.email;
-                        accounts.profile.eleves.map((account) => {
-                            accountsList.push({
-                                accountType: "P",
-                                lastConnection: accounts.lastConnexion,
-                                id: account.id,
-                                firstName: account.prenom,
-                                lastName: account.nom,
-                                email: email,
-                                picture: account.photo,
-                                schoolName: account.nomEtablissement,
-                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
-                                modules: account.modules.concat(accounts.modules) // merge modules with those of parents
-                            })
-                        });
-                    }
-                    // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
-                    if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
-                        resetUserData();
-                    }
-                    setUserInfo(token, accountsList);
-                    setIsLoggedIn(true);
+                if (!response) {
+                    handleEdBan();
                 } else {
-                    // si ED renvoie une erreur
-                    messages.submitButtonText = "Invalide";
-                    if (referencedErrors.hasOwnProperty(statusCode)) {
-                        messages.submitErrorMessage = referencedErrors[statusCode];
+                    // GESTION DATA
+                    let statusCode = response.code;
+                    if (statusCode === 200) {
+                        messages.submitButtonText = "Connecté";
+                        setUserIds({ username: username, password: password })
+                        if (keepLoggedIn) {
+                            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
+                        }
+                        let token = response.token // collecte du token
+                        let accountsList = [];
+                        let accounts = response.data.accounts[0];
+                        const accountType = accounts.typeCompte; // collecte du type de compte
+                        if (accountType === "E") {
+                            // compte élève
+                            accountsList.push({
+                                accountType: "E", // type de compte
+                                lastConnection: accounts.lastConnexion,
+                                id: accounts.id, // id du compte
+                                firstName: accounts.prenom, // prénom de l'élève
+                                lastName: accounts.nom, // nom de famille de l'élève
+                                email: accounts.email, // email du compte
+                                picture: accounts.profile.photo, // url de la photo
+                                schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
+                                class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
+                                modules: accounts.modules
+                            });
+                        } else {
+                            // compte parent
+                            const email = accounts.email;
+                            accounts.profile.eleves.map((account) => {
+                                accountsList.push({
+                                    accountType: "P",
+                                    lastConnection: accounts.lastConnexion,
+                                    id: account.id,
+                                    firstName: account.prenom,
+                                    lastName: account.nom,
+                                    email: email,
+                                    picture: account.photo,
+                                    schoolName: account.nomEtablissement,
+                                    class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
+                                    modules: account.modules.concat(accounts.modules) // merge modules with those of parents
+                                })
+                            });
+                        }
+                        // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
+                        if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
+                            resetUserData();
+                        }
+                        setUserInfo(token, accountsList);
+                        setIsLoggedIn(true);
                     } else {
-                        messages.submitErrorMessage = ("Erreur : " + response.message);
-                        const error = {
-                            errorMessage: response,
-                        };
-                        if (getUserSettingValue("allowAnonymousReports")) {
-                            sendToWebhook(sardineInsolente, error);
+                        // si ED renvoie une erreur
+                        messages.submitButtonText = "Invalide";
+                        if (referencedErrors.hasOwnProperty(statusCode)) {
+                            messages.submitErrorMessage = referencedErrors[statusCode];
+                        } else {
+                            messages.submitErrorMessage = ("Erreur : " + response.message);
+                            const error = {
+                                errorMessage: response,
+                            };
+                            if (getUserSettingValue("allowAnonymousReports")) {
+                                sendToWebhook(sardineInsolente, error);
+                            }
                         }
                     }
                 }
@@ -1498,6 +1514,8 @@ export default function App() {
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
+                    
+                    handleEdBan={handleEdBan}
 
                     proxyError={proxyError}
                 />
@@ -1511,7 +1529,11 @@ export default function App() {
                 },
                 {
                     element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
-                    path: "feedback"
+                    path: "feedback",
+                },
+                {
+                    element: <EdpUnblock />,
+                    path: "edp-unblock",
                 },
                 {
                     element: <Canardman />,
