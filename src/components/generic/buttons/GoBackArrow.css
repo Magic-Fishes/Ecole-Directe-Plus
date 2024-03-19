@@ -7,9 +7,11 @@
     cursor: pointer;
 }
 
-.go-back-arrow:hover {
+.go-back-arrow:is(:hover, :focus-visible) {
     background-color: rgba(var(--text-color-main), 0.1);
+    outline: none;
 }
+
 .go-back-arrow:active {
     background-color: rgba(var(--text-color-main), 0.2);
 }
@@ -17,9 +19,12 @@
 .go-back-arrow path {
     transition: 0.15s;
 }
-.go-back-arrow:hover path {
+
+.go-back-arrow:is(:hover, :focus-visible) path {
     transform: translateX(10px);
+    outline: none;
 }
+
 .go-back-arrow:active path {
     transform: translateX(-10px);
 }
