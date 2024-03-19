@@ -13,15 +13,6 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                     </p>
                     <h3 className="sub-header">Nouveautés</h3>
                     <p>
-                        <p>Rencontrez la communauté et les développeurs d'Ecole Directe Plus en rejoignant le <a target="_blank" href="https://discord.gg/AKAqXfTgvE">serveur Discord</a> !</p>
-                            <img src="/images/discord-v0.2.5-banner.png" id="discord-picture-new-version"/>
-                            <details>
-                                <summary>Plus d'informations</summary>
-                                <p>
-                                Nous avons récemment créé un serveur Discord communautaire pour Ecole Directe Plus. Vous pourrez y retrouver les autres adeptes d'EDP, discuter avec les développeurs, nous aider à corriger les bugs que vous rencontrez, etc.
-                                Vous serez également aux premières loges en cas d'annonce importante. De plus, vous pourrez consulter les retours des utilisateurs et découvrir ce qu'ils pensent d'EDP.
-                                Rejoignez le <span style={{ fontStyle: "italic"}}>Canardman-Gang</span> en <a href="https://discord.gg/AKAqXfTgvE" target="_blank">cliquant ici</a></p>
-                            </details>
                     </p>
                     <br />
                     <li>Ajout de boutons dans la catégorie "Informations" pour télécharger le sujet et la correction d'une évaluation s'ils sont disponibles.</li>
@@ -41,6 +32,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Correction d'un bug provoquant une infinité de ré-rendus de la page.</li>
                         <li>Bug de la bottom sheet causant quelques glitch.</li>
                         <li>Amélioration générale des performances et de la stabilité.</li>
+                        
                     </ul>
                     <h3 className="sub-header">Divers</h3>
                     <li>Veuillez noter qu'Ecole Directe Plus est encore en cours de développement. Nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>

@@ -4,10 +4,16 @@
         <loc>https://ecole-directe.plus/</loc>
     </url>
     <url>
+        <loc>https://ecole-directe.plus/main-page<loc/>
+    <url/>
+    <url>
         <loc>https://ecole-directe.plus/login</loc>
     </url>
     <url>
         <loc>https://ecole-directe.plus/login#policy</loc>
+    </url>
+    <url>
+        <loc>https://ecole-directe.plus/main-page#policy</loc>
     </url>
     <url>
         <loc>https://ecole-directe.plus/feedback</loc>

@@ -27,6 +27,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/feedback");
     }
 
+
     function redirectToApp() {
         // navigate(`/app/${activeAccount}/dashboard`, { replace: true });
         navigate(`/app/${activeAccount}/grades`, { replace: true });
@@ -42,6 +43,10 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
 
     function redirectToLogin() {
         navigate("/login");
+    }
+
+    function redirectToMainPage() {
+        navigate("/main-page")
     }
 
 
@@ -389,18 +394,23 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
     }
     
-
     return (
         <>
-            <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
+            {/* <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
+                <div className="">
+                {isAdmin && <input type="button" onClick={() => window.open("https://developer.mozilla.org/fr/docs/Web/CSS", "_blank")} value="CSS DATASHEET" />}
+                {isAdmin && <input type="button" onClick={() => window.open("https://developer.mozilla.org/fr/docs/Web/HTML", "_blank")} value="HTML DATASHEET" />}
+                {isAdmin && <input type="button" onClick={() => window.open("https://developer.mozilla.org/fr/docs/Web/JavaScript", "_blank")} value="JS DATASHEET" />}
                 {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
+                {isAdmin && <input type="button" onClick={redirectToMainPage} value="MAINPAGE" />}
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
                 {isAdmin && <input type="button" onClick={() => resetUserData(false)} value="RESET USER DATA" />}
                 {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
-                {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
+
+
                 {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
                     <option value="auto">THEME: AUTO</option>
                     <option value="dark">THEME: DARK</option>
@@ -423,7 +433,8 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
-            </div>
+                </div>
+            </div> */}
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}

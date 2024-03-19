@@ -18,6 +18,7 @@ import ErrorPage from "./components/Errors/ErrorPage";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import DOMNotification from "./components/generic/PopUps/Notification";
+import MainPage from "./components/Mainpage/MainPage";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
 import { getProxiedURL } from "./utils/requests";
@@ -1531,6 +1532,10 @@ export default function App() {
                 {
                     element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} thonFrustre={thonFrustre} />,
                     path: "unsubscribe-emails"
+                },
+                {
+                    element: <MainPage/>,
+                    path: "main-page"
                 },
                 {
                     element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,

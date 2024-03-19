@@ -18,6 +18,29 @@
 
 .login-logo#inside-container {
     display: none;
+    
+}
+
+.return-main-page-button {
+    display: flex;
+    align-items: start;
+    justify-content: left;
+    margin: 16px 0 0 17px;
+}
+
+.change-page-main-page-button {
+    padding: 16px;
+    font-size: 15px;
+    border-radius: 12px;
+    background-color: var(--button-background-color);
+    border:2px rgb(130, 127, 157) solid;
+    transition: background-color, 370ms, box-shadow cubic-bezier(.32,.23,.17,1.48) 370ms;
+}
+
+.change-page-main-page-button:hover {
+    background-color: rgb(100, 97, 127);
+    box-shadow: var(--button-shadow-after);
+    cursor: pointer;
 }
 
 .login-box {
@@ -51,6 +74,7 @@
     font-size: var(--font-size-42);
     font-weight: var(--font-weight-extra-bold);
     margin: 3rem 0 3.5rem 0;
+    
 }
 
 /* .login-box :is(.login-input, #submit-login, .login-option) {
@@ -97,7 +121,8 @@ p.policy {
 }
 
 #login .policy-link:hover {
-    color: rgb(var(--border-color-0));    
+    color: rgb(var(--border-color-0));  
+      
 }
 
 @media only screen and (max-width: 460px) {
@@ -153,6 +178,7 @@ p.policy {
     #login .policy-link {
         /*font-size: min(var(--font-size-16), 4.5vw);*/
         font-size: var(--font-size-16);
+        
     }
 }
 

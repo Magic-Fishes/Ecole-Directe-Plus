@@ -1,16 +1,12 @@
 
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-
 import EDPVersion from "../generic/EDPVersion";
 import Policy from "../generic/Policy";
-
 import LoginForm from "./LoginForm";
-
 import InfoButton from "../generic/Informative/InfoButton";
-
 import EDPLogo from "../graphics/EDPLogo";
-import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
+import LoadingAnimation from "../../../src/components/graphics/LoadingAnimation"
 
 import "./Login.css";
 
@@ -22,10 +18,16 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
      // JSX
     return (
         <div id="login">
-            <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
+            <div className="return-main-page-button">
+                <Link to={"/main-page"} onClick={<LoadingAnimation/>}>
+                    <button className="change-page-main-page-button">Retour</button>
+                </Link>
+            </div>
             <div className="login-box">
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
+                
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
+
                 <h1>Connexion</h1>
                 <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
