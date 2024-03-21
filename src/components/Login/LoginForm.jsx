@@ -27,7 +27,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     // States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [submitButtonText, setSubmitButtonText] = useState("Se connecter");
+    const [submitButtonText, setSubmitButtonText] = useState("Ok");// original value "Se connecter"
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior
@@ -83,10 +83,23 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
         });
     }
 
+    if (localStorage.userSettings) {
+        if ((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") {
+            document.body.setAttribute('style', 'background-color: white;')
+        } else {
+            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+        }
+    } else {
+        if (document.documentElement.getAttribute('class').indexOf('dark') < 0) {
+            document.body.setAttribute('style', 'background-color: white;')
+        }
+    }
+
     return (
-        <form onSubmit={handleSubmit} {...props} id="login-form">
-            <TextInput className="login-input" textType="text" placeholder="Identifiant" autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
-            <TextInput className="login-input" textType="password" placeholder="Mot de passe" autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
+        <form onSubmit={handleSubmit} {...props} id="login-form">{/* April fools' placeholder ▼  */ /* Normal value: placeholder="Identifiant" */}
+            <TextInput className="login-input" textType="text" placeholder="Nom d'Utilisateur" autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
+                                                                 {/* April fools' placeholder ▼  */ /* Normal value: placeholder="Mot de passe" */}
+            <TextInput className="login-input" textType="password" placeholder="•••••••••••" autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
             {errorMessage && errorMessage === "accountCreationError" ? <p className="error-message">Vous n'avez pas encore créé votre compte EcoleDirecte ?!<br/>Rendez-vous sur le <a href="https://ecoledirecte.com/">site officiel</a> pour le configurer, nous vous attendons avec impatience !</p> : <p className="error-message">{errorMessage}</p>}
             <div className="login-option">
                 <Tooltip delay={400}>

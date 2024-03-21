@@ -18,6 +18,14 @@ import "./Login.css";
 export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    if (localStorage.userSettings) {
+        if ((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") {
+            document.body.style.backgroundColor = "white" ;
+        } else {
+            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+        }
+    }
     
      // JSX
     return (

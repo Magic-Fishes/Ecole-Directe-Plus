@@ -43,7 +43,8 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
         <div className={className} id={id}>
             <div className={`text-input-container ${warningMessageState && "invalid"}`} >
                 <input
-                    className="text-input"
+                    //className="text-input" //Normal line
+                    className={placeholder==="Nom d'Utilisateur"||placeholder==="•••••••••••" ? "prank-text-input": "text-input"} //April fools' line
                     type={textType}
                     placeholder={placeholder}
                     value={value}
