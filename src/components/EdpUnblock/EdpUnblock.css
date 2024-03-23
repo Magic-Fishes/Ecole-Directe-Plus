@@ -1,0 +1,229 @@
+html :has(.edpu-page) {
+    background-image: url("/public/images/edpu-background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.edpu-back-arrow {
+    position: fixed;
+    z-index: 1;
+}
+
+.edpu-back-arrow path{
+    fill: white;
+}
+
+.social {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+}
+
+.social a {
+    transition: .15s;
+}
+
+.social svg {
+    height: 40px;
+    cursor: pointer;
+}
+
+.social svg path {
+    fill: #B4B4F0;
+    transition: .15s;
+}
+
+.social a:is(:hover, :focus-visible){
+    transform: scale(1.11) rotate(5deg);
+    filter: drop-shadow(0 0 7px #FFF8);
+    outline: none;
+}
+
+.social a:is(:hover, :focus-visible) svg path {
+    fill: white;
+}
+
+.edpu-page {
+    height: 100vh;
+    overflow-y: scroll;
+    -webkit-backdrop-filter: blur(10px) brightness(0.7);
+    backdrop-filter: blur(10px) brightness(0.7);
+}
+
+.edpu-page main {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.edpu-page main > div {
+    width: 60%;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.edpu-title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: center;
+    justify-content: center;
+}
+
+.edpu-title .edpu-logo {
+    flex-grow: 0.8;
+}
+
+.edpu-title > div svg {
+    width: 130px;
+}
+
+.edpu-title > :last-child {
+    min-width: 250px;
+}
+
+.edpu-title h1 {
+    color: white;
+    font-size: var(--font-size-48);
+}
+
+.edpu-title h2 {
+    color: white;
+    font-size: var(--font-size-36);
+}
+
+.edpu-page main > div > p {
+    max-width: 650px;
+    font-size: var(--font-size-20);
+    color: #b4b4f0;
+    text-align: center;
+}
+
+.edpu-dowload-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    min-width: 50%;
+    padding: 10px;
+    border-radius: 500px;
+    background-color: #FFF5;
+    border: solid white 2px;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.edpu-dowload-link svg:first-child {
+    height: 40px;
+    min-height: 40px;
+}
+
+.edpu-dowload-link svg:last-child {
+    height: 30px;
+    min-height: 30px;
+    transform: translateX(-5px);
+    overflow: visible;
+}
+
+.edpu-dowload-link svg:last-child path {
+    stroke: white;
+}
+
+.edpu-dowload-link span {
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-extra-bold);
+    color: white;
+    text-align: center;
+}
+
+.edpu-dowload-link svg:last-child path:first-child {
+    transition: .3s;
+}
+
+.edpu-dowload-link:is(:hover, :focus-visible) {
+    background-color: #FFF7;
+    filter: drop-shadow(0 0 20px #FFFFFF88);
+    outline: none;
+}
+
+.edpu-dowload-link:is(:hover, :focus-visible) svg:last-child path:first-child {
+    transform: translateY(-10px);
+}
+
+.edpu-dowload-link:is(:active) svg:last-child path:first-child {
+    transform: translateY(10px);
+}
+
+.edpu-about {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: calc(100vw - 185px);
+    padding: 50px;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    border: solid #30305846 2px;
+    border-bottom: none;
+    background-color: #151523;
+    
+}
+
+.edpu-feedback-link {
+    text-decoration: none;
+    color: #b4b4f0;
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+}
+
+.edpu-feedback-link:is(:hover, :focus-visible) {
+    color: white;
+}
+
+.edpu-about-link {
+    position: absolute;
+    text-decoration: none;
+    bottom: 15px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    gap: 10px;
+
+}
+
+.edpu-about-link.edpu-about-link h5{
+    color: rgb(var(--text-color-alt));
+}
+
+.edpu-about-link svg {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+.edpu-about-link svg path {
+    stroke: rgb(var(--text-color-alt));
+}
+
+@media only screen and (max-width: 1050px) {
+    .edpu-title {
+        text-align: center;
+    }
+}
+
+@keyframes bounce {
+    0%, 30%, 60% {
+        transform: translateY(0);
+    }
+    15%, 45% {
+        transform: translateY(5px);
+    }
+}
