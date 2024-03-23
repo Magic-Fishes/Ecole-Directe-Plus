@@ -142,6 +142,7 @@ html :has(.edpu-page) {
     font-size: var(--font-size-20);
     font-weight: var(--font-weight-extra-bold);
     color: white;
+    text-align: center;
 }
 
 .edpu-dowload-link svg:last-child path:first-child {
@@ -191,17 +192,38 @@ html :has(.edpu-page) {
 
 .edpu-about-link {
     position: absolute;
-    bottom: 20px;
-    height: 20px;
-    width: 5%;
+    text-decoration: none;
+    bottom: 15px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    gap: 10px;
+
+}
+
+.edpu-about-link.edpu-about-link h5{
+    color: rgb(var(--text-color-alt));
+}
+
+.edpu-about-link svg {
+    animation: bounce 3s ease-in-out infinite;
 }
 
 .edpu-about-link svg path {
-    
+    stroke: rgb(var(--text-color-alt));
 }
 
 @media only screen and (max-width: 1050px) {
     .edpu-title {
         text-align: center;
+    }
+}
+
+@keyframes bounce {
+    0%, 30%, 60% {
+        transform: translateY(0);
+    }
+    15%, 45% {
+        transform: translateY(5px);
     }
 }

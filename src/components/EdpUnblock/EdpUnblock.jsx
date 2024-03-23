@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getBrowser } from "../../utils/utils";
 import GoBackArrow from "../generic/buttons/GoBackArrow";
@@ -8,9 +8,9 @@ import GithubLogo from "../graphics/GithubLogo";
 import ChromeLogo from "../graphics/ChromeLogo";
 import FirefoxLogo from "../graphics/FirefoxLogo";
 import EdgeLogo from "../graphics/EdgeLogo";
-import DropDownArrow from "../graphics/DropDownArrow";
 import EdpuLogo from "../graphics/EdpuLogo";
 import DownloadIcon from "../graphics/DownloadIcon";
+import AboutArrow from "../graphics/AboutArrow";
 
 import "./EdpUnblock.css";
 
@@ -57,16 +57,45 @@ const userBrowser = getBrowser()
 
 export default function EdpUnblock({ ...props }) {
     const location = useLocation();
-    const aboutRef = useRef();
+
+    const [arrowText, setArrowText] = useState("En savoir plus")
+
+    const aboutRef = useRef(null);
+    const aboutButtonRef = useRef(null);
+    const heroBannerRef = useRef(null);
     function scrollToAbout() {
         if (location.hash === "#about") {
             aboutRef.current.scrollIntoView({ block: "start", inline: "nearest", behavior: "smooth" });
         }
     }
+
+    useEffect(() => {
+        function handleKeyDown(event) {
+            const heroRect = heroBannerRef.current.getBoundingClientRect();
+            const aboutButtonRect = aboutButtonRef.current.getBoundingClientRect();
+            const aboutRect = aboutRef.current.getBoundingClientRect();
+
+            if (event.key == "ArrowDown" && aboutRect.top > 60) { // 60 is the height that scrolls when I scroll with the arrows
+                event.preventDefault();
+                aboutRef.current.scrollIntoView({ block: "start", inline: "nearest", behavior: "smooth" });
+            } else if (event.key == "ArrowUp" && heroRect.bottom >= aboutButtonRect.height) {
+                event.preventDefault();
+                heroBannerRef.current.scrollIntoView({ block: "start", inline: "nearest", behavior: "smooth" });
+            } else if (event.key == "ArrowUp" && (aboutRect.top > -60 && aboutRect.top <= aboutButtonRect.height)) {
+                event.preventDefault();
+                aboutButtonRef.current.scrollIntoView({ block: "start", inline: "nearest", behavior: "smooth" });
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        return (() => {
+            document.removeEventListener("keydown", handleKeyDown);
+        })
+    }, [])
+
     useEffect(() => {
         scrollToAbout();
     }, [location.hash])
-    
+
     // useEffect(() => {
     //     const htmlClass = document.children[0].classList
     //     if (htmlClass.contains("light")) {
@@ -95,7 +124,7 @@ export default function EdpUnblock({ ...props }) {
             <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus-Unblock"><GithubLogo /></a>
         </span>
         <div className="edpu-page">
-            <main>
+            <main ref={heroBannerRef}>
                 <div>
                     <div className="edpu-title">
                         <div>
@@ -110,11 +139,14 @@ export default function EdpUnblock({ ...props }) {
                     <a href={browserLogosInfos[userBrowser].url} className={`edpu-dowload-link ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser].logo}
                         <span>Ajouter l’extension</span>
-                        <DownloadIcon/>
+                        <DownloadIcon />
                     </a>
                 </div>
                 <Link to="/feedback" className="edpu-feedback-link">Besoin d’aide ? </Link>
-                <Link to="#about" className="edpu-about-link" replace onClick={() => { location.hash === "#about" && scrollToAbout() }}><DropDownArrow preserveAspectRatio="none" viewBox="none"/></Link>
+                <Link ref={aboutButtonRef} to="#about" className="edpu-about-link" replace onClick={() => { location.hash === "#about" && scrollToAbout() }}>
+                    <h5>{arrowText}</h5>
+                    <AboutArrow viewBox="0 36 100 26" />
+                </Link>
             </main>
             <div className="edpu-about" ref={aboutRef}>
                 {/* placeholder purpose only obviously */}
