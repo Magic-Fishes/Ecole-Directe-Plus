@@ -1,12 +1,20 @@
 * {
-    box-shadow: 0 0 0 3px transparent;    
-
+    box-shadow: 0 0 0 3px transparent;
+    box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
 
 #notifications-container {
     display: none;
+}
+
+#nav-bar {
+    position: sticky;
+    top: 15px;
+    z-index: 10;
+    padding: 0;
+    margin: 0 3.5rem;
 }
 
 .main-page {
@@ -16,185 +24,315 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    /* Permet de bloquer le scroll sur la page main-page*/
     background: linear-gradient( 3deg, rgba(10, 0, 200, 0.1), rgba(210, 50, 240, 0.1) );
-
 }
 
-.navbar {
-
+.nav-bar-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.nav-hambuger-menu-div {
-
+.top-section {
+    margin-right: auto;
+    margin-left: auto;
 }
 
-.open-side-bar-menu {
-
-}
-
-.sidebarIconToggle {
-
-}
-
-.diagonal {
-
-}
-
-.horizontal {
-
-}
-
-.part-1 {
-
-}
-
-.part-2 {
-
-}
-
-.nav-logo {
-    
+.nav-links-container {
+    background-color: rgb(var(--text-color-main-reverse));
+    border-radius: 999999px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
 
 .nav-links {
+    display: flex;
+    margin: 0.7rem 1rem;
+    gap: 2rem;
 }
 
-.nav-links-list {
-
+.link {
+    text-decoration: none;
+    padding: 1rem 1.6rem;
+    border-radius: 999999px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
-.nav-link-button {
-  
+.link:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    color: rgb(var(--text-color-main-reverse));
 }
 
-.nav-login-button {
-
+.nav-login {
+    display: flex;
+    margin: auto;
 }
 
-/* .nav-active {
+.nav-hambuger-menu-div {
+    display: none;
+}
 
-} */
+.nav-logo a {
+    display: flex;
+    text-decoration: none;
+    background-color: rgb(var(--text-color-main-reverse));
+    padding: 1.7rem 1.4rem;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    transition: all 0.2s ease;
+}
 
+.EDPLogo {
+    margin-top: 2px;
+    margin-right: 10px;
+}
 
+.nav-logo a:hover {
+    color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    cursor: pointer;
+}
 
-@media screen and (max-width: 790px) {
+.login-theme a {
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.7rem 2.6rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--text-color-main-reverse));
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in;
+}
 
-    .main-page {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        /* Permet de bloquer le scroll sur la page main-page*/
-        background: linear-gradient( 3deg, rgba(10, 0, 200, 0.1), rgba(210, 50, 240, 0.1) );
-    }
+.login-theme a:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    color: rgb(var(--text-color-main-reverse));
+}
 
+.login-theme {
+    display: flex;
+}
 
-    .nav-links {
-        display: flex;
-        position: absolute;
-        width: 100%;
-        height: 100vh;
-        top: 0;
-        left: -100%; 
-        background-color: rgba(255, 255, 255, 0.103);
-        backdrop-filter: blur(8px);
-        justify-content: center;
-        align-items: center;
-        transition: left 0.5s ease; /* Transition sur la propriété left pour l'animation */
-    }
+.change-theme {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    margin-left: 10px;
+}
 
-    .mobile-menu {
-        left: 0;
-    }
+.change-theme button {
+    position: relative;
+    padding: 2.65rem;
+    border: 0;
+    background-color: rgb(var(--text-color-main-reverse));
+    border-radius: 1rem;
+    transition: all 0.2s ease-in;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+}
 
-    .navbar .nav-links ul li {
-        margin: 0.3rem 0;
-    }
+.change-theme button::before {
+    display: none;
+    position: absolute;
+    content: "";
+    background-color: rgba(190, 190, 200, 0.5);
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(200, 200, 210, 0.7), transparent 30%),
+      radial-gradient(circle at 30% 70%, rgba(180, 180, 190, 0.7), transparent 30%),
+      radial-gradient(circle at 70% 40%, rgba(210, 210, 220, 0.7), transparent 30%),
+      radial-gradient(circle at 20% 60%, rgba(190, 190, 200, 0.7), transparent 30%),
+      radial-gradient(circle at 50% 80%, rgba(170, 170, 180, 0.7), transparent 30%);
+    box-shadow: 1px 0 4px rgb(0, 0, 0);
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    transition: all 0.2s ease-in;
+}
 
-    .nav-link-button {
-        font-size: 2.3rem;
-    }
+.change-theme button::after {
+    display: block;
+    position: absolute;
+    content: "";
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    background-color: rgba(255, 200, 80, 0.5);
+    background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 80, 0.7), transparent 30%),
+    radial-gradient(circle at 30% 70%, rgba(255, 180, 60, 0.315), transparent 30%),
+    radial-gradient(circle at 70% 40%, rgba(255, 220, 100, 0.7), transparent 30%),
+    radial-gradient(circle at 20% 60%, rgba(255, 190, 90, 0.7), transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(255, 210, 70, 0.7), transparent 30%);
+    background-position: 0 0, 50px 50px, 100px 0, 0px 100px, 100px 100px;
+    box-shadow: 0 0 0 1px rgb(255, 200, 80),0 0 5px 0px rgb(255, 200, 80);
+}
 
+.change-theme button:hover,
+.change-theme button:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    cursor: pointer;
+}
 
-    /* -------------------------------------------------------------------------- */
-    /*                    Partie pour animer le menu hamburger                    */
-    /* -------------------------------------------------------------------------- */
+.change-theme button::before,
+.change-theme button::after {
+    width: 23px;
+    height: 23px;
+}
 
+.dark .change-theme button::before {
+    display: block;
+}
 
+.dark .change-theme button::after {
+    display: none;
+}
 
+/* ------------------ Partie pour animer le menu hamburger ------------------ */
 
-    input[type="checkbox"]:checked ~ #sidebarMenu {
-        transform: translateX(0);
+input[type="checkbox"]:checked ~ #sidebarMenu {
+    transform: translateX(0);
+}
+
+input[type=checkbox] {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    display: none;
+}
+
+.sidebarIconToggle {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: absolute;
+    z-index: 99;
+    height: 100%;
+    width: 100%;
+    height: 22px;
+    width: 22px;
     }
     
-    input[type=checkbox] {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        display: none;
-    }
-    .sidebarIconToggle {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        cursor: pointer;
-        position: absolute;
-        z-index: 99;
-        height: 100%;
-        width: 100%;
-        height: 22px;
-        width: 22px;
-    }
-
-    .sidebarIconToggle > span {
-        border-radius: 10px;
-
-    }
-    .spinner {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        position: absolute;
-        height: 3px;
-        width: 100%;
-        background-color: #fff;
-    }
-    .horizontal {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        position: relative;
-        float: left;
-        margin-top: 3px;
-    }
-    .diagonal.part-1 {
-        position: relative;
-        transition: all 0.3s;
-        box-sizing: border-box;
-        float: left;
-    }
-    .diagonal.part-2 {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        position: relative;
-        float: left;
-        margin-top: 3px;
-    }
-    input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        opacity: 0;
-    }
-    input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        transform: rotate(135deg);
-        margin-top: 8px;
-    }
-    input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
-        transition: all 0.3s;
-        box-sizing: border-box;
-        transform: rotate(-135deg);
-        margin-top: -9px;
-    }
+.sidebarIconToggle > span {
+    border-radius: 10px;
 }
 
+.spinner {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background-color: rgb(var(--border-color-1));
+}
+
+.horizontal {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin-top: 3px;
+}
+
+.diagonal.part-1 {
+    position: relative;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    float: left;
+}
+
+.diagonal.part-2 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin-top: 3px;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    opacity: 0;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    transform: rotate(135deg);
+    margin-top: 8px;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    transform: rotate(-135deg);
+    margin-top: -9px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Banner                                   */
+/* -------------------------------------------------------------------------- */
+
+
+/* -------------------------- BANNER-BOX-CONTAINER -------------------------- */
+
+/* ------------------------------- BANNER-BOX ------------------------------- */
+
+
+.spacer::after {
+    content: "";
+    display: block;
+    height: 3rem;
+}
+
+.banner-box-container {
+    display: flex;
+    margin: 5rem;
+}
+
+.banner-box {
+    display: flex;
+    padding: 3rem 5rem;
+    background-color: rgb(var(--text-color-main-reverse));
+    border-radius: 2.5rem;
+    box-shadow: var(--color-shadow-element) 0px 18px 50px -10px;
+}
+
+.content-banner-box {
+    display: flex;
+    flex-direction: column;
+}
+
+#about-edp-logo-full-width {
+    width: 40rem;
+    height: auto;
+}
+
+#about-edp-logo-full-width,
+.about-edp {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    margin-left: 4.2rem;
+}
+
+.about-edp {
+    
+}
+
+.text-content {
+    box-shadow: var(--color-shadow-window) 0px 10px 20px -10px;
+    background-color: rgb(var(--background-color-0));
+    padding: 1.5rem;
+    border-radius: 2.5rem;
+    max-width: 65rem;
+    font-weight: 500;
+    line-height: 1.5em;
+    font-size: 1.6rem;
+}

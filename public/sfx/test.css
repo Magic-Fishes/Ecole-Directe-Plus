@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+@font-face {
+    font-family: 'Luciole';
+    src: url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.eot'); /* IE9 Compat Modes */
+    src: url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.woff') format('woff'), /* Modern Browsers */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.svg#Luciole-Regular') format('svg'); /* Legacy iOS */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*       Pour voir les couleurs, installez Color Info et Color Highlight      */
+/* -------------------------------------------------------------------------- */
+
+
+
+
+:root {
+    /* - - - Nouvelles variables - - - */
+    
+    /* - NOMENCLATURE - */
+    
+    /*
+        --attribut_lié-definition-intensité: valeur fonctionnelle;
+    */
+
+
+    /* - timing functions - */
+    --timing-function-spring-effect: cubic-bezier(0.18, 0.89, 0.32, 1.27);
+
+    /* - font - */
+    --font-size-12: 1.2rem;
+    --font-size-13: 1.3rem;
+    --font-size-14: 1.4rem;
+    --font-size-15: 1.5rem;
+    --font-size-16: 1.6rem;
+    --font-size-18: 1.8rem;
+    --font-size-20: 2.0rem; /* window content */
+    --font-size-24: 2.4rem; /* window header */
+    --font-size-32: 3.2rem;
+    --font-size-36: 3.6rem;
+    --font-size-42: 4.2rem;
+    --font-size-48: 4.8rem;
+    --font-weight-regular: 400;
+    --font-weight-semi-bold: 600;
+    --font-weight-extra-bold: 800;
+    
+    --font-family: Inter, sans-serif; /* Default value */
+
+    /* responsive */
+    --max-width-mobile: 450px;
+
+    --max-width-tablet: 869px;
+    --min-width-wide-screen: 2361px;
+
+    --background-color-canarman-main: rgb(50, 50, 87);
+
+    /*pour que 1rem = 10px*/
+    font-size: 0.625em;
+    /* zoom: .5; */
+    /* font-size: 10px; */
+    /* font-size: 55%;  */
+}
+
+:root.tritanopia {
+    --white: 255, 255, 255;
+    /* - Main (darker to lighter) - */
+    --text-color-main: rgb(255, 255, 255);
+    /* --text-color-alt: rgb(170, 170, 238); */
+    --text-color-alt: rgb(166, 190, 201);
+    
+    --background-color-0: rgb(22, 28, 28);
+    --background-color-1: rgb(38, 59, 64);
+    --background-color-2: rgb(64, 77, 83);
+    --background-color-3: rgb(83, 102, 109);
+    --background-color-focus: rgba(0, 110, 138, 0.3);
+    --background-color-header: rgb(0, 77, 95);
+
+    --background-color-streak-0: rgb(255, 0, 22);
+    --background-color-streak-1: rgb(255, 90, 105);
+
+    --background-color-strength-li-1: rgb(0, 157, 138);
+    --background-color-strength-li-2: rgb(0, 134, 118);
+    --background-color-strength-li-3: rgb(0, 109, 96);
+    
+    --background-color-canarman-main: rgb(38, 59, 64);
+    
+    --border-color-0: rgb(0, 110, 138);
+    --border-color-1: rgb(22, 141, 168);
+    
+    --box-shadow-window: 0 0 20px black;
+    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    
+    
+    /* - Process states (errors ; warning ; success) - */
+    /* TOTK */
+    --text-color-error: rgb(255, 66, 66);
+    --border-color-error: rgb(255, 66, 66);
+    --background-color-error: rgb(255, 66, 66);
+    
+    /* error */
+    
+    --text-color-soft-error-main: rgb(223, 200, 200);
+    --text-color-soft-error-alt: rgb(223, 98, 98);
+    --border-color-soft-error: rgb(223, 98, 98);
+    --background-color-soft-error: rgb(223, 98, 98);
+    
+    /* warning */
+    
+    --background-color-warning-0: rgb(140, 45, 54);
+    --background-color-warning-1: rgb(214, 63, 70);
+    --background-color-warning-2: rgb(255, 51, 0);
+    
+    /* success */
+
+    --background-color-success: rgb(0, 255, 56);
+    --border-color-success: rgb(98, 207, 122);
+
+    /* - Others - */
+    --background-color-selection: rgb(4, 98, 210);
+    
+    --box-shadow-color-scrollbar-track: rgba(187, 209, 218, 0.133);
+    --box-shadow-color-scrollbar-thumb: rgb(108, 126, 133);
+    --box-shadow-color-scrollbar-thumb-on-hover: rgb(143, 141, 185);
+    
+    --alpha-shadow-color-scroll-shaded-div: 0.5;
+}
+
+/* Rest of your CSS remains unchanged */
+
+/* Autres styles CSS... */
+
+
+
+.light:root {
+    --white: 255, 255, 255;
+    --box-shadow-window: 0 0 15px rgba(0, 0, 0, 0.4);
+    --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
+    --color-shadow-element: rgba(0, 0, 0, 0.25);
+    --color-shadow-window: rgba(0, 0, 0, 0.4);
+
+    --text-color-main: rgb(0, 0, 0);
+    --text-color-main-reverse : rgb(255, 255, 255);
+    --text-color-alt: rgb(76, 76, 184);
+    
+    --background-color-0: rgb(228, 228, 255);
+    --background-color-1: rgb(210, 210, 255);
+    --background-color-2: rgb(200, 200, 240);
+    --background-color-3: rgb(156, 156, 205);
+    /* --background-color-3: rgb(94, 94, 136); */
+    --background-color-focus: rgba(75, 72, 217, 0.1);
+    --background-color-header: rgb(187, 187, 255);
+
+    --background-color-strength-li-1: rgb(36, 186, 22);
+    --background-color-strength-li-2: rgb(27, 155, 22);
+    --background-color-strength-li-3: rgb(17, 123, 21);
+    
+    --border-color-0: rgb(109, 106, 251);
+    --border-color-1: rgb(75, 72, 217);
+
+
+    /* error */
+    
+    --text-color-error: rgb(255, 66, 66);
+    --border-color-error: rgb(255, 66, 66);
+    --background-color-error: rgb(255, 66, 66);
+    
+    --text-color-soft-error-main: rgb(83, 55, 55);
+    --text-color-soft-error-alt: rgb(200, 80, 80);
+    --border-color-soft-error: rgb(200, 80, 80);
+    --background-color-soft-error: rgb(200, 80, 80);
+
+    /* warning */
+    
+    --background-color-warning-0: rgb(140, 45, 54);
+    --background-color-warning-1: rgb(214, 63, 70);
+    --background-color-warning-2: rgb(255, 51, 0);
+    
+    /* success */
+
+    --background-color-success: rgb(0, 200, 25);
+    --border-color-success: rgb(78, 187, 100);
+
+    /* - Others - */
+    --background-color-selection: rgb(4, 98, 210);
+
+    --background-color-streak-0: rgb(255, 100, 60);
+    --background-color-streak-1: rgb(255, 150, 0);
+    
+    --box-shadow-color-scrollbar-track: rgba(10, 10, 55, 0.13);
+    --box-shadow-color-scrollbar-thumb: rgb(136, 136, 184);
+    --box-shadow-color-scrollbar-thumb-on-hover: rgb(116, 116, 164);
+    
+    --alpha-shadow-color-scroll-shaded-div: 0.3;
+}
+
+
+.dark:root {
+    --white: 255, 255, 255;
+    /* - Main (darker to lighter) - */
+    --text-color-main: rgb(255, 255, 255);
+
+    /* --text-color-alt: rgb(170, 170, 238); */
+    --text-color-alt: rgb(180, 180, 240);
+    
+    --background-color-0: rgb(24, 24, 41);
+    --background-color-1: rgb(50, 50, 87);
+    --background-color-2: rgb(72, 72, 102);
+    --background-color-3: rgb(94, 94, 136);
+    --background-color-focus: rgba(75, 72, 217, 0.3);
+    --background-color-header: rgb(55, 57, 143);
+    
+    --background-color-strength-li-1: rgb(36, 186, 22);
+    --background-color-strength-li-2: rgb(27, 155, 22);
+    --background-color-strength-li-3: rgb(17, 123, 21);
+    
+    --border-color-0: rgb(75, 72, 217);
+    --border-color-1: rgb(109, 106, 251);
+    
+    --box-shadow-window: 0 0 20px black;
+    --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    --color-shadow-element: rgba(0, 0, 0, 0.6);
+    --color-shadow-window: black;
+    
+    
+    /* - Process states (errors ; warning ; success) - */
+    /* TOTK */
+    --text-color-error: rgb(255, 66, 66);
+    --border-color-error: rgb(255, 66, 66);
+    --background-color-error: rgb(255, 66, 66);
+
+
+    /* error */
+    
+    --text-color-soft-error-main: rgb(223, 200, 200);
+    --text-color-soft-error-alt: rgb(223, 98, 98);
+    --border-color-soft-error: rgb(223, 98, 98);
+    --background-color-soft-error: rgb(223, 98, 98);
+    
+    /* warning */
+    
+    --background-color-warning-0: rgb(140, 45, 54);
+    --background-color-warning-1: rgb(214, 63, 70);
+    --background-color-warning-2: rgb(255, 51, 0);
+    
+    /* success */
+
+    --background-color-success: rgb(0, 255, 56);
+    --border-color-success: rgb(98, 207, 122);
+
+    /* - Others - */
+    --background-color-selection: rgb(4, 98, 210);
+
+    --background-color-streak-0: rgb(255, 15, 0);
+    --background-color-streak-1: rgb(255, 150, 0);
+    
+    --box-shadow-color-scrollbar-track: rgba(199, 199, 255, 0.133);
+    --box-shadow-color-scrollbar-thumb: rgb(118, 118, 162);
+    --box-shadow-color-scrollbar-thumb-on-hover: rgb(143, 141, 185);
+    
+    --alpha-shadow-color-scroll-shaded-div: 0.5;
+}
+
+/* Autres styles CSS... */
