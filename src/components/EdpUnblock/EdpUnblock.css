@@ -1,5 +1,5 @@
 html :has(.edpu-page) {
-    background-image: url("/public/images/edpu-background.png");
+    background-image: url("/images/edpu-background.png");
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -20,31 +20,6 @@ html :has(.edpu-page) {
     right: 40px;
     display: flex;
     gap: 15px;
-    padding: 20px;
-}
-
-.social a {
-    transition: .15s;
-}
-
-.social svg {
-    height: 40px;
-    cursor: pointer;
-}
-
-.social svg path {
-    fill: #B4B4F0;
-    transition: .15s;
-}
-
-.social a:is(:hover, :focus-visible){
-    transform: scale(1.11) rotate(5deg);
-    filter: drop-shadow(0 0 7px #FFF8);
-    outline: none;
-}
-
-.social a:is(:hover, :focus-visible) svg path {
-    fill: white;
 }
 
 .edpu-page {
@@ -184,10 +159,17 @@ html :has(.edpu-page) {
     position: absolute;
     bottom: 20px;
     left: 30px;
+    transition: 0.2s;
 }
 
 .edpu-feedback-link:is(:hover, :focus-visible) {
     color: white;
+    outline: none;
+}
+
+.edpu-feedback-link:active {
+    color: white;
+    opacity: 0.9;
 }
 
 .edpu-about-link {
@@ -198,11 +180,14 @@ html :has(.edpu-page) {
     flex-flow: column;
     justify-content: space-between;
     gap: 10px;
-
+    transition: 0.2s;
+    transition-property: transform;
 }
 
-.edpu-about-link.edpu-about-link h5{
+.edpu-about-link h5{
     color: rgb(var(--text-color-alt));
+    scale: 1.2;
+    transition: 0.2s;
 }
 
 .edpu-about-link svg {
@@ -210,7 +195,26 @@ html :has(.edpu-page) {
 }
 
 .edpu-about-link svg path {
+    transition: 0.2s;
     stroke: rgb(var(--text-color-alt));
+}
+
+.edpu-about-link:is(:hover, :focus-visible) {
+    transform: translateY(-5px);
+    outline: none;
+}
+
+.edpu-about-link:is(:active) {
+    padding-top: 15px;
+    transform: translateY(15px);
+}
+
+.edpu-about-link:is(:hover, :focus-visible) h5 {
+    color: rgb(var(--text-color-main));
+}
+
+.edpu-about-link:is(:hover, :focus-visible) path {
+    stroke: rgb(var(--text-color-main));
 }
 
 @media only screen and (max-width: 1050px) {

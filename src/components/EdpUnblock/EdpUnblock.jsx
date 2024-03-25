@@ -19,7 +19,7 @@ const browserLogosInfos = {
     Firefox: {
         logo: <FirefoxLogo />,
         available: true,
-        url: "#FIREFOX_EXTENSION",
+        url: "https://addons.mozilla.org/fr/firefox/addon/ecole-directe-plus-unblock/",
     },
     Chrome: {
         logo: <ChromeLogo />,
@@ -55,7 +55,7 @@ const browserLogosInfos = {
 
 const userBrowser = getBrowser()
 
-export default function EdpUnblock({ ...props }) {
+export default function EdpUnblock() {
     const location = useLocation();
 
     const [arrowText, setArrowText] = useState("En savoir plus")
@@ -96,25 +96,6 @@ export default function EdpUnblock({ ...props }) {
         scrollToAbout();
     }, [location.hash])
 
-    // useEffect(() => {
-    //     const htmlClass = document.children[0].classList
-    //     if (htmlClass.contains("light")) {
-    //         console.log("lightMODEDETECTED")
-    //         htmlClass.remove("light");
-    //         htmlClass.add("dark");
-    //         return () => {
-    //             htmlClass.remove("dark");
-    //             htmlClass.add("light");
-    //         }
-    //     } else if (htmlClass.contains("auto")) {
-    //         htmlClass.remove("auto");
-    //         htmlClass.add("dark");
-    //         return () => {
-    //             htmlClass.remove("dark");
-    //             htmlClass.add("auto");
-    //         }
-    //     }
-    // }, [])
     return (<>
         <span className="edpu-back-arrow">
             <GoBackArrow />
@@ -136,7 +117,7 @@ export default function EdpUnblock({ ...props }) {
                         </div>
                     </div>
                     <p>Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte</p>
-                    <a href={browserLogosInfos[userBrowser].url} className={`edpu-dowload-link ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
+                    <a href={browserLogosInfos[userBrowser].url} target="_blank" className={`edpu-dowload-link ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser].logo}
                         <span>Ajouter l’extension</span>
                         <DownloadIcon />
@@ -144,7 +125,7 @@ export default function EdpUnblock({ ...props }) {
                 </div>
                 <Link to="/feedback" className="edpu-feedback-link">Besoin d’aide ? </Link>
                 <Link ref={aboutButtonRef} to="#about" className="edpu-about-link" replace onClick={() => { location.hash === "#about" && scrollToAbout() }}>
-                    <h5>{arrowText}</h5>
+                    <h5>En savoir plus</h5>
                     <AboutArrow viewBox="0 36 100 26" />
                 </Link>
             </main>
