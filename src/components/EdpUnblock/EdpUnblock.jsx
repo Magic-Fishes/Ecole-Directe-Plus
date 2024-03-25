@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getBrowser } from "../../utils/utils";
 import GoBackArrow from "../generic/buttons/GoBackArrow";
-import DiscordLogo from "../graphics/DiscordLogo";
-import GithubLogo from "../graphics/GithubLogo";
+import DiscordLink from "../generic/buttons/DiscordLink";
+import GithubLink from "../generic/buttons/GithubLink";
 
 import ChromeLogo from "../graphics/ChromeLogo";
 import FirefoxLogo from "../graphics/FirefoxLogo";
@@ -119,9 +119,9 @@ export default function EdpUnblock({ ...props }) {
         <span className="edpu-back-arrow">
             <GoBackArrow />
         </span>
-        <span className="social">
-            <a href="https://discord.gg/AKAqXfTgvE"><DiscordLogo /></a>
-            <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus-Unblock"><GithubLogo /></a>
+        <span className="edpu-social">
+            <DiscordLink />
+            <GithubLink />
         </span>
         <div className="edpu-page">
             <main ref={heroBannerRef}>

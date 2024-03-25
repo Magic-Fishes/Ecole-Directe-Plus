@@ -13,11 +13,11 @@ html :has(.edpu-page) {
     fill: white;
 }
 
-.social {
+.edpu-social {
     z-index: 1;
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 20px;
+    right: 40px;
     display: flex;
     gap: 15px;
     padding: 20px;

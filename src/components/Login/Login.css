@@ -20,6 +20,15 @@
     display: none;
 }
 
+.login-social {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+}
+
 .login-box {
     padding: 6px 28px;
     text-align: center;
@@ -103,6 +112,17 @@ p.policy {
 @media only screen and (max-width: 460px) {
     body :has(.login) {
         background-color: rgb(var(--background-color-1)) !important;
+    }
+
+    .login-social {
+        z-index: 1;
+        position: fixed;
+        top: 0;
+        right: unset;
+        left: 0;
+        display: flex;
+        gap: 15px;
+        padding: 20px;
     }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/
