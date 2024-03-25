@@ -97,6 +97,7 @@ export default function EdpUnblock() {
     }, [location.hash])
 
     return (<>
+        <div id="edpu-background-image"></div>
         <span className="edpu-back-arrow">
             <GoBackArrow />
         </span>
@@ -104,6 +105,7 @@ export default function EdpUnblock() {
             <DiscordLink />
             <GithubLink />
         </span>
+        <Link to="/feedback" className="edpu-feedback-link">Besoin d’aide ? </Link>
         <div className="edpu-page">
             <main ref={heroBannerRef}>
                 <div>
@@ -123,16 +125,18 @@ export default function EdpUnblock() {
                         <DownloadIcon />
                     </a>
                 </div>
-                <Link to="/feedback" className="edpu-feedback-link">Besoin d’aide ? </Link>
                 <Link ref={aboutButtonRef} to="#about" className="edpu-about-link" replace onClick={() => { location.hash === "#about" && scrollToAbout() }}>
                     <h5>En savoir plus</h5>
                     <AboutArrow viewBox="0 36 100 26" />
                 </Link>
             </main>
             <div className="edpu-about" ref={aboutRef}>
-                {/* placeholder purpose only obviously */}
-                {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. */}
-                <h1>Lorem <br />ipsum<br /> dolor <br />sit<br /> amet<br />,<br /> consectetur<br /> adipiscing<br /> elit<br />,<br /> sed<br /> do<br /> eiusmod<br /> tempor<br /> incididunt<br /> ut<br /> labore<br /> et<br /> dolore<br /> magna<br /> aliqua<br />.<br /> Ut<br /> enim<br /> ad<br /> minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h1>
+                <h2 className="edpu-about-h2">Pourquoi dois-je installer Ecole Directe Plus Unblock ?</h2>
+                <p className="edpu-about-explanation">EDP Unblock permet un accès ininterrompu à Ecole Directe Plus en donnant l'accès en continu aux données fournis par l'API d'EcoleDirecte. Cette extension est nécessaire au bon fonctionnement d'Ecole Directe Plus.</p>
+                <h2 className="edpu-about-h2">Vie privée et confidentialité</h2>
+                <p className="edpu-about-explanation">EDP Unblock est uniquement actif sur les domaines `ecole-directe.plus` ainsi que `ecoledirecte.com`. L'application n'est pas autorisée à accéder aux informations sur n'importe quel autre site. De plus, EDP Unblock ne lit aucune donnée : l'extension sert simplement de passerelle aux requêtes pour "arriver correction à destination", mais n'a pas accès à leur contenu</p>
+                <h2 className="edpu-about-h2">Divers</h2>
+                <p className="edpu-about-explanation">L'extension Ecole Directe Plus Unblock, tout comme le site Ecole Directe Plus, est un projet open-source sous license MIT, vous pouvez donc retrouver le code source en ligne, visitez le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus-Unblock">dépôt Github</a>.</p>
             </div>
         </div>
     </>)
