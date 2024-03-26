@@ -19,9 +19,9 @@ export default function Policy({ onCloseNavigateURL }) {
 <ul>
         <h4 className="sub-header">❌ Ecole Directe Plus ne collecte aucune information sur les utilisateurs du service </h4>
         <h4 className="sub-header">❌ Ecole Directe Plus ne créé pas de compte lors de la connection, la connexion à lieu sur les serveurs d'Aplim, nous ne STOCKONS PAS les identifiants des personnes se connectant.</h4>
-        <h4 className="sub-header">❌ Ecole Directe Plus ne permet, ni ne prétend donner accès à des données auxquelles l'élève n'a pas accès incluant, mais ne se limitant pas aux : points aux examens*, moyennes* et rang de l'élève*.</h4>
+        <h4 className="sub-header">❌ Ecole Directe Plus ne permet, ni ne prétend donner accès à des données auxquelles l'élève n'a pas accès incluant, mais ne se limitant pas aux : points aux examens* et au rang de l'élève*.</h4>
         <h4 className="sub-header"> ℹ️ Les seules données collectées le sont par Aplim <a href="https://www.ecoledirecte.com" target="_blank">(EcoleDirecte)</a> conformément à leur politique de confidentialité décrite dans les <a href="https://www.ecoledirecte.com/login" target="_blank">Mentions Légales</a></h4>
-        <li className="legal-content">*Si l'accès à ses données est possible par l'utilisateur sur la plateforme classique d'EcoleDirecte, ces données peuvent être affichées sur Ecole Directe Plus. </li>
+        <li className="legal-content">*Si l'accès à ses données est possible par l'utilisateur sur la plateforme classique d'EcoleDirecte, ces données peuvent être affichées sur Ecole Directe Plus. De plus, si elles ne sont pas disponibles, les moyennes de l'utilisateur seront calculés, mais pas conservés sur nos serveurs. </li>
 </ul>
 
         <h3 className="part-header">Politique de confidentialité</h3>
