@@ -15,6 +15,15 @@ export default function Policy({ onCloseNavigateURL }) {
     const [firstLeadDeveloppersDisplayedIdx, setFirstLeadDevelopperDisplayedIdx] = useState(Math.floor(Math.random() * 2));
     
     const legalNotice = <ul id="legal-notice">
+        <h3 className="part-header">Résumé</h3>
+<ul>
+        <h4 className="sub-header">❌ Ecole Directe Plus ne collecte aucune information sur les utilisateurs du service </h4>
+        <h4 className="sub-header">❌ Ecole Directe Plus ne créé pas de compte lors de la connection, la connexion à lieu sur les serveurs d'Aplim, nous ne STOCKONS PAS les identifiants des personnes se connectant.</h4>
+        <h4 className="sub-header">❌ Ecole Directe Plus ne permet, ni ne prétend donner accès à des données auxquelles l'élève n'a pas accès incluant, mais ne se limitant pas aux : points aux examens*, moyennes* et rang de l'élève*.</h4>
+        <h4 className="sub-header"> ℹ️ Les seules données collectées le sont par Aplim <a href="https://www.ecoledirecte.com" target="_blank">(EcoleDirecte)</a> conformément à leur politique de confidentialité décrite dans les <a href="https://www.ecoledirecte.com/login" target="_blank">Mentions Légales</a></h4>
+        <li className="legal-content">*Si l'accès à ses données est possible par l'utilisateur sur la plateforme classique d'EcoleDirecte, ces données peuvent être affichées sur Ecole Directe Plus. </li>
+</ul>
+
         <h3 className="part-header">Politique de confidentialité</h3>
         <h4 className="sub-header">Ecole Directe Plus utilise des données qui sont fournis par <a href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>, héritant ainsi de leur politique de confidentialité qui sont présentées ci-dessous :</h4>
         <li className="legal-content">Les données personnelles sécurisées figurant sur ce site Internet concernent des élèves et les familles, et sont fournies par le logiciel Charlemagne des établissements scolaires au sein desquels ceux-ci sont scolarisés.</li>
