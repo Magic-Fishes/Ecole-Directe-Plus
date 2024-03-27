@@ -22,37 +22,44 @@ export default function MainPage() {
     };
 
     // Cette partie est dédiée au changement de theme de la page par le bouton #toggle-button
-
     const [theme, setTheme] = useState("light");
 
     useEffect(() => {
-      document.querySelector("html").classList.remove("light", "dark");
-      document.querySelector("html").classList.add(theme);
+        document.querySelector("html").classList.remove("light", "dark");
+        document.querySelector("html").classList.add(theme);
     }, [theme]);
-  
+
     const changeTheme = () => {
-      setTheme(theme === "light" ? "dark" : "light");
+        setTheme(theme === "light" ? "dark" : "light");
     };
-  
 
+    /* -------------------------------------------------------------------------- */
+    /*                      ANNIMATION DE LA NAVBAR AU SCROLL                     */
+    /* -------------------------------------------------------------------------- */
 
+    useEffect(() => {
+        const handleScroll = () => {
+            const navBar = document.getElementById("nav-bar");
+            if (window.pageYOffset > 0) {
+                navBar.style.top = "3rem";
+            } else {
+                navBar.style.top = "2rem"; // Rétablir la valeur initiale
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                FIN ANIMATION                               */
+    /* -------------------------------------------------------------------------- */
 
     return (
         <div className="main-page">
-
-
-                {/* Il faudrait mettre le logo avec le texte quand on est sur pc ou plus (du responsive) et simplement le logo d'EDP sans le texte en version mobile 
-
-                _______________________________________________________
-
-                             PC ou +         |         Mobile
-                                |            |            |
-                                ˇ            |            ˇ
-                         EEcoleDirectePlus   |            E
-                ________________________________________________________
-                
-                */}
-                
         <section id="nav-bar">
             <header className="top-section">
                 <nav className={`nav-bar-content ${isMenuOpen ? 'mobile-menu' : ''}`}>
@@ -93,28 +100,50 @@ export default function MainPage() {
             </header>
         </section>
 
-        <section id="banner">    
-            <div className="banner-box-container">
-                <div className="banner-box">
-                    <div className="content-banner-box">
-                        <EDPLogoFullWidth id="about-edp-logo-full-width"/>
-                        <div className="about-edp">
-                            <h1 className="text-content">
-                                Bienvenue sur Ecole Directe Plus, votre plateforme éducative améliorée et open-source, conçue pour révolutionner votre expérience d'apprentissage en ligne. Notre site est une version avancée d'Ecole Directe classique, offrant une interface utilisateur plus moderne, intuitive et simplifiée pour accéder facilement à vos notes, messages et devoirs.
-                            </h1>
-                            <span className="spacer"/>
-                            <p className="text-content">
-                                Avec Ecole Directe Plus, bénéficiez de fonctionnalités innovantes telles que le calcul de moyenne instantanée et la simulation de notes. Ces outils vous permettent de suivre votre progression académique en temps réel et d'évaluer l'impact potentiel de vos prochaines notes sur votre moyenne générale, ce qui facilite une meilleure gestion de votre parcours scolaire. 
-                            </p>
-                            <span className="spacer"/>
-                            <h4 className="text-content">
-                                En choisissant Ecole Directe Plus, vous optez pour une expérience utilisateur optimale. Notre plateforme est dédiée à faciliter la vie scolaire de ses utilisateurs. Rejoignez-nous dès aujourd'hui et découvrez un nouvel univers d'apprentissage interactif et dynamique, où communication et réussite scolaire vont de pair.
-                            </h4>
-                        </div>
+        <section id="banner">
+            <div className="ban-box-container">
+                <div className="ban-title">
+                    <h4>
+                        Bienvenue sur Ecole Directe Plus, la plateforme éducative nouvelle génération !
+                    </h4>
+                </div>
+                <div className="ban-box">
+                    <div className="ban-box-desing ban-subtitle">
+                        <h3>
+                            Environement Numérique Complet
+                        </h3>
+                        <h6>
+                            Réinventez votre expérience d'apprentissage et vos acquis en ligne avec notre environnement numérique attractif et complet.
+                        </h6>
+                    </div>
+                    <div className="ban-box-desing ban-attention">
+                        <h3>
+                            Respect de la Vie Privée
+                        </h3>
+                        <h6>
+                            Ecole Directe Plus s'engage à respecter votre vie privée, aucune donnée n'est sauvegardé sur les serveur d'Ecole Directe Plus. Tout transite sur les serveurs d'Ecole Directe classique.
+                        </h6>
+                    </div>
+                    <div className="ban-box-desing ban-intro">
+                        <h3>
+                            Suivi des Acquis Simplifié
+                        </h3>
+                        <h6>
+                            En s'appuyant sur l'API d'Ecole Directe Classique, nous avons créé une plateforme qui simplifie le suivi de vos acquis et vous accompagne vers la réussite scolaire.
+                        </h6>
+                    </div>
+                    <div className="ban-box-desing ban-community">
+                        <h3>
+                            Plateforme Éducative Open-Source.
+                        </h3>
+                        <h6>
+                            Ecole Directe Plus est un projet open-source, développé par une communauté de passionnés. Rejoignez-nous pour contribuer à l'amélioration continue de notre plateforme éducative. <a href="#" className="more-info">En savoir plus sur l'Open-Source</a>
+                        </h6>
                     </div>
                 </div>
             </div>
         </section>
+
 
             
             <div className="info-box">
@@ -125,7 +154,7 @@ export default function MainPage() {
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
             
-            {showLogin && <Login />}
+            {showLogin && <Login/>}
         </div>
     );
 }

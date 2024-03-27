@@ -5,32 +5,42 @@
     margin: 0;
 }
 
+p.policy {
+    /* Bloquer par rapport a la page les policy, pour ne pas qu'ils bougent au scroll */
+    position: fixed;
+}
+
 #notifications-container {
     display: none;
 }
 
 #nav-bar {
-    position: sticky;
-    top: 15px;
+    position: fixed;
+    top: 3rem;
+    left: 2rem; /* Décalage de 50px du bord gauche de l'écran */
+    right: 2rem; /* Décalage de 50px du bord droit de l'écran */
+    width: calc(100% - 4rem); /* La largeur de la barre de navigation est la largeur de l'écran moins les décalages gauche et droit */
     z-index: 10;
     padding: 0;
-    margin: 0 3.5rem;
+    margin: 0;
+    transition: top 0.3s;
 }
 
+
 .main-page {
-    position: fixed;
+    /* position: fixed;
     top: 0;
-    left: 0;
+    left: 0; */
     width: 100%;
     height: 100%;
-    overflow: hidden;
+
     background: linear-gradient( 3deg, rgba(10, 0, 200, 0.1), rgba(210, 50, 240, 0.1) );
+    background-repeat: repeat;
 }
 
 .nav-bar-content {
     display: flex;
     width: 100%;
-    align-items: center;
     justify-content: space-between;
 }
 
@@ -47,6 +57,7 @@
 
 .nav-links {
     display: flex;
+    /* justify-content: center; */
     margin: 0.7rem 1rem;
     gap: 2rem;
 }
@@ -280,59 +291,93 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
 /*                                   Banner                                   */
 /* -------------------------------------------------------------------------- */
 
+/* ------------------------------- BANNER-SPAN ------------------------------ */
+
+.more-info {
+    color: rgb(83, 87, 150);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.more-info:hover {
+    color: rgb(43, 47, 100);
+}
+
+/* --------------------------------- BANNER --------------------------------- */
+
+#banner {
+    position: absolute;
+    display: flex;
+    top: 50%;
+    background-color: rgb(var(--text-color-main-reverse));
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 2rem;
+    box-shadow: var(--color-shadow-element) 0px 25px 50px -12px;
+}
 
 /* -------------------------- BANNER-BOX-CONTAINER -------------------------- */
 
+
+/* ------------------------------ BANNER-TITLE ------------------------------ */
+
+.ban-title {
+    position: relative;
+    padding: 20px;
+    width: 85rem;
+    left: 4rem;
+
+}
+
+.ban-title h4 {
+    background-color: rgba(var(--background-color-0), 0.6);
+    font-size: 30px;
+    font-weight: 600;
+    padding: 20px;
+    margin-bottom: 3rem;
+    border-radius: 1rem;
+    box-shadow: var(--color-shadow-element) 1px 1px 6px 0px;
+}
+
 /* ------------------------------- BANNER-BOX ------------------------------- */
 
-
-.spacer::after {
-    content: "";
-    display: block;
-    height: 3rem;
-}
-
-.banner-box-container {
+.ban-box {
     display: flex;
-    margin: 5rem;
 }
 
-.banner-box {
-    display: flex;
-    padding: 3rem 5rem;
-    background-color: rgb(var(--text-color-main-reverse));
-    border-radius: 2.5rem;
-    box-shadow: var(--color-shadow-element) 0px 18px 50px -10px;
-}
+/* ---------------------------- BANNER-BOX-DESING --------------------------- */
 
-.content-banner-box {
-    display: flex;
-    flex-direction: column;
-}
-
-#about-edp-logo-full-width {
-    width: 40rem;
-    height: auto;
-}
-
-#about-edp-logo-full-width,
-.about-edp {
-    margin-top: 2rem;
-    margin-bottom: 3rem;
-    margin-left: 4.2rem;
-}
-
-.about-edp {
-    
-}
-
-.text-content {
-    box-shadow: var(--color-shadow-window) 0px 10px 20px -10px;
+.ban-box-desing {
+    padding: 25px;
+    text-align: center;
+    width: 34rem;
+    height: 30rem;
     background-color: rgb(var(--background-color-0));
-    padding: 1.5rem;
-    border-radius: 2.5rem;
-    max-width: 65rem;
-    font-weight: 500;
-    line-height: 1.5em;
-    font-size: 1.6rem;
+    margin: 2rem;
+    border-radius: 2rem;
+    border: solid rgb(var(--background-color-1)) 3px;
+    box-shadow: var(--color-shadow-element) 3px 3px 10px 0px;
 }
+
+.ban-box-desing h3 {
+    position: relative;
+    margin-bottom: -10px;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.ban-box-desing h6 {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  COMMUNITY                                 */
+/* -------------------------------------------------------------------------- */
+
+

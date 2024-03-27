@@ -129,7 +129,7 @@
      
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
-    --text-color-main-reverse : 0, 0, 0;
+    --text-color-main-reverse : 25, 25, 25;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 180, 180, 240;
     
@@ -203,7 +203,7 @@
     --text-color-main-reverse: 255, 255, 255;
     --text-color-alt: 76, 76, 184;
     
-    --background-color-0: 228, 228, 255;
+    --background-color-0: 234, 234, 253;
     --background-color-1: 210, 210, 255;
     --background-color-2: 200, 200, 240;
     --background-color-3: 156, 156, 205;
