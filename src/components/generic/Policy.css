@@ -13,15 +13,30 @@ h3.part-header {
     color: rgb(var(--text-color-main));
 }
 
-li.legal-content {
+.legal-content {
     margin-left: 10px;
     margin-bottom: 10px;
     color: rgb(var(--text-color-alt));
 }
 
+#info-emoji {
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.light-hr {
+    background-color: rgb(var(--text-color-alt));
+    height: 2px;
+    opacity: .5;
+    margin-block: 20px 20px;
+    border: none;
+}
+
 a.external-link {
     text-decoration: none;
     color: rgb(var(--border-color-1));
+}
+.light a.external-link {
+    font-weight: 600;
 }
 
 a.external-link:hover {
