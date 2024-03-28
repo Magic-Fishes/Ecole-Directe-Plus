@@ -24,15 +24,20 @@ const submitButtonAvailableStates = {
 
 export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, disabledKeepLoggedInCheckBox=false, ...props }) {
 
+    var submitButtonTextValue = "Se connecter";
+    if (sessionStorage.getItem('april') === "true") {
+        submitButtonTextValue = "Ok"
+    }
+
     // States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [submitButtonText, setSubmitButtonText] = useState("Ok");// original value "Se connecter"
+    const [submitButtonText, setSubmitButtonText] = useState(submitButtonTextValue);// original value "Se connecter"
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior
-    const updateUsername = (event) => { setUsername(event.target.value); setSubmitButtonText("Se connecter") }
-    const updatePassword = (event) => { setPassword(event.target.value); setSubmitButtonText("Se connecter") }
+    const updateUsername = (event) => { setUsername(event.target.value); setSubmitButtonText(submitButtonTextValue) }
+    const updatePassword = (event) => { setPassword(event.target.value); setSubmitButtonText(submitButtonTextValue) }
     const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked);
     
     // Keep logged in OU reco car valid token
@@ -84,22 +89,29 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     }
 
     if (localStorage.userSettings) {
-        if ((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") {
+        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (sessionStorage.getItem('april') === "true")) {
             document.body.setAttribute('style', 'background-color: white;')
         } else {
             document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
         }
     } else {
-        if (document.documentElement.getAttribute('class').indexOf('dark') < 0) {
+        if ((document.documentElement.getAttribute('class').indexOf('dark') < 0) && (sessionStorage.getItem('april') === "true")) {
             document.body.setAttribute('style', 'background-color: white;')
         }
     }
 
+    if (sessionStorage.getItem('april') === "true") {
+        var passwordPlaceholder = "•••••••••••";
+        var usernamelaceholder = "Nom d'Utilisateur";
+    } else {
+        var passwordPlaceholder = "Mot de passe";
+        var usernamelaceholder = "Identifiant";
+    }
+
     return (
-        <form onSubmit={handleSubmit} {...props} id="login-form">{/* April fools' placeholder ▼  */ /* Normal value: placeholder="Identifiant" */}
-            <TextInput className="login-input" textType="text" placeholder="Nom d'Utilisateur" autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
-                                                                 {/* April fools' placeholder ▼  */ /* Normal value: placeholder="Mot de passe" */}
-            <TextInput className="login-input" textType="password" placeholder="•••••••••••" autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
+        <form onSubmit={handleSubmit} {...props} id="login-form">
+            <TextInput className="login-input" textType="text" placeholder={usernamelaceholder} autoComplete="username" value={username} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitButtonText("Invalide")} />
+            <TextInput className="login-input" textType="password" placeholder={passwordPlaceholder} autoComplete="current-password" value={password} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitButtonText("Invalide")} />
             {errorMessage && errorMessage === "accountCreationError" ? <p className="error-message">Vous n'avez pas encore créé votre compte EcoleDirecte ?!<br/>Rendez-vous sur le <a href="https://ecoledirecte.com/">site officiel</a> pour le configurer, nous vous attendons avec impatience !</p> : <p className="error-message">{errorMessage}</p>}
             <div className="login-option">
                 <Tooltip delay={400}>
