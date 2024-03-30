@@ -8,7 +8,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -232,8 +232,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                         event.preventDefault();
                         const value = shortcut.trigger();
                         if (shortcut.message) {
-                            console.log(shortcut.message().innerHTML);
-                            (shortcut.message && console.log(shortcut.message(value ?? "")));
                             createNotification(shortcut.message(value ?? ""))
                         }
                     }
@@ -426,6 +424,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
+                {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

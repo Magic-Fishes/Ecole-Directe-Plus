@@ -23,15 +23,11 @@ function isWeekdayAndBusinessHours() {
 
 
 export function getProxiedURL(url, bait = false) {
-    const proxyURL = "https://raspi.ecole-directe.plus:3000/proxy?url=";
-    const fakeProxy = "https://ecole-directe.plus:8000/proxy?url=";
+    const proxyURL = "https://api.ecole-directe.plus/proxy?url=";
+    //  || (isWeekdayAndBusinessHours() && location.hostname === "ecole-directe.plus")
     if (!bait) {
         return proxyURL + encodeURIComponent(url);
     } else {
-        if (isWeekdayAndBusinessHours() && location.hostname === "ecole-directe.plus") {
-            return fakeProxy + encodeURIComponent(url)
-        } else {
-            return url;
-        }
+        return url;
     }
 }
