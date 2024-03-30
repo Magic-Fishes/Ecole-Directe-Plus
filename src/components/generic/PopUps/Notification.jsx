@@ -38,12 +38,13 @@ export default function DOMNotification({ children }) {
         }, (fast ? 201 : 501));
     }
 
-    function addNotification(newNotificationContent) {
+    function addNotification(newNotificationContent, customClass="") {
         const newNotification = {
             key: currentNotificationId.current,
             content: newNotificationContent,
             isClosing: 0,
             creationTime: new Date().getTime(),
+            customClass,
         }
         currentNotificationId.current++;
         setNotificationList(() => [newNotification].concat(...notificationList))
@@ -69,14 +70,14 @@ export default function DOMNotification({ children }) {
                 {notificationList.map((el, i) => {
                     if (el.creationTime > new Date().getTime() - 3000) {
                         return (
-                            <div className={"pop-up-notification" + (el.isClosing === 1 ? " closing" : (el.isClosing === 2 ? " fast-closing" : ""))} key={el.key} >
+                            <div className={`pop-up-notification ${el.isClosing === 1 ? " closing" : (el.isClosing === 2 ? " fast-closing" : "")} ${el.customClass}`} key={el.key} >
                                 <DropDownArrow className="notification-close-arrow" onClick={() => { closeNotification(el, true) }} />
                                 {el.content}
                             </div>
                         )
                     } else if (el.creationTime > new Date().getTime() - 3500) {
                         return (
-                            <div className="pop-up-notification closing" key={el.key} >
+                            <div className={`pop-up-notification closing ${el.customClass}`} key={el.key} >
                                 <DropDownArrow className="notification-close-arrow" onClick={() => { closeNotification(el, true) }} />
                                 {el.content}
                             </div>

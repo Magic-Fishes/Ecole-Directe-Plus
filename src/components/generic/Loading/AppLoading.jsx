@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import EDPLogoFullWidth from "../../graphics/EDPLogoFullWidth";
 import WalkingCanardman from "../../graphics/WalkingCanardman";
-import EDPVersion from "../EDPVersion";
+import EDPVersion from "../buttons/EDPVersion";
 import KeyboardKey from "../KeyboardKey";
 
 import "./AppLoading.css";

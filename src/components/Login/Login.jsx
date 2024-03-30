@@ -1,13 +1,12 @@
 
 import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-
-import EDPVersion from "../generic/EDPVersion";
+import EDPVersion from "../generic/buttons/EDPVersion";
 import Policy from "../generic/Policy";
-
 import LoginForm from "./LoginForm";
-
 import InfoButton from "../generic/Informative/InfoButton";
+import DiscordLink from "../generic/buttons/DiscordLink";
+import GithubLink from "../generic/buttons/GithubLink";
 
 import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
@@ -19,9 +18,7 @@ if (sessionStorage.getItem('april') === "true"){
 }
 
 import "./Login.css";
-
 export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
-    const navigate = useNavigate();
     const location = useLocation();
 
     if (localStorage.userSettings) {
@@ -36,6 +33,10 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
     return (
         <div id="login">
             <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
+            <span className="login-social">
+                <DiscordLink />
+                <GithubLink />
+            </span>
             <div className="login-box">
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>

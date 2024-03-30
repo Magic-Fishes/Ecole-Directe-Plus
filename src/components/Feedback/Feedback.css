@@ -36,41 +36,6 @@
     margin-right: 60px;
 }
 
-#feedback-back-arrow {
-    height: 50px;
-    position: fixed;
-    margin: 10px 20px;
-    border-radius: 7px;
-    transition: 0.1s;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.feedback-head #feedback-back-arrow {
-    position: static;
-    height: 40px;
-    margin: 0;
-    padding: 0;
-    margin-right: 15px;
-}
-
-#feedback-back-arrow:hover {
-    background-color: rgba(var(--text-color-main), 0.1);
-}
-#feedback-back-arrow:active {
-    background-color: rgba(var(--text-color-main), 0.2);
-}
-
-#feedback-back-arrow path {
-    transition: 0.15s;
-}
-#feedback-back-arrow:hover path {
-    transform: translateX(10px);
-}
-#feedback-back-arrow:active path {
-    transform: translateX(-10px);
-}
-
 @media only screen and (max-width: 500px) {
     #feedback-box {
         position: absolute;
