@@ -7,8 +7,9 @@ import WelcomePopUp from "./generic/WelcomePopUp";
 import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
+import A2FLogin from "./Login/A2FLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan, requireA2F, setRequireA2F, fetchA2F }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -426,6 +427,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}
+            {requireA2F && <A2FLogin fetchA2F={fetchA2F} onClose={() => setRequireA2F(false)} />}
             <Outlet />
         </>
     );

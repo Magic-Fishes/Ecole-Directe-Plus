@@ -69,7 +69,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
-const apiVersion = "4.52.1";
+const apiVersion = "4.53.4";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -81,6 +81,7 @@ const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
+    "250": "Authentification à deux facteurs requise",
     "505": "Identifiant et/ou mot de passe invalide",
     "522": "Identifiant et/ou mot de passe invalide",
     "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
@@ -116,6 +117,7 @@ const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]
 const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
 const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
+const A2FInfoFromLS = JSON.parse((localStorage.getItem("A2FInfo") ?? "{}"));
 let userIdsFromLs;
 if (keepLoggedInFromLs) {
     userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
@@ -219,6 +221,8 @@ export default function App() {
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
     const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
+    const [A2FInfo, setA2FInfo] = useState(A2FInfoFromLS); // informations d'authentification à deux facteurs (cn, cv)
+    const [requireA2F, setRequireA2F] = useState(false); // trigger or not the A2F pop-up
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
     const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
@@ -378,7 +382,11 @@ export default function App() {
     useEffect(() => {
         if (tokenState !== "") {
             localStorage.setItem("token", tokenState);
+            if (Object.keys(A2FInfo).length < 0) {
+                console.log("should A2F");
+            }
         }
+        console.log("A2F:", A2FInfo)
     }, [tokenState]);
 
     useEffect(() => {
@@ -441,7 +449,7 @@ export default function App() {
     function getUserData(data) {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
-    
+
     const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
 
 
@@ -722,7 +730,7 @@ export default function App() {
                 if (periods[tempPeriodCode].isMockExam) {
                     newPeriodCode = tempPeriodCode.slice(0, 4);
                     if (periods[newPeriodCode] === undefined) {
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode)-1];
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
                     }
                 }
 
@@ -1063,7 +1071,7 @@ export default function App() {
 
         // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
-        // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+            // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
             // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => response.json())
             .then((response) => {
@@ -1125,6 +1133,15 @@ export default function App() {
                         messages.submitButtonText = "Invalide";
                         if (referencedErrors.hasOwnProperty(statusCode)) {
                             messages.submitErrorMessage = referencedErrors[statusCode];
+                            if (statusCode === 250) {
+                                console.log("A2F required")
+                                setA2FInfo({});
+                                setRequireA2F(true)
+                            }
+                            let token = response.token
+                            if (token) {
+                                setTokenState(token);
+                            }
                         } else {
                             messages.submitErrorMessage = ("Erreur : " + response.message);
                             const error = {
@@ -1157,7 +1174,7 @@ export default function App() {
         }
 
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
-        // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
+            // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1199,7 +1216,7 @@ export default function App() {
             })
     }
 
-    async function fetchCorrection(file, id, callback=(() => {}), controller = (new AbortController())) {
+    async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
             forceDownload: 0,
@@ -1310,7 +1327,7 @@ export default function App() {
         }
 
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
-        // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
+            // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1353,12 +1370,42 @@ export default function App() {
             })
     }
 
+    function fetchA2F({ method = "get", choice = "", callback=(() => {}), controller = (new AbortController()) }) {
+        abortControllers.current.push(controller);
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${choice ? JSON.stringify({ choix: choice }) : "{}"}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+                    callback(response);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function createFolderStorage(name) {
         const data = {
             libelle: name,
         }
         fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
-        // fetch("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0",
+            // fetch("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0",
             {
                 method: "POST",
                 headers: {
@@ -1396,6 +1443,7 @@ export default function App() {
     function resetUserData(hard = true) {
         if (hard) {
             setUserIds({});
+            setA2FInfo({});
             setActiveAccount(0);
             // localStorage.removeItem(lsIdName);
             localStorage.removeItem("encryptedUserIds");
@@ -1522,8 +1570,11 @@ export default function App() {
                     setting={userSettings}
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
-                    
+
                     handleEdBan={handleEdBan}
+                    requireA2F={requireA2F}
+                    setRequireA2F={setRequireA2F}
+                    fetchA2F={fetchA2F}
 
                     proxyError={proxyError}
                 />
