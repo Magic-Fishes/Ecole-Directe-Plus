@@ -32,7 +32,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, fetchLogin, l
     // States
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [submitButtonText, setSubmitButtonText] = useState(submitButtonTextValue);// original value "Se connecter"
+    const [submitButtonText, setSubmitButtonText] = useState(submitButtonTextValue);
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior
