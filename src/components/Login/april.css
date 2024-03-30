@@ -208,3 +208,11 @@ p.policy {
 .error-message {
     display: none;
 }
+
+.social-button-link svg path {
+    fill: #717e86!important;
+}
+
+.social-button-link svg {
+    height: 32px;
+}
