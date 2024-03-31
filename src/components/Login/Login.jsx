@@ -50,9 +50,9 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 <h1>Connexion</h1>
                 <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
-            <p className="policy">
+            {/* <p className="policy">
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
-            </p>
+            </p> */}
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
             <Outlet />
