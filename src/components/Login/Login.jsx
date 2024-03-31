@@ -11,12 +11,25 @@ import GithubLink from "../generic/buttons/GithubLink";
 import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
-import "./Login.css";
+if (sessionStorage.getItem('april') === "true"){
+    import("./april.css").then((something) => {
+        console.log("April fools styles loaded");
+    })
+}
 
+import "./Login.css";
 export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
 
-    // JSX
+    if (localStorage.userSettings) {
+        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
+            document.body.style.backgroundColor = "white";
+        } else {
+            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+        }
+    }
+    
+     // JSX
     return (
         <div id="login">
             <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />

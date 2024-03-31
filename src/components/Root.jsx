@@ -386,7 +386,12 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             accountSelector.focus();            
         }
     }
-    
+
+    const date = new Date();
+    if ((!sessionStorage.getItem('april')) && ((date.getMonth() === 3) && (date.getDate < 2))) {
+        sessionStorage.setItem('april', 'true');
+        window.location.reload(false);
+    }
 
     return (
         <>
