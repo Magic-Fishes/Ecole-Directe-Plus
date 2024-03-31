@@ -14,18 +14,32 @@ import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import "./Login.css";
 import ExtensionIcon from "../graphics/ExtensionIcon";
 
+if (sessionStorage.getItem('april') === "true"){
+    import("./april.css").then((something) => {
+        console.log("April fools styles loaded");
+    })
+}
+
 export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
+
+    if (localStorage.userSettings) {
+        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
+            document.body.style.backgroundColor = "white";
+        } else {
+            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+        }
+    }
 
     // JSX
     return (
         <div id="login">
             <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
-            {/* <Link to="/edp-unblock" className="temp-disclaimer" id="edp-unblock-ad">
+            <Link to="/edp-unblock" className="temp-disclaimer" id="edp-unblock-ad">
                 <ExtensionIcon className="extension-icon" />
                 <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>
                 <Link to="/edp-unblock#about">En savoir plus</Link>
-            </Link> */}
+            </Link>
             <span className="login-social">
                 <DiscordLink />
                 <GithubLink />
