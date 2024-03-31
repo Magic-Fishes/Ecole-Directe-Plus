@@ -17,39 +17,44 @@ export default function DOMNotification({ children }) {
 
     const currentNotificationId = useRef(0);
 
-    function closeNotification(notification, fast) {
-        setNotificationList((oldNotififcationList) => {
-            const elementIndex = oldNotififcationList.indexOf(notification);
-            if (elementIndex === -1) {
-                return oldNotififcationList
-            }
-            const newNotificationList = [...oldNotififcationList]
-            newNotificationList[elementIndex].isClosing = fast + 1;
-            return newNotificationList
-        });
+    function closeNotification(notification, fast = false, delay = 0) {
         setTimeout(() => {
-            setNotificationList((oldNotififcationList) => {
-                const elementIndex = oldNotififcationList.indexOf(notification);
-                if (elementIndex === -1) {
-                    return oldNotififcationList
-                }
-                return oldNotififcationList.toSpliced(elementIndex, 1)
-            });
-        }, (fast ? 201 : 501));
+            if (!notification.hovered || fast) {
+                setNotificationList((oldNotififcationList) => {
+                    const elementIndex = oldNotififcationList.indexOf(notification);
+                    if (elementIndex === -1) {
+                        return oldNotififcationList
+                    }
+                    const newNotificationList = [...oldNotififcationList]
+                    newNotificationList[elementIndex].isClosing = fast + 1;
+                    return newNotificationList
+                });
+                setTimeout(() => {
+                    setNotificationList((oldNotififcationList) => {
+                        const elementIndex = oldNotififcationList.indexOf(notification);
+                        if (elementIndex === -1) {
+                            return oldNotififcationList
+                        }
+                        return oldNotififcationList.toSpliced(elementIndex, 1)
+                    });
+                }, (fast ? 201 : 501));
+            }
+        }, delay)
     }
 
-    function addNotification(newNotificationContent, customClass="") {
+    function addNotification(newNotificationContent, customClass = "") {
         const newNotification = {
             key: currentNotificationId.current,
             content: newNotificationContent,
             isClosing: 0,
             creationTime: new Date().getTime(),
             customClass,
+            hoverred: false,
         }
         currentNotificationId.current++;
         setNotificationList(() => [newNotification].concat(...notificationList))
         setTimeout(() => {
-            closeNotification(newNotification, false)
+            closeNotification(newNotification)
         }, 3000);
     }
 
@@ -64,20 +69,25 @@ export default function DOMNotification({ children }) {
         return ""
     }
 
+    function handleMouseLeave(notification) {
+        notification.hovered = false;
+        if (notification.creationTime < new Date().getTime() - 3500) {
+            closeNotification(notification, false, 1000)
+            notification.creationTime = new Date().getTime() - 1500
+        }
+    }
+
+    function handleMouseEnter(notification) {
+        notification.hovered = true;
+    }
+
     return (
         <notificationContext.Provider value={addNotification} >
             <div id="notifications-container">
                 {notificationList.map((el, i) => {
-                    if (el.creationTime > new Date().getTime() - 3000) {
+                    if (el.creationTime > new Date().getTime() - 3500 || el.hovered) {
                         return (
-                            <div className={`pop-up-notification ${el.isClosing === 1 ? " closing" : (el.isClosing === 2 ? " fast-closing" : "")} ${el.customClass}`} key={el.key} >
-                                <DropDownArrow className="notification-close-arrow" onClick={() => { closeNotification(el, true) }} />
-                                {el.content}
-                            </div>
-                        )
-                    } else if (el.creationTime > new Date().getTime() - 3500) {
-                        return (
-                            <div className={`pop-up-notification closing ${el.customClass}`} key={el.key} >
+                            <div className={`pop-up-notification ${el.isClosing === 1 ? " closing" : (el.isClosing === 2 ? " fast-closing" : "")} ${el.customClass}`} key={el.key} onMouseEnter={() => handleMouseEnter(el)} onMouseLeave={() => handleMouseLeave(el)} >
                                 <DropDownArrow className="notification-close-arrow" onClick={() => { closeNotification(el, true) }} />
                                 {el.content}
                             </div>

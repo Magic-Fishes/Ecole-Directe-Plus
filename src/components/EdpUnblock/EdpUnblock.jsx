@@ -131,12 +131,14 @@ export default function EdpUnblock() {
                 </Link>
             </main>
             <div className="edpu-about" ref={aboutRef}>
-                <h2 className="edpu-about-h2">Pourquoi dois-je installer Ecole Directe Plus Unblock ?</h2>
-                <p className="edpu-about-explanation">EDP Unblock permet un accès ininterrompu à Ecole Directe Plus en donnant l'accès en continu aux données fournis par l'API d'EcoleDirecte. Cette extension est nécessaire au bon fonctionnement d'Ecole Directe Plus.</p>
+                <h2 className="edpu-about-h2">Pourquoi ai-je besoin d'installer Ecole Directe Plus Unblock ?</h2>
+                <p className="edpu-about-explanation">EDP Unblock offre un accès ininterrompu à Ecole Directe Plus en donnant l'accès en continu aux données fournis par l'API d'EcoleDirecte. Cette extension est nécessaire au bon fonctionnement d'Ecole Directe Plus.</p>
+                <h2 className="edpu-about-h2">Où et comment installer EDP Unblock ?</h2>
+                <p className="edpu-about-explanation">EDP Unblock est une extension de navigateur, elle est compatible avec les navigateurs basés sur Chromium (Chrome, Edge, Brave, Opera, ...) ainsi que Firefox. En fonction de votre navigateur, la source d'installation diffère. Cliquez sur le bouton "Ajouter l'extension" ci-dessus et vous devriez être redirigé vers la boutique d'extensions compatible avec votre navigateur. Mise en garde : EDP Unblock n'est pas disponible sur toutes les plateformes, notamment sur iOS et iPadOS, ainsi que le navigateur Safari sur MacOS. Si vous êtes sur l'une de ces plateformes, considérez l'usage d'un ordinateur ou d'un appareil android. Toutefois, même sur android, tous les navigateurs ne supportent pas les extensions, considérez alors l'installation des navigateurs KiwiBrowser (basé sur Chromium) ou Firefox.</p>
                 <h2 className="edpu-about-h2">Vie privée et confidentialité</h2>
-                <p className="edpu-about-explanation">EDP Unblock est uniquement actif sur les domaines `ecole-directe.plus` ainsi que `ecoledirecte.com`. L'application n'est pas autorisée à accéder aux informations sur n'importe quel autre site. De plus, EDP Unblock ne lit aucune donnée : l'extension sert simplement de passerelle aux requêtes pour "arriver correction à destination", mais n'a pas accès à leur contenu</p>
+                <p className="edpu-about-explanation">EDP Unblock est exclusivement actif sur les domaines `ecole-directe.plus` ainsi que `ecoledirecte.com`. L'extension ne peut pas accéder aux informations provenant de n'importe quel autre site web. De plus, EDP Unblock ne lit aucune donnée : l'extension sert simplement de passerelle aux requêtes pour "arriver correction à destination", mais n'a pas accès à leur contenu.</p>
                 <h2 className="edpu-about-h2">Divers</h2>
-                <p className="edpu-about-explanation">L'extension Ecole Directe Plus Unblock, tout comme le site Ecole Directe Plus, est un projet open-source sous license MIT, vous pouvez donc retrouver le code source en ligne, visitez le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus-Unblock">dépôt Github</a>.</p>
+                <p className="edpu-about-explanation">L'extension Ecole Directe Plus Unblock, tout comme le site Ecole Directe Plus, est un projet open-source sous license MIT, le code source est donc disponible en ligne : <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus-Unblock">dépôt Github</a>.</p>
             </div>
         </div>
     </>)

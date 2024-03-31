@@ -1,0 +1,96 @@
+
+#pop-up-background:has(#A2F-login-form) {
+    max-width: 435px;
+    /* padding: 25px; */
+}
+
+.A2F-login h2 {
+    font-size: var(--font-size-20);
+    text-align: center;
+    padding: 20px;
+    background-color: rgb(var(--background-color-0), .5);
+    /* margin-bottom: 20px; */
+}
+
+.A2F-login .explanation {
+    color: rgb(var(--text-color-alt));
+    padding: 10px 20px;
+    font-size: var(--font-size-14);
+}
+
+.A2F-login #A2F-login-form {
+    margin-top: 15px;
+}
+
+.A2F-login h3 {
+    font-size: var(--font-size-16);
+    margin-bottom: 25px;
+    padding-inline: 20px;
+    text-align: center;
+}
+
+.A2F-login .A2F-answers-container {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 5px 20px;
+    width: max-content;
+    align-content: center;
+    margin-inline: auto;
+    margin-bottom: 30px;
+    max-height: 250px;
+}
+
+.A2F-login .A2F-content-loader-container {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 5px;
+}
+
+.A2F-login .A2F-error-message {
+    margin-inline: 20px;
+    margin-bottom: 20px;
+    color: rgb(var(--text-color-error));
+    text-align: center;
+}
+
+.A2F-login .A2F-buttons {
+    font-size: var(--font-size-13);
+    padding: 12px;
+    background-color: rgb(var(--background-color-0), .5);
+
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.A2F-login .A2F-buttons > * {
+    margin: 0;
+    font-size: var(--font-size-15);
+    border: none;
+    border-radius: 10px;
+    padding: 6px 16px;
+    border: 2px solid transparent;
+}
+
+.A2F-login .A2F-buttons .cancel-A2F {
+    color: rgb(var(--text-color-alt));
+}
+.A2F-login .A2F-buttons .cancel-A2F:is(:hover, :focus-visible) {
+    background-color: transparent;
+    border-color: rgb(var(--text-color-alt));
+}
+.A2F-login .A2F-buttons .cancel-A2F:active {
+    background-color: rgb(var(--text-color-alt), .2);
+}
+
+.A2F-login .A2F-buttons .submit-A2F {
+    background-color: rgb(var(--border-color-0));
+}
+.A2F-login .A2F-buttons .submit-A2F:is(:hover, :focus-visible) {
+    filter: brightness(1.15);
+}
+.A2F-login .A2F-buttons .submit-A2F:active {
+    filter: brightness(0.9);
+}
+
