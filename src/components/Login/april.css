@@ -2,7 +2,7 @@
     transition: border-color 0s linear!important;
     transition: border-width 0s linear!important;
     background-color: #fff;
-    background-image: url("images/april-background.png");
+    background-image: url("/images/april-background.png");
     background-repeat: no-repeat;
     min-width: 1000px;
     max-height: 325px;
