@@ -12,6 +12,7 @@ import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
 import "./Login.css";
+import ExtensionIcon from "../graphics/ExtensionIcon";
 
 export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
@@ -20,6 +21,11 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
     return (
         <div id="login">
             <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
+            <Link to="/edp-unblock" className="temp-disclaimer" id="edp-unblock-ad">
+                <ExtensionIcon className="extension-icon" />
+                <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span>
+                <Link to="/edp-unblock#about">En savoir plus</Link>
+            </Link>
             <span className="login-social">
                 <DiscordLink />
                 <GithubLink />
@@ -32,9 +38,6 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
             </div>
             <p className="policy">
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
-            </p>
-            <p className="temp-disclaimer" id="proxy-error-notification">
-                Nous rencontrons quelques problèmes liés à l'API d'EcoleDirecte. Nous travaillons activement sur ce problème, veuillez revenir dans quelques heures/jours.
             </p>
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
             <EDPVersion currentEDPVersion={currentEDPVersion} />
