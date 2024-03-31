@@ -221,6 +221,7 @@ export default function App() {
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
     const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
+    const [bufferUserIds, setBufferUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd) | uniquement pour la gestion de la reconnexion auto après l'A2F
     const [A2FInfo, setA2FInfo] = useState(A2FInfoFromLS); // informations d'authentification à deux facteurs (cn, cv)
     const [requireA2F, setRequireA2F] = useState(false); // trigger or not the A2F pop-up
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -382,13 +383,9 @@ export default function App() {
     useEffect(() => {
         if (tokenState !== "") {
             localStorage.setItem("token", tokenState);
-            if (Object.keys(A2FInfo).length < 0) {
-                console.log("should A2F");
-            }
         }
-        console.log("A2F:", A2FInfo)
     }, [tokenState]);
-
+    
     useEffect(() => {
         if (accountsListState?.length > 0) {
             localStorage.setItem("accountsList", JSON.stringify(accountsListState));
@@ -1054,7 +1051,8 @@ export default function App() {
             identifiant: username,
             motdepasse: password,
             isReLogin: false,
-            uuid: 0
+            uuid: 0,
+            fa: Object.keys(A2FInfo).length > 0 ? [A2FInfo] : []
         }
 
         const options = {
@@ -1134,6 +1132,7 @@ export default function App() {
                         if (referencedErrors.hasOwnProperty(statusCode)) {
                             messages.submitErrorMessage = referencedErrors[statusCode];
                             if (statusCode === 250) {
+                                setBufferUserIds({ username: username, password: password })
                                 console.log("A2F required")
                                 setA2FInfo({});
                                 setRequireA2F(true)
@@ -1370,7 +1369,7 @@ export default function App() {
             })
     }
 
-    function fetchA2F({ method = "get", choice = "", callback=(() => {}), controller = (new AbortController()) }) {
+    function fetchA2F({ method = "get", choice = "", callback=(() => {}), errorCallback=(() => {}), controller = (new AbortController()) }) {
         abortControllers.current.push(controller);
         fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
@@ -1388,10 +1387,16 @@ export default function App() {
             .then((response) => {
                 let code = response.code;
                 if (code === 200) {
+                    if (method === "post") {
+                        setA2FInfo(response.data);
+                    }
+
                     callback(response);
                 } else if (code === 520 || code === 525) {
                     console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
+                } else {
+                    errorCallback(response)
                 }
                 setTokenState((old) => (response?.token || old));
             })
@@ -1443,7 +1448,6 @@ export default function App() {
     function resetUserData(hard = true) {
         if (hard) {
             setUserIds({});
-            setA2FInfo({});
             setActiveAccount(0);
             // localStorage.removeItem(lsIdName);
             localStorage.removeItem("encryptedUserIds");
@@ -1611,7 +1615,7 @@ export default function App() {
                     path: "unsubscribe-emails",
                 },
                 {
-                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
+                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                 },
                 {
@@ -1636,7 +1640,7 @@ export default function App() {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password} />)}
+                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} />)}
                         </>),
                     path: "app",
                     children: [

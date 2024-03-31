@@ -1,5 +1,4 @@
 
-
 .radio-button {
     display: inline-flex;
     flex-flow: row wrap;
@@ -11,6 +10,7 @@
     width: 15px;
     height: 15px;
     border: 2px solid rgb(var(--border-color-0));
+    filter: brightness(1.4);
     border-radius: 50%;
     transition: .1s;
     cursor: pointer;

@@ -19,3 +19,20 @@
     max-width: 500px;
     margin: 0 auto;
 }
+
+.login-bottom-sheet #login-bs-logout {
+    color: rgb(var(--text-color-alt));
+    width: max-content;
+    margin: 0 auto;
+    cursor: pointer;
+    transform: translateY(-10px);
+    outline: none;
+    transition: .1s;
+}
+
+.login-bottom-sheet #login-bs-logout:is(:hover, :focus-visible) {
+    text-decoration: underline;
+}
+.login-bottom-sheet #login-bs-logout:active {
+    opacity: .8;
+}
