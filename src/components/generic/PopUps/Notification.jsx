@@ -78,8 +78,7 @@ export default function DOMNotification({ children }) {
     }
 
     function handleMouseEnter(notification) {
-        notification.hovered = true; 
-        notification.creationTime = new Date().getTime() - 1000
+        notification.hovered = true;
     }
 
     return (

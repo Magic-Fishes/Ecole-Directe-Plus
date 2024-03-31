@@ -17,9 +17,10 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, encrypt, decrypt } from "./utils/utils";
+import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
+import EdpuLogo from "./components/graphics/EdpuLogo";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -108,6 +109,17 @@ const defaultSettings = {
     allowAnonymousReports: true,
     isDevChannel: false
 }
+
+const browserExtensionDownloadLink = {
+    Opera: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Chromium: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Chrome: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Firefox: "https://addons.mozilla.org/fr/firefox/addon/ecole-directe-plus-unblock/",
+    Edge: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
+    Safari: "/edp-unblock"
+}
+
+const userBrowser = getBrowser()
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -1034,11 +1046,18 @@ export default function App() {
         // Will summon a notification with JSX in it
         createNotification(<>
             <h4>
-                Ecole Directe Plus a besoin de son extension pour fonctionner !
+                Installez Ecole Directe Plus Unblock
             </h4>
-            <p>
-                Afin d'accéder à l'API de EcoleDirecte et donc de vous permettre d'accéder à vos données, Ecole Directe Plus nécessite l'installation d'une extension web.</p>
-            <a href="/edp-unblock#about">En savoir plus</a>
+            <hr/>
+            <div className="edpu-notification-description">
+                <EdpuLogo />
+                <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
+            </div>
+            <hr/>
+            <div className="extension-download-link">
+                <a href="/edp-unblock#about">En savoir plus</a>
+                <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
+            </div>
         </>, "extension-warning")
     }
 

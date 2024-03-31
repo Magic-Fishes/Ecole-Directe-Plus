@@ -24,7 +24,7 @@
 }
 
 :root:not(.performance) .pop-up-notification:hover {
-    background-color: rgba(var(--background-color-2), 0.8);    
+    background-color: rgba(var(--background-color-2), 0.8);
 }
 
 .pop-up-notification .emphasis {
@@ -41,6 +41,7 @@
 .closing {
     animation: del-notification 0.5s ease-in forwards;
 }
+
 .fast-closing {
     animation: del-notification 0.2s ease-in forwards;
 }
@@ -64,26 +65,76 @@
     stroke: rgb(var(--text-color-main));
 }
 
-.extension-warning {
-    max-height: 30%;
-}
-
 :root:not(.performance) .extension-warning {
-    background-color: rgba(var(--background-color-warning-1), 0.6);
+    transition: .2s;
+    background-color: rgba(var(--background-color-warning-1), 0.4) !important;
 }
 
 :root.performance .extension-warning {
     background-color: rgb(var(--background-color-warning-1));
 }
 
-:root:not(.performance) .extension-warning:hover {
-    background-color: rgba(var(--background-color-warning-1), 0.8) !important;
+:root:not(.performance) .extension-warning:hover:not(:has(a:hover)) {
+    background-color: rgba(var(--background-color-warning-1), 0.7) !important;
 }
 
-.extension-warning p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.extension-warning hr {
+    margin-block: 5px;
+}
+
+.extension-warning svg.notification-close-arrow path {
+    stroke: rgb(238, 170, 170);
+}
+
+.extension-warning svg.notification-close-arrow:hover path {
+    stroke: white;
+}
+
+.edpu-notification-description {
+    display: flex;
+    padding: 5px;
+    gap: 15px;
+}
+
+.edpu-notification-description svg {
+    flex-grow: 1;
+}
+
+.extension-download-link {
+    padding-top: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+.extension-download-link a {
+    appearance: none;
+    text-decoration: none;
+    padding: 0.5em;
+    border-radius: 10px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.extension-download-link a:first-child {
+    border: 2px solid rgba(var(--border-color-soft-error), .5);
+    transition: .2s;
+    flex-grow: 2;
+}
+.extension-download-link a:first-child:hover {
+    border: 2px solid rgba(var(--border-color-soft-error), 1);
+    background-color: rgba(var(--background-color-error), .6);
+    flex-grow: 2.5;
+}
+
+.extension-download-link a:last-child {
+    flex-grow: 1;
+    background-color: rgba(var(--background-color-error), .6);
+    transition: .2s;
+}
+
+.extension-download-link a:last-child:hover {
+    flex-grow: 1.5;
+    filter: brightness(.85);
 }
 
 @keyframes new-notification {
@@ -91,6 +142,7 @@
         opacity: 0.5;
         transform: translateX(100%);
     }
+
     100% {
         opacity: 1;
         transform: translateX(0);
@@ -102,6 +154,7 @@
         transform: translateX(0);
         opacity: 1;
     }
+
     100% {
         transform: translateX(50%);
         opacity: 0;
