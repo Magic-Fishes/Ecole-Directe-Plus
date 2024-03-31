@@ -388,7 +388,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     }
 
     const date = new Date();
-    if ((!sessionStorage.getItem('april')) && ((date.getMonth() === 3) && (date.getDate < 2))) {
+    if ((!sessionStorage.getItem('april')) && ((date.getMonth() === 3) && (date.getDate() < 2))) {
         sessionStorage.setItem('april', 'true');
         window.location.reload(false);
     }
