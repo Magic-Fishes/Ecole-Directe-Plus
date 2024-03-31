@@ -9,7 +9,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 import { useCreateNotification } from "./generic/PopUps/Notification";
 import A2FLogin from "./Login/A2FLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan, requireA2F, setRequireA2F, fetchA2F }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireA2F, setRequireA2F, fetchA2F }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -122,6 +122,18 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             console.log("redirected to app")
         }
     }, [location, token, accountsList])
+
+    // redirect to /edp-unblock
+    useEffect(() => {
+        if (!isEDPUnblockInstalled) {
+            if (location.pathname === "/login") {
+                navigate("/edp-unblock");
+            } else {
+                handleEdBan();
+            }
+            setIsEDPUnblockInstalled(true);
+        }
+    }, [isEDPUnblockInstalled]);
 
     // devChannel management
     useEffect(() => {
