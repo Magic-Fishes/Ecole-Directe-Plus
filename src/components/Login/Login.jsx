@@ -13,7 +13,7 @@ import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
 import "./Login.css";
 
-export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
+export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
 
     // JSX
@@ -28,7 +28,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
-                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
+                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
             <p className="policy">
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.

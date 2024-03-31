@@ -427,8 +427,8 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}
-            {requireA2F && <A2FLogin fetchA2F={fetchA2F} onClose={() => setRequireA2F(false)} />}
             <Outlet />
+            {requireA2F && <A2FLogin fetchA2F={fetchA2F} onClose={() => setRequireA2F(false)} />}
         </>
     );
 }
