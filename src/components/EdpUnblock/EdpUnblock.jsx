@@ -24,41 +24,35 @@ const browserLogosInfos = {
     Chrome: {
         logo: <ChromeLogo />,
         available: true,
-        url: "#CHROME_EXTENSION",
+        url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
     Opera: {
         logo: <ChromeLogo />,
         available: true,
-        url: "#CHROME_EXTENSION",
+        url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
     Edge: {
         logo: <EdgeLogo />,
         available: true,
-        url: "#EDGE_EXTENSION",
-    },
-    Seamonkey: {
-        logo: <FirefoxLogo />,
-        available: false,
-        url: "",
+        url: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
     },
     Chromium: {
         logo: <ChromeLogo />,
         available: false,
-        url: "",
+        url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
     Safari: {
-        logo: <FirefoxLogo />,
+        logo: <span className="sad-emoji">😥</span>,
         available: false,
         url: "",
     },
 }
 
 const userBrowser = getBrowser()
+// const userBrowser = "Safari"
 
 export default function EdpUnblock() {
     const location = useLocation();
-
-    const [arrowText, setArrowText] = useState("En savoir plus")
 
     const aboutRef = useRef(null);
     const aboutButtonRef = useRef(null);
@@ -118,8 +112,9 @@ export default function EdpUnblock() {
                             <h2>Ecole Directe Plus Unblock</h2>
                         </div>
                     </div>
-                    <p>Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte</p>
-                    <a href={browserLogosInfos[userBrowser].url} target="_blank" className={`edpu-dowload-link ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
+                    {userBrowser !== "Safari" ? <p>Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte</p>
+                    : <p>Malheureusement, l'extension Ecole Directe PLus Unblock n'est pas disponible sur votre navigateur.😥</p>}
+                    <a href={browserLogosInfos[userBrowser].url} target="_blank" className={`edpu-download-link ${userBrowser === "Safari" ? "disabled" : ""} ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser].logo}
                         <span>Ajouter l’extension</span>
                         <DownloadIcon />

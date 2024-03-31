@@ -1056,7 +1056,7 @@ export default function App() {
                 <a href="/edp-unblock#about">En savoir plus</a>
                 <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
             </div>
-        </>, "extension-warning")
+        </>, {customClass: "extension-warning", timer: "infinite"})
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {

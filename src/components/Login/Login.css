@@ -184,6 +184,10 @@ p.policy {
         background-color: rgb(var(--background-color-1)) !important;
     }
 
+    #edp-unblock-ad .edpu-explanation {
+        display: none;
+    }
+
     .login-social {
         z-index: 1;
         position: fixed;
