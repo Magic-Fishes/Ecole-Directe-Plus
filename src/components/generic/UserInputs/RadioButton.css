@@ -1,0 +1,41 @@
+
+.radio-button {
+    display: inline-flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.radio-button input[type="radio"] {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgb(var(--border-color-0));
+    filter: brightness(1.4);
+    border-radius: 50%;
+    transition: .1s;
+    cursor: pointer;
+    outline: none;
+}
+
+.radio-button input[type="radio"]:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-focus));
+    border-color: rgb(var(--border-color-1));
+}
+
+.radio-button input[type="radio"]:active, .radio-button:has(:active) input[type="radio"] {
+    opacity: .8;
+}
+
+.radio-button input[type="radio"]:checked {
+    background-color: rgb(var(--border-color-1));
+    border-color: rgb(var(--border-color-1));
+}
+
+.radio-button label {
+    color: rgb(var(--text-color-alt));
+    flex: 1;
+    cursor: pointer;
+}
+.radio-button:has(:hover, :focus-visible, :checked) label {
+    color: rgb(var(--text-color-main));
+}

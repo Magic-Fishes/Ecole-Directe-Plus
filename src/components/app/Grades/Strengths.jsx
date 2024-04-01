@@ -32,6 +32,8 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                     let algebricDiff;
                     if (subject.average !== "N/A" && subject.classAverage !== "N/A") {
                         algebricDiff = subject.average - subject.classAverage;
+                    } else if (subject.average !== "N/A") {
+                        algebricDiff = subject.average;
                     } else {
                         algebricDiff = 0;
                     }

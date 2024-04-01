@@ -1,6 +1,3 @@
-// npm run build
-// zip -r build_history/build-<année>-<mois>-<jour>.zip dist
-
 import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
@@ -17,10 +14,13 @@ import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
-import DOMNotification from "./components/generic/PopUps/Notification";
+import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
+import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, getCurrentSchoolYear, encrypt, decrypt } from "./utils/utils";
+import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
+import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
+import EdpuLogo from "./components/graphics/EdpuLogo";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -65,12 +65,13 @@ function consoleLogEDPLogo() {
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
         `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
+        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
 
 }
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
-const apiVersion = "4.52.1";
+const apiVersion = "4.53.4";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -82,6 +83,7 @@ const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 const referencedErrors = {
+    "250": "Authentification à deux facteurs requise",
     "505": "Identifiant et/ou mot de passe invalide",
     "522": "Identifiant et/ou mot de passe invalide",
     "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
@@ -109,6 +111,17 @@ const defaultSettings = {
     isDevChannel: false
 }
 
+const browserExtensionDownloadLink = {
+    Opera: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Chromium: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Chrome: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
+    Firefox: "https://addons.mozilla.org/fr/firefox/addon/ecole-directe-plus-unblock/",
+    Edge: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
+    Safari: "/edp-unblock"
+}
+
+const userBrowser = getBrowser()
+
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
 // get data from localstorage
@@ -117,6 +130,7 @@ const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]
 const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
 const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
+const A2FInfoFromLS = JSON.parse((localStorage.getItem("A2FInfo") ?? "{}"));
 let userIdsFromLs;
 if (keepLoggedInFromLs) {
     userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
@@ -220,6 +234,9 @@ export default function App() {
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
     const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
+    const [bufferUserIds, setBufferUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd) | uniquement pour la gestion de la reconnexion auto après l'A2F
+    const [A2FInfo, setA2FInfo] = useState(A2FInfoFromLS); // informations d'authentification à deux facteurs (cn, cv)
+    const [requireA2F, setRequireA2F] = useState(false); // trigger or not the A2F pop-up
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
     const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
@@ -241,6 +258,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isEDPUnblockInstalled, setIsEDPUnblockInstalled] = useState(true);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
@@ -250,7 +268,7 @@ export default function App() {
     const loginAbortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
-
+    const createNotification = useCreateNotification();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -650,6 +668,7 @@ export default function App() {
             "keepOnFire": 0,
             "meh": 0,
         };
+        const newLastGrades = []
         if (periodsFromJson !== undefined) {
             for (let period of periodsFromJson) {
                 if (period) {
@@ -717,6 +736,8 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
+            const lastGrades = gradesFromJson.toSorted((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
+
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods
                 let tempPeriodCode = grade.codePeriode;
@@ -724,6 +745,7 @@ export default function App() {
                 if (periods[tempPeriodCode].isMockExam) {
                     newPeriodCode = tempPeriodCode.slice(0, 4);
                     if (periods[newPeriodCode] === undefined) {
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
                         newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
                     }
                 }
@@ -879,6 +901,9 @@ export default function App() {
                 newGrade.skill = formatSkills(grade.elementsProgramme)
 
                 periods[periodCode].subjects[subjectCode].grades.push(newGrade);
+                if (lastGrades.includes(grade)) {
+                    newLastGrades.push(newGrade)
+                }
             }
         }
 
@@ -935,6 +960,7 @@ export default function App() {
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
+        changeUserData("lastGrades", newLastGrades.reverse());
         setDefaultPeriod(periods)
     }
 
@@ -1037,6 +1063,25 @@ export default function App() {
         setUserInfo(fakeToken, fakeAccountsList)
     }
 
+    function handleEdBan() {
+        // Will summon a notification with JSX in it
+        createNotification(<>
+            <h4>
+                Installez Ecole Directe Plus Unblock
+            </h4>
+            <hr />
+            <div className="edpu-notification-description">
+                <EdpuLogo />
+                <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
+            </div>
+            <hr />
+            <div className="extension-download-link">
+                <a href="/edp-unblock#about">En savoir plus</a>
+                <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
+            </div>
+        </>, {customClass: "extension-warning", timer: "infinite"})
+    }
+
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
         if (isLoggedIn) {
             return
@@ -1053,7 +1098,8 @@ export default function App() {
             identifiant: username,
             motdepasse: password,
             isReLogin: false,
-            uuid: 0
+            uuid: 0,
+            fa: Object.keys(A2FInfo).length > 0 ? [A2FInfo] : []
         }
 
         const options = {
@@ -1068,10 +1114,20 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true),
-            options
-        )
-            .then((response) => response.json())
+        // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
+            // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
+            // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
+            .then((response) => {
+                return response.text().then((data) => {
+                    if (!data) {
+                        setIsEDPUnblockInstalled(false);
+                        
+                    } else {
+                        return JSON.parse(data)
+                    }
+                })
+            })
             .then((response) => {
                 // GESTION DATA
                 let statusCode = response.code;
@@ -1128,6 +1184,16 @@ export default function App() {
                     messages.submitButtonText = "Invalide";
                     if (referencedErrors.hasOwnProperty(statusCode)) {
                         messages.submitErrorMessage = referencedErrors[statusCode];
+                        if (statusCode === 250) {
+                            setBufferUserIds({ username: username, password: password })
+                            console.log("A2F required")
+                            setA2FInfo({});
+                            setRequireA2F(true)
+                        }
+                        let token = response.token
+                        if (token) {
+                            setTokenState(token);
+                        }
                     } else {
                         messages.submitErrorMessage = ("Erreur : " + response.message);
                         const error = {
@@ -1171,7 +1237,16 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
             })
-            .then((response) => response.json())
+            .then((response) => {
+                return response.text().then((data) => {
+                    if (!data) {
+                        setIsEDPUnblockInstalled(false);
+                        
+                    } else {
+                        return JSON.parse(data)
+                    }
+                })
+            })
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1200,6 +1275,7 @@ export default function App() {
             })
     }
 
+    async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
     async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
@@ -1402,6 +1478,42 @@ export default function App() {
             })
     }
 
+    function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
+        abortControllers.current.push(controller);
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${choice ? JSON.stringify({ choix: choice }) : "{}"}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+                    if (method === "post") {
+                        setA2FInfo(response.data);
+                    }
+
+                    callback(response);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else {
+                    errorCallback(response)
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function createFolderStorage(name) {
         const data = {
             libelle: name,
@@ -1574,6 +1686,13 @@ export default function App() {
                     syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
 
+                    handleEdBan={handleEdBan}
+                    isEDPUnblockInstalled={isEDPUnblockInstalled}
+                    setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
+                    requireA2F={requireA2F}
+                    setRequireA2F={setRequireA2F}
+                    fetchA2F={fetchA2F}
+
                     proxyError={proxyError}
                 />
             ,
@@ -1582,32 +1701,35 @@ export default function App() {
             children: [
                 {
                     element: <Navigate to="/login" />,
-                    path: "/"
+                    path: "/",
                 },
                 {
                     element: <Feedback activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
-                    path: "feedback"
+                    path: "feedback",
+                },
+                {
+                    element: <EdpUnblock />,
+                    path: "edp-unblock",
                 },
                 {
                     element: <Canardman />,
-                    path: "quackquack"
-                    // path: "coincoin",
+                    path: "quackquack",
                 },
                 {
                     element: <Lab fetchGrades={fetchUserGrades} />,
-                    path: "lab"
+                    path: "lab",
                 },
                 {
                     element: <Museum />,
-                    path: "museum"
+                    path: "museum",
                 },
                 {
                     element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && accountsListState[activeAccount])} thonFrustre={thonFrustre} />,
-                    path: "unsubscribe-emails"
+                    path: "unsubscribe-emails",
                 },
                 {
-                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
-                    path: "login"
+                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
+                    path: "login",
                 },
                 {
                     element: <Navigate to={`/app/${activeAccount}/dashboard`} />,
@@ -1631,7 +1753,7 @@ export default function App() {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password} />)}
+                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} />)}
                         </>),
                     path: "app",
                     children: [
@@ -1660,7 +1782,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard />,
+                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -1668,7 +1790,7 @@ export default function App() {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} setGrades={setGrades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
+                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
                             path: ":userId/grades"
                         },
                         {
@@ -1740,9 +1862,7 @@ export default function App() {
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
             <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
-                <DOMNotification>
-                    <RouterProvider router={router} />
-                </DOMNotification>
+                <RouterProvider router={router} />
             </Suspense>
         </AppContext.Provider>
     );

@@ -1,7 +1,77 @@
 
-#proxy-error-notification.temp-disclaimer {
+#edp-unblock-ad {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 10px));
+    
+    padding: 10px;
+    text-align: center;
     width: 95%;
-    max-width: 750px;
+    max-width: 900px;
+    
+    border: 2px solid rgb(var(--text-color-alt));
+    border-radius: 10px;
+    
+    animation: edp-unblock-ad-pop-in .3s var(--timing-function-spring-effect) forwards;
+    transition: border-color .1s, background-color .1s;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    z-index: 50;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.dark #edp-unblock-ad {
+    background-color: rgba(var(--text-color-alt), .2);
+    backdrop-filter: blur(8px) brightness(.5);
+}
+.light #edp-unblock-ad {
+    background-color: rgba(var(--background-color-1));
+}
+
+#edp-unblock-ad:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-0));
+    border-color: rgba(var(--text-color-main), .9);
+}
+#edp-unblock-ad:active {
+    opacity: .8;
+}
+
+#edp-unblock-ad .extension-icon {
+    height: 35px;
+    fill: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+
+#edp-unblock-ad:is(:hover, :focus-visible) .extension-icon {
+    fill: rgba(var(--text-color-main), .9);
+}
+
+#edp-unblock-ad span {
+    flex: 1;
+    color: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+#edp-unblock-ad a {
+    color: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+#edp-unblock-ad:is(:hover, :focus-visible) :is(span, a) {
+    color: rgba(var(--text-color-main), .9);
+}
+
+@keyframes edp-unblock-ad-pop-in {
+    from {
+        transform: translate(-50%, calc(-100% - 15px));
+    }
+    to {
+        transform: translate(-50%, 0);
+    }
 }
 
 .login-logo {
@@ -18,6 +88,15 @@
 
 .login-logo#inside-container {
     display: none;
+}
+
+.login-social {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 15px;
+    padding: 20px;
 }
 
 .login-box {
@@ -103,6 +182,21 @@ p.policy {
 @media only screen and (max-width: 460px) {
     body :has(.login) {
         background-color: rgb(var(--background-color-1)) !important;
+    }
+
+    #edp-unblock-ad .edpu-explanation {
+        display: none;
+    }
+
+    .login-social {
+        z-index: 1;
+        position: fixed;
+        top: 0;
+        right: unset;
+        left: 0;
+        display: flex;
+        gap: 15px;
+        padding: 20px;
     }
 
     /* Solution de gros golem exécutée par des professionnels à ne pas reproduire à la maison*/

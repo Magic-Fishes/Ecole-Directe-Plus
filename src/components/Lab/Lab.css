@@ -59,3 +59,11 @@
     flex-flow: row wrap;
     justify-content: space-evenly;
 }
+
+
+#lab-page .radio-buttons-test {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    padding: 10px;
+}

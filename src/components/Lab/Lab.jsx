@@ -32,6 +32,7 @@ import NumberInput from "../generic/UserInputs/NumberInput";
 import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 
 import "./Lab.css";
+import RadioButton from "../generic/UserInputs/RadioButton";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -254,6 +255,21 @@ export default function Lab({ fetchGrades }) {
             <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
             {displayProxyErrorNotification && <ProxyErrorNotification />}
 
+            <h3>RadioButtons</h3>
+            <div className="radio-buttons-test">
+                <RadioButton id="dilemme-cornelien-1" name="dilemme">Choix 1</RadioButton>
+                <RadioButton id="dilemme-cornelien-2" name="dilemme">Choix 2</RadioButton>
+                <RadioButton id="dilemme-cornelien-3" name="dilemme">Choix 3</RadioButton>
+                <RadioButton id="dilemme-cornelien-4" name="dilemme">Choix 4</RadioButton>
+                <RadioButton id="dilemme-cornelien-5" name="dilemme">Choix 5</RadioButton>
+                <RadioButton id="dilemme-cornelien-6" name="dilemme">Choix 6</RadioButton>
+                <RadioButton id="dilemme-cornelien-7" name="dilemme">Choix 7</RadioButton>
+                <RadioButton id="dilemme-cornelien-8" name="dilemme">Choix 8</RadioButton>
+                <RadioButton id="dilemme-cornelien-9" name="dilemme">Choix 9</RadioButton>
+                <RadioButton id="dilemme-cornelien-10" name="dilemme">Choix 10</RadioButton>
+                <RadioButton id="dilemme-cornelien-11" name="dilemme">Choix 11</RadioButton>
+                <RadioButton id="dilemme-cornelien-12" name="dilemme">Choix 12</RadioButton>
+            </div>
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
