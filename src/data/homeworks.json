@@ -12,7 +12,7 @@
                 "documentsAFaire": false,
                 "donneLe": "2024-02-12",
                 "effectue": false,
-                "interrogation": false,
+                "interrogation": true,
                 "rendreEnLigne": false
             },
             {
@@ -23,7 +23,7 @@
                 "documentsAFaire": true,
                 "donneLe": "2024-02-12",
                 "effectue": false,
-                "interrogation": false,
+                "interrogation": true,
                 "rendreEnLigne": false
             }
         ],
@@ -36,7 +36,7 @@
                 "documentsAFaire": false,
                 "donneLe": "2024-02-13",
                 "effectue": false,
-                "interrogation": false,
+                "interrogation": true,
                 "rendreEnLigne": false
             }
         ],

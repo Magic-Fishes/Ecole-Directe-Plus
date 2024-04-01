@@ -5,15 +5,12 @@
     overflow-x: scroll;
 }
 
-
-
 .notebook-day {
-    min-width: 200px;
+    min-width: 300px;
     max-height: 100%;
     background: rgb(var(--background-color-1));
     border-radius: 25px;
 }
-
 
 .notebook-day .notebook-day-header {
     border-top-left-radius: 25px;
@@ -52,5 +49,41 @@
 }
 
 .task {
+    cursor: pointer;
     background-color: rgb(var(--background-color-2));
+    padding: 0.75em;
+    border-radius: 10px;
+    transition: .2s;
+    text-decoration: none;
+}
+
+.task:hover {
+    background-color: rgba(var(--background-color-2), .6);
+    transform: scale(1.1);
+}
+
+.interrogation-alert {
+    /* color: rgb(var(--border-color-0)); */
+    font-weight: var(--font-weight-semi-bold);
+}
+
+.interrogation-alert::before {
+    content: "•";
+    font-size: larger;
+    margin-inline: 10px 5px;
+}
+
+
+
+/* waiting to chose */
+.task:first-child .interrogation-alert {
+    color: rgb(var(--border-color-0));
+}
+
+.task:last-child .interrogation-alert {
+    color: rgb(var(--border-color-1));
+}
+
+.notebook-day:nth-child(odd) .interrogation-alert {
+    color: rgb(var(--text-color-error)) !important;
 }

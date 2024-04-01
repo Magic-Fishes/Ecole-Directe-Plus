@@ -1,18 +1,19 @@
 import { useContext, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 
 import { AppContext } from "../../../App";
 
 import "./Notebook.css";
-import { max } from "@floating-ui/utils";
 
 const dateMonth = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 const weekDay = ["Lundi", "Mardi", "Mecredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 const maxProgression = 5
 export default function Notebook({ }) {
     const [progression, setProgression] = useState(0)
-    const { useUserData } = useContext(AppContext);
+    const { useUserData, fetchHomeworks } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
+    const location = useLocation()
 
     const homeworks = userHomeworks.get();
 
@@ -28,7 +29,7 @@ export default function Notebook({ }) {
         <div style={{zIndex: 5, cursor:"pointer"}} onClick={() => setProgression((progression + 1) % (maxProgression + 1))}> {progression}/{maxProgression} </div>
         {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
             const elDate = new Date(el)
-            return <div key={homeworks[el].id} className="notebook-day">
+            return <div key={homeworks[el].id} className={`notebook-day ${location.hash.includes(el) ? "selected" : ""}`}>
                 <div className="notebook-day-header">
                     <svg className="progress-circle" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" />
@@ -39,9 +40,10 @@ export default function Notebook({ }) {
                     </span>
                 </div>
                 <div className="tasks-container">
-                    {homeworks[el].map((task) => <div className="task">
+                    {homeworks[el].map((task) => <Link to={`#${el};${task.id}`} className="task">
                         <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
-                    </div>)}
+                        {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
+                    </Link>)}
                 </div>
             </div>
         })
