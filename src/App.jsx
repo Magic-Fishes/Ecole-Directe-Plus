@@ -256,6 +256,7 @@ export default function App() {
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [isEDPUnblockInstalled, setIsEDPUnblockInstalled] = useState(true);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
@@ -397,7 +398,7 @@ export default function App() {
             localStorage.setItem("token", tokenState);
         }
     }, [tokenState]);
-    
+
     useEffect(() => {
         if (accountsListState?.length > 0) {
             localStorage.setItem("accountsList", JSON.stringify(accountsListState));
@@ -1045,17 +1046,17 @@ export default function App() {
             <h4>
                 Installez Ecole Directe Plus Unblock
             </h4>
-            <hr/>
+            <hr />
             <div className="edpu-notification-description">
                 <EdpuLogo />
                 <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
             </div>
-            <hr/>
+            <hr />
             <div className="extension-download-link">
                 <a href="/edp-unblock#about">En savoir plus</a>
                 <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
             </div>
-        </>, "extension-warning")
+        </>, {customClass: "extension-warning", timer: "infinite"})
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
@@ -1090,84 +1091,89 @@ export default function App() {
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
             // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
             // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
-            .then((response) => response.json())
             .then((response) => {
-                if (!response) {
-                    handleEdBan();
-                } else {
-                    // GESTION DATA
-                    let statusCode = response.code;
-                    if (statusCode === 200) {
-                        messages.submitButtonText = "Connecté";
-                        setUserIds({ username: username, password: password })
-                        if (keepLoggedIn) {
-                            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
-                        }
-                        let token = response.token // collecte du token
-                        let accountsList = [];
-                        let accounts = response.data.accounts[0];
-                        const accountType = accounts.typeCompte; // collecte du type de compte
-                        if (accountType === "E") {
-                            // compte élève
-                            accountsList.push({
-                                accountType: "E", // type de compte
-                                lastConnection: accounts.lastConnexion,
-                                id: accounts.id, // id du compte
-                                firstName: accounts.prenom, // prénom de l'élève
-                                lastName: accounts.nom, // nom de famille de l'élève
-                                email: accounts.email, // email du compte
-                                picture: accounts.profile.photo, // url de la photo
-                                schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                                class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
-                                modules: accounts.modules
-                            });
-                        } else {
-                            // compte parent
-                            const email = accounts.email;
-                            accounts.profile.eleves.map((account) => {
-                                accountsList.push({
-                                    accountType: "P",
-                                    lastConnection: accounts.lastConnexion,
-                                    id: account.id,
-                                    firstName: account.prenom,
-                                    lastName: account.nom,
-                                    email: email,
-                                    picture: account.photo,
-                                    schoolName: account.nomEtablissement,
-                                    class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
-                                    modules: account.modules.concat(accounts.modules) // merge modules with those of parents
-                                })
-                            });
-                        }
-                        // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
-                        if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
-                            resetUserData();
-                        }
-                        setUserInfo(token, accountsList);
-                        setIsLoggedIn(true);
+                return response.text().then((data) => {
+                    if (!data) {
+                        setIsEDPUnblockInstalled(false);
+                        
                     } else {
-                        // si ED renvoie une erreur
-                        messages.submitButtonText = "Invalide";
-                        if (referencedErrors.hasOwnProperty(statusCode)) {
-                            messages.submitErrorMessage = referencedErrors[statusCode];
-                            if (statusCode === 250) {
-                                setBufferUserIds({ username: username, password: password })
-                                console.log("A2F required")
-                                setA2FInfo({});
-                                setRequireA2F(true)
-                            }
-                            let token = response.token
-                            if (token) {
-                                setTokenState(token);
-                            }
-                        } else {
-                            messages.submitErrorMessage = ("Erreur : " + response.message);
-                            const error = {
-                                errorMessage: response,
-                            };
-                            if (getUserSettingValue("allowAnonymousReports")) {
-                                sendToWebhook(sardineInsolente, error);
-                            }
+                        return JSON.parse(data)
+                    }
+                })
+            })
+            .then((response) => {
+                // GESTION DATA
+                let statusCode = response.code;
+                if (statusCode === 200) {
+                    messages.submitButtonText = "Connecté";
+                    setUserIds({ username: username, password: password })
+                    if (keepLoggedIn) {
+                        localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
+                    }
+                    let token = response.token // collecte du token
+                    let accountsList = [];
+                    let accounts = response.data.accounts[0];
+                    const accountType = accounts.typeCompte; // collecte du type de compte
+                    if (accountType === "E") {
+                        // compte élève
+                        accountsList.push({
+                            accountType: "E", // type de compte
+                            lastConnection: accounts.lastConnexion,
+                            id: accounts.id, // id du compte
+                            firstName: accounts.prenom, // prénom de l'élève
+                            lastName: accounts.nom, // nom de famille de l'élève
+                            email: accounts.email, // email du compte
+                            picture: accounts.profile.photo, // url de la photo
+                            schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
+                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
+                            modules: accounts.modules
+                        });
+                    } else {
+                        // compte parent
+                        const email = accounts.email;
+                        accounts.profile.eleves.map((account) => {
+                            accountsList.push({
+                                accountType: "P",
+                                lastConnection: accounts.lastConnexion,
+                                id: account.id,
+                                firstName: account.prenom,
+                                lastName: account.nom,
+                                email: email,
+                                picture: account.photo,
+                                schoolName: account.nomEtablissement,
+                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
+                                modules: account.modules.concat(accounts.modules) // merge modules with those of parents
+                            })
+                        });
+                    }
+                    // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
+                    if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
+                        resetUserData();
+                    }
+                    setUserInfo(token, accountsList);
+                    setIsLoggedIn(true);
+                } else {
+                    // si ED renvoie une erreur
+                    messages.submitButtonText = "Invalide";
+                    if (referencedErrors.hasOwnProperty(statusCode)) {
+                        messages.submitErrorMessage = referencedErrors[statusCode];
+                        if (statusCode === 250) {
+                            setBufferUserIds({ username: username, password: password })
+                            console.log("A2F required")
+                            setA2FInfo({});
+                            setRequireA2F(true)
+                        }
+                        let token = response.token
+                        if (token) {
+                            setTokenState(token);
+                        }
+                    } else {
+                        messages.submitErrorMessage = ("Erreur : " + response.message);
+                        const error = {
+                            errorMessage: response,
+                        };
+                        if (getUserSettingValue("allowAnonymousReports")) {
+                            sendToWebhook(sardineInsolente, error);
                         }
                     }
                 }
@@ -1203,7 +1209,16 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
             })
-            .then((response) => response.json())
+            .then((response) => {
+                return response.text().then((data) => {
+                    if (!data) {
+                        setIsEDPUnblockInstalled(false);
+                        
+                    } else {
+                        return JSON.parse(data)
+                    }
+                })
+            })
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1388,7 +1403,7 @@ export default function App() {
             })
     }
 
-    function fetchA2F({ method = "get", choice = "", callback=(() => {}), errorCallback=(() => {}), controller = (new AbortController()) }) {
+    function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
         abortControllers.current.push(controller);
         fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
@@ -1595,6 +1610,8 @@ export default function App() {
                     createFolderStorage={createFolderStorage}
 
                     handleEdBan={handleEdBan}
+                    isEDPUnblockInstalled={isEDPUnblockInstalled}
+                    setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
                     requireA2F={requireA2F}
                     setRequireA2F={setRequireA2F}
                     fetchA2F={fetchA2F}

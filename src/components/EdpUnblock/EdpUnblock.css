@@ -90,7 +90,7 @@
     text-align: center;
 }
 
-.edpu-dowload-link {
+.edpu-download-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -104,44 +104,54 @@
     transition: .2s;
 }
 
-.edpu-dowload-link svg:first-child {
+.edpu-download-link .sad-emoji {
+    font-size: 2em;
+}
+
+.edpu-download-link.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+    filter: brightness(0.8);
+}
+
+.edpu-download-link svg:first-child {
     height: 40px;
     min-height: 40px;
 }
 
-.edpu-dowload-link svg:last-child {
+.edpu-download-link svg:last-child {
     height: 30px;
     min-height: 30px;
     transform: translateX(-5px);
     overflow: visible;
 }
 
-.edpu-dowload-link svg:last-child path {
+.edpu-download-link svg:last-child path {
     stroke: white;
 }
 
-.edpu-dowload-link span {
+.edpu-download-link span {
     font-size: var(--font-size-20);
     font-weight: var(--font-weight-extra-bold);
     color: white;
     text-align: center;
 }
 
-.edpu-dowload-link svg:last-child path:first-child {
+.edpu-download-link svg:last-child path:first-child {
     transition: .3s;
 }
 
-.edpu-dowload-link:is(:hover, :focus-visible) {
+.edpu-download-link:not(.disabled):is(:hover, :focus-visible) {
     background-color: #FFF7;
     filter: drop-shadow(0 0 20px #FFFFFF88);
     outline: none;
 }
 
-.edpu-dowload-link:is(:hover, :focus-visible) svg:last-child path:first-child {
+.edpu-download-link:not(.disabled):is(:hover, :focus-visible) svg:last-child path:first-child {
     transform: translateY(-10px);
 }
 
-.edpu-dowload-link:is(:active) svg:last-child path:first-child {
+.edpu-download-link:not(.disabled):is(:active) svg:last-child path:first-child {
     transform: translateY(10px);
 }
 
