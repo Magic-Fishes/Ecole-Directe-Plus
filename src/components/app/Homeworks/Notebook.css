@@ -1,0 +1,56 @@
+#notebook {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    overflow-x: scroll;
+}
+
+
+
+.notebook-day {
+    min-width: 200px;
+    max-height: 100%;
+    background: rgb(var(--background-color-1));
+    border-radius: 25px;
+}
+
+
+.notebook-day .notebook-day-header {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding: .5em;
+    display: flex;
+    height: 4em;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(var(--background-color-0), .6);
+}
+
+.notebook-day .notebook-day-header .progress-circle {
+    height: 60%;
+}
+
+.notebook-day .notebook-day-header .progress-circle circle {
+    fill: none;
+    stroke-width: .6em;
+    transition: 1s;
+}
+
+.notebook-day .notebook-day-header .progress-circle circle:first-child {
+    stroke: rgba(var(--text-color-main), .3);
+}
+
+.notebook-day .notebook-day-header .notebook-day-date {
+    text-align: center;
+}
+
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+}
+
+.task {
+    background-color: rgb(var(--background-color-2));
+}

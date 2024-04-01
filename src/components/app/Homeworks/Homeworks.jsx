@@ -12,6 +12,7 @@ import {
 
 import "./Homeworks.css";
 import { AppContext } from "../../../App";
+import Notebook from "./Notebook";
 
 
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
@@ -19,7 +20,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
 
     const { useUserData } = useContext(AppContext);
     const homeworks = useUserData("sortedHomeworks");
-    
+
     // behavior
     useEffect(() => {
         document.title = "Cahier de texte • Ecole Directe Plus";
@@ -38,6 +39,8 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         }
     }, [isLoggedIn, activeAccount]);
 
+    const currentHomeworks = homeworks.get();
+
     // JSX
     return (
         <div id="homeworks">
@@ -49,7 +52,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
                             <WindowContent>
-                                
+
                             </WindowContent>
                         </Window>
                         <Window growthFactor={1.2}>
@@ -57,16 +60,16 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <h2>Calendrier</h2>
                             </WindowHeader>
                             <WindowContent>
-                                
+
                             </WindowContent>
-                        </Window>                        
+                        </Window>
                     </WindowsLayout>
                     <Window growthFactor={2.2}>
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
-                        <WindowContent>
-                            {JSON.stringify(homeworks.get())}
+                        <WindowContent id="notebook">
+                            <Notebook />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
