@@ -39,7 +39,6 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         }
     }, [isLoggedIn, activeAccount]);
 
-    const currentHomeworks = homeworks.get();
 
     // JSX
     return (

@@ -28,7 +28,7 @@ export default function Notebook({ }) {
         <div style={{zIndex: 5, cursor:"pointer"}} onClick={() => setProgression((progression + 1) % (maxProgression + 1))}> {progression}/{maxProgression} </div>
         {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
             const elDate = new Date(el)
-            return <div key={homeworks[el].id} className="notebook-day">
+            return <div key={crypto.randomUUID()} className="notebook-day">
                 <div className="notebook-day-header">
                     <svg className="progress-circle" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" />
@@ -39,12 +39,12 @@ export default function Notebook({ }) {
                     </span>
                 </div>
                 <div className="tasks-container">
-                    {homeworks[el].map((task) => <div className="task">
+                    {homeworks[el].map((task) => <div className="task" key={crypto.randomUUID()}>
                         <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
                     </div>)}
                 </div>
             </div>
         })
-            : <ContentLoader />}
+            : <p>Chargement des devoirs...</p>}
     </>
 }
