@@ -33,6 +33,7 @@ import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 
 import "./Lab.css";
 import RadioButton from "../generic/UserInputs/RadioButton";
+import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -50,6 +51,7 @@ export default function Lab({ fetchGrades }) {
     const [formNumber2, setFormNumber2] = useState(0)
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [displayProxyErrorNotification, setDisplayProxyErrorNotification] = useState(false);
+    const [toggleSwitchState, setToggleSwitchState] = useState(false)
 
     // Behavior
     useEffect(() => {
@@ -270,6 +272,10 @@ export default function Lab({ fetchGrades }) {
                 <RadioButton id="dilemme-cornelien-11" name="dilemme">Choix 11</RadioButton>
                 <RadioButton id="dilemme-cornelien-12" name="dilemme">Choix 12</RadioButton>
             </div>
+
+            <h2>TOGGLE SWITCH</h2>
+            <p>{toggleSwitchState ? "true" : "false"}</p>
+            <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)}/>
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
