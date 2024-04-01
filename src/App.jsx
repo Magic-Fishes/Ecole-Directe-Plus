@@ -65,9 +65,8 @@ function consoleLogEDPLogo() {
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
         `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
-        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
-
 }
+
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
@@ -82,6 +81,7 @@ const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
+
 const referencedErrors = {
     "250": "Authentification à deux facteurs requise",
     "505": "Identifiant et/ou mot de passe invalide",
@@ -89,6 +89,7 @@ const referencedErrors = {
     "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
     "202": "accountCreationError",
 }
+
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -1079,7 +1080,7 @@ export default function App() {
                 <a href="/edp-unblock#about">En savoir plus</a>
                 <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
             </div>
-        </>, {customClass: "extension-warning", timer: "infinite"})
+        </>, { customClass: "extension-warning", timer: "infinite" })
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
@@ -1114,15 +1115,12 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
-            // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-            // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-                        
+
                     } else {
                         return JSON.parse(data)
                     }
@@ -1241,7 +1239,7 @@ export default function App() {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-                        
+
                     } else {
                         return JSON.parse(data)
                     }
@@ -1276,17 +1274,13 @@ export default function App() {
     }
 
     async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
-    async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
             forceDownload: 0,
             idDevoir: id
         }
         return await fetch(
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
             getProxiedURL(`https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`, true),
-            // `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1381,7 +1375,7 @@ export default function App() {
         } else {
             endpoint = "cahierdetexte/" + getISODate(date);
         }
-        
+
         fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
             {
@@ -1405,7 +1399,7 @@ export default function App() {
                     if (date === "incoming") {
                         changeUserData("sortedHomeworks", { ...sortHomeworks(response.data), ...getUserData("sortedHomeworks") })
                     } else {
-                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortHomeworks({[response.data.date]: response.data.matieres}) })
+                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortHomeworks({ [response.data.date]: response.data.matieres }) })
                     }
                 } else if (code === 520 || code === 525) {
                     // token invalide
