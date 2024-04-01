@@ -14,8 +14,22 @@ import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import "./Login.css";
 import ExtensionIcon from "../graphics/ExtensionIcon";
 
+if (sessionStorage.getItem('april') === "true"){
+    import("./april.css").then((something) => {
+        console.log("April fools styles loaded");
+    })
+}
+
 export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
+
+    if (localStorage.userSettings) {
+        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
+            document.body.style.backgroundColor = "white";
+        } else {
+            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+        }
+    }
 
     // JSX
     return (
