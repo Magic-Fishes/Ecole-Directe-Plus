@@ -1,0 +1,282 @@
+
+#edpu-background-image {
+    background-image: url("/images/edpu-background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.edpu-back-arrow {
+    position: fixed;
+    z-index: 1;
+}
+
+.edpu-back-arrow path {
+    fill: white;
+}
+
+.edpu-social {
+    z-index: 1;
+    position: fixed;
+    top: 20px;
+    right: 40px;
+    display: flex;
+    gap: 15px;
+}
+
+#edpu-page {
+    position: fixed;
+    width: 100%;
+    height: max(100%, 850px);
+    overflow-y: auto;
+    scroll-padding-top: 20px;
+    -webkit-backdrop-filter: blur(10px) brightness(0.6) !important;
+    backdrop-filter: blur(10px) brightness(0.6) !important;
+}
+
+.edpu-page main {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.edpu-page main > div {
+    width: 60%;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.edpu-title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: center;
+    justify-content: center;
+}
+
+.edpu-title .edpu-logo {
+    flex-grow: 0.8;
+}
+
+.edpu-title > div svg {
+    width: 130px;
+}
+
+.edpu-title > :last-child {
+    min-width: 250px;
+}
+
+.edpu-title h1 {
+    color: white;
+    font-size: var(--font-size-48);
+}
+
+.edpu-title h2 {
+    color: white;
+    font-size: var(--font-size-36);
+}
+
+.edpu-page main > div > p {
+    max-width: 650px;
+    font-size: var(--font-size-20);
+    color: #b4b4f0;
+    text-align: center;
+}
+
+.edpu-download-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    min-width: 50%;
+    padding: 10px;
+    border-radius: 500px;
+    background-color: #FFF5;
+    border: solid white 2px;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.edpu-download-link .sad-emoji {
+    font-size: 2em;
+}
+
+.edpu-download-link.disabled {
+    pointer-events: none;
+    opacity: 0.8;
+    filter: brightness(0.8) grayscale(.5);
+}
+
+.edpu-download-link svg:first-child {
+    height: 40px;
+    min-height: 40px;
+}
+
+.edpu-download-link svg:last-child {
+    height: 30px;
+    min-height: 30px;
+    transform: translateX(-5px);
+    overflow: visible;
+}
+
+.edpu-download-link svg:last-child path {
+    stroke: white;
+}
+
+.edpu-download-link span {
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-extra-bold);
+    color: white;
+    text-align: center;
+}
+
+.edpu-download-link svg:last-child path:first-child {
+    transition: .3s;
+}
+
+.edpu-download-link:not(.disabled):is(:hover, :focus-visible) {
+    background-color: #FFF7;
+    filter: drop-shadow(0 0 20px #FFFFFF88);
+    outline: none;
+}
+
+.edpu-download-link:not(.disabled):is(:hover, :focus-visible) svg:last-child path:first-child {
+    transform: translateY(-10px);
+}
+
+.edpu-download-link:not(.disabled):is(:active) svg:last-child path:first-child {
+    transform: translateY(10px);
+}
+
+.edpu-download-link .download-unavailable {
+    font-size: 30px;
+    font-weight: 800;
+    margin-right: 10px;
+}
+
+.edpu-about {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: clamp(800px, 80%, 1200px);
+    padding: 50px;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    border: solid #4a4a5556 2px;
+    border-bottom: none;
+    background-color: rgba(var(--background-color-0), 0.79);
+    margin-top: 20px;
+}
+
+.edpu-about-h2 {
+    margin-bottom: 20px;
+}
+
+.edpu-about-explanation, .edpu-about-explanation > a, .edpu-page a.suggested-browser {
+    color: rgb(var(--text-color-alt));
+}
+
+.edpu-about-explanation:not(:last-child) {
+    margin-bottom: 50px;
+}
+
+.edpu-feedback-link {
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 7px;
+    background-color: rgba(0, 0, 0, .25);
+    border: 1px solid #ffffff38;
+    color: #b4b4f0;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: .1s;
+    z-index: 1;
+}
+
+.edpu-feedback-link:is(:hover, :focus-visible) {
+    background-color: rgba(0, 0, 0, .5);
+    color: white;
+    outline: none;
+}
+
+.edpu-feedback-link:active {
+    color: white;
+    opacity: 0.75;
+}
+
+.edpu-about-link {
+    position: absolute;
+    text-decoration: none;
+    bottom: 15px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    gap: 15px;
+    transition: 0.2s;
+    transition-property: transform;
+}
+
+.edpu-about-link h5 {
+    /*color: rgb(var(--text-color-alt));*/
+    color: rgb(180, 180, 240);
+    scale: 1.2;
+    transition: 0.2s;
+}
+
+.edpu-about-link svg {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+.edpu-about-link svg path {
+    transition: 0.2s;
+    /*stroke: rgb(var(--text-color-alt));*/
+    stroke: rgb(180, 180, 240);
+}
+
+.edpu-about-link:is(:hover, :focus-visible) {
+    transform: translateY(-5px);
+    outline: none;
+}
+
+.edpu-about-link:is(:active) {
+    padding-top: 15px;
+    transform: translateY(10px);
+}
+
+.edpu-about-link:is(:hover, :focus-visible) h5 {
+    /*color: rgb(var(--text-color-main));*/
+    color: white;
+}
+
+.edpu-about-link:is(:hover, :focus-visible) path {
+    /*stroke: rgb(var(--text-color-main));*/
+    stroke: white;
+}
+
+@media only screen and (max-width: 1050px) {
+    .edpu-title {
+        text-align: center;
+    }
+}
+
+@keyframes bounce {
+    0%, 30%, 60% {
+        transform: translateY(0);
+    }
+    15%, 45% {
+        transform: translateY(5px);
+    }
+}

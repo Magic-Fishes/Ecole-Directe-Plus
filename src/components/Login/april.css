@@ -1,0 +1,236 @@
+.login-box{
+    transition: border-color 0s linear!important;
+    transition: border-width 0s linear!important;
+    background-color: #fff;
+    background-image: url("/images/april-background.png");
+    background-repeat: no-repeat;
+    min-width: 1000px;
+    max-height: 325px;
+    height: 100%;
+    border-radius: 5px;
+    margin-top: 250px;
+    top: 0px;
+    overflow: hidden;
+    box-shadow: 0px 0px 57px 44px #fff!important;
+    -webkit-box-shadow: 0px 0px 57px 44px #fff!important;
+    -moz-box-shadow: 0px 0px 57px 44px #fff!important;
+    border-left: 27px solid #fff;
+}
+
+.login-box > .tooltip {
+    display: none;
+}
+
+.login-box > h1 {
+    display: none;
+}
+
+#login-form {
+    display: inline;
+    width: 100%;
+}
+
+#login-form > .login-input {
+    height: 22px;
+    width: 100%;
+}
+
+.text-input-container  {
+    border: none;
+    border-radius: 5px;
+    padding: 3px;
+    background-color: transparent!important;
+    height: 230px;
+    margin-bottom: 0px;
+}
+
+.prank-text-input {
+    width: 162px;
+    height: 22px;
+    border-radius: 2px;
+    color: rgb(0, 0, 0);
+    font-style: normal;
+    font-weight: bold;
+    border: solid #8f8f9d 1px;
+    padding-left: 4px;
+    font-size: 8pt;
+}
+
+.prank-text-input:focus {
+    border: solid #3c74bd 1px;
+    outline: solid #7ab0f7 2px;
+}
+
+input[placeholder="Nom d'Utilisateur"] {
+    left: 500px;
+    top: 210px;
+    position: absolute;
+}
+
+input[placeholder="Nom d'Utilisateur"]::placeholder {
+    font-style: italic;
+    font-weight: normal;
+    color: rgb(0, 0, 0);
+}
+
+input[placeholder="•••••••••••"] {
+    left: 670px;
+    top: 210px;
+    position: absolute;
+}
+
+input[placeholder="•••••••••••"]::placeholder {
+    color: rgb(0, 0, 0)!important;
+}
+
+.text-input-container > svg {
+    visibility: hidden;
+}
+
+#password-forgotten-link {
+    left: 20px;
+    top: 265px;
+    position: absolute;
+    text-decoration: underline!important;
+    color: #0000FF!important;
+    font-size: 9pt!important;
+}
+
+.invalid:hover {
+    background: none!important;
+}
+
+.warning-message {
+    display: none;
+}
+
+#submit-login {
+    border: solid #8f8f9d 1px;
+    border-radius: 3px;
+    width: auto;
+    height: 24px;
+    font-size: 9pt;
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #e9e9ed;
+    left: 840px;
+    top: 209px;
+    position: absolute;
+    font-weight: normal;
+    color: rgb(0, 0, 0)!important;
+}
+
+#submit-login::after {
+    content: none;
+}
+
+#outside-container {
+    scale: 0.75;
+    z-index: 50;
+    left: calc(50% - 150px);
+    top: 350px;
+    position: absolute;
+    user-select: none;
+}
+
+.check-box input[type="checkbox"]{
+    border-radius: 3px;
+    height: 16px;
+    width: 16px;
+    border: solid #8f8f9d 2px;
+    user-select: none;
+}
+
+.check-box {
+    gap: 5px;
+}
+
+.check-box input[type="checkbox"]:hover{
+    border: solid #3c3c42 2px!important;
+}
+
+label[for=keep-logged-in-input] {
+    font-size: 15px;
+    color: #000;
+    user-select: none;
+}
+
+.login-option {
+    margin-top: 195px!important;
+    display: block!important;
+    user-select: none;
+}
+
+.tooltip {
+    text-align: right;
+
+}
+
+#keep-logged-in {
+    padding-right: 75px;
+}
+
+
+.policy-link {
+    text-decoration: underline!important;
+    color: #0000FF!important;
+}
+
+p.policy {
+    padding: 10px;
+    background-color: white;
+    width: 100%;
+    bottom: 0px;
+    box-shadow: 0px 0px 20px 0px #fff!important;
+    -webkit-box-shadow: 0px 0px 20px 0px #fff!important;
+    -moz-box-shadow: 0px 0px 20px 0px #fff!important;
+    color: #000000;
+}
+
+#edp-version {
+    color: #0000FF!important;
+    border: solid #8f8f9d 1px;
+    border-radius: 3px;
+    width: auto;
+    height: 24px;
+    font-size: 9pt;
+    background-color: #e9e9ed;
+    font-weight: normal;
+    color: rgb(0, 0, 0)!important;
+}
+
+#proxy-error-notification {
+    background-color: #fff!important;
+    border-radius: 0px;
+}
+
+.error-message {
+    display: none;
+}
+
+.social-button-link svg path {
+    fill: #717e86!important;
+}
+
+.social-button-link svg {
+    height: 32px;
+}
+
+#edp-unblock-ad {
+    background-color: #f1f2f4!important;
+    border-radius: 0px;
+    border-color: #707d85!important
+}
+
+#edp-unblock-ad a {
+    color: #0000FF!important
+}
+
+#edp-unblock-ad span{
+    color: black!important
+}
+
+#edp-unblock-ad .extension-icon {
+    fill: black!important;
+}

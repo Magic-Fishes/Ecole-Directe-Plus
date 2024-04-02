@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client"
+import DOMNotification from "./components/generic/PopUps/Notification";
 import App from "./App";
 // import reportWebVitals from './reportWebVitals';
 
@@ -12,9 +13,11 @@ setTimeout(() => splashScreen?.remove(), 500);
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        {/* <HelmetProvider> */}
-            <App />
-        {/* </HelmetProvider> */}
+        <DOMNotification>
+            {/* <HelmetProvider> */}
+                <App />
+            {/* </HelmetProvider> */}
+        </DOMNotification>
     </StrictMode>
 );
 

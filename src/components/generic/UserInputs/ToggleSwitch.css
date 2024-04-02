@@ -1,0 +1,43 @@
+.toggle-switch {
+    display: inline-block;
+    height: 30px;
+    border: solid rgb(var(--border-color-1)) 3px;
+    aspect-ratio: 1 / 0.58;
+    border-radius: 50px;
+    padding: 2px;
+    transition: .4s ease-in-out;
+}
+
+.toggle-switch span {
+    display: inline-block;
+    position: relative;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 100%;
+    transition: .4s ease-in-out;
+    background-color: rgb(var(--border-color-1));
+}
+
+.toggle-switch.untoggled {
+    filter: grayscale(1);
+    backdrop-filter: grayscale(1);
+}
+
+.toggle-switch:hover {
+    filter: grayscale(0);
+    backdrop-filter: grayscale(0);
+    border-color: rgb(var(--border-color-0));
+}
+.toggle-switch:hover span {
+    background-color: rgb(var(--border-color-0));
+}
+
+.toggle-switch.untoggled span {
+    left: 0;
+    transform: translateX(0);
+}
+
+.toggle-switch.toggled span {
+    left: 100%;
+    transform: translateX(-100%);
+}

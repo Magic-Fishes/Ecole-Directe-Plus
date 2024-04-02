@@ -1,0 +1,27 @@
+.social-button-link {
+    transition: .15s;
+}
+
+.social-button-link svg {
+    height: 40px;
+    cursor: pointer;
+}
+
+.social-button-link svg path {
+    fill: #B4B4F0;
+    transition: .15s;
+}
+
+.social-button-link:is(:hover, :focus-visible){
+    transform: scale(1.11) rotate(5deg);
+    filter: drop-shadow(0 0 7px #FFF8);
+    outline: none;
+}
+
+.social-button-link:active {
+    transform: scale(0.9) 
+}
+
+.social-button-link:is(:hover, :focus-visible) svg path {
+    fill: white;
+}
