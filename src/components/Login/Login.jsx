@@ -27,7 +27,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
         if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
             document.body.style.backgroundColor = "white";
         } else {
-            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+            document.body.style.backgroundColor = "";
         }
     }
 
