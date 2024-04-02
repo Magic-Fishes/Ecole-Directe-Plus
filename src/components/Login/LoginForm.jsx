@@ -114,7 +114,7 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setR
         if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (sessionStorage.getItem('april') === "true")) {
             document.body.setAttribute('style', 'background-color: white;')
         } else {
-            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+            document.body.style.backgroundColor = "" ;
         }
     } else {
         if ((document.documentElement.getAttribute('class').indexOf('dark') < 0) && (sessionStorage.getItem('april') === "true")) {
