@@ -29,11 +29,13 @@
 }
 
 #edpu-page {
-    height: 100%;
+    position: fixed;
+    width: 100%;
+    height: max(100%, 850px);
     overflow-y: auto;
     scroll-padding-top: 20px;
-    -webkit-backdrop-filter: blur(10px) brightness(0.7)!important;
-    backdrop-filter: blur(10px) brightness(0.7)!important;
+    -webkit-backdrop-filter: blur(10px) brightness(0.6) !important;
+    backdrop-filter: blur(10px) brightness(0.6) !important;
 }
 
 .edpu-page main {
@@ -111,7 +113,7 @@
 .edpu-download-link.disabled {
     pointer-events: none;
     opacity: 0.8;
-    filter: brightness(0.8);
+    filter: brightness(0.8) grayscale(.5);
 }
 
 .edpu-download-link svg:first-child {
@@ -155,6 +157,12 @@
     transform: translateY(10px);
 }
 
+.edpu-download-link .download-unavailable {
+    font-size: 30px;
+    font-weight: 800;
+    margin-right: 10px;
+}
+
 .edpu-about {
     position: absolute;
     left: 50%;
@@ -174,7 +182,7 @@
     margin-bottom: 20px;
 }
 
-.edpu-about-explanation, .edpu-about-explanation > a {
+.edpu-about-explanation, .edpu-about-explanation > a, .edpu-page a.suggested-browser {
     color: rgb(var(--text-color-alt));
 }
 
