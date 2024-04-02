@@ -51,10 +51,6 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
         }
     }, [grades, isLoggedIn, activeAccount]);
 
-    if (location.pathname === "/app/0/grades") {
-        document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
-    }
-
     // JSX
     return (
         <div id="grades">
