@@ -731,7 +731,7 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
-            const lastGrades = gradesFromJson.toSorted((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
+            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
 
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods
@@ -1049,7 +1049,7 @@ export default function App() {
             <hr />
             <div className="edpu-notification-description">
                 <EdpuLogo />
-                <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
+                <p>Ecole Directe Plus a besoin de son extension de navigateur pour fonctionner. (fourni un accès continu à l'API d'EcoleDirecte)</p>
             </div>
             <hr />
             <div className="extension-download-link">
