@@ -731,7 +731,7 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
-            const lastGrades = gradesFromJson.toSorted((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
+            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
 
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods

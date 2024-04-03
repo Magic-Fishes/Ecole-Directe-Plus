@@ -226,7 +226,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
 
     function sortByCSSOrder(elements) {
-        return elements.toSorted((elA, elB) => parseInt(elA?.style.order) - parseInt(elB?.style.order));
+        const elementsCopy = [...elements];
+        return elementsCopy.sort((elA, elB) => parseInt(elA?.style.order) - parseInt(elB?.style.order));
     }
 
 
