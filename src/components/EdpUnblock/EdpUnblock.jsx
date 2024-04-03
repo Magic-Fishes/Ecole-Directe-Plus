@@ -48,10 +48,10 @@ const browserLogosInfos = {
     },
 }
 
-// const userOS = getOS();
-// const userBrowser = getBrowser();
-const userOS = "iOS";
-const userBrowser = "Edge";
+const userOS = getOS();
+const userBrowser = getBrowser();
+// const userOS = "iOS";
+// const userBrowser = "Edge";
 const nonCompatibleIOSBrowsers = ["Safari", "Chromium", "Chrome", "Edge", "Opera", "Firefox"]
 const nonCompatibleAndroidBrowsers = ["Safari", "Chromium", "Chrome", "Edge", "Opera"] // le safari est franchement improbable mais edge case on sait jamais
 console.log("userOS:", userOS, "userBrowser:", userBrowser);
