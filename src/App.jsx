@@ -1049,7 +1049,7 @@ export default function App() {
             <hr />
             <div className="edpu-notification-description">
                 <EdpuLogo />
-                <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
+                <p>Ecole Directe Plus a besoin de son extension de navigateur pour fonctionner. (fourni un accès continu à l'API d'EcoleDirecte)</p>
             </div>
             <hr />
             <div className="extension-download-link">

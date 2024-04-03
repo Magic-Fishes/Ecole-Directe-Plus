@@ -48,10 +48,10 @@ const browserLogosInfos = {
     },
 }
 
-const userOS = getOS();
-const userBrowser = getBrowser();
-// const userOS = "Android";
-// const userBrowser = "Edge";
+// const userOS = getOS();
+// const userBrowser = getBrowser();
+const userOS = "iOS";
+const userBrowser = "Edge";
 const nonCompatibleIOSBrowsers = ["Safari", "Chromium", "Chrome", "Edge", "Opera", "Firefox"]
 const nonCompatibleAndroidBrowsers = ["Safari", "Chromium", "Chrome", "Edge", "Opera"] // le safari est franchement improbable mais edge case on sait jamais
 console.log("userOS:", userOS, "userBrowser:", userBrowser);
@@ -119,8 +119,8 @@ export default function EdpUnblock() {
                             <h2>Ecole Directe Plus Unblock</h2>
                         </div>
                     </div>
-                    {compatibilityCondition ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un autre navigateur comme <a href={userOS === "iOS" ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === "iOS" ? "Orion" : "Firefox"}</a>.</p></>
-                    : <p>Ecole Directe Plus a besoin de cette extension de navigateur pour accéder au contenu fourni par l’API d’EcoleDirecte</p>}
+                    <p>Ecole Directe Plus a besoin de cette extension de navigateur pour accéder au contenu fourni par l’API d’EcoleDirecte.</p>
+                    {compatibilityCondition ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un navigateur compatible comme le <a href={userOS === "iOS" ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === "iOS" ? "navigateur Orion" : "navigateur Firefox"}</a>.</p></> : null}
                     <a href={browserLogosInfos[userBrowser].url} target="_blank" className={`edpu-download-link ${compatibilityCondition ? "disabled" : ""} ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser].logo}
                         {compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>}
@@ -136,7 +136,7 @@ export default function EdpUnblock() {
                 <h2 className="edpu-about-h2">Qu'est-ce qu'Ecole Directe Plus Unblock ?</h2>
                 <p className="edpu-about-explanation">EDP Unblock est une extension de navigateur qui offre un accès ininterrompu à Ecole Directe Plus en donnant l'accès en continu aux données fournies par l'API d'EcoleDirecte. Cette extension est nécessaire au bon fonctionnement d'Ecole Directe Plus.</p>
                 <h2 className="edpu-about-h2">Où et comment installer EDP Unblock ?</h2>
-                <p className="edpu-about-explanation">EDP Unblock étant une extension de navigateur, la source d'installation diffère en fonction de votre navigateur et votre OS. Cliquez sur le bouton "Ajouter l'extension" ci-dessus et vous devriez être redirigé automatiquement vers la boutique d'extensions compatible avec votre navigateur. Mise en garde : EDP Unblock n'est pas disponible sur tous les navigateurs suivant les plateformes. Sur iOS et iPadOS, Apple restreint fortement la distribution d'extensions, EDP Unblock sera donc uniquement disponible sur le <a href="https://apps.apple.com/app/id1484498200" className="suggested-browser" target="_blank">navigateur Orion</a>. Si vous êtes sur un appareil Android, considérez l'usage du <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox" className="suggested-browser" target="_blank">navigateur Firefox</a> ou <a href="https://play.google.com/store/apps/details?id=com.kiwibrowser.browser" className="suggested-browser" target="_blank">KiwiBrowser</a>. Si vous êtes sur MacOS, tous les navigateurs hormis Safari devrait être compatibles avec EDP Unblock. Enfin, si vous utilisez un ordinateur sous Windows ou Linux, la grande majorité des navigateurs devraient être compatibles avec l'extension (basé Chromium : Chrome, Edge, Brave, Opera, ... ; basé Gecko : Firefox)</p>
+                <p className="edpu-about-explanation">EDP Unblock étant une extension de navigateur, la source d'installation diffère en fonction de votre navigateur et votre OS. Cliquez sur le bouton "Ajouter l'extension" ci-dessus et vous devriez être redirigé automatiquement vers la boutique d'extensions compatible avec votre navigateur. Mise en garde : EDP Unblock n'est pas disponible sur tous les navigateurs suivant les plateformes. Sur iOS et iPadOS, Apple restreint fortement la distribution d'extensions, EDP Unblock sera donc uniquement disponible sur le <a href="https://apps.apple.com/app/id1484498200" className="suggested-browser" target="_blank">navigateur Orion</a>. Si vous êtes sur un appareil Android, considérez l'usage du <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox" className="suggested-browser" target="_blank">navigateur Firefox</a> ou <a href="https://play.google.com/store/apps/details?id=com.kiwibrowser.browser" className="suggested-browser" target="_blank">KiwiBrowser</a>. Si vous êtes sur MacOS, tous les navigateurs hormis Safari devrait être compatibles avec EDP Unblock. Enfin, si vous utilisez un ordinateur sous Windows ou Linux, la grande majorité des navigateurs devraient être compatibles avec l'extension (basé sur Chromium : Chrome, Edge, Brave, Opera, ... ; basé sur Gecko : Firefox)</p>
                 <h2 className="edpu-about-h2">Vie privée et confidentialité</h2>
                 <p className="edpu-about-explanation">EDP Unblock est exclusivement active sur les domaines `ecole-directe.plus` ainsi que `ecoledirecte.com`. L'extension ne peut pas accéder aux informations provenant de n'importe quel autre site web. De plus, EDP Unblock ne lit aucune donnée : l'extension sert simplement de passerelle aux requêtes pour "arriver correctement à destination", mais n'a pas accès à leur contenu. Ainsi, EDP Unblock ne collecte aucune donnée et effectue toutes ces opérations en local sur l'appareil du client.</p>
                 <h2 className="edpu-about-h2">Divers</h2>
