@@ -5,6 +5,7 @@ import "./CheckBox.css"
 const CheckBox = forwardRef(function CheckBox({ label, checked, onChange, id = "", className = "", ...props }, propRef) {
     const handleOnChange = (event) => {
         // event.stopPropagation()
+        // event.preventDefault()
         onChange(event)
     }
     return (

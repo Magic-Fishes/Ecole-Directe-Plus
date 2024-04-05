@@ -1,19 +1,17 @@
 #notebook {
     display: flex;
     padding: 20px;
-    gap: 20px;
+    gap: 40px;
     overflow-x: scroll;
 }
 
-
-
 .notebook-day {
-    min-width: 200px;
+    min-width: 300px;
     max-height: 100%;
-    background: rgb(var(--background-color-1));
+    background: rgb(var(--background-color-2));
     border-radius: 25px;
+    filter: drop-shadow(0 0 10px #0006);
 }
-
 
 .notebook-day .notebook-day-header {
     border-top-left-radius: 25px;
@@ -21,18 +19,18 @@
     padding: .5em;
     display: flex;
     height: 4em;
-    justify-content: space-around;
     align-items: center;
-    background: rgba(var(--background-color-0), .6);
+    background: rgb(var(--background-color-3));
 }
 
 .notebook-day .notebook-day-header .progress-circle {
-    height: 60%;
+    height: 100%;
+    margin: 5px;
 }
 
 .notebook-day .notebook-day-header .progress-circle circle {
     fill: none;
-    stroke-width: .6em;
+    stroke-width: 0.8em;
     transition: 1s;
 }
 
@@ -40,8 +38,19 @@
     stroke: rgba(var(--text-color-main), .3);
 }
 
+
 .notebook-day .notebook-day-header .notebook-day-date {
     text-align: center;
+    width: 100%;
+}
+
+.notebook-day .notebook-day-header + hr {
+    height: 3px;
+    border-radius: 3px;
+    margin-inline: 15%;
+    background-color: rgb(var(--border-color-contrast));
+    border: none;
+    transform: translateY(-1.5px);
 }
 
 .tasks-container {
@@ -52,5 +61,42 @@
 }
 
 .task {
+    cursor: pointer;
     background-color: rgb(var(--background-color-2));
+    border: solid rgb(var(--background-color-3));
+    padding: 0.75em;
+    border-radius: 10px;
+    transition: .2s;
+    text-decoration: none;
+}
+
+.task:hover {
+    background-color: rgba(var(--background-color-2), .6);
+    transform: scale(1.05);
+}
+
+.interrogation-alert {
+    /* color: rgb(var(--border-color-0)); */
+    font-weight: var(--font-weight-semi-bold);
+}
+
+.interrogation-alert::before {
+    content: "•";
+    font-size: larger;
+    margin-inline: 10px 5px;
+}
+
+
+
+/* waiting to chose */
+.task:first-child .interrogation-alert {
+    color: rgb(var(--border-color-0));
+}
+
+.task:last-child .interrogation-alert {
+    color: rgb(var(--border-color-1));
+}
+
+.notebook-day:nth-child(odd) .interrogation-alert {
+    color: rgb(var(--text-color-error)) !important;
 }
