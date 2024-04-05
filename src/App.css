@@ -143,6 +143,7 @@
     
     --border-color-0: 75, 72, 217;
     --border-color-1: 109, 106, 251;
+    --border-color-contrast: 120, 120, 165; 
     
     --box-shadow-window: 0 0 20px black;
     --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
