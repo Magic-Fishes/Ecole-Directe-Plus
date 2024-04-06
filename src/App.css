@@ -149,6 +149,8 @@
     
     --box-shadow-window: 0 0 20px black;
     --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    --color-shadow-element: rgba(0, 0, 60, 0.6);
+    --color-shadow-window: rgb(0, 0, 60);
     
     
     /* - Process states (errors ; warning ; success) - */
