@@ -343,7 +343,6 @@ export default function App() {
     }
 
 
-
     const globalSettings = {
         keepLoggedIn: {
             value: keepLoggedIn,

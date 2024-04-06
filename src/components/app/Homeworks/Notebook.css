@@ -1,8 +1,32 @@
 #notebook {
     display: flex;
+    flex-flow: nowrap column;
+}
+
+.notebook-container {
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: space-between;
     padding: 20px;
+    padding-top: 0;
     gap: 40px;
-    overflow-x: scroll;
+    overflow-y: visible;
+    overflow-x: auto;
+    scroll-padding-inline: 20px;
+    /* scroll-snap-type: x mandatory; */
+    scroll-behavior: smooth;
+    height: 100%;
+    width: 100%;
+    cursor: grab;
+}
+
+.selected-date {
+    margin: 20px auto;
+    text-align: center;
+    color: rgb(var(--text-color-alt));
+    padding: 7px 10px;
+    border: 2px solid rgb(var(--text-color-alt));
+    border-radius: 50px;
 }
 
 .notebook-day {
@@ -10,7 +34,13 @@
     max-height: 100%;
     background: rgb(var(--background-color-2));
     border-radius: 25px;
-    filter: drop-shadow(0 0 10px #0006);
+    filter: drop-shadow(0 0 10px #0006) brightness(.95);
+    scroll-snap-align: start;
+    cursor: pointer;
+}
+.notebook-day.selected {
+    min-width: 600px;
+    filter: drop-shadow(0 0 10px #0006) brightness(1.05);
 }
 
 .notebook-day .notebook-day-header {
@@ -55,7 +85,7 @@
 
 .tasks-container {
     display: flex;
-    flex-direction: column;
+    flex-flow: nowrap column;
     gap: 15px;
     padding: 15px;
 }
@@ -70,9 +100,9 @@
     text-decoration: none;
 }
 
-.task:hover {
+.task:is(:hover, :focus-visible) {
     background-color: rgba(var(--background-color-2), .6);
-    transform: scale(1.05);
+    transform: scale(1.025);
 }
 
 .interrogation-alert {
