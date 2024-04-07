@@ -9,9 +9,6 @@ import "./Notebook.css";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 import { useObservableRef } from "../../../utils/hooks";
 
-const dateMonth = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-const weekDay = ["Lundi", "Mardi", "Mecredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
-const maxProgression = 5
 export default function Notebook({ }) {
     // const [progression, setProgression] = useState(0)
     const { useUserData, fetchHomeworks } = useContext(AppContext);
@@ -125,14 +122,12 @@ export default function Notebook({ }) {
     // useEffect(() => {
     //     let timeoutId = null;
     //     function onScrollEnd() {
-    //         console.log("notebookContainerRef.current.scrollLeft:", notebookContainerRef.current.scrollLeft)
     //         let closestElement = null;
     //         let closestDistance = Infinity;
     //         const SCROLL_PADDING = 20;
 
     //         for (const child of notebookContainerRef.current.children) {
     //             const rect = child.getBoundingClientRect();
-    //             console.log("rect:", rect)
     //             const distance = Math.abs(rect.left - (SCROLL_PADDING + notebookContainerRef.current.getBoundingClientRect().left));
 
     //             if (distance < closestDistance) {
