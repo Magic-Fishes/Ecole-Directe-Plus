@@ -13,24 +13,15 @@ export default function Notebook({ }) {
     // const [progression, setProgression] = useState(0)
     const { useUserData, fetchHomeworks } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
+    const [selectedDate, setSelectedDate] = useState((new Date()).toISOString().split("T")[0]); // selected date (default: today)
     const location = useLocation();
     const navigate = useNavigate();
 
-    const notebookContainerRef = useRef();
-    const [anchorElementRef, setAnchorElementRef] = useObservableRef(0, (newValue) => {
-        console.log("new anchor:", newValue)
-        if (newValue && newValue?.id !== oldAnchorElementRef.current?.id) {
-            console.log("new anchor element:", newValue);
-            console.log("old anchor element:", oldAnchorElementRef.current);
-            navigate("#" + newValue.id);
-        }
-        oldAnchorElementRef.current = newValue;
-    });
-    const oldAnchorElementRef = useRef();
-    const [oldAnchorElement, setOldAnchorElement] = useState(null);
-    const [anchorElement, setAnchorElement] = useState(null);
+    const notebookContainerRef = useRef(null);
+    const anchorElement = useRef(null);
 
     const homeworks = userHomeworks.get();
+    console.log("homeworks:", homeworks)
 
     function calcDasharrayProgression(progression) {
         /** This function will return the dasharray values depending of progression of the homeworks
@@ -69,6 +60,19 @@ export default function Notebook({ }) {
         return true;
     }
 
+    useEffect(() => {
+        console.log("selectedDate:", selectedDate)
+    }, [selectedDate])
+
+    function navigateToDate(newDate) {
+        console.log("navigateToDate ~ newDate:", newDate)
+        setSelectedDate(newDate);
+        navigate("#" + newDate + ";" + (location.hash.split(";")[1] ?? ""));
+    }
+    function navigateToTask(newTask) {
+        navigate("#" + (location.hash.split(";")[0].slice(1) ?? "") + ";" + + newTask);
+    }
+
     // function unsnap() {
     //     notebookContainerRef.current.style.scrollSnapType = "initial";
     // }
@@ -76,37 +80,64 @@ export default function Notebook({ }) {
     // function resnap() {
     //     notebookContainerRef.current.style.scrollSnapType = "x mandatory";
     // }
+    function nearestHomeworkDate(dir=1, date) {
+        /**
+         * Return the nearest date on which there is homeworks according to the given date
+         * @param dir Direction in time to check : 1 to move forward ; -1 to move backwards
+         */
+        console.log("nearestHomeworkDate");
+        if (!homeworks) {
+            return;
+        }
+
+        const dates = Object.keys(homeworks);
+        if (!dates.includes(date)) {
+            dates.push(date);
+        }
+        dates.sort();
+        console.log("nearestHomeworkDate ~ dates:", dates)
+        const newDateIdx = dates.indexOf(date) + dir;
+        if (newDateIdx < 0) {
+            return dates[0];
+        } else if (newDateIdx >= dates.length) {
+            return dates[dates.length - 1];
+        }
+
+        return dates[newDateIdx];
+    }
 
     useEffect(() => {
-        console.log("prout")
-        if (validDateFormat(location.hash.split(";")[0].slice(1))) {
-            const element = document.getElementById(location.hash.split(";")[0].slice(1));
-            console.log("element:", element)
+        console.log("location changed")
+        const date = location.hash.split(";")[0].slice(1);
+        if (validDateFormat(date)) {
+            setSelectedDate(date);
+            const element = anchorElement.current;
             if (element !== null) {
                 // unsnap();
                 element.scrollIntoView({ inline: "center" });
-                setAnchorElementRef(element);
                 // setTimeout(resnap, 500);
             }
         } else {
-            // TODO: chercher la date la plus proche d'aujourd'hui
-            navigate("#" + (new Date()).toISOString().split('T')[0] + (location.hash.split(";")[1] ?? ""));
+            if (homeworks) {
+                const firstDate = Object.keys(homeworks).sort()[0];
+                if (!!firstDate) {
+                    navigateToDate(firstDate);
+                }
+            }
         }
-    }, [location, homeworks]);
+    }, [location, homeworks, anchorElement.current]);
 
     useEffect(() => {
         const horizontalToVerticalScrolling = (event) => {
-            // console.log("scroll event:", event)
+            console.log("scroll event:", event)
             if (event.deltaY !== 0 && !event.shiftKey) {
                 event.preventDefault();
                 // notebookContainerRef.current.scrollBy(event.deltaY, 0);
-                console.log("event.deltaY:", event.deltaY)
-                if (event.deltaY > 0) {
-                    console.log("oldAnchorElementRef.current?.nextElementSibling", oldAnchorElementRef.current?.nextElementSibling)
-                    setAnchorElementRef(oldAnchorElementRef.current?.nextElementSibling ?? anchorElementRef.current);
-                } else if (event.deltaY < 0) {
-                    console.log("oldAnchorElementRef.current?.previousElementSibling", oldAnchorElementRef.current?.previousElementSibling)
-                    setAnchorElementRef(oldAnchorElementRef.current?.previousElementSibling ?? anchorElementRef.current);
+                if (event.deltaY !== 0) {
+                    const newDate = nearestHomeworkDate(1 - 2*(event.deltaY < 0), selectedDate);
+                    if (!!newDate) {
+                        navigateToDate(newDate)
+                    }
                 }
             }
         }
@@ -117,7 +148,7 @@ export default function Notebook({ }) {
                 notebookContainerRef.current.removeEventListener("wheel", horizontalToVerticalScrolling);
             }
         }
-    }, []);
+    }, [selectedDate, homeworks]);
 
     // useEffect(() => {
     //     let timeoutId = null;
@@ -159,32 +190,21 @@ export default function Notebook({ }) {
     //     }
     // }, []);
 
-    // useEffect(() => {
-    //     console.log("new anchor:", anchorElementRef.current)
-    //     if (anchorElementRef.current && anchorElementRef.current?.id !== oldAnchorElementRef.current?.id) {
-    //         console.log("new anchor element:", anchorElementRef.current);
-    //         console.log("old anchor element:", oldAnchorElementRef.current);
-    //         navigate("#" + anchorElementRef.current.id);
-    //     }
-    //     oldAnchorElementRef.current = anchorElementRef.current;
-    // }, [anchorElementRef.current])
-
     return <>
-        <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1)}</time>
-        <div onClick={() => setAnchorElementRef(oldAnchorElementRef.current?.previousElementSibling ?? anchorElementRef.current)}>{"<"}</div>
-        <div onClick={() => setAnchorElementRef(oldAnchorElementRef.current?.nextElementSibling ?? anchorElementRef.current)}>{">"}</div>
+        <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
+        <div onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))}>{"<"}</div>
+        <div onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))}>{">"}</div>
         <div className="notebook-container" ref={notebookContainerRef}>
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={crypto.randomUUID()} id={el} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={crypto.randomUUID()} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
                     <div className="notebook-day-header">
                         <svg className="progress-circle" viewBox="0 0 100 100" >
-                            <circle cx="50" cy="50" r="40" />
+                                <circle cx="50" cy="50" r="40" />
                             <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} strokeDasharray={calcDasharrayProgression(progression)} strokeDashoffset="62.8328" />
                         </svg>
                         <span className="notebook-day-date">
-                            {/* {weekDay[elDate.getDay() - 1]} {elDate.getDate()} {dateMonth[elDate.getMonth()]} {elDate.getFullYear()} */}
                             {(() => {
                                 const options = { weekday: "long", month: "long", day: "numeric" };
                                 return <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", options))}</time>;
