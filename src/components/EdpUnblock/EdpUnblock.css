@@ -273,7 +273,7 @@
 }
 
 @media only screen and (max-width: 810px) {
-    #edpu-page:has(main:has(.suggested-browser)) {
+    #edpu-page:has(main .suggested-browser) {
         height: max(100%, 1200px);
     }
 }

@@ -28,6 +28,7 @@
 
 .dark #edp-unblock-ad {
     background-color: rgba(var(--text-color-alt), .2);
+    -webkit-backdrop-filter: blur(8px) brightness(.5);
     backdrop-filter: blur(8px) brightness(.5);
 }
 .light #edp-unblock-ad {
