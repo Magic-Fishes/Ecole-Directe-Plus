@@ -2,6 +2,8 @@ import { useRef } from "react"
 import { useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 
+import "./Task.css";
+
 export default function Task({ day, task, taskIndex, userHomeworks }) {
     const isMouseInCheckBoxRef = useRef(false);
     const homeworks = userHomeworks.get()

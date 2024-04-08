@@ -1,18 +1,16 @@
 import { useContext, useState, useEffect, useRef, useCallback } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
-import CheckBox from "../../generic/UserInputs/CheckBox";
-import { useObservableRef } from "../../../utils/hooks";
 import Task from "./Task";
 
 import "./Notebook.css";
 
 export default function Notebook({ }) {
     // const [progression, setProgression] = useState(0)
-    const { useUserData, fetchHomeworks } = useContext(AppContext);
+    const { useUserData } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
     const [selectedDate, setSelectedDate] = useState((new Date()).toISOString().split("T")[0]); // selected date (default: today)
     const location = useLocation();
@@ -194,7 +192,7 @@ export default function Notebook({ }) {
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={crypto.randomUUID()} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={el} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
                     <div className="notebook-day-header">
                         <svg className="progress-circle" viewBox="0 0 100 100" >
                                 <circle cx="50" cy="50" r="40" />
