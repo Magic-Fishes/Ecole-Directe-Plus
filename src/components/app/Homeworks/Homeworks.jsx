@@ -37,7 +37,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         return () => {
             controller.abort();
         }
-    }, [isLoggedIn, activeAccount]);
+    }, [isLoggedIn, activeAccount, homeworks.get()]);
 
 
     // JSX
