@@ -34,6 +34,7 @@ import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 import "./Lab.css";
 import RadioButton from "../generic/UserInputs/RadioButton";
 import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
+import { getBrowser, getOS } from "../../utils/utils";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -276,6 +277,10 @@ export default function Lab({ fetchGrades }) {
             <h2>TOGGLE SWITCH</h2>
             <p>{toggleSwitchState ? "true" : "false"}</p>
             <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)}/>
+
+            <h2>OS - BROWSER</h2>
+            <p>userOs: {getOS()}</p>
+            <p>userBrowser: {getBrowser()}</p>
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
