@@ -34,6 +34,7 @@ import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 import "./Lab.css";
 import RadioButton from "../generic/UserInputs/RadioButton";
 import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
+import TextInput from "../generic/UserInputs/TextInput";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -52,6 +53,9 @@ export default function Lab({ fetchGrades }) {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [displayProxyErrorNotification, setDisplayProxyErrorNotification] = useState(false);
     const [toggleSwitchState, setToggleSwitchState] = useState(false)
+    const [targetURL, setTargetURL] = useState("");
+
+    const navigate = useNavigate();
 
     // Behavior
     useEffect(() => {
@@ -64,6 +68,11 @@ export default function Lab({ fetchGrades }) {
     function testOnChange(a) {
         setTest2(a)
     }
+
+    function customNavigate(url) {
+        navigate(url);
+    }
+
     // JSX
     return (
         <div id="lab-page">
@@ -276,6 +285,10 @@ export default function Lab({ fetchGrades }) {
             <h2>TOGGLE SWITCH</h2>
             <p>{toggleSwitchState ? "true" : "false"}</p>
             <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)}/>
+            
+            <h2>Dynamic navigate</h2>
+            <TextInput textType="text" placeholder="Target url" value={targetURL} onChange={(e) => setTargetURL(e.target.value)} />
+            <Button onClick={() => customNavigate(targetURL)}>Navigate to {targetURL}</Button>
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
