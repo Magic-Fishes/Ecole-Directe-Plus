@@ -4,10 +4,11 @@ import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
-
-import "./Notebook.css";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 import { useObservableRef } from "../../../utils/hooks";
+import Task from "./Task";
+
+import "./Notebook.css";
 
 const dateMonth = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 const weekDay = ["Lundi", "Mardi", "Mecredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
@@ -21,15 +22,13 @@ export default function Notebook({ }) {
 
     const notebookContainerRef = useRef();
     const [anchorElementRef, setAnchorElementRef] = useObservableRef(0, (newValue) => {
-        console.log("new anchor:", newValue)
         if (newValue && newValue?.id !== oldAnchorElementRef.current?.id) {
-            console.log("new anchor element:", newValue);
-            console.log("old anchor element:", oldAnchorElementRef.current);
             navigate("#" + newValue.id);
         }
         oldAnchorElementRef.current = newValue;
     });
     const oldAnchorElementRef = useRef();
+
     const [oldAnchorElement, setOldAnchorElement] = useState(null);
     const [anchorElement, setAnchorElement] = useState(null);
 
@@ -49,11 +48,6 @@ export default function Notebook({ }) {
         return `rgb(${endColor[0] * progression + startColor[0] * (1 - progression)}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
     }
 
-    function checkTask(day, task, taskIndex) {
-        task.isDone = !task.isDone;
-        homeworks[day][taskIndex] = task;
-        userHomeworks.set(homeworks);
-    }
 
     function validDateFormat(dateString) {
         const date = dateString.split("-");
@@ -72,22 +66,27 @@ export default function Notebook({ }) {
         return true;
     }
 
-    // function unsnap() {
-    //     notebookContainerRef.current.style.scrollSnapType = "initial";
-    // }
+    // useEffect(() => {
+    //     console.log("1", homeworks)
+    // }, [userHomeworks.get()])
+    
+    // useEffect(() => {
+    //     console.log("2", homeworks)
+    // }, [userHomeworks.get()["2024-04-08"]])
+    
+    // useEffect(() => {
+    //     console.log("3", homeworks)
+    // }, [userHomeworks.get()["2024-04-08"][0]])
 
-    // function resnap() {
-    //     notebookContainerRef.current.style.scrollSnapType = "x mandatory";
-    // }
+    // useEffect(() => {
+    //     console.log("4", homeworks)
+    // }, [userHomeworks.get()["2024-04-08"][0].isDone])
 
     useEffect(() => {
-        console.log("prout")
         if (validDateFormat(location.hash.split(";")[0].slice(1))) {
             const element = document.getElementById(location.hash.split(";")[0].slice(1));
-            console.log("element:", element)
             if (element !== null) {
                 // unsnap();
-                element.scrollIntoView({ inline: "center" });
                 setAnchorElementRef(element);
                 // setTimeout(resnap, 500);
             }
@@ -175,6 +174,7 @@ export default function Notebook({ }) {
     // }, [anchorElementRef.current])
 
     return <>
+    {console.log(homeworks)}
         <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1)}</time>
         <div onClick={() => setAnchorElementRef(oldAnchorElementRef.current?.previousElementSibling ?? anchorElementRef.current)}>{"<"}</div>
         <div onClick={() => setAnchorElementRef(oldAnchorElementRef.current?.nextElementSibling ?? anchorElementRef.current)}>{">"}</div>
@@ -182,27 +182,20 @@ export default function Notebook({ }) {
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={crypto.randomUUID()} id={el} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                return <div  key={el} id={el} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                    {console.log(el)}
                     <div className="notebook-day-header">
                         <svg className="progress-circle" viewBox="0 0 100 100" >
                             <circle cx="50" cy="50" r="40" />
                             <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} strokeDasharray={calcDasharrayProgression(progression)} strokeDashoffset="62.8328" />
                         </svg>
                         <span className="notebook-day-date">
-                            {/* {weekDay[elDate.getDay() - 1]} {elDate.getDate()} {dateMonth[elDate.getMonth()]} {elDate.getFullYear()} */}
-                            {(() => {
-                                const options = { weekday: "long", month: "long", day: "numeric" };
-                                return <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", options))}</time>;
-                            })()}
+                            <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>;
                         </span>
                     </div>
                     <hr />
                     <div className="tasks-container">
-                        {homeworks[el].map((task, taskIndex) => <Link to={`#${el}`} className="task" key={crypto.randomUUID()}>
-                            <CheckBox onChange={(event) => { event.preventDefault(); event.stopPropagation(); checkTask(el, task, taskIndex) }} checked={task.isDone} />
-                            <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
-                            {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
-                        </Link>)}
+                        {homeworks[el].map((task, taskIndex) => <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />)}
                     </div>
                 </div>
             })
