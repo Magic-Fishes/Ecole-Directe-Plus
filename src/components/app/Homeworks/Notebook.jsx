@@ -101,7 +101,10 @@ export default function Notebook({ }) {
     }
 
     useEffect(() => {
-        console.log("location changed")
+        console.log("location changed:", location.hash)
+        if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
+            return;
+        }
         const date = location.hash.split(";")[0].slice(1);
         if (validDateFormat(date)) {
             setSelectedDate(date);
