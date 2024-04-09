@@ -7,17 +7,20 @@ import { AppContext } from "../../../App";
 import Task from "./Task";
 
 import "./Notebook.css";
+import { applyZoom } from "../../../utils/zoom";
 
 export default function Notebook({ }) {
     // const [progression, setProgression] = useState(0)
     const { useUserData } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
-    const [selectedDate, setSelectedDate] = useState((new Date()).toISOString().split("T")[0]); // selected date (default: today)
+    const [selectedDate, setSelectedDate] = useState(null); // selected date (default: today)
     const location = useLocation();
     const navigate = useNavigate();
 
     const notebookContainerRef = useRef(null);
     const anchorElement = useRef(null);
+    // const hasMouseMoved = useRef(false);
+    const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const homeworks = userHomeworks.get();
     console.log("homeworks:", homeworks)
@@ -64,7 +67,7 @@ export default function Notebook({ }) {
         navigate("#" + newDate + ";" + (location.hash.split(";")[1] ?? ""));
     }
     function navigateToTask(newTask) {
-        navigate("#" + (location.hash.split(";")[0].slice(1) ?? "") + ";" + + newTask);
+        navigate("#" + (location.hash.split(";")[0].slice(1) ?? "") + ";" + newTask);
     }
 
     // function unsnap() {
@@ -116,9 +119,13 @@ export default function Notebook({ }) {
             }
         } else {
             if (homeworks) {
-                const firstDate = Object.keys(homeworks).sort()[0];
-                if (!!firstDate) {
-                    navigateToDate(firstDate);
+                if (selectedDate) {
+                    navigateToDate(selectedDate);
+                } else {
+                    const firstDate = Object.keys(homeworks).sort()[0];
+                    if (!!firstDate) {
+                        navigateToDate(firstDate);
+                    }
                 }
             }
         }
@@ -126,7 +133,7 @@ export default function Notebook({ }) {
 
     useEffect(() => {
         const horizontalToVerticalScrolling = (event) => {
-            console.log("scroll event:", event)
+            // console.log("scroll event:", event)
             if (event.deltaY !== 0 && !event.shiftKey) {
                 event.preventDefault();
                 // notebookContainerRef.current.scrollBy(event.deltaY, 0);
@@ -147,6 +154,85 @@ export default function Notebook({ }) {
         }
     }, [selectedDate, homeworks]);
 
+
+    // - - Drag to scroll - -
+
+    function preventDraggingIssues() {
+        document.body.style.overflow = "hidden";
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+            element.style.userSelect = "none";
+            element.style.webkitUserSelect = "none";
+            element.style.overscrollBehavior = "contain";
+        });
+    }
+
+    function unpreventDraggingIssues() {
+        document.body.style.overflow = "";
+        if (window.getSelection) {
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+            element.style.userSelect = "";
+            element.style.webkitUserSelect = "";
+            element.style.overscrollBehavior = "";
+        });
+    }
+
+    useEffect(() => {
+        let timeoutId;
+        const handleMouseDown = (event) => {
+            preventDraggingIssues();
+            const mouseOrigin = {
+                x: applyZoom(event.clientX ?? event.touches[0].clientX),
+                y: applyZoom(event.clientY ?? event.touches[0].clientY)
+            }
+            let movedDistance = 0;
+
+            const handleMouseMove = (event) => {
+                const TRIGGER_SHIFT = 13;
+                if (movedDistance > TRIGGER_SHIFT) {
+                    setHasMouseMoved(true);
+                    if (timeoutId) {
+                        clearTimeout(timeoutId);
+                    }
+                }
+                const mouse = {
+                    x: applyZoom(event.clientX ?? event.touches[0].clientX),
+                    y: applyZoom(event.clientY ?? event.touches[0].clientY)
+                }
+                notebookContainerRef.current.scrollBy({ left: mouseOrigin.x - mouse.x, top: mouseOrigin.y - mouse.y, behavior: "instant" });
+                movedDistance += Math.sqrt((mouseOrigin.x - mouse.x)**2 + (mouseOrigin.y - mouse.y)**2);
+                // console.log("movedDistance:", movedDistance);
+                mouseOrigin.x = mouse.x;
+                mouseOrigin.y = mouse.y;
+            }
+
+            document.addEventListener("mousemove", handleMouseMove);
+
+            const handleMouseUp = () => {
+                unpreventDraggingIssues();
+                document.removeEventListener("mousemove", handleMouseMove);
+                document.removeEventListener("mouseup", handleMouseUp);
+                timeoutId = setTimeout(() => {
+                    setHasMouseMoved(false);
+                }, 0);
+            }
+
+            document.addEventListener("mouseup", handleMouseUp);
+        }
+
+        notebookContainerRef.current.addEventListener("mousedown", handleMouseDown);
+
+        return () => {
+            if (notebookContainerRef.current) {
+                notebookContainerRef.current.removeEventListener("mousedown", handleMouseDown);
+            }
+        }
+    }, [notebookContainerRef.current]);
+
     // useEffect(() => {
     //     let timeoutId = null;
     //     function onScrollEnd() {
@@ -165,7 +251,7 @@ export default function Notebook({ }) {
     //         }
 
     //         if (closestElement) {
-    //             setAnchorElement(closestElement);
+    //             anchorElement.current = closestElement;
     //         }
     //     }
 
@@ -187,22 +273,27 @@ export default function Notebook({ }) {
     //     }
     // }, []);
 
+
+    useEffect(() => {
+        console.log("hasMouseMoved:", hasMouseMoved)
+    }, [hasMouseMoved])
+
     return <>
         <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
         <div onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))}>{"<"}</div>
         <div onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))}>{">"}</div>
-        <div className="notebook-container" ref={notebookContainerRef}>
+        <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div onClick={() => navigate("#" + el + ";" + (location.hash.split(";")[1] ?? ""))} key={el} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                return <div onClick={() => !hasMouseMoved && navigateToDate(el)} key={el} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
                     <div className="notebook-day-header">
                         <svg className="progress-circle" viewBox="0 0 100 100" >
                                 <circle cx="50" cy="50" r="40" />
                             <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} strokeDasharray={calcDasharrayProgression(progression)} strokeDashoffset="62.8328" />
                         </svg>
                         <span className="notebook-day-date">
-                            <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>;
+                            <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
                         </span>
                     </div>
                     <hr />
