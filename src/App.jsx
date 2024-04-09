@@ -1423,6 +1423,55 @@ export default function App() {
             })
     }
 
+    async function fetchHomeworksDone({ tasksDone=[], tasksNotDone=[]}, controller = (new AbortController())) {
+        /**
+         * Change the state of selected homeworks
+         * @param tasksDone : tasks switched to true 
+         * @param tasksNotDone : tasks switched to false
+         * These two paramerters are in a single object 
+         * @param controller AbortController
+         */
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        
+        
+
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data=" + JSON.stringify({idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone}),
+                signal: controller.signal
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
@@ -1823,6 +1872,7 @@ export default function App() {
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
+        fetchHomeworksDone,
         activeAccount,
         accountsListState,
         isLoggedIn,
@@ -1840,6 +1890,7 @@ export default function App() {
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
+        fetchHomeworksDone,
         activeAccount,
         accountsListState,
         isLoggedIn,

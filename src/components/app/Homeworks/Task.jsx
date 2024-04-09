@@ -1,16 +1,25 @@
-import { useRef } from "react"
+import { useRef, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
+
+import { AppContext } from "../../../App";
 
 import "./Task.css";
 
 export default function Task({ day, task, taskIndex, userHomeworks }) {
+    const { fetchHomeworksDone } = useContext(AppContext)
     const isMouseInCheckBoxRef = useRef(false);
     const homeworks = userHomeworks.get()
     
     const navigate = useNavigate();
 
     function checkTask(date, task, taskIndex) {
+        const tasksToUpdate = (task.isDone ? {
+            tasksNotDone: [task.id],
+        } : {
+            tasksDone: [task.id],
+        })
+        fetchHomeworksDone(tasksToUpdate)
         homeworks[date][taskIndex].isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
