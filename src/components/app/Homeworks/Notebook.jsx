@@ -257,9 +257,11 @@ export default function Notebook({ }) {
 
 
     return <>
-        <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
-        <div onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))}>{"<"}</div>
-        <div onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))}>{">"}</div>
+        <div className="date-selector">
+            <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} ><DropDownArrow /></span>
+            <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
+            <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} ><DropDownArrow /></span>
+        </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
