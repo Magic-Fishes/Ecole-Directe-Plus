@@ -19,6 +19,10 @@
     cursor: grab;
 }
 
+.notebook-container:active {
+    cursor: grabbing;
+}
+
 .date-selector {
     display: flex;
     justify-content: center;

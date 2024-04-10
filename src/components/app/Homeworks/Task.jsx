@@ -6,7 +6,7 @@ import { AppContext } from "../../../App";
 
 import "./Task.css";
 
-export default function Task({ day, task, taskIndex, userHomeworks }) {
+export default function Task({ day, task, taskIndex, userHomeworks, ...props }) {
     const { fetchHomeworksDone } = useContext(AppContext)
     const isMouseInCheckBoxRef = useRef(false);
     const homeworks = userHomeworks.get()
@@ -24,14 +24,15 @@ export default function Task({ day, task, taskIndex, userHomeworks }) {
         userHomeworks.set(homeworks);
     }
 
-    function handleTaskClick(event){
+    function handleTaskClick(event) {
         event.stopPropagation()
-        if (!isMouseInCheckBoxRef.current) {
-            navigate(`#${day};${task.id}`)
+        const notebookContainer = document.getElementsByClassName("notebook-container")[0];
+        if (!isMouseInCheckBoxRef.current && !notebookContainer.classList.contains("mouse-moved")) {
+            navigate(`#${day};${task.id}`);
         }
     }
 
-    return <div className="task" onClick={handleTaskClick} >
+    return <div className="task" onClick={handleTaskClick} {...props} >
         <CheckBox onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false}/>
         <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
         {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
