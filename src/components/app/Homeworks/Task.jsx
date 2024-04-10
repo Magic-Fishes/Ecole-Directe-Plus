@@ -24,7 +24,8 @@ export default function Task({ day, task, taskIndex, userHomeworks }) {
         userHomeworks.set(homeworks);
     }
 
-    function handleTaskClick(){
+    function handleTaskClick(event){
+        event.stopPropagation()
         if (!isMouseInCheckBoxRef.current) {
             navigate(`#${day};${task.id}`)
         }
