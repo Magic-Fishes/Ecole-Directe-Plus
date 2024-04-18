@@ -1426,17 +1426,15 @@ export default function App() {
     async function fetchHomeworksDone({ tasksDone=[], tasksNotDone=[]}, controller = (new AbortController())) {
         /**
          * Change the state of selected homeworks
-         * @param tasksDone : tasks switched to true 
-         * @param tasksNotDone : tasks switched to false
+         * @param tasksDone Tasks switched to true 
+         * @param tasksNotDone Tasks switched to false
          * These two paramerters are in a single object 
          * @param controller AbortController
          */
         abortControllers.current.push(controller);
         const userId = activeAccount;
-        
-        
 
-        fetch(
+        return fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",

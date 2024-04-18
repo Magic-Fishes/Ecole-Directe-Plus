@@ -56,15 +56,15 @@ export default function Notebook({ }) {
         return true;
     }
 
-    function navigateToDate(newDate) {
+    function navigateToDate(newDate, cleanup = false) {
         setSelectedDate(newDate);
-        navigate("#" + newDate + ";" + (location.hash.split(";")[1] ?? ""));
+        navigate("#" + newDate + ";" + ((cleanup && location.hash.split(";")[1]) || ""));
     }
     function navigateToTask(newTask) {
         navigate("#" + (location.hash.split(";")[0].slice(1) ?? "") + ";" + newTask);
     }
 
-    function nearestHomeworkDate(dir=1, date) {
+    function nearestHomeworkDate(dir = 1, date) {
         /**
          * Return the nearest date on which there is homeworks according to the given date
          * @param dir Direction in time to check : 1 to move forward ; -1 to move backwards
@@ -120,7 +120,7 @@ export default function Notebook({ }) {
             if (event.deltaY !== 0 && !event.shiftKey) {
                 event.preventDefault();
                 if (event.deltaY !== 0) {
-                    const newDate = nearestHomeworkDate(1 - 2*(event.deltaY < 0), selectedDate);
+                    const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
                     if (!!newDate) {
                         navigateToDate(newDate)
                     }
@@ -186,7 +186,7 @@ export default function Notebook({ }) {
                     y: applyZoom(event.clientY ?? event.touches[0].clientY)
                 }
                 notebookContainerRef.current.scrollBy({ left: mouseOrigin.x - mouse.x, top: mouseOrigin.y - mouse.y, behavior: "instant" });
-                movedDistance += Math.sqrt((mouseOrigin.x - mouse.x)**2 + (mouseOrigin.y - mouse.y)**2);
+                movedDistance += Math.sqrt((mouseOrigin.x - mouse.x) ** 2 + (mouseOrigin.y - mouse.y) ** 2);
                 // console.log("movedDistance:", movedDistance);
                 mouseOrigin.x = mouse.x;
                 mouseOrigin.y = mouse.y;
@@ -255,12 +255,30 @@ export default function Notebook({ }) {
     //     }
     // }, []);
 
+    const confettiLoaded = () => {
+        console.log("confettiLoaded ~ confettiLoaded:", confettiLoaded)
+    }
+
+    useEffect(() => {
+        const script = document.createElement("script");
+
+        script.src = "https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js";
+        script.async = true;
+        script.onload = confettiLoaded;
+
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        }
+    }, []);
+
 
     return <>
         <div className="date-selector">
-            <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} ><DropDownArrow /></span>
+            <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
             <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
-            <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} ><DropDownArrow /></span>
+            <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
         </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {

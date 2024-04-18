@@ -22,6 +22,9 @@
 .notebook-container:active {
     cursor: grabbing;
 }
+.notebook-container.mouse-moved * {
+    cursor: grabbing !important;
+}
 
 .date-selector {
     display: flex;
@@ -34,34 +37,34 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80%;
+    height: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 3px;
+    border-radius: 8px;
     transition: .15s;
-    background-color: rgba(var(--text-color-main), 0);
+    background-color: rgba(var(--text-color-alt), 0);
+    cursor: pointer;
+}
+.date-selector span path {
+    stroke: rgb(var(--text-color-alt));
+    transition: .1s;
 }
 
 .date-selector span:hover {
-    background-color: rgba(var(--text-color-main), .1);
+    background-color: rgba(var(--text-color-alt), .1);
 }
 
 .date-selector span:active {
-    background-color: rgba(var(--text-color-main), .2);
+    background-color: rgba(var(--text-color-alt), .2);
 }
 
 
-.date-selector svg { 
-    height: 35%;
+.date-selector svg {
+    height: 13px;
     overflow: visible;
 }
 
-.date-selector path { 
-    stroke: rgb(var(--text-color-main));
-    transition: .2s;
-}
-
 .date-selector span:hover svg path {
-    transform: translateY(-1px);
+    /* transform: translateY(-1px); */
 }
 
 .date-selector span:active svg path {
@@ -83,6 +86,11 @@
     padding: 7px 10px;
     border: 2px solid rgb(var(--text-color-alt));
     border-radius: 50px;
+    user-select: none;
+    transition: .1s;
+}
+.selected-date:hover {
+    background-color: rgba(var(--text-color-alt), .07);
 }
 
 .notebook-day {
@@ -90,7 +98,8 @@
     max-height: 100%;
     background: rgb(var(--background-color-2));
     border-radius: 25px;
-    filter: drop-shadow(0 0 10px #0006) brightness(.9);
+    box-shadow: 0 0 10px #0006;
+    filter: brightness(.9);
     opacity: .8;
     scroll-snap-align: center;
     cursor: pointer;
@@ -98,7 +107,7 @@
 }
 .notebook-day.selected {
     min-width: 600px;
-    filter: drop-shadow(0 0 10px #0006) brightness(1.05);
+    filter: brightness(1.05);
 }
 
 .notebook-day .notebook-day-header {

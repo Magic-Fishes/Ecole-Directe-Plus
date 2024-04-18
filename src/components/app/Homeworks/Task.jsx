@@ -1,17 +1,38 @@
-import { useRef, useContext } from "react"
+import { useEffect, useRef, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 
 import { AppContext } from "../../../App";
 
 import "./Task.css";
+import { applyZoom } from "../../../utils/zoom";
 
 export default function Task({ day, task, taskIndex, userHomeworks, ...props }) {
     const { fetchHomeworksDone } = useContext(AppContext)
     const isMouseInCheckBoxRef = useRef(false);
-    const homeworks = userHomeworks.get()
+    const taskCheckboxRef = useRef(null);
     
+    const homeworks = userHomeworks.get()
+
     const navigate = useNavigate();
+
+    function completedTaskAnimation() {
+        console.log("taskCheckboxRef:", taskCheckboxRef.current);
+        const bounds = taskCheckboxRef.current.getBoundingClientRect();
+        const origin = {
+            x: bounds.left + bounds.width/2,
+            y: bounds.top + bounds.height/2
+        }
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: {
+                x: origin.x/applyZoom(window.innerWidth),
+                y: origin.y/applyZoom(window.innerHeight)
+            },
+        });
+    }
+
 
     function checkTask(date, task, taskIndex) {
         const tasksToUpdate = (task.isDone ? {
@@ -19,7 +40,10 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         } : {
             tasksDone: [task.id],
         })
-        fetchHomeworksDone(tasksToUpdate)
+        fetchHomeworksDone(tasksToUpdate);
+        if (tasksToUpdate.tasksDone !== undefined) {
+            completedTaskAnimation();
+        }
         homeworks[date][taskIndex].isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
@@ -33,7 +57,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     }
 
     return <div className="task" onClick={handleTaskClick} {...props} >
-        <CheckBox onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false}/>
+        <CheckBox ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
         <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
         {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
     </div>
