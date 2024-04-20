@@ -33,8 +33,8 @@ export default function Notebook({ }) {
     }
 
     function calcStrokeColorColorProgression(progression) {
-        const startColor = [255, 0, 0];
-        const endColor = [0, 255, 0];
+        const startColor = [255, 66, 66];
+        const endColor = [0, 255, 56];
         return `rgb(${endColor[0] * progression + startColor[0] * (1 - progression)}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
     }
 
