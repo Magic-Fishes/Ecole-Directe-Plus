@@ -66,7 +66,7 @@ function adjustColor(originalHex, backgroundHex, minContrast) {
     // Adjusting luminance by changing each color component equally
     while (currentContrast < minContrast) {
         originalRgb = originalRgb.map(component => {
-            let newComponent = component + increment*(1+component/255);
+            let newComponent = component + increment * (1 + component / 255);
             return Math.max(0, Math.min(255, newComponent)); // Clamp between 0 and 255
         });
 
@@ -80,9 +80,16 @@ function adjustColor(originalHex, backgroundHex, minContrast) {
     return rgbToHex(...originalRgb);
 }
 
-function isTagAttribute(html, idx) {
-    // TODO: check if it is actually an HTML tag (not simple text)
-    return true;
+function hasParentWithInlineBackground(element) {
+    if (!element || element.tagName === "HTML") {
+        return false;
+    }
+
+    if (element.style && (element.style.background || element.style.backgroundColor)) {
+        return true;
+    }
+
+    return hasParentWithInlineBackground(element.parentElement);
 }
 
 export function clearHTML(html, backgroundColor) {
@@ -96,46 +103,43 @@ export function clearHTML(html, backgroundColor) {
     let decodedHTML = decodeBase64(html);
     let readableOutput = decodeHtmlEscaped(decodedHTML);
     let safeHTML = sanitizeHTML(readableOutput);
+    const parser = new DOMParser();
+    let parsedHTML = parser.parseFromString(safeHTML, "text/html").body;
 
-    let output = "";
+    // improving contrasts
     if (backgroundColor !== undefined) {
         const REQUIRED_CONTRAST = 4.5; // WCAG minimum for normal text
         const hexBackgroundColor = rgbToHex(...backgroundColor);
-        const styleAttribute = 'style="';
 
-        let index;
-        while (index !== -1) {
-            index = safeHTML.indexOf(styleAttribute);
-            if (isTagAttribute(safeHTML, index)) {
-                output += safeHTML.slice(0, index + styleAttribute.length);
-                safeHTML = safeHTML.slice(index + styleAttribute.length);
-                let endIndex = safeHTML.indexOf('"');
-                let inlineStyle = safeHTML.slice(0, endIndex).replace(/(:|;)\s+/g, '$1');
-                let colorIdx = inlineStyle.indexOf("color:");
-                if (colorIdx !== -1) {
-                    let textColor;
-                    let hexTextColor;
-                    if (inlineStyle[colorIdx + "color:".length] === "#") {
-                        // hex
-                        textColor = inlineStyle.slice(colorIdx + "color:".length, colorIdx + "color:".length + "#RRGGBB".length);
-                        hexTextColor = textColor;
-                    } else if (inlineStyle.slice(colorIdx + "color:".length, colorIdx + "color:".length + 3) === "rgb") {
-                        // rgb
-                        textColor = inlineStyle.slice(colorIdx + "color:".length);
-                        textColor = textColor.slice(0, textColor.indexOf(")")+1);
-                        hexTextColor = rgbToHex(...textColor.slice("rgb(".length, -1).split(",").map((component) => parseInt(component)));
-                    } else {
-                        continue;
-                    }
-                    let contrastedTextColor = adjustColor(hexTextColor, hexBackgroundColor, REQUIRED_CONTRAST);
-                    let newInlineStyle = inlineStyle.slice(0, colorIdx) + inlineStyle.slice(colorIdx).replace(textColor, contrastedTextColor);
-                    output += newInlineStyle;
-                    safeHTML = safeHTML.slice(endIndex);
-                }
+        // get all elements that contain inline style and define a text color
+        const allElements = parsedHTML.querySelectorAll("*");
+        const elementsWithColor = Array.from(allElements).filter(el => {
+            const style = el.getAttribute("style");
+            return style && style.includes("color:") && !hasParentWithInlineBackground(el); // selects color and unselects those with parents that has background-color (or highlighting)
+        });
+
+        elementsWithColor.forEach((el) => {
+            let textColor = el.style.color;
+            let match = textColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+)?\)$/);
+
+            if (match) {
+                let red = parseInt(match[1]);
+                let green = parseInt(match[2]);
+                let blue = parseInt(match[3]);
+
+                let hexColor = rgbToHex(red, green, blue);
+
+                let contrastedTextColor = adjustColor(hexColor, hexBackgroundColor, REQUIRED_CONTRAST);
+                el.style.color = contrastedTextColor;
+
+                // apply color to all children (bypass the *{color: var(--text-color-main)} in App.css)
+                const children = el.querySelectorAll('*');
+                children.forEach(child => {
+                    child.style.color = contrastedTextColor;
+                });
             }
-        }
+        });
     }
-    output += safeHTML;
 
-    return output;
+    return parsedHTML.innerHTML;
 }
