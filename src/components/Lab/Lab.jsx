@@ -36,6 +36,7 @@ import RadioButton from "../generic/UserInputs/RadioButton";
 import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
 import TextInput from "../generic/UserInputs/TextInput";
 import { clearHTML } from "../../utils/html";
+import EncodedHTMLDiv from "../generic/CustomDivs/EncodedHTMLDiv";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -298,10 +299,8 @@ export default function Lab({ fetchGrades }) {
             }}></p>
             <br/>
             <h4>Contrasts improved:</h4>
-            <p className="inner-html-test" dangerouslySetInnerHTML={{
-                __html: clearHTML(`PHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+Qm9uam91ciAmYWdyYXZlOyB0b3VzLDwvc3Bhbj48L3NwYW4+PC9wPgoKPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+TWVyY3JlZGkgMTQgZiZlYWN1dGU7dnJpZXIgYXVyYSBsaWV1ICZhZ3JhdmU7IDEwaDEwIGxhIG1lc3NlIGRlcyBDZW5kcmVzLiBOb3VzIG5vdXMgcmV0cm91dmVyb25zICZhZ3JhdmU7IGxhIGNoYXBlbGxlLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkxlIG1lcmNyZWRpIGRlcyBDZW5kcmVzIGVzdCBsZSBqb3VyIG8mdWdyYXZlOyBkZXMgY2hyJmVhY3V0ZTt0aWVucyBlbnRyZW50IGRhbnMgbGUgY2FyJmVjaXJjO21lLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPlNpIHZvdXMgdm91cyBzb3VoYWl0ZXogeSBwYXJ0aWNpcGVyLCA8c3Ryb25nPm1lcmNpIGRlIHZvdXMgaW5zY3JpcmUgYXZhbnQgbGUgbWFyZGkgMTMgJmFncmF2ZTsgMThoPC9zdHJvbmc+LCBhdXByJmVncmF2ZTtzIGRlIE1tZSBYWFhYWCBvdSBhdXByJmVncmF2ZTtzIGRlIG1vaS1tJmVjaXJjO21lKiAoZGlyZWN0ZW1lbnQgb3UgZW4gciZlYWN1dGU7cG9uZGFudCAmYWdyYXZlOyBjZSBtYWlsKS48L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkJvbm5lIGpvdXJuJmVhY3V0ZTtlICZhZ3JhdmU7IHRvdXMsPC9zcGFuPjwvc3Bhbj48L3A+Cgo8cD4qSmUgc3VpcyBhYnNlbnQgcG91ciBmb3JtYXRpb24gbHVuZGkgZXQgbWFyZGkgMTIgZXQgMTMgZiZlYWN1dGU7dnJpZXIuPC9wPg==`,
-                    [0, 0, 255])
-            }}></p>
+            <EncodedHTMLDiv className="inner-html-test">{`PHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+Qm9uam91ciAmYWdyYXZlOyB0b3VzLDwvc3Bhbj48L3NwYW4+PC9wPgoKPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+TWVyY3JlZGkgMTQgZiZlYWN1dGU7dnJpZXIgYXVyYSBsaWV1ICZhZ3JhdmU7IDEwaDEwIGxhIG1lc3NlIGRlcyBDZW5kcmVzLiBOb3VzIG5vdXMgcmV0cm91dmVyb25zICZhZ3JhdmU7IGxhIGNoYXBlbGxlLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkxlIG1lcmNyZWRpIGRlcyBDZW5kcmVzIGVzdCBsZSBqb3VyIG8mdWdyYXZlOyBkZXMgY2hyJmVhY3V0ZTt0aWVucyBlbnRyZW50IGRhbnMgbGUgY2FyJmVjaXJjO21lLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPlNpIHZvdXMgdm91cyBzb3VoYWl0ZXogeSBwYXJ0aWNpcGVyLCA8c3Ryb25nPm1lcmNpIGRlIHZvdXMgaW5zY3JpcmUgYXZhbnQgbGUgbWFyZGkgMTMgJmFncmF2ZTsgMThoPC9zdHJvbmc+LCBhdXByJmVncmF2ZTtzIGRlIE1tZSBYWFhYWCBvdSBhdXByJmVncmF2ZTtzIGRlIG1vaS1tJmVjaXJjO21lKiAoZGlyZWN0ZW1lbnQgb3UgZW4gciZlYWN1dGU7cG9uZGFudCAmYWdyYXZlOyBjZSBtYWlsKS48L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkJvbm5lIGpvdXJuJmVhY3V0ZTtlICZhZ3JhdmU7IHRvdXMsPC9zcGFuPjwvc3Bhbj48L3A+Cgo8cD4qSmUgc3VpcyBhYnNlbnQgcG91ciBmb3JtYXRpb24gbHVuZGkgZXQgbWFyZGkgMTIgZXQgMTMgZiZlYWN1dGU7dnJpZXIuPC9wPg==`}</EncodedHTMLDiv>
+
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
         </div>

@@ -107,7 +107,7 @@ export function clearHTML(html, backgroundColor) {
     let parsedHTML = parser.parseFromString(safeHTML, "text/html").body;
 
     // improving contrasts
-    if (backgroundColor !== undefined) {
+    if (backgroundColor) {
         const REQUIRED_CONTRAST = 4.5; // WCAG minimum for normal text
         const hexBackgroundColor = rgbToHex(...backgroundColor);
 
