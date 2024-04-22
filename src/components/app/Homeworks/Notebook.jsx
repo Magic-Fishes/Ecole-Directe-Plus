@@ -33,9 +33,9 @@ export default function Notebook({ }) {
     }
 
     function calcStrokeColorColorProgression(progression) {
-        const startColor = [255, 0, 0];
+        const startColor = [255, 66, 66];
         const middleColor = [255, 140, 0]
-        const endColor = [0, 255, 0];
+        const endColor = [0, 255, 56];
         return `rgb(${ progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
     }
 
@@ -277,7 +277,7 @@ export default function Notebook({ }) {
     return <>
         <div className="date-selector">
             <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-            <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{location.hash.split(";")[0].slice(1) || "AAAA-MM-JJ"}</time>
+            <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{(new Date(location.hash.split(";")[0].slice(1))).toLocaleDateString() || "AAAA-MM-JJ"}</time>
             <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
         </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>

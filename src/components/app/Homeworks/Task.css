@@ -1,9 +1,9 @@
 .task {
     cursor: pointer;
     background-color: rgb(var(--background-color-2));
-    border: solid rgb(var(--background-color-3));
+    border: 3px solid rgb(var(--background-color-3));
     border-radius: 10px;
-    transition: .2s;
+    transition: .1s;
     text-decoration: none;
     display: flex;
     align-items: stretch;
@@ -33,10 +33,9 @@
 
 .task .check-box {
     display: flex;
-    width: 10%;
-    min-width: 35px;
-    max-width: 45px;
-    background-color: rgb(var(--background-color-3));
+    width: 45px;
+    /* background-color: rgb(var(--background-color-3)); */
+    border-right: 3px solid rgb(var(--background-color-3));;
     justify-content: center;
 }
 
@@ -62,7 +61,16 @@
     transition: .1s !important;
 }
 
+.task .check-box:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-3), .4);
+}
+.task .check-box:active {
+    filter: brightness(.9);
+}
 .task .check-box:hover input {
+    opacity: .25;
+}
+.task .check-box input:focus-visible {
     opacity: .25;
 }
 
@@ -70,22 +78,33 @@
     opacity: 1;
 }
 
-.task .check-box label {
-    display: none;
+.task:has(.check-box:not(:is(:hover, :focus-visible))):is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-3), .4);
+}
+.task:has(.check-box:not(:is(:hover, :focus-visible))):active {
+    background-color: rgba(var(--background-color-1), .1);
+    filter: brightness(.9);
 }
 
-.task:is(:hover, :focus-visible) {
-    background-color: rgba(var(--background-color-2), .6);
-    transform: scale(1.025);
+.task .add-date {
+    display: inline-block;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14);
 }
 
-.interrogation-alert {
-    color: rgb(var(--text-color-error));
-    font-weight: var(--font-weight-semi-bold);
+.task .interrogation-alert {
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: rgba(var(--background-color-soft-error), .3);
+    color: rgb(var(--text-color-soft-error-main));
+    border: 1px solid rgb(var(--text-color-soft-error-main), .3);
+    border-radius: 7px;
 }
 
-.interrogation-alert::before {
+/* .interrogation-alert::before {
     content: "•";
     font-size: larger;
     margin-inline: 10px 5px;
-}
+} */

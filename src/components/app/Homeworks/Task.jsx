@@ -25,7 +25,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
             y: bounds.top + bounds.height/2
         }
         confetti({
-            particleCount: 100,
+            particleCount: 40,
             spread: 70,
             origin: {
                 x: origin.x/applyZoom(window.innerWidth),
@@ -56,6 +56,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
             navigate(`#${day};${task.id}`);
         }
     }
+    console.log("task:", task)
 
     return <div className={`task ${task.isDone ? "done" : ""}`} onClick={handleTaskClick} {...props} >
         <CheckBox ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
@@ -64,6 +65,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
                 {task.subject.replace(". ", ".").replace(".", ". ")}
                 <hr className="check-line"/>
             </h4>            
+            {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()}</span>}
             {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
     </div>

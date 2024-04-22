@@ -61,10 +61,6 @@
     overflow: visible;
 }
 
-.date-selector span:hover svg path {
-    /* transform: translateY(-1px); */
-}
-
 .date-selector span:active svg path {
     transform: translateY(2px);
 }
@@ -96,7 +92,7 @@
     max-height: 100%;
     background: rgb(var(--background-color-2));
     border-radius: 25px;
-    box-shadow: 0 0 10px #0006;
+    box-shadow: var(--box-shadow-element);
     filter: brightness(.9);
     opacity: .8;
     scroll-snap-align: center;
@@ -109,7 +105,7 @@
 
 .notebook-day.selected {
     min-width: min(600px, 100%);
-    filter: drop-shadow(0 0 10px #0006) brightness(1.05);
+    filter: brightness(1.05);
     opacity: 1;
 }
 
