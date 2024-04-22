@@ -33,9 +33,10 @@ export default function Notebook({ }) {
     }
 
     function calcStrokeColorColorProgression(progression) {
-        const startColor = [255, 66, 66];
-        const endColor = [0, 255, 56];
-        return `rgb(${endColor[0] * progression + startColor[0] * (1 - progression)}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
+        const startColor = [255, 0, 0];
+        const middleColor = [255, 140, 0]
+        const endColor = [0, 255, 0];
+        return `rgb(${ progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
     }
 
 
@@ -135,7 +136,6 @@ export default function Notebook({ }) {
             }
         }
     }, [selectedDate, homeworks]);
-
 
     // - - Drag to scroll - -
 
@@ -286,7 +286,7 @@ export default function Notebook({ }) {
                 const elDate = new Date(el)
                 return <div onClick={() => !hasMouseMoved && navigate(`#${el};${(location.hash.split(";")[0].slice(1) === el ? location.hash.split(";")[1] : homeworks[el][0].id)}`)} key={el} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
                     <div className="notebook-day-header">
-                        <svg className="progress-circle" viewBox="0 0 100 100" >
+                        <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
                             <circle cx="50" cy="50" r="40" />
                             <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} strokeDasharray={calcDasharrayProgression(progression)} strokeDashoffset="62.8328" />
                         </svg>

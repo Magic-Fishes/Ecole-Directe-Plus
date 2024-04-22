@@ -14,6 +14,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     
     const homeworks = userHomeworks.get()
 
+
     const navigate = useNavigate();
 
     function completedTaskAnimation() {
@@ -56,9 +57,14 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         }
     }
 
-    return <div className="task" onClick={handleTaskClick} {...props} >
+    return <div className={`task ${task.isDone ? "done" : ""}`} onClick={handleTaskClick} {...props} >
         <CheckBox ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
-        <h4>{task.subject.replace(". ", ".").replace(".", ". ")}</h4>
-        {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
+        <div className="task-title">
+            <h4>
+                {task.subject.replace(". ", ".").replace(".", ". ")}
+                <hr className="check-line"/>
+            </h4>            
+            {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
+        </div>
     </div>
 }
