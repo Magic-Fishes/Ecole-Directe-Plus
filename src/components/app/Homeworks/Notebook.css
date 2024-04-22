@@ -12,7 +12,6 @@
     overflow-y: visible;
     overflow-x: auto;
     scroll-padding-inline: 20px;
-    /* scroll-snap-type: x mandatory; */
     scroll-behavior: smooth;
     height: 100%;
     width: 100%;
@@ -56,7 +55,6 @@
 .date-selector span:active {
     background-color: rgba(var(--text-color-alt), .2);
 }
-
 
 .date-selector svg {
     height: 13px;
@@ -105,9 +103,11 @@
     cursor: pointer;
     transition: .2s;
 }
+
 .notebook-day.selected {
     min-width: 600px;
-    filter: brightness(1.05);
+    filter: drop-shadow(0 0 10px #0006) brightness(1.05);
+    opacity: 1;
 }
 
 .notebook-day .notebook-day-header {
