@@ -118,9 +118,15 @@ export function clearHTML(html, backgroundColor) {
             return style && style.includes("color:") && !hasParentWithInlineBackground(el); // selects color and unselects those with parents that has background-color (or highlighting)
         });
 
+        const tempContainer = document.createElement("div");
+        tempContainer.style.display = "none";
+        document.body.appendChild(tempContainer); // will be used to trigger style computing
+
         elementsWithColor.forEach((el) => {
-            let textColor = el.style.color;
-            let match = textColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+)?\)$/);
+            const elCopy = el.cloneNode(true);
+            tempContainer.appendChild(elCopy); // append a copy to avoid removing the initial element from parsedHTML
+            let textColor = getComputedStyle(elCopy).getPropertyValue("color");
+            let match = textColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*\d+)?\)$/); // getComputedStyle always return a color in rgb format
 
             if (match) {
                 let red = parseInt(match[1]);
@@ -138,7 +144,9 @@ export function clearHTML(html, backgroundColor) {
                     child.style.color = contrastedTextColor;
                 });
             }
+            tempContainer.removeChild(elCopy);
         });
+        document.body.removeChild(tempContainer);
     }
 
     return parsedHTML.innerHTML;
