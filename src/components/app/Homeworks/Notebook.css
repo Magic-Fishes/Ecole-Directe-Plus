@@ -92,7 +92,7 @@
 }
 
 .notebook-day {
-    min-width: 300px;
+    min-width: min(300px, 100%);
     max-height: 100%;
     background: rgb(var(--background-color-2));
     border-radius: 25px;
@@ -102,10 +102,13 @@
     scroll-snap-align: center;
     cursor: pointer;
     transition: .2s;
+
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 .notebook-day.selected {
-    min-width: 600px;
+    min-width: min(600px, 100%);
     filter: drop-shadow(0 0 10px #0006) brightness(1.05);
     opacity: 1;
 }
@@ -158,6 +161,8 @@
 }
 
 .tasks-container {
+    overflow: auto;
+    height: 100%;
     display: flex;
     flex-flow: nowrap column;
     gap: 15px;
