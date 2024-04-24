@@ -1,4 +1,3 @@
-
 a.welcome-pop-up-links {
     text-decoration: none;
     color: rgb(var(--border-color-1));
@@ -11,4 +10,16 @@ a.welcome-pop-up-links:is(:hover, :focus-visible) {
 
 a.welcome-pop-up-links:active {
     color: rgba(var(--border-color-0), .7);
+}
+
+p.not-affiliated-disclaimer {
+    border-left: 3px solid darkorange;
+    padding-left: 10px;
+    color: darkorange;
+    margin-bottom: 12px;
+}
+
+.light .not-affiliated-disclaimer {
+    border-color: rgb(150, 47, 0);
+    color: rgb(150, 47, 0);
 }

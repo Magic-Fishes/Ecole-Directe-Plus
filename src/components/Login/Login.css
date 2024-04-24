@@ -158,12 +158,20 @@
     color: rgba(var(--text-color-alt), 0.7);
 } */
 
+p.not-affiliated-mention {
+    position: absolute;
+    left: 10px;
+    bottom: 10px; /* aligne avec la baseline du numéro de version */
+    font-size: var(--font-size-14);
+    color: rgb(var(--text-color-alt));
+}
+
 p.policy {
     width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
     text-align: center;
-    position: absolute;
     font-size: var(--font-size-14);
     color: rgb(var(--text-color-alt));
+    position: absolute;
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
     transform: translateX(-50%);
@@ -178,6 +186,12 @@ p.policy {
 
 #login .policy-link:hover {
     color: rgb(var(--border-color-0));    
+}
+
+@media only screen and (max-width: 869px) {
+    p.not-affiliated-mention {
+        display: none;
+    }
 }
 
 @media only screen and (max-width: 460px) {
