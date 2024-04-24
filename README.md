@@ -7,9 +7,12 @@
 
 ## About Ecole Directe Plus
 
-Ecole Directe Plus is basically a better EcoleDirecte. (unofficial)
+Ecole Directe Plus is basically a better EcoleDirecte.
 The EcoleDirecte platform has been completely redesigned from scratch to offer the best comfort to all students.
 Enjoy the most-requested features and a ton of small but game changer improvements.
+
+> [!warning]
+> This project is not affiliated with EcoleDirecte or Aplim in any way.
 
 ### New features
 
