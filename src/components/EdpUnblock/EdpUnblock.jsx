@@ -19,7 +19,7 @@ const browserLogosInfos = {
     Firefox: {
         logo: <FirefoxLogo />,
         available: true,
-        url: "https://addons.mozilla.org/fr/firefox/addon/ecole-directe-plus-unblock/",
+        url: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
     },
     Chrome: {
         logo: <ChromeLogo />,
@@ -121,7 +121,7 @@ export default function EdpUnblock() {
                     </div>
                     <p>Ecole Directe Plus a besoin de cette extension de navigateur pour accéder au contenu fourni par l’API d’EcoleDirecte.</p>
                     {compatibilityCondition ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un navigateur compatible comme le <a href={userOS === "iOS" ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === "iOS" ? "navigateur Orion" : "navigateur Firefox"}</a>.</p></> : null}
-                    <a href={browserLogosInfos[userBrowser].url} target="_blank" className={`edpu-download-link ${compatibilityCondition ? "disabled" : ""} ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
+                    <a href={browserLogosInfos[userBrowser].url} target={userBrowser === "Firefox" ? "_self" : "_blank"} className={`edpu-download-link ${compatibilityCondition ? "disabled" : ""} ${browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser].logo}
                         {compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>}
                         {compatibilityCondition ? <div className="download-unavailable">✕</div> : <DownloadIcon />}
