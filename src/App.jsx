@@ -114,7 +114,7 @@ const browserExtensionDownloadLink = {
     Opera: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     Chromium: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     Chrome: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Firefox: "https://addons.mozilla.org/fr/firefox/addon/ecole-directe-plus-unblock/",
+    Firefox: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
     Edge: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
     Safari: "/edp-unblock"
 }
@@ -1054,7 +1054,7 @@ export default function App() {
             <hr />
             <div className="extension-download-link">
                 <a href="/edp-unblock#about">En savoir plus</a>
-                <a href={browserExtensionDownloadLink[userBrowser]} target={(userBrowser !== "Safari" ? "_blank" : "")}>Télécharger</a>
+                <a href={browserExtensionDownloadLink[userBrowser]} target={(!["Safari", "Firefox"].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
             </div>
         </>, {customClass: "extension-warning", timer: "infinite"})
     }
