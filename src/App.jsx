@@ -964,18 +964,40 @@ export default function App() {
         setDefaultPeriod(periods)
     }
 
-    function sortHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
-                const { aFaire, codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
+                const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
                 return ({
                     id: idDevoir,
                     subjectCode: codeMatiere,
                     subject: matiere,
                     addDate: donneLe,
                     isInterrogation: interrogation,
-                    toDo: (aFaire), // Will be used to sortGrades content in the future commits
                     isDone: effectue,
+                })
+            })]
+        }))
+        return sortedHomeworks
+    }
+
+    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
+            return [day[0], day[1].map((homework) => {
+                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
+                return ({
+                    id: id,
+                    subjectCode: codeMatiere,
+                    subject: matiere,
+                    addDate: donneLe,
+                    isInterrogation: interrogation,
+                    isDone: effectue,
+                    teacher: nomProf,
+                    content: contenu,
+                    files: document,
+                    sessionContent: contenuDeSeance.contenu,
+                    sessionContentFiles: contenuDeSeance.documents,
                 })
             })]
         }))
@@ -1396,9 +1418,9 @@ export default function App() {
                 }
                 if (code === 200) {
                     if (date === "incoming") {
-                        changeUserData("sortedHomeworks", { ...sortHomeworks(response.data), ...getUserData("sortedHomeworks") })
+                        changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
                     } else {
-                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortHomeworks({ [response.data.date]: response.data.matieres }) })
+                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
                     }
                 } else if (code === 520 || code === 525) {
                     // token invalide
