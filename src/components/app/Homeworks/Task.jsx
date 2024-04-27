@@ -1,4 +1,4 @@
-import { useEffect, useRef, useContext } from "react"
+import { useRef, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 
@@ -14,11 +14,9 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     
     const homeworks = userHomeworks.get()
 
-
     const navigate = useNavigate();
 
     function completedTaskAnimation() {
-        console.log("taskCheckboxRef:", taskCheckboxRef.current);
         const bounds = taskCheckboxRef.current.getBoundingClientRect();
         const origin = {
             x: bounds.left + bounds.width/2,
@@ -56,7 +54,6 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
             navigate(`#${day};${task.id}`);
         }
     }
-    console.log("task:", task)
 
     return <div className={`task ${task.isDone ? "done" : ""}`} onClick={handleTaskClick} {...props} >
         <CheckBox ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />

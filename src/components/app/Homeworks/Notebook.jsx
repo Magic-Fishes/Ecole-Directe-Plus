@@ -90,7 +90,6 @@ export default function Notebook({ }) {
     }
 
     useEffect(() => {
-        console.log("location changed:", location.hash)
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
         }
@@ -117,7 +116,6 @@ export default function Notebook({ }) {
 
     useEffect(() => {
         const horizontalToVerticalScrolling = (event) => {
-            // console.log("scroll event:", event)
             if (event.deltaY !== 0 && !event.shiftKey) {
                 event.preventDefault();
                 if (event.deltaY !== 0) {
@@ -187,7 +185,6 @@ export default function Notebook({ }) {
                 }
                 notebookContainerRef.current.scrollBy({ left: mouseOrigin.x - mouse.x, top: mouseOrigin.y - mouse.y, behavior: "instant" });
                 movedDistance += Math.sqrt((mouseOrigin.x - mouse.x) ** 2 + (mouseOrigin.y - mouse.y) ** 2);
-                // console.log("movedDistance:", movedDistance);
                 mouseOrigin.x = mouse.x;
                 mouseOrigin.y = mouse.y;
             }
@@ -255,16 +252,11 @@ export default function Notebook({ }) {
     //     }
     // }, []);
 
-    const confettiLoaded = () => {
-        console.log("confettiLoaded ~ confettiLoaded:", confettiLoaded)
-    }
-
     useEffect(() => {
         const script = document.createElement("script");
 
         script.src = "https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js";
         script.async = true;
-        script.onload = confettiLoaded;
 
         document.body.appendChild(script);
 
@@ -272,7 +264,6 @@ export default function Notebook({ }) {
             document.body.removeChild(script);
         }
     }, []);
-
 
     return <>
         <div className="date-selector">

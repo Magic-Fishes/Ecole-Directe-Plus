@@ -56,7 +56,6 @@ export default function LoginForm({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setR
     }
 
     useEffect(() => {
-        console.log("New A2FInfo:", A2FInfo);
         if (Object.keys(A2FInfo).length > 0) {
             const newA2FInfo = JSON.stringify(A2FInfo);
             if (!!bufferUserIds.username && !!bufferUserIds.password && newA2FInfo !== localStorage.getItem("A2FInfo")) {
