@@ -55,8 +55,8 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         }
     }
 
-    return <div className={`task ${task.isDone ? "done" : ""}`} onClick={handleTaskClick} {...props} >
-        <CheckBox ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
+    return <div className={`task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} onClick={handleTaskClick} {...props} >
+        <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
         <div className="task-title">
             <h4>
                 {task.subject.replace(". ", ".").replace(".", ". ")}

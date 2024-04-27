@@ -5,6 +5,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
 }
 
 .check-box input[type="checkbox"] {
@@ -51,7 +52,7 @@
     transition: 0s !important;
 }
 
-.check-box label {
+.check-box .text-label {
     color: rgb(var(--text-color-main));
     cursor: pointer;
     flex: 1;
