@@ -24,19 +24,13 @@ export default function Notebook({ }) {
 
     const homeworks = userHomeworks.get();
 
-    function calcDasharrayProgression(progression) {
-        /** This function will return the dasharray values depending of progression of the homeworks
-         * @param progression : the progression of the homeworks ; float between 0 and 1
-         */
-        const circlePerimeter = Math.PI * 2 * 40 // ! if this value (the radius of the circles) changes, don't forget to change the strokeDashoffet property
-        return `${circlePerimeter * progression} ${circlePerimeter - (circlePerimeter * progression)}`
-    }
-
     function calcStrokeColorColorProgression(progression) {
         const startColor = [255, 66, 66];
-        const middleColor = [255, 140, 0]
         const endColor = [0, 255, 56];
-        return `rgb(${ progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
+        // I have absolutely no idea of why but with the condition under it makes orange when progresion is on the middle
+        // (this what I wanted but I though that it would need another intermediate color)
+        // so for no reason this works and I will not change it (it's only luck)
+        return `rgb(${progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
     }
 
 
@@ -279,7 +273,7 @@ export default function Notebook({ }) {
                     <div className="notebook-day-header">
                         <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
                             <circle cx="50" cy="50" r="40" />
-                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} strokeDasharray={calcDasharrayProgression(progression)} strokeDashoffset="62.8328" />
+                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1-progression}/>
                         </svg>
                         <span className="notebook-day-date">
                             <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>

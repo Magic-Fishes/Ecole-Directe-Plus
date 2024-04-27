@@ -122,6 +122,7 @@
 .notebook-day .notebook-day-header .progress-circle {
     height: 100%;
     margin: 5px;
+    transform: rotate(-90deg);
 }
 
 .notebook-day .notebook-day-header .progress-circle circle {

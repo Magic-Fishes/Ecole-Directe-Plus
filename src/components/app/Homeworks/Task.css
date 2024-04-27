@@ -34,7 +34,7 @@
 .task .check-box {
     display: flex;
     width: 45px;
-    /* background-color: rgb(var(--background-color-3)); */
+    background-color: rgb(var(--background-color-3));
     border-right: 3px solid rgb(var(--background-color-3));;
     justify-content: center;
 }
@@ -61,16 +61,7 @@
     transition: .1s !important;
 }
 
-.task .check-box:is(:hover, :focus-visible) {
-    background-color: rgba(var(--background-color-3), .4);
-}
-.task .check-box:active {
-    filter: brightness(.9);
-}
-.task .check-box:hover input {
-    opacity: .25;
-}
-.task .check-box input:focus-visible {
+.task .check-box:is(:hover, :focus-visible) input {
     opacity: .25;
 }
 
@@ -81,6 +72,7 @@
 .task:has(.check-box:not(:is(:hover, :focus-visible))):is(:hover, :focus-visible) {
     background-color: rgba(var(--background-color-3), .4);
 }
+
 .task:has(.check-box:not(:is(:hover, :focus-visible))):active {
     background-color: rgba(var(--background-color-1), .1);
     filter: brightness(.9);
@@ -102,9 +94,3 @@
     border: 1px solid rgb(var(--text-color-soft-error-main), .3);
     border-radius: 7px;
 }
-
-/* .interrogation-alert::before {
-    content: "•";
-    font-size: larger;
-    margin-inline: 10px 5px;
-} */
