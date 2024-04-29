@@ -67,3 +67,7 @@
     gap: 10px;
     padding: 10px;
 }
+
+#lab-page .inner-html-test {
+    background-color: blue;
+}

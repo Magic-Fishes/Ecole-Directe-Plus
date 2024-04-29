@@ -297,7 +297,7 @@ export default function Charts({ selectedPeriod }) {
     }, [chartType, activeAccount, selectedPeriod]);
 
     useEffect(() => {
-        const script = document.createElement('script');
+        const script = document.createElement("script");
 
         script.src = "https://cdn.jsdelivr.net/npm/chart.js";
         script.async = true;
