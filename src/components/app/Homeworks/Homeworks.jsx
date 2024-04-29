@@ -63,7 +63,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
-                    <Window growthFactor={2.2}>
+                    <Window growthFactor={2.2} allowFullscreen={true}>
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
