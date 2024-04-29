@@ -35,6 +35,9 @@ import "./Lab.css";
 import RadioButton from "../generic/UserInputs/RadioButton";
 import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
 import { getBrowser, getOS } from "../../utils/utils";
+import TextInput from "../generic/UserInputs/TextInput";
+import { clearHTML } from "../../utils/html";
+import EncodedHTMLDiv from "../generic/CustomDivs/EncodedHTMLDiv";
 
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
@@ -44,7 +47,7 @@ export default function Lab({ fetchGrades }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [testState, setTestState] = useState(false);
-    
+
     const [isInputPopUpOpen, setIsInputPopUpOpen] = useState(false);
     const [number1, setNumber1] = useState(0)
     const [isInputPopUp2Open, setIsInputPopUp2Open] = useState(false);
@@ -53,6 +56,9 @@ export default function Lab({ fetchGrades }) {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [displayProxyErrorNotification, setDisplayProxyErrorNotification] = useState(false);
     const [toggleSwitchState, setToggleSwitchState] = useState(false)
+    const [targetURL, setTargetURL] = useState("");
+
+    const navigate = useNavigate();
 
     // Behavior
     useEffect(() => {
@@ -65,6 +71,11 @@ export default function Lab({ fetchGrades }) {
     function testOnChange(a) {
         setTest2(a)
     }
+
+    function customNavigate(url) {
+        navigate(url);
+    }
+
     // JSX
     return (
         <div id="lab-page">
@@ -235,25 +246,25 @@ export default function Lab({ fetchGrades }) {
             <HolographicDiv style={{ width: "800px", height: "500px", margin: "0 auto", border: "2px solid rgb(27, 31, 58)", borderRadius: "48px", backgroundColor: "rgba(var(--background-color-0), 1)" }}>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe aut illo aliquam accusantium assumenda ducimus nostrum dolorum, ratione enim ut esse perferendis omnis fugiat officiis repudiandae necessitatibus perspiciatis deserunt facilis vero possimus? Consectetur magnam amet similique est, dolorum magni reprehenderit.</p>
             </HolographicDiv>
-            
+
             <div style={{ height: "100px" }}></div>
-            
+
             <h3>New PopUp</h3>
             <Button onClick={() => { setIsInputPopUpOpen(true) }} value="number1" />
             {isInputPopUpOpen && <PopUp onClose={() => { setIsInputPopUpOpen(false) }}>
-                <NumberInput min={0} max={20} value={number1} onChange={setNumber1} step={0.1}/>
+                <NumberInput min={0} max={20} value={number1} onChange={setNumber1} step={0.1} />
             </PopUp>}
             {number1}
 
 
-            <Button onClick={() => {setIsInputPopUp2Open(true) }} value="number2" />
+            <Button onClick={() => { setIsInputPopUp2Open(true) }} value="number2" />
             {isInputPopUp2Open && <PopUp onClose={() => { setIsInputPopUp2Open(false); setIsFormSubmitted(false) }} externalClosing={isFormSubmitted}>
-                <form onSubmit={(event) => {event.preventDefault(); setNumber2(formNumber2); setIsFormSubmitted(true)}}>
+                <form onSubmit={(event) => { event.preventDefault(); setNumber2(formNumber2); setIsFormSubmitted(true) }}>
                     <NumberInput min={0} max={20} value={formNumber2} onChange={setFormNumber2} />
-                    <Button buttonType="submit"/>
+                    <Button buttonType="submit" />
                 </form>
             </PopUp>}
-            
+
             <h3>ProxyErrorNotification</h3>
             <Button onClick={() => setDisplayProxyErrorNotification((v) => !v)}>Display ProxyErrorNotification</Button>
             {displayProxyErrorNotification && <ProxyErrorNotification />}
@@ -274,13 +285,26 @@ export default function Lab({ fetchGrades }) {
                 <RadioButton id="dilemme-cornelien-12" name="dilemme">Choix 12</RadioButton>
             </div>
 
-            <h2>TOGGLE SWITCH</h2>
+            <h3>TOGGLE SWITCH</h3>
             <p>{toggleSwitchState ? "true" : "false"}</p>
-            <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)}/>
+            <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)} />
 
             <h2>OS - BROWSER</h2>
             <p>userOs: {getOS()}</p>
             <p>userBrowser: {getBrowser()}</p>
+
+            <h3>Dynamic navigate</h3>
+            <TextInput textType="text" placeholder="Target url" value={targetURL} onChange={(e) => setTargetURL(e.target.value)} />
+            <Button onClick={() => customNavigate(targetURL)}>Navigate to {targetURL}</Button>
+
+            <h3>clearHTML</h3>
+            <h4>Vanilla:</h4>
+            <p className="inner-html-test" dangerouslySetInnerHTML={{
+                __html: clearHTML(`PHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+Qm9uam91ciAmYWdyYXZlOyB0b3VzLDwvc3Bhbj48L3NwYW4+PC9wPgoKPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+TWVyY3JlZGkgMTQgZiZlYWN1dGU7dnJpZXIgYXVyYSBsaWV1ICZhZ3JhdmU7IDEwaDEwIGxhIG1lc3NlIGRlcyBDZW5kcmVzLiBOb3VzIG5vdXMgcmV0cm91dmVyb25zICZhZ3JhdmU7IGxhIGNoYXBlbGxlLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkxlIG1lcmNyZWRpIGRlcyBDZW5kcmVzIGVzdCBsZSBqb3VyIG8mdWdyYXZlOyBkZXMgY2hyJmVhY3V0ZTt0aWVucyBlbnRyZW50IGRhbnMgbGUgY2FyJmVjaXJjO21lLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPlNpIHZvdXMgdm91cyBzb3VoYWl0ZXogeSBwYXJ0aWNpcGVyLCA8c3Ryb25nPm1lcmNpIGRlIHZvdXMgaW5zY3JpcmUgYXZhbnQgbGUgbWFyZGkgMTMgJmFncmF2ZTsgMThoPC9zdHJvbmc+LCBhdXByJmVncmF2ZTtzIGRlIE1tZSBYWFhYWCBvdSBhdXByJmVncmF2ZTtzIGRlIG1vaS1tJmVjaXJjO21lKiAoZGlyZWN0ZW1lbnQgb3UgZW4gciZlYWN1dGU7cG9uZGFudCAmYWdyYXZlOyBjZSBtYWlsKS48L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkJvbm5lIGpvdXJuJmVhY3V0ZTtlICZhZ3JhdmU7IHRvdXMsPC9zcGFuPjwvc3Bhbj48L3A+Cgo8cD4qSmUgc3VpcyBhYnNlbnQgcG91ciBmb3JtYXRpb24gbHVuZGkgZXQgbWFyZGkgMTIgZXQgMTMgZiZlYWN1dGU7dnJpZXIuPC9wPg==`)
+            }}></p>
+            <br/>
+            <h4>Contrasts improved:</h4>
+            <EncodedHTMLDiv className="inner-html-test">{`PHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+Qm9uam91ciAmYWdyYXZlOyB0b3VzLDwvc3Bhbj48L3NwYW4+PC9wPgoKPHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZToxOHB4Ij48c3BhbiBzdHlsZT0iY29sb3I6IzI5ODBiOSI+TWVyY3JlZGkgMTQgZiZlYWN1dGU7dnJpZXIgYXVyYSBsaWV1ICZhZ3JhdmU7IDEwaDEwIGxhIG1lc3NlIGRlcyBDZW5kcmVzLiBOb3VzIG5vdXMgcmV0cm91dmVyb25zICZhZ3JhdmU7IGxhIGNoYXBlbGxlLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkxlIG1lcmNyZWRpIGRlcyBDZW5kcmVzIGVzdCBsZSBqb3VyIG8mdWdyYXZlOyBkZXMgY2hyJmVhY3V0ZTt0aWVucyBlbnRyZW50IGRhbnMgbGUgY2FyJmVjaXJjO21lLiA8L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPlNpIHZvdXMgdm91cyBzb3VoYWl0ZXogeSBwYXJ0aWNpcGVyLCA8c3Ryb25nPm1lcmNpIGRlIHZvdXMgaW5zY3JpcmUgYXZhbnQgbGUgbWFyZGkgMTMgJmFncmF2ZTsgMThoPC9zdHJvbmc+LCBhdXByJmVncmF2ZTtzIGRlIE1tZSBYWFhYWCBvdSBhdXByJmVncmF2ZTtzIGRlIG1vaS1tJmVjaXJjO21lKiAoZGlyZWN0ZW1lbnQgb3UgZW4gciZlYWN1dGU7cG9uZGFudCAmYWdyYXZlOyBjZSBtYWlsKS48L3NwYW4+PC9zcGFuPjwvcD4KCjxwPjxzcGFuIHN0eWxlPSJmb250LXNpemU6MThweCI+PHNwYW4gc3R5bGU9ImNvbG9yOiMyOTgwYjkiPkJvbm5lIGpvdXJuJmVhY3V0ZTtlICZhZ3JhdmU7IHRvdXMsPC9zcGFuPjwvc3Bhbj48L3A+Cgo8cD4qSmUgc3VpcyBhYnNlbnQgcG91ciBmb3JtYXRpb24gbHVuZGkgZXQgbWFyZGkgMTIgZXQgMTMgZiZlYWN1dGU7dnJpZXIuPC9wPg==`}</EncodedHTMLDiv>
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
