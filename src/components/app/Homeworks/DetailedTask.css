@@ -1,0 +1,23 @@
+.detailed-task {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.task-header h4 {
+    font-size: var(--font-size-20);
+}
+
+.task-header label {
+    font-weight: 600;
+}
+
+.task-subtitle {
+    font-weight: 600;
+}

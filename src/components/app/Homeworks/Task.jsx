@@ -1,11 +1,10 @@
 import { useRef, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
-
 import { AppContext } from "../../../App";
+import { applyZoom } from "../../../utils/zoom";
 
 import "./Task.css";
-import { applyZoom } from "../../../utils/zoom";
 
 export default function Task({ day, task, taskIndex, userHomeworks, ...props }) {
     const { fetchHomeworksDone } = useContext(AppContext)

@@ -84,7 +84,7 @@
     font-size: var(--font-size-14);
 }
 
-.task .interrogation-alert {
+:is(.task, .detailed-task) .interrogation-alert {
     display: inline-block;
     margin-top: 10px;
     margin-left: 10px;
