@@ -21,8 +21,8 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
     function completedTaskAnimation() {
         const bounds = taskCheckboxRef.current.getBoundingClientRect();
         const origin = {
-            x: bounds.left + bounds.width/2,
-            y: bounds.top + bounds.height/2
+            x: bounds.left + 15/2,
+            y: bounds.top + 15/2
         }
         confetti({
             particleCount: 40,
@@ -56,12 +56,14 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                 {task.subject.replace(". ", ".").replace(".", ". ")}
             </h4>
         </div>
-        {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         <div className="task-subtitle">
-            {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()}</span>}
+            {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
+            {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
-        <div className="task-content">
-            {task.content && <EncodedHTMLDiv >{task.content}</EncodedHTMLDiv>}
+        {task.content && <EncodedHTMLDiv className="task-content">{task.content}</EncodedHTMLDiv>}
+        <div className="task-footer">
+            <div className="task-footer-button">Fichiers</div>
+            <div className="task-footer-button">Contenu de séance</div>
         </div>
     </div>
         : <ContentLoader />

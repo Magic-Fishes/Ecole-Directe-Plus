@@ -110,7 +110,7 @@
 }
 
 .notebook-day.selected .tasks-container {
-    gap: 35px;
+    gap: 30px;
 }
 
 .notebook-day .notebook-day-header {
@@ -152,13 +152,16 @@
     content: "";
 }
 
-.notebook-day .notebook-day-header + hr {
+.notebook-day .notebook-day-header + hr, .detailed-task-separator {
     height: 3px;
     border-radius: 3px;
     margin-inline: 15%;
     background-color: rgb(var(--border-color-contrast));
     border: none;
     transform: translateY(-1.5px);
+}
+.detailed-task-separator {
+    transform: none;
 }
 
 .tasks-container {

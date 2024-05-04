@@ -7,11 +7,12 @@
 .task-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 10px;
 }
 
 .task-header h4 {
-    font-size: var(--font-size-20);
+    font-size: var(--font-size-16);
 }
 
 .task-header label {
@@ -19,5 +20,45 @@
 }
 
 .task-subtitle {
-    font-weight: 600;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.detailed-task .add-date {
+    display: inline-block;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14);
+}
+
+.detailed-task .task-content {
+    margin-block: 20px;
+}
+
+.task-footer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.task-footer .task-footer-button {
+    padding: 8px;
+    border-radius: 10px;
+    flex: 1;
+    background-color: rgba(var(--background-color-3), .5);
+    color: rgb(var(--text-color-alt));
+    
+    display: flex;
+    align-items: center;
+    transition: .1s;
+    cursor: pointer;
+}
+.task-footer .task-footer-button:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-3));
+}
+.task-footer .task-footer-button:active {
+    background-color: rgb(var(--background-color-3), .7);
+}
+
