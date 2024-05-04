@@ -277,7 +277,7 @@ export default function Notebook({ }) {
                     </div>
                     <hr />
                     <div className="tasks-container">
-                        {homeworks[el].map((task, taskIndex) => (selectedDate === el ? <DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} /> : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />))}
+                        {homeworks[el].map((task, taskIndex) => (selectedDate === el ? <><DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />{taskIndex < homeworks[el].length-1 ? <hr className="detailed-task-separator"/> : null}</> : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />))}
                     </div>
                 </div>
             })
