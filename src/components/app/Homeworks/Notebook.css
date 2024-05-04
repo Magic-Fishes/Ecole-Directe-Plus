@@ -109,6 +109,10 @@
     opacity: 1;
 }
 
+.notebook-day.selected .tasks-container {
+    gap: 35px;
+}
+
 .notebook-day .notebook-day-header {
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
