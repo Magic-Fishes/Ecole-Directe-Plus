@@ -86,11 +86,13 @@
 
 :is(.task, .detailed-task) .interrogation-alert {
     display: inline-block;
-    margin-top: 10px;
-    margin-left: 10px;
     padding: 5px 10px;
     background-color: rgba(var(--background-color-soft-error), .3);
     color: rgb(var(--text-color-soft-error-main));
     border: 1px solid rgb(var(--text-color-soft-error-main), .3);
     border-radius: 7px;
+}
+.task .interrogation-alert {
+    margin-top: 10px;
+    margin-left: 10px;
 }
