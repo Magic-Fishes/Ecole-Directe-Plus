@@ -47,6 +47,9 @@ export function getCurrentSchoolYear() {
 }
 
 export function getISODate(date) {
+    if (typeof date === "string") {
+        date = new Date(date)
+    }
     return date.getUTCFullYear() +
     "-" +
     (date.getUTCMonth() + 1 + "").padStart(2, "0") +

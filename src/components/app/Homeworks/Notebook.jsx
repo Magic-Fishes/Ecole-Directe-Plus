@@ -9,11 +9,11 @@ import Task from "./Task";
 import "./Notebook.css";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
+import DetailedTask from "./DetailedTask";
 
 export default function Notebook({ }) {
     const { useUserData } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
-    const [selectedDate, setSelectedDate] = useState(null); // selected date (default: today)
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -23,6 +23,8 @@ export default function Notebook({ }) {
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const homeworks = userHomeworks.get();
+
+    const selectedDate = location.hash.split(";")[0].slice(1)
 
     function calcStrokeColorColorProgression(progression) {
         const startColor = [255, 66, 66];
@@ -52,11 +54,7 @@ export default function Notebook({ }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        setSelectedDate(newDate);
         navigate("#" + newDate + ";" + ((cleanup && location.hash.split(";")[1]) || ""));
-    }
-    function navigateToTask(newTask) {
-        navigate("#" + (location.hash.split(";")[0].slice(1) ?? "") + ";" + newTask);
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -87,9 +85,7 @@ export default function Notebook({ }) {
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
         }
-        const date = location.hash.split(";")[0].slice(1);
-        if (validDateFormat(date)) {
-            setSelectedDate(date);
+        if (validDateFormat(selectedDate)) {
             const element = anchorElement.current;
             if (element !== null) {
                 element.scrollIntoView({ inline: "center" });
@@ -262,14 +258,14 @@ export default function Notebook({ }) {
     return <>
         <div className="date-selector">
             <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-            <time dateTime={location.hash.split(";")[0].slice(1) || null} className="selected-date">{(new Date(location.hash.split(";")[0].slice(1))).toLocaleDateString() || "AAAA-MM-JJ"}</time>
+            <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() || "AAAA-MM-JJ"}</time>
             <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
         </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div onClick={() => !hasMouseMoved && navigate(`#${el};${(location.hash.split(";")[0].slice(1) === el ? location.hash.split(";")[1] : homeworks[el][0].id)}`)} key={el} id={el} ref={location.hash.split(";")[0].slice(1) === el ? anchorElement : null} className={`notebook-day ${location.hash.split(";")[0].slice(1) === el ? "selected" : ""}`}>
+                return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                     <div className="notebook-day-header">
                         <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
                             <circle cx="50" cy="50" r="40" />
@@ -281,11 +277,11 @@ export default function Notebook({ }) {
                     </div>
                     <hr />
                     <div className="tasks-container">
-                        {homeworks[el].map((task, taskIndex) => <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />)}
+                        {homeworks[el].map((task, taskIndex) => (selectedDate === el ? <DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} /> : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />))}
                     </div>
                 </div>
             })
-                : <p>Chargement des devoirs...</p>}
+            : <p>Chargement des devoirs...</p>}
         </div>
     </>
 }
