@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef, useCallback } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter } from "../../../utils/utils";
@@ -11,7 +11,7 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 
-export default function Notebook({ }) {
+export default function Notebook({ setBottomSheetSession }) {
     const { useUserData } = useContext(AppContext);
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
@@ -54,7 +54,8 @@ export default function Notebook({ }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        navigate("#" + newDate + ";" + ((cleanup && location.hash.split(";")[1]) || ""));
+        console.log("tits")
+        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`);
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -202,46 +203,6 @@ export default function Notebook({ }) {
         }
     }, [notebookContainerRef.current]);
 
-    // useEffect(() => {
-    //     let timeoutId = null;
-    //     function onScrollEnd() {
-    //         let closestElement = null;
-    //         let closestDistance = Infinity;
-    //         const SCROLL_PADDING = 20;
-
-    //         for (const child of notebookContainerRef.current.children) {
-    //             const rect = child.getBoundingClientRect();
-    //             const distance = Math.abs(rect.left - (SCROLL_PADDING + notebookContainerRef.current.getBoundingClientRect().left));
-
-    //             if (distance < closestDistance) {
-    //                 closestElement = child;
-    //                 closestDistance = distance;
-    //             }
-    //         }
-
-    //         if (closestElement) {
-    //             anchorElement.current = closestElement;
-    //         }
-    //     }
-
-    //     const onScroll = () => {
-    //         if (timeoutId !== null) {
-    //             clearTimeout(timeoutId);
-    //         }
-
-    //         timeoutId = setTimeout(onScrollEnd, 150);
-    //     }
-
-
-    //     notebookContainerRef.current.addEventListener("scroll", onScroll);
-
-    //     return () => {
-    //         if (notebookContainerRef.current) {
-    //             notebookContainerRef.current.removeEventListener("scroll", onScroll);
-    //         }
-    //     }
-    // }, []);
-
     useEffect(() => {
         const script = document.createElement("script");
 
@@ -265,11 +226,11 @@ export default function Notebook({ }) {
             {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
-                return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                     <div className="notebook-day-header">
                         <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
                             <circle cx="50" cy="50" r="40" />
-                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1-progression}/>
+                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
                         </svg>
                         <span className="notebook-day-date">
                             <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
@@ -277,11 +238,22 @@ export default function Notebook({ }) {
                     </div>
                     <hr />
                     <div className="tasks-container">
-                        {homeworks[el].map((task, taskIndex) => (selectedDate === el ? <><DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />{taskIndex < homeworks[el].length-1 ? <hr className="detailed-task-separator"/> : null}</> : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />))}
+                        {
+                            homeworks[el].map((task, taskIndex) => {
+                                const result = [
+                                    selectedDate === el 
+                                        ? <DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
+                                        : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
+                                    result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+                                }
+                                return result.flat()
+                            })
+                        }
                     </div>
                 </div>
             })
-            : <p>Chargement des devoirs...</p>}
+                : <p>Chargement des devoirs...</p>}
         </div>
     </>
 }

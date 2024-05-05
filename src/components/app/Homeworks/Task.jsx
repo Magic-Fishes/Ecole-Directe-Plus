@@ -1,5 +1,5 @@
 import { useRef, useContext } from "react"
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 import { AppContext } from "../../../App";
 import { applyZoom } from "../../../utils/zoom";
@@ -12,8 +12,8 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     const taskCheckboxRef = useRef(null);
     
     const homeworks = userHomeworks.get()
-
     const navigate = useNavigate();
+    const location = useLocation();
 
     function completedTaskAnimation() {
         const bounds = taskCheckboxRef.current.getBoundingClientRect();
@@ -50,7 +50,8 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         event.stopPropagation()
         const notebookContainer = document.getElementsByClassName("notebook-container")[0];
         if (!isMouseInCheckBoxRef.current && !notebookContainer.classList.contains("mouse-moved")) {
-            navigate(`#${day};${task.id}`);
+            console.log("titsaaaa")
+            navigate(`#${day};${task.id}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`);
         }
     }
 
