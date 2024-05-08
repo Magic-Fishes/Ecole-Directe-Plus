@@ -6,11 +6,16 @@ import { AppContext } from "../../../App";
 import "./GradeScaleToggle.css";
 
 
-export default function GradeScaleToggle({ className="", ...props }) {
-
+export default function GradeScaleToggle() {
+    const [magicResizer, setMagicResizer] = useState(101); // This si VERY sad but try to remove it and you'll see that the width of the tabs "Évaluations" and "Graphiques" is smaller (on Firefox only).
+    // We don't know why but setting the value of the GradeScaleToggle fix this (it make it a little bit larger as we want even if we set a smaller value after) so this will be the solution now.
     const { useUserSettings } = useContext(AppContext);
     const gradeScale = useUserSettings("gradeScale");
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
+
+    useEffect(() => {
+        setMagicResizer(undefined)
+    }, [])
 
     const handleClick = () => {
         isGradeScaleEnabled.set(!isGradeScaleEnabled.get());
@@ -53,7 +58,7 @@ export default function GradeScaleToggle({ className="", ...props }) {
 
     return (
         <button className={`grade-scale-toggle ${isGradeScaleEnabled.get() && "active"}`} title={`Uniformiser tous les barèmes sur ${gradeScale.get()}`} onClick={handleClick} onWheel={handleScroll} onKeyDown={handleKeyDown} >
-            <div className="top">x</div> <div className="bottom">{gradeScale.get()}</div>
+            <div className="top">x</div> <div className="bottom">{magicResizer ? magicResizer : gradeScale.get()}</div>
         </button>
     )
 }
