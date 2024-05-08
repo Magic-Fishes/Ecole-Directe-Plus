@@ -25,6 +25,6 @@ export default function EncodedHTMLDiv({ children, backgroundColor, ...props }) 
     }, []);
 
     return (
-        <div ref={divRef} dangerouslySetInnerHTML={{ __html: clearHTML(children, backgroundColor ?? backgroundColorState) }} {...props}></div>
+        <div ref={divRef} dangerouslySetInnerHTML={{ __html: children ? clearHTML(children, backgroundColor ?? backgroundColorState) : "" }} {...props}></div>
     )
 }
