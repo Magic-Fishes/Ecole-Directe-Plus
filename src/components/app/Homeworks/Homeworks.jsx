@@ -11,7 +11,7 @@ import {
 
 import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import "./Homeworks.css";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
@@ -24,7 +24,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     const { useUserData } = useContext(AppContext);
     const homeworks = useUserData("sortedHomeworks");
     const [bottomSheetSession, setBottomSheetSession] = useState({})
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const hashParameters = location.hash.split(";")
+
     // behavior
     useEffect(() => {
         document.title = "Cahier de texte • Ecole Directe Plus";
@@ -42,6 +46,14 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             controller.abort();
         }
     }, [isLoggedIn, activeAccount, homeworks.get()]);
+
+    useEffect(() => {
+        if (hashParameters.length > 2 && !bottomSheetSession.id) {
+            navigate(`${hashParameters[0]};${hashParameters[1]}`)
+        } else if (hashParameters.length < 3 && bottomSheetSession.id) {
+            setBottomSheetSession({})
+        }
+    }, [location.hash])
 
     // JSX
     return <>

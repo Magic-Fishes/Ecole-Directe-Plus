@@ -54,7 +54,6 @@ export default function Notebook({ setBottomSheetSession }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        console.log("tits")
         navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`);
     }
 

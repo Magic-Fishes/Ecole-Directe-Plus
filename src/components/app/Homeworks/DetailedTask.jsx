@@ -13,12 +13,15 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
     const { fetchHomeworks, fetchHomeworksDone } = useContext(AppContext)
     const homeworks = userHomeworks.get()
 
-    const supposedNoSessionContent = "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+"
+    const supposedNoSessionContent = [
+        "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
+        "",
+    ]
 
     const hashParameters = location.hash.split(";")
     
     useEffect(() => {
-        if (hashParameters.length > 1 && hashParameters[1] == task.id) {
+        if (hashParameters.length > 2 && hashParameters[1] == task.id) {
             setBottomSheetSession({
                 day,
                 id: task.id,
@@ -74,7 +77,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
             {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
             {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
-        {task.content && <EncodedHTMLDiv className="task-content">{task.content}</EncodedHTMLDiv>}
+        <EncodedHTMLDiv className="task-content">{task.content}</EncodedHTMLDiv>
         <div className="task-footer">
             <Link onClick={(e) => {
                 e.stopPropagation(); setBottomSheetSession({
@@ -82,7 +85,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                     id: task.id,
                     content: task.sessionContent,
                 })
-            }} to={`#${day};${task.id};s`} className={`task-footer-button ${task.sessionContent === supposedNoSessionContent ? "disabled" : ""}`}>Contenu de séance</Link>
+            }} to={`#${day};${task.id};s`} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}>Contenu de séance</Link>
             <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}>Fichiers</div>
         </div>
     </div>
