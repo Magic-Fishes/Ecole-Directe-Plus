@@ -34,8 +34,17 @@
 }
 
 .detailed-task .task-content {
-    margin-block: 20px;
-    padding-left: 15px;
+    margin-block: 5px;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.dark .detailed-task .task-content {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.light .detailed-task .task-content {
+    background-color: rgba(255, 255, 255, 0.3);
 }
 
 .task-footer {
