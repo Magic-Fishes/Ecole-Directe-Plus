@@ -10,6 +10,7 @@ import "./Notebook.css";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
+import { canScroll } from "../../../utils/DOM";
 
 export default function Notebook({ setBottomSheetSession }) {
     const { useUserData } = useContext(AppContext);
@@ -18,6 +19,9 @@ export default function Notebook({ setBottomSheetSession }) {
     const navigate = useNavigate();
 
     const notebookContainerRef = useRef(null);
+    const tasksContainersRefs = useRef([]);
+    const isMouseOverTasksContainer = useRef(false);
+    const isMouseIntoScrollableContainer = useRef(false);
     const anchorElement = useRef(null);
     // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
@@ -106,12 +110,14 @@ export default function Notebook({ setBottomSheetSession }) {
 
     useEffect(() => {
         const horizontalToVerticalScrolling = (event) => {
-            if (event.deltaY !== 0 && !event.shiftKey) {
-                event.preventDefault();
-                if (event.deltaY !== 0) {
-                    const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
-                    if (!!newDate) {
-                        navigateToDate(newDate)
+            if (!isMouseIntoScrollableContainer.current.vertical) {
+                if (event.deltaY !== 0 && !event.shiftKey) {
+                    event.preventDefault();
+                    if (event.deltaY !== 0) {
+                        const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
+                        if (!!newDate) {
+                            navigateToDate(newDate)
+                        }
                     }
                 }
             }
@@ -123,7 +129,7 @@ export default function Notebook({ setBottomSheetSession }) {
                 notebookContainerRef.current.removeEventListener("wheel", horizontalToVerticalScrolling);
             }
         }
-    }, [selectedDate, homeworks]);
+    }, [selectedDate, homeworks, isMouseIntoScrollableContainer]);
 
     // - - Drag to scroll - -
 
@@ -215,6 +221,36 @@ export default function Notebook({ setBottomSheetSession }) {
         }
     }, []);
 
+    useEffect(() => {
+        tasksContainersRefs.current = [...tasksContainersRefs.current]; // met à jour les références
+
+        const handleMouseEnter = (event) => {
+            isMouseOverTasksContainer.current = true;
+            isMouseIntoScrollableContainer.current = canScroll(event.target);
+        }
+        const handleMouseLeave = (event) => {
+            isMouseOverTasksContainer.current = false;
+            isMouseIntoScrollableContainer.current = canScroll(event.target);
+        }
+
+        for (let tasksContainerRef of tasksContainersRefs.current) {
+            if (tasksContainerRef) {
+                tasksContainerRef.addEventListener("mouseenter", handleMouseEnter);
+                tasksContainerRef.addEventListener("mouseleave", handleMouseLeave);
+            }
+        }
+        
+        return () => {
+            for (let tasksContainerRef of tasksContainersRefs.current) {
+                if (tasksContainerRef) {
+                    tasksContainerRef.removeEventListener("mouseenter", handleMouseEnter);
+                    tasksContainerRef.removeEventListener("mouseleave", handleMouseLeave);
+                }
+            }
+        }
+
+    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
+
     return <>
         <div className="date-selector">
             <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
@@ -222,7 +258,7 @@ export default function Notebook({ setBottomSheetSession }) {
             <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
         </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
+            {homeworks ? Object.keys(homeworks).sort().map((el, index) => {
                 const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                 const elDate = new Date(el)
                 return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
@@ -236,11 +272,11 @@ export default function Notebook({ setBottomSheetSession }) {
                         </span>
                     </div>
                     <hr />
-                    <div className="tasks-container">
+                    <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
                         {
                             homeworks[el].map((task, taskIndex) => {
                                 const result = [
-                                    selectedDate === el 
+                                    selectedDate === el
                                         ? <DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
                                         : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
                                 if (selectedDate === el && taskIndex < homeworks[el].length - 1) {

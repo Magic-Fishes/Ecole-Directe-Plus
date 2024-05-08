@@ -15,6 +15,15 @@
     font-size: var(--font-size-16);
 }
 
+.task-header .check-box input[type="checkbox"] {
+    border-color: rgba(var(--text-color-alt), .6);
+}
+.task-header .check-box:is(:hover, :focus-visible) input[type="checkbox"]:not(:checked) {
+    border-color: rgba(var(--text-color-alt), 1);
+}
+.task-header .check-box input[type="checkbox"]:checked {
+    background-color: rgba(var(--text-color-alt), .1);
+}
 .task-header label {
     font-weight: 600;
 }
@@ -24,7 +33,6 @@
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
-    padding-left: 15px;
 }
 
 .detailed-task .add-date {
@@ -77,5 +85,18 @@
 }
 .task-footer .task-footer-button:active {
     background-color: rgb(var(--background-color-3), .7);
+}
+
+.task-footer .task-footer-button .download-icon {
+    height: 20px;
+    margin-right: 10px;
+}
+.task-footer .task-footer-button .session-content-icon {
+    height: 20px;
+    scale: 1.5;
+    margin-right: 7px;
+}
+.task-footer .task-footer-button svg * {
+    stroke: rgb(var(--text-color-alt));
 }
 

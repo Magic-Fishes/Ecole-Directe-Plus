@@ -7,6 +7,8 @@ import { applyZoom } from "../../../utils/zoom";
 import { Link, useNavigate } from "react-router-dom"
 
 import "./DetailedTask.css"
+import PatchNotesIcon from "../../graphics/PatchNotesIcon"
+import DownloadIcon from "../../graphics/DownloadIcon"
 export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
     const isMouseInCheckBoxRef = useRef(false);
     const taskCheckboxRef = useRef(null);
@@ -85,8 +87,8 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                     id: task.id,
                     content: task.sessionContent,
                 })
-            }} to={`#${day};${task.id};s`} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}>Contenu de séance</Link>
-            <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}>Fichiers</div>
+            }} to={`#${day};${task.id};s`} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
+            <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</div>
         </div>
     </div>
         : <ContentLoader />
