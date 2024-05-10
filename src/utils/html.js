@@ -92,7 +92,7 @@ function hasParentWithInlineBackground(element) {
     return hasParentWithInlineBackground(element.parentElement);
 }
 
-export function clearHTML(html, backgroundColor) {
+export function clearHTML(html, backgroundColor, asString=true) {
     /**
      * Decodes, makes readable, sanitizes and improve contrasts of html content with optional inline style
      * @param html HTML content to clear
@@ -149,5 +149,5 @@ export function clearHTML(html, backgroundColor) {
         document.body.removeChild(tempContainer);
     }
 
-    return parsedHTML.innerHTML;
+    return asString ? parsedHTML.innerHTML : parsedHTML;
 }

@@ -9,6 +9,8 @@ import { Link, useNavigate } from "react-router-dom"
 import "./DetailedTask.css"
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
 import DownloadIcon from "../../graphics/DownloadIcon"
+import CopyButton from "../../generic/CopyButton"
+import { clearHTML } from "../../../utils/html"
 export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
     const isMouseInCheckBoxRef = useRef(false);
     const taskCheckboxRef = useRef(null);
@@ -83,7 +85,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                 {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
-            <EncodedHTMLDiv className="task-content">{task.content}</EncodedHTMLDiv>
+            <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} >{task.content}</EncodedHTMLDiv>
             <div className="task-footer">
                 <Link onClick={(e) => {
                     e.stopPropagation(); setBottomSheetSession({

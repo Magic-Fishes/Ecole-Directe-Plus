@@ -27,12 +27,12 @@ export default function KeyboardKey({ children, keyName, ...props }) {
             document.removeEventListener("keydown", handleKeyDown);
             document.removeEventListener("keyup", handleKeyUp);
         }
-        
+
     }, []);
-        
+
     return (
-       <kbd className="keyboard-key" ref={keyboardKeyRef}>
-           {children}
-       </kbd>
+        <kbd className="keyboard-key" ref={keyboardKeyRef}>
+            {children}
+        </kbd>
     )
 }

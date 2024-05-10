@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { clearHTML } from "../../../utils/html";
 
-export default function EncodedHTMLDiv({ children, backgroundColor, ...props }) {
+export default function EncodedHTMLDiv({ children, nonEncodedChildren=null, backgroundColor, ...props }) {
     const [backgroundColorState, setBackgroundColorState] = useState(null);
     const divRef = useRef(null);
 
@@ -25,6 +25,9 @@ export default function EncodedHTMLDiv({ children, backgroundColor, ...props }) 
     }, []);
 
     return (
-        <div ref={divRef} dangerouslySetInnerHTML={{ __html: children ? clearHTML(children, backgroundColor ?? backgroundColorState) : "" }} {...props}></div>
+        <div ref={divRef}{...props}>
+            <div dangerouslySetInnerHTML={{ __html: children ? clearHTML(children, backgroundColor ?? backgroundColorState) : "" }}></div>
+            {nonEncodedChildren && <div>{nonEncodedChildren}</div>}
+        </div>
     )
 }

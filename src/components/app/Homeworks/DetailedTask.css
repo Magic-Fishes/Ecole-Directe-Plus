@@ -44,7 +44,9 @@
 .detailed-task .task-content {
     margin-block: 5px;
     padding: 15px;
+    padding-right: 45px;
     border-radius: 10px;
+    position: relative;
 }
 
 .dark .detailed-task .task-content {
@@ -53,6 +55,18 @@
 
 .light .detailed-task .task-content {
     background-color: rgba(var(--text-color-opposite), 0.3);
+}
+
+.detailed-task .task-content .copy-button {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    opacity: 0;
+    transition: .1s;
+}
+
+.detailed-task .task-content:is(:hover, :focus-within) .copy-button {
+    opacity: 1;
 }
 
 /* change task content items appearance */
