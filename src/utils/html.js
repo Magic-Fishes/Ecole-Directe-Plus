@@ -149,5 +149,11 @@ export function clearHTML(html, backgroundColor, asString=true) {
         document.body.removeChild(tempContainer);
     }
 
+    // improve UX
+    const allLinks = parsedHTML.querySelectorAll("a");
+    allLinks.forEach((link) => {
+        link.target = "_blank";
+    })
+
     return asString ? parsedHTML.innerHTML : parsedHTML;
 }
