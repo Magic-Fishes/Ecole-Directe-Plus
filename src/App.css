@@ -64,6 +64,7 @@
 :root.tritanopia {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
+    --text-color-opposite: 0, 0, 0;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 166, 190, 201;
     
@@ -127,6 +128,7 @@
 :root.dark {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
+    --text-color-opposite: 0, 0, 0;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 180, 180, 240;
     
@@ -191,6 +193,7 @@
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
+    --text-color-opposite: 255, 255, 255;
     --text-color-alt: 76, 76, 184;
     
     --background-color-0: 228, 228, 255;

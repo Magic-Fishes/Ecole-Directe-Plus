@@ -48,11 +48,19 @@
 }
 
 .dark .detailed-task .task-content {
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(var(--text-color-opposite), 0.15);
 }
 
 .light .detailed-task .task-content {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(var(--text-color-opposite), 0.3);
+}
+
+/* change task content items appearance */
+.detailed-task .task-content a:is(:hover, :focus-visible) {
+    opacity: .8;
+}
+.detailed-task .task-content a:active {
+    opacity: .6;
 }
 
 .task-footer {

@@ -87,6 +87,28 @@ export default function Notebook({ setBottomSheetSession }) {
         return dates[newDateIdx];
     }
 
+    function customScrollIntoView(element) {
+        const container = notebookContainerRef.current
+
+        const elements = container.querySelectorAll(".notebook-day");
+
+        // get the old selected element (because the behavior changes according to its position with the new selected element)
+        let oldSelectedElementBounds;
+        for (let element of elements) {
+            const elementBounds = element.getBoundingClientRect();
+
+            if (elementBounds.width > 300) {
+                oldSelectedElementBounds = elementBounds;
+                break;
+            }
+        }
+        
+        const bounds = element.getBoundingClientRect();
+        const containerBounds = notebookContainerRef.current.getBoundingClientRect();
+        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width)/2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width/2, 0)
+
+    }
+
     useEffect(() => {
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
@@ -94,7 +116,8 @@ export default function Notebook({ setBottomSheetSession }) {
         if (validDateFormat(selectedDate)) {
             const element = anchorElement.current;
             if (element !== null) {
-                element.scrollIntoView({ inline: "center" });
+                // element.scrollIntoView({ inline: "center" });
+                customScrollIntoView(element);
             }
         } else {
             if (homeworks) {
