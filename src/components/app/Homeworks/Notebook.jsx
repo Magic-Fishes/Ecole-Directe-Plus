@@ -102,6 +102,9 @@ export default function Notebook({ setBottomSheetSession }) {
                 break;
             }
         }
+        if (!oldSelectedElementBounds) {
+            return;
+        }
         
         const bounds = element.getBoundingClientRect();
         const containerBounds = notebookContainerRef.current.getBoundingClientRect();
