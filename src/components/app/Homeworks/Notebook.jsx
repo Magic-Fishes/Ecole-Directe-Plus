@@ -13,7 +13,8 @@ import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
 export default function Notebook({ setBottomSheetSession }) {
-    const { useUserData } = useContext(AppContext);
+    const { actualDisplayTheme, useUserData, useUserSettings } = useContext(AppContext);
+    const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function Notebook({ setBottomSheetSession }) {
     const isMouseOverTasksContainer = useRef(false);
     const isMouseIntoScrollableContainer = useRef(false);
     const anchorElement = useRef(null);
+    const contentLoadersRandomValues = useRef({ days: Array.from({ length: Math.floor(Math.random() * 5) + 5 }, (_, i) => i), tasks: Array.from({ length: 10 }, (_, i) => Math.floor(Math.random() * 3) + 1) })
     // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
@@ -239,7 +241,7 @@ export default function Notebook({ setBottomSheetSession }) {
                 tasksContainerRef.addEventListener("mouseleave", handleMouseLeave);
             }
         }
-        
+
         return () => {
             for (let tasksContainerRef of tasksContainersRefs.current) {
                 if (tasksContainerRef) {
@@ -254,41 +256,69 @@ export default function Notebook({ setBottomSheetSession }) {
     return <>
         <div className="date-selector">
             <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-            <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() || "AAAA-MM-JJ"}</time>
+            <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
             <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
         </div>
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks ? Object.keys(homeworks).sort().map((el, index) => {
-                const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
-                const elDate = new Date(el)
-                return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                    <div className="notebook-day-header">
-                        <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
-                            <circle cx="50" cy="50" r="40" />
-                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
-                        </svg>
-                        <span className="notebook-day-date">
-                            <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
-                        </span>
+            {homeworks
+                ? Object.keys(homeworks).sort().map((el, index) => {
+                    const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
+                    const elDate = new Date(el)
+                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header">
+                            <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
+                                <circle cx="50" cy="50" r="40" />
+                                <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
+                            </svg>
+                            <span className="notebook-day-date">
+                                <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
+                            </span>
+                        </div>
+                        <hr />
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
+                            {
+                                homeworks[el].map((task, taskIndex) => {
+                                    const result = [
+                                        selectedDate === el
+                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
+                                            : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                    if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
+                                        result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+                                    }
+                                    return result.flat()
+                                })
+                            }
+                        </div>
                     </div>
-                    <hr />
-                    <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
-                        {
-                            homeworks[el].map((task, taskIndex) => {
-                                const result = [
-                                    selectedDate === el
-                                        ? <DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
-                                        : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
-                                if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
-                                    result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
-                                }
-                                return result.flat()
-                            })
-                        }
+                })
+                : contentLoadersRandomValues.current.days.map((el, index) => {
+                    return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header">
+                            <svg className={`progress-circle`} viewBox="0 0 100 100" >
+                                <circle cx="50" cy="50" r="40" />
+                            </svg>
+                            <span className="notebook-day-date">
+                                <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
+                                    speed={1}
+                                    backgroundColor={actualDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
+                                    foregroundColor={actualDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
+                                    style={{ width: `${130}px`, maxHeight: "25px" }}
+                                >
+                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
+                                </ContentLoader>
+                            </span>
+                        </div>
+                        <hr />
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
+                            {
+                                index === 0
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} setBottomSheetSession={setBottomSheetSession} />)
+                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
+                            }
+                        </div>
                     </div>
-                </div>
-            })
-                : <p>Chargement des devoirs...</p>}
+                })}
         </div>
     </>
 }
