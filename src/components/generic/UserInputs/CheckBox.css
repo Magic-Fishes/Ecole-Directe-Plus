@@ -32,7 +32,7 @@
     cursor: not-allowed;
 }
 
-.check-box input[type="checkbox"]:hover:not(:checked), .check-box input[type="checkbox"]:focus-visible {
+.check-box input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
     border-color: rgb(var(--border-color-1));
 }
 

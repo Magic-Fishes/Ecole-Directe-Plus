@@ -1,5 +1,5 @@
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
     WindowsContainer,
@@ -9,10 +9,13 @@ import {
     WindowContent
 } from "../../generic/Window";
 
-
-import "./Homeworks.css";
 import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import "./Homeworks.css";
+import BottomSheet from "../../generic/PopUps/BottomSheet";
+import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 
 
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
@@ -20,6 +23,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
 
     const { useUserData } = useContext(AppContext);
     const homeworks = useUserData("sortedHomeworks");
+    const [bottomSheetSession, setBottomSheetSession] = useState({})
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const hashParameters = location.hash.split(";")
 
     // behavior
     useEffect(() => {
@@ -39,9 +47,16 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         }
     }, [isLoggedIn, activeAccount, homeworks.get()]);
 
+    useEffect(() => {
+        if (hashParameters.length > 2 && !bottomSheetSession.id) {
+            navigate(`${hashParameters[0]};${hashParameters[1]}`)
+        } else if (hashParameters.length < 3 && bottomSheetSession.id) {
+            setBottomSheetSession({})
+        }
+    }, [location.hash])
 
     // JSX
-    return (
+    return <>
         <div id="homeworks">
             <WindowsContainer name="homeworks">
                 <WindowsLayout direction="row" ultimateContainer={true}>
@@ -68,11 +83,14 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
                         <WindowContent id="notebook">
-                            <Notebook />
+                            <Notebook setBottomSheetSession={setBottomSheetSession} />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
             </WindowsContainer>
         </div>
-    )
+        {bottomSheetSession.id && <BottomSheet heading="Contenu de séance" onClose={() => {navigate(`#${bottomSheetSession.day};${bottomSheetSession.id}`); setBottomSheetSession({})}}>
+            <EncodedHTMLDiv>{bottomSheetSession.content}</EncodedHTMLDiv>
+        </BottomSheet>}
+    </>
 }
