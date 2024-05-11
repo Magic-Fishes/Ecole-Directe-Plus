@@ -18,7 +18,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
     const settings = useUserSettings();
     const homeworks = userHomeworks.get()
 
-    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 150 })
+    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
 
     const supposedNoSessionContent = [
         "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
@@ -38,8 +38,13 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
     }, [])
 
     useEffect(() => {
+        const controller = new AbortController();
         if (!task.content) {
-            fetchHomeworks(new AbortController(), day)
+            fetchHomeworks(controller, day)
+        }
+
+        return () => {
+            controller.abort();
         }
     }, [])
 
@@ -124,15 +129,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                 </ContentLoader>
             </div>
-            <ContentLoader
-                animate={settings.get("displayMode") === "quality"}
-                speed={1}
-                backgroundColor={'#40405b'}
-                foregroundColor={'#40405b'}
-                style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px" }}
-            >
-                <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
-            </ContentLoader>
+            <div style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px", borderRadius: "10px", backgroundColor: actualDisplayTheme === "dark" ? "#40405b" : "#9d9dbd"}}></div>
             <div className="task-footer">
                 <div className={`task-footer-button disabled`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</div>
                 <div className={`task-footer-button disabled`}><DownloadIcon className="download-icon" />Fichiers</div>

@@ -985,6 +985,10 @@ export default function App() {
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                if (!aFaire) {
+                    return null;
+                }
+                
                 const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
                 return ({
                     id: id,
@@ -999,8 +1003,9 @@ export default function App() {
                     sessionContent: contenuDeSeance.contenu,
                     sessionContentFiles: contenuDeSeance.documents,
                 })
-            })]
+            }).filter((item) => item)]
         }))
+        console.log("sortedHomeworks:", sortedHomeworks)
         return sortedHomeworks
     }
 
