@@ -29,6 +29,34 @@ export function createUserLists(accountNumber) {
     return list;
 }
 
+export function getCurrentSchoolYear() {
+    /**
+     * return an array:
+     * 0: start year bound
+     * 1: end year bound
+     */
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth();
+
+    if (month >= 8) {
+        return [year, (year + 1)];
+    }
+
+    return [(year - 1), year];
+}
+
+export function getISODate(date) {
+    if (typeof date === "string") {
+        date = new Date(date)
+    }
+    return date.getUTCFullYear() +
+    "-" +
+    (date.getUTCMonth() + 1 + "").padStart(2, "0") +
+    "-" +
+    date.getUTCDate().toString().padStart(2, "0")
+}
+
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }

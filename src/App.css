@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap'); */
 @font-face {
     font-family: 'Luciole';
     src: url('/public/fonts/Luciole_webfonts/Luciole-Regular/Luciole-Regular.eot'); /* IE9 Compat Modes */
@@ -64,6 +64,7 @@
 :root.tritanopia {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
+    --text-color-opposite: 0, 0, 0;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 166, 190, 201;
     
@@ -127,6 +128,7 @@
 :root.dark {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
+    --text-color-opposite: 0, 0, 0;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 180, 180, 240;
     
@@ -143,6 +145,7 @@
     
     --border-color-0: 75, 72, 217;
     --border-color-1: 109, 106, 251;
+    --border-color-contrast: 120, 120, 165; 
     
     --box-shadow-window: 0 0 20px black;
     --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
@@ -190,12 +193,13 @@
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
+    --text-color-opposite: 255, 255, 255;
     --text-color-alt: 76, 76, 184;
     
     --background-color-0: 228, 228, 255;
     --background-color-1: 210, 210, 255;
     --background-color-2: 200, 200, 240;
-    --background-color-3: 156, 156, 205;
+    --background-color-3: 176, 176, 225;
     /* --background-color-3: 94, 94, 136; */
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;

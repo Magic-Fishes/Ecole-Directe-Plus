@@ -1,0 +1,83 @@
+{
+    "code": 200,
+    "token": "b5a4226c-cae5-49d0-b547-084560c6f8c0",
+    "host": "HTTP109",
+    "data": {
+        "2024-03-04": [
+            {
+                "matiere": "MATHEMATIQUES",
+                "codeMatiere": "MATHS",
+                "aFaire": true,
+                "idDevoir": 14112,
+                "documentsAFaire": false,
+                "donneLe": "2024-02-12",
+                "effectue": false,
+                "interrogation": true,
+                "rendreEnLigne": false
+            },
+            {
+                "matiere": "MATHS EXPERTES",
+                "codeMatiere": "MATEX",
+                "aFaire": true,
+                "idDevoir": 14067,
+                "documentsAFaire": true,
+                "donneLe": "2024-02-12",
+                "effectue": false,
+                "interrogation": true,
+                "rendreEnLigne": false
+            }
+        ],
+        "2024-03-05": [
+            {
+                "matiere": "MATHEMATIQUES",
+                "codeMatiere": "MATHS",
+                "aFaire": true,
+                "idDevoir": 14290,
+                "documentsAFaire": false,
+                "donneLe": "2024-02-13",
+                "effectue": false,
+                "interrogation": true,
+                "rendreEnLigne": false
+            }
+        ],
+        "2024-03-06": [
+            {
+                "matiere": "ANGLAIS LV1",
+                "codeMatiere": "AGL1",
+                "aFaire": true,
+                "idDevoir": 14628,
+                "documentsAFaire": false,
+                "donneLe": "2024-02-16",
+                "effectue": false,
+                "interrogation": false,
+                "rendreEnLigne": false
+            }
+        ],
+        "2024-03-07": [
+            {
+                "matiere": "MATHEMATIQUES",
+                "codeMatiere": "MATHS",
+                "aFaire": true,
+                "idDevoir": 14113,
+                "documentsAFaire": true,
+                "donneLe": "2024-02-12",
+                "effectue": false,
+                "interrogation": false,
+                "rendreEnLigne": false
+            }
+        ],
+        "2024-03-08": [
+            {
+                "matiere": "ANGLAIS LV SECTION",
+                "codeMatiere": "AGL9",
+                "aFaire": true,
+                "idDevoir": 14468,
+                "documentsAFaire": false,
+                "donneLe": "2024-02-15",
+                "effectue": false,
+                "interrogation": false,
+                "rendreEnLigne": false
+            }
+        ]
+    }
+}

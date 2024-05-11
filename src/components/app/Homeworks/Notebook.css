@@ -1,0 +1,174 @@
+#notebook {
+    display: flex;
+    flex-flow: nowrap column;
+}
+
+.notebook-container {
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 40px;
+    overflow-y: visible;
+    overflow-x: auto;
+    scroll-padding-inline: 20px;
+    scroll-behavior: smooth;
+    height: 100%;
+    width: 100%;
+    cursor: grab;
+}
+
+.notebook-container:active {
+    cursor: grabbing;
+}
+.notebook-container.mouse-moved * {
+    cursor: grabbing !important;
+}
+
+.date-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.date-selector span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    transition: .15s;
+    background-color: rgba(var(--text-color-alt), 0);
+    cursor: pointer;
+}
+.date-selector span path {
+    stroke: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+
+.date-selector span:hover {
+    background-color: rgba(var(--text-color-alt), .1);
+}
+
+.date-selector span:active {
+    background-color: rgba(var(--text-color-alt), .2);
+}
+
+.date-selector svg {
+    height: 13px;
+    overflow: visible;
+}
+
+.date-selector span:active svg path {
+    transform: translateY(2px);
+}
+
+.date-selector :first-child svg {
+    transform: rotate(90deg);
+}
+
+.date-selector :last-child svg {
+    transform: rotate(-90deg);
+}
+
+.selected-date {
+    margin: 0 7px;
+    text-align: center;
+    color: rgb(var(--text-color-alt));
+    padding: 7px 10px;
+    border: 2px solid rgb(var(--text-color-alt));
+    border-radius: 50px;
+    user-select: none;
+    transition: .1s;
+}
+.selected-date:hover {
+    background-color: rgba(var(--text-color-alt), .07);
+}
+
+.notebook-day {
+    min-width: min(300px, 100%);
+    max-height: 100%;
+    background: rgb(var(--background-color-2));
+    border-radius: 25px;
+    box-shadow: var(--box-shadow-element);
+    filter: brightness(.9);
+    opacity: .8;
+    scroll-snap-align: center;
+    cursor: pointer;
+    transition: .2s;
+
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.notebook-day.selected {
+    min-width: min(600px, 100%);
+    filter: brightness(1.05);
+    opacity: 1;
+}
+
+.notebook-day.selected .tasks-container {
+    gap: 30px;
+}
+
+.notebook-day .notebook-day-header {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding: .5em;
+    display: flex;
+    height: 4em;
+    align-items: center;
+    background: rgb(var(--background-color-3));
+}
+
+.notebook-day .notebook-day-header .progress-circle {
+    height: 100%;
+    margin: 5px;
+    transform: rotate(-90deg);
+}
+
+.notebook-day .notebook-day-header .progress-circle circle {
+    fill: none;
+    stroke-width: 0.8em;
+    transition: 1s;
+}
+
+.notebook-day .notebook-day-header .progress-circle circle:first-child {
+    stroke: rgba(var(--text-color-main), .3);
+}
+
+
+.notebook-day .notebook-day-header .notebook-day-date {
+    text-align: center;
+    width: 100%;
+}
+
+.notebook-day .notebook-day-header::after {
+    height: 100%;
+    margin: 5px;
+    aspect-ratio: 1 / 1;
+    content: "";
+}
+
+.notebook-day .notebook-day-header + hr, .detailed-task-separator {
+    height: 3px;
+    border-radius: 3px;
+    margin-inline: 15%;
+    background-color: rgb(var(--border-color-contrast));
+    border: none;
+    transform: translateY(-1.5px);
+}
+.detailed-task-separator {
+    transform: none;
+}
+
+.tasks-container {
+    overflow: auto;
+    height: 100%;
+    display: flex;
+    flex-flow: nowrap column;
+    gap: 15px;
+    padding: 15px;
+}

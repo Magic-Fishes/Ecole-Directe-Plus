@@ -9,7 +9,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 import { useCreateNotification } from "./generic/PopUps/Notification";
 import A2FLogin from "./Login/A2FLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireA2F, setRequireA2F, fetchA2F }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireA2F, setRequireA2F, fetchA2F }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -438,6 +438,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
+                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-03-04")) }} value="FETCH DAY HOMEWORKS" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

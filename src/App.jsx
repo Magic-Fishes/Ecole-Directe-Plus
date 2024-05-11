@@ -5,7 +5,7 @@ import {
     RouterProvider
 } from "react-router-dom";
 
-import { sendToWebhook } from "./utils/utils";
+import { getISODate, sendToWebhook } from "./utils/utils";
 
 import "./App.css";
 
@@ -65,8 +65,8 @@ function consoleLogEDPLogo() {
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
         `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
-
 }
+
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.2.5";
@@ -81,6 +81,7 @@ const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
+
 const referencedErrors = {
     "250": "Authentification à deux facteurs requise",
     "505": "Identifiant et/ou mot de passe invalide",
@@ -88,6 +89,7 @@ const referencedErrors = {
     "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
     "202": "accountCreationError",
 }
+
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -247,6 +249,7 @@ export default function App() {
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [grades, setGrades] = useState([]);
+    const [homeworks, setHomeworks] = useState([]);
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
@@ -263,6 +266,7 @@ export default function App() {
 
     // diverse
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
+    const loginAbortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     const createNotification = useCreateNotification();
@@ -337,7 +341,6 @@ export default function App() {
             }
         }
     }
-
 
 
     const globalSettings = {
@@ -460,7 +463,11 @@ export default function App() {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
 
-    const useUserData = () => ({ set: changeUserData, get: getUserData, full: () => userData[activeAccount] })
+    const useUserData = (data = "") => (
+        data
+            ? { set: (value) => changeUserData(data, value), get: () => getUserData(data) } // If the data is choosen, there is no need to get the full
+            : { set: changeUserData, get: getUserData }
+    )
 
 
     // gestion de la désactivation automatique du "rester connecté"
@@ -482,7 +489,6 @@ export default function App() {
             setTokenState(token);
         }
         const accountsList = JSON.parse(localStorage.getItem("accountsList"));
-        console.log("accountsList:", accountsList)
         if (accountsList && accountsList.length > 0 && !areOccurenciesEqual(accountsList, accountsListState)) {
             setAccountsListState(accountsList);
         }
@@ -491,7 +497,6 @@ export default function App() {
     // sécurité qui empêche la reconnexion automatique s'il manque au moins un identifiant
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
-            // console.log("userIds:", userIds)
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
             setKeepLoggedIn(false);
         }
@@ -741,6 +746,7 @@ export default function App() {
                     newPeriodCode = tempPeriodCode.slice(0, 4);
                     if (periods[newPeriodCode] === undefined) {
                         newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
                     }
                 }
 
@@ -958,6 +964,50 @@ export default function App() {
         setDefaultPeriod(periods)
     }
 
+    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
+            return [day[0], day[1].map((homework) => {
+                const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
+                return ({
+                    id: idDevoir,
+                    subjectCode: codeMatiere,
+                    subject: matiere,
+                    addDate: donneLe,
+                    isInterrogation: interrogation,
+                    isDone: effectue,
+                })
+            })]
+        }))
+        return sortedHomeworks
+    }
+
+    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
+            return [day[0], day[1].map((homework) => {
+                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                if (!aFaire) {
+                    return null;
+                }
+                
+                const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
+                return ({
+                    id: id,
+                    subjectCode: codeMatiere,
+                    subject: matiere,
+                    addDate: donneLe,
+                    isInterrogation: interrogation,
+                    isDone: effectue,
+                    teacher: nomProf,
+                    content: contenu,
+                    files: document,
+                    sessionContent: contenuDeSeance.contenu,
+                    sessionContentFiles: contenuDeSeance.documents,
+                })
+            }).filter((item) => item)]
+        }))
+        console.log("sortedHomeworks:", sortedHomeworks)
+        return sortedHomeworks
+    }
 
     function sortSchoolLife(schoolLife, activeAccount) {
         const sortedSchoolLife = {
@@ -1056,11 +1106,15 @@ export default function App() {
                 <a href="/edp-unblock#about">En savoir plus</a>
                 <a href={browserExtensionDownloadLink[userBrowser]} target={(!["Safari", "Firefox"].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
             </div>
-        </>, {customClass: "extension-warning", timer: "infinite"})
+        </>, { customClass: "extension-warning", timer: "infinite" })
     }
 
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
-        abortControllers.current.push(controller);
+        if (isLoggedIn) {
+            return
+        }
+
+        loginAbortControllers.current.push(controller);
         // guest management
         if (username === "guest" && password === "secret") {
             fakeLogin();
@@ -1087,15 +1141,12 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        // fetch(`https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
-            // fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
-            // fetch(`https://server.ecoledirecte.neptunium.fr/api/user/login`, options)
             .then((response) => {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-                        
+
                     } else {
                         return JSON.parse(data)
                     }
@@ -1179,14 +1230,16 @@ export default function App() {
                 }
             })
             .catch((error) => {
-                messages.submitButtonText = "Échec de la connexion";
-                messages.submitErrorMessage = "Error: " + error.message;
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
+                if (error.name !== 'AbortError') {
+                    messages.submitButtonText = "Échec de la connexion";
+                    messages.submitErrorMessage = "Error: " + error.message;
+                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                        setProxyError(true);
+                    }
                 }
             })
             .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+                loginAbortControllers.current.forEach((e) => { e.abort() })
                 callback(messages);
             })
     }
@@ -1198,7 +1251,6 @@ export default function App() {
         }
 
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
-            // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1213,7 +1265,7 @@ export default function App() {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-                        
+
                     } else {
                         return JSON.parse(data)
                     }
@@ -1222,7 +1274,7 @@ export default function App() {
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 403;
+                    code = 49969;
                 } else {
                     code = response.code;
                 }
@@ -1233,11 +1285,9 @@ export default function App() {
                     setTokenState(response.token);
                 } else if (code === 520 || code === 525) {
                     // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-                } else if (code === 403) {
-                    setTokenState((old) => (response.token || old));
                 }
+                setTokenState((old) => (response?.token || old));
             })
             .catch((error) => {
                 if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
@@ -1256,10 +1306,7 @@ export default function App() {
             idDevoir: id
         }
         return await fetch(
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
             getProxiedURL(`https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`, true),
-            // `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
-            // `https://raspi.ecole-directe.plus:3000/proxy?url=https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1291,19 +1338,12 @@ export default function App() {
         const userId = activeAccount;
         const data = {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
-            // token: tokenState
         }
-        // await new Promise(resolve => setTimeout(resolve, 5000)); // timeout de 1.5s le fetch pour les tests des content-loaders
         fetch(
-            // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            // `https://api.ecole-directe.plus/proxy?url=https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`, true),
-            // `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
-            // `https://server.ecoledirecte.neptunium.fr/api/user/notes/${accountsListState[userId].id}`,
             {
                 method: "POST",
                 headers: {
-                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState
                 },
                 body: `data=${JSON.stringify(data)}`,
@@ -1319,7 +1359,6 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // console.log("RESPONSE:", response);
                 if (code === 200) {
                     let usersGrades = structuredClone(grades);
                     usersGrades[userId] = response.data;
@@ -1327,19 +1366,124 @@ export default function App() {
                     setGrades(usersGrades);
                 } else if (code === 520 || code === 525) {
                     // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
                     requireLogin();
-                    // setTokenState("");
-                    // logout();
-                } else if (code === 403) {
-                    let usersGrades = structuredClone(grades);
-                    setGrades(usersGrades);
                 } else if (code === 49969) {
-                    let usersGrades = [...grades];
+                    let usersGrades = structuredClone(grades);
                     import("./data/grades.json").then((module) => {
                         usersGrades[userId] = module.data;
                         setGrades(usersGrades);
                     })
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
+    async function fetchHomeworks(controller = (new AbortController()), date = "incoming") {
+        /**
+         * Fetch user homeworks
+         * @param controller AbortController
+         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
+         */
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+
+        let endpoint;
+        if (date === "incoming") {
+            endpoint = "cahierdetexte";
+        } else {
+            endpoint = "cahierdetexte/" + getISODate(date);
+        }
+
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data={}",
+                signal: controller.signal
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                if (code === 200) {
+                    if (date === "incoming") {
+                        changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
+                    } else {
+                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
+                    }
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                } else if (code === 49969) {
+                    let userHomeworks = structuredClone(homeworks);
+                    import("./data/homeworks.json").then((module) => {
+                        userHomeworks[userId] = module.data;
+                        setHomeworks(userHomeworks);
+                    })
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .catch((error) => {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
+    async function fetchHomeworksDone({ tasksDone=[], tasksNotDone=[]}, controller = (new AbortController())) {
+        /**
+         * Change the state of selected homeworks
+         * @param tasksDone Tasks switched to true 
+         * @param tasksNotDone Tasks switched to false
+         * These two paramerters are in a single object 
+         * @param controller AbortController
+         */
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+
+        return fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data=" + JSON.stringify({idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone}),
+                signal: controller.signal
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                if (code === 520 || code === 525) {
+                    // token invalide
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
                 }
                 setTokenState((old) => (response?.token || old));
             })
@@ -1360,7 +1504,6 @@ export default function App() {
         }
 
         fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
-            // fetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1379,7 +1522,6 @@ export default function App() {
                 } else {
                     code = response.code;
                 }
-                // console.log("RESPONSE:", response);
                 if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
                     const oldSchoolLife = structuredClone(schoolLife);
                     oldSchoolLife[activeAccount] = response.data;
@@ -1444,11 +1586,9 @@ export default function App() {
             libelle: name,
         }
         fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
-            // fetch("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0",
             {
                 method: "POST",
                 headers: {
-                    // "user-agent": navigator.userAgent,
                     "x-token": tokenState,
                 },
                 body: `data=${JSON.stringify(data)}`,
@@ -1471,6 +1611,7 @@ export default function App() {
         setTokenState(token);
         setAccountsListState(accountsList);
         setGrades(createUserLists(accountsList.length));
+        setHomeworks(createUserLists(accountsList.length));
         setTimeline(createUserLists(accountsList.length));
         setSchoolLife(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
@@ -1488,6 +1629,7 @@ export default function App() {
         }
         setUserData([])
         setGrades([]);
+        setHomeworks([]);
         setTimeline([]);
         setSchoolLife([]);
         // setKeepLoggedIn(false);
@@ -1600,6 +1742,8 @@ export default function App() {
                     logout={logout}
                     isStandaloneApp={isStandaloneApp}
                     isTabletLayout={isTabletLayout}
+
+                    fetchHomeworks={fetchHomeworks}
 
                     setIsFullScreen={setIsFullScreen}
                     globalSettings={globalSettings}
@@ -1721,7 +1865,7 @@ export default function App() {
                             path: "homeworks"
                         },
                         {
-                            element: <Homeworks />,
+                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchHomeworks={fetchHomeworks} homeworks={homeworks} setHomeworks={setHomeworks} />,
                             path: ":userId/homeworks"
                         },
                         {
@@ -1753,6 +1897,8 @@ export default function App() {
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
+        fetchHomeworksDone,
+        fetchHomeworks,
         activeAccount,
         accountsListState,
         isLoggedIn,
@@ -1770,6 +1916,8 @@ export default function App() {
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
+        fetchHomeworksDone,
+        fetchHomeworks,
         activeAccount,
         accountsListState,
         isLoggedIn,

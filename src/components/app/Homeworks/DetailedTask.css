@@ -1,0 +1,124 @@
+.detailed-task {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-header h4 {
+    font-size: var(--font-size-16);
+}
+
+.task-header .check-box input[type="checkbox"] {
+    border-color: rgba(var(--text-color-alt), .6);
+}
+.task-header .check-box:is(:hover, :focus-visible) input[type="checkbox"]:not(:checked) {
+    border-color: rgba(var(--text-color-alt), 1);
+}
+.task-header .check-box input[type="checkbox"]:checked {
+    background-color: rgba(var(--text-color-alt), .1);
+}
+.task-header label {
+    font-weight: 600;
+}
+
+.task-subtitle {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detailed-task .add-date {
+    display: inline-block;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14);
+}
+
+.detailed-task .task-content {
+    margin-block: 5px;
+    padding: 15px;
+    padding-right: 45px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.dark .detailed-task .task-content {
+    background-color: rgba(var(--text-color-opposite), 0.15);
+}
+
+.light .detailed-task .task-content {
+    background-color: rgba(var(--text-color-opposite), 0.3);
+}
+
+.detailed-task .task-content .copy-button {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    opacity: 0;
+    transition: .1s;
+}
+
+.detailed-task .task-content:is(:hover, :focus-within) .copy-button {
+    opacity: 1;
+}
+
+/* change task content items appearance */
+.detailed-task .task-content a:is(:hover, :focus-visible) {
+    opacity: .8;
+}
+.detailed-task .task-content a:active {
+    opacity: .6;
+}
+
+.task-footer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.task-footer .task-footer-button {
+    padding: 8px;
+    border-radius: 10px;
+    flex: 1;
+    background-color: rgba(var(--background-color-3), .5);
+    color: rgb(var(--text-color-alt));
+    
+    display: flex;
+    align-items: center;
+    transition: .1s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+.task-footer .task-footer-button:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-3));
+}
+.task-footer .task-footer-button:active {
+    background-color: rgb(var(--background-color-3), .7);
+}
+
+.task-footer .task-footer-button .download-icon {
+    height: 20px;
+    margin-right: 10px;
+}
+.task-footer .task-footer-button .session-content-icon {
+    height: 20px;
+    scale: 1.5;
+    margin-right: 7px;
+}
+.task-footer .task-footer-button svg * {
+    stroke: rgb(var(--text-color-alt));
+}
+

@@ -1,0 +1,27 @@
+
+.copy-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 7px;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    outline: none;
+}
+
+.copy-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-alt), .1);
+}
+
+.copy-button:active {
+    background-color: rgba(var(--text-color-alt), .2);
+}
+
+.copy-button .checked-icon {
+    width: 20px;
+    transform: translateY(2px);
+}
+
+.copy-button .checked-icon path {
+    fill: rgb(var(--text-color-alt));
+}
