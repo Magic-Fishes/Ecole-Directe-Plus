@@ -194,6 +194,7 @@ p.policy {
 }
 
 .change-theme button::before,
+
 .change-theme button::after {
     width: 23px;
     height: 23px;

@@ -19,6 +19,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
     return (
         <div id="login">
             <div className="return-main-page-button">
+                
                 <Link to={"/main-page"} onClick={<LoadingAnimation/>}>
                     <button className="change-page-main-page-button">Retour</button>
                 </Link>
