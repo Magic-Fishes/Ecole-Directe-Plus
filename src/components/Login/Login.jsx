@@ -20,9 +20,9 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, fetchLogin, logou
         <div id="login">
             <div className="return-main-page-button">
                 
-                <Link to={"/main-page"} onClick={<LoadingAnimation/>}>
-                    <button className="change-page-main-page-button">Retour</button>
-                </Link>
+            <div className="nav-logo">
+                    <a href="/main-page"><EDPLogo height="15" className="EDPLogo"/>Ecole Directe Plus</a>
+                </div>
             </div>
             <div className="login-box">
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />

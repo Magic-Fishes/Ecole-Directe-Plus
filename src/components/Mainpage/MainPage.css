@@ -33,7 +33,7 @@ p.policy {
     /* height est a modifier si on veux ajouter d'autres elements */
     
     height: 179em; /* Hauteur parfaite pour tous les éléments (le gradient, c'est une méthode de bucheron accesoirement) */
-    background: linear-gradient( 3deg, rgba(113, 0, 240, 0.2), rgba(210, 50, 240, 0.2));
+    background: linear-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
 
 }
 
@@ -49,7 +49,7 @@ p.policy {
 }
 
 .nav-links-container {
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-2));
     border-radius: 99999px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
@@ -87,7 +87,7 @@ p.policy {
 .nav-logo a {
     display: flex;
     text-decoration: none;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-2));
     padding: 1.7rem 1.4rem;
     border-radius: 1rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
@@ -103,6 +103,7 @@ p.policy {
     color: rgb(var(--text-color-main-reverse));
     background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
     cursor: pointer;
+    transform: scale(1.03);
 }
 
 .login-theme a {
@@ -111,7 +112,7 @@ p.policy {
     justify-content: center;
     padding: 1.7rem 2.6rem;
     border-radius: 1rem;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-2));
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
     transition: all 0.2s ease-in;
 }
@@ -119,6 +120,7 @@ p.policy {
 .login-theme a:hover {
     background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
     color: rgb(var(--text-color-main-reverse));
+    transform: scale(1.03);
 }
 
 .login-theme {
@@ -136,7 +138,7 @@ p.policy {
     position: relative;
     padding: 2.65rem;
     border: 0;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-3));
     border-radius: 1rem;
     transition: all 0.2s ease-in;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
@@ -191,6 +193,7 @@ p.policy {
 .change-theme button:hover {
     background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
     cursor: pointer;
+    transform: scale(1.03);
 }
 
 .change-theme button::before,
@@ -311,7 +314,7 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     position: absolute;
     display: flex;
     top: 50%;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgba(var(--background-color-2), 0.6);
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
@@ -355,11 +358,16 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     text-align: center;
     width: 34rem;
     height: 30rem;
-    background-color: rgb(var(--background-color-0));
+    background-color: rgb(var(--background-color-0), 0.4);
     margin: 2rem;
     border-radius: 2rem;
-    border: solid rgb(var(--background-color-1)) 3px;
+    border: solid rgb(var(--border-color-1)) 1.2px;
     box-shadow: var(--color-shadow-element) 3px 3px 10px 0px;
+    transition: all 0.3s ease;
+}
+.ban-box-desing:hover {
+    transform: scale(1.01);
+    border: solid 2.3px rgba(var(--border-color-0), 0.8);
 }
 
 .ban-box-desing h3 {
@@ -384,7 +392,7 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
     display: flex;
     position: absolute;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-2), 0.6);
     box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px;
     top: 155%;
     padding: 20px;
@@ -436,9 +444,12 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     border-radius: 1rem;
     margin: 20px;
     background-color: rgba(var(--background-color-0), 0.6);
-    border: solid 2px rgba(var(--background-color-0), 0.8);
+    border: solid 2.1px rgba(var(--border-color-0), 0.8);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    
 }
+
+
 
 .box-desing h6 {
     padding: 20px;
@@ -450,6 +461,13 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     display: flex;
     justify-content: center;
     align-self: center;
+
+    transition: all 0.2s ease;
+}
+
+.linked-button:hover {
+    background-color: rgb(var(--background-color-0));
+    transform: scale(1.04);
 }
 
 /* -------------------------- Open Source category -------------------------- */
@@ -458,7 +476,7 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
     display: flex;
     position: absolute;
-    background-color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--background-color-2), 0.6);
     box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px;
     top: 260%;
     padding: 20px;
@@ -473,7 +491,6 @@ input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
     width: 23rem;
     padding: 20px;
 }
-
 
 
 /* -------------------------------------------------------------------------- */
