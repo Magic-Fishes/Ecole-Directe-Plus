@@ -59,8 +59,8 @@ export default function Interrogation({ task }) { // This component only exists 
     }
 
     return task.id !== "dummy"
-        ? <div tabIndex="0" role="a" onKeyDown={(e) => handleKeyDown(e, task.date, task.id)} onClick={() => handleClick(task.date, task.id)} className="next-interrogation" style={{ backgroundColor: textToHSL(task.subject) }}>
-            <CheckBox onChange={() => { checkTask(task.date, task.index) }} ref={taskCheckboxRef} checked={currentSortedHomeworks[task.date][task.index].isDone} id={`${task.id}-next-interrogation"`} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
+        ? <div tabIndex="0" role="a" onKeyDown={(e) => handleKeyDown(e, task.date, task.id)} onClick={() => handleClick(task.date, task.id)} className="upcoming-assignments" style={{ backgroundColor: textToHSL(task.subject) }}>
+            <CheckBox onChange={() => { checkTask(task.date, task.index) }} ref={taskCheckboxRef} checked={currentSortedHomeworks[task.date][task.index].isDone} id={`${task.id}-upcoming-assignments"`} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
             <span>{task.subject}</span>
             <span>{task.date}</span>
         </div>

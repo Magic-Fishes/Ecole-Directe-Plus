@@ -1,11 +1,11 @@
-.next-interrogations {
+.upcoming-assignments-container {
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 15px;
     gap: 10px;
 }
 
-.next-interrogation {
+.upcoming-assignments {
     display: flex;
     align-items: center;
     border-radius: 15px;
@@ -17,21 +17,21 @@
     transition: .2s;
 }
 
-.next-interrogation:is(:hover, :focus-visible) {
+.upcoming-assignments:is(:hover, :focus-visible) {
     filter: brightness(1.1);
     outline: none;
 }
-.next-interrogation:active {
+.upcoming-assignments:active {
     filter: brightness(0.9);
 }
 
-.next-interrogation label {
+.upcoming-assignments label {
     flex-shrink: 0;
     width: 35px;
     aspect-ratio: 1/1;
 }
 
-.next-interrogation input[type="checkbox"] {
+.upcoming-assignments input[type="checkbox"] {
     height: 100%;
     width: 100%;
     border-color: rgba(0, 0, 0, 0.15);
@@ -39,16 +39,16 @@
     border-width: 4px;
 }
 
-.next-interrogation input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
+.upcoming-assignments input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
     border-color: rgba(0, 0, 0, 0.25);
 }
 
-.next-interrogation input[type="checkbox"]:checked {
+.upcoming-assignments input[type="checkbox"]:checked {
     border-color: rgba(0, 0, 0, 0.15);
     background-color: rgba(0, 0, 0, 0.05);
 }
 
-.next-interrogation span {
+.upcoming-assignments span {
     font-weight: var(--font-weight-extra-bold);
     color: #0004;
     flex: 1;
@@ -58,7 +58,7 @@
     text-overflow: ellipsis;
 }
 
-.next-interrogation span:last-child {
+.upcoming-assignments span:last-child {
     text-align: end;
     flex: unset;
 }
@@ -68,7 +68,7 @@
     padding: 15px;
 }
 
-.next-interrogations .loading {
+.upcoming-assignments-container .loading {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -76,14 +76,14 @@
     height: 100%;
 }
 
-.next-interrogations .loading span {
+.upcoming-assignments-container .loading span {
     text-align: center;
     max-width: 80%;
     color: #8787B4;
     font-weight: var(--font-weight-extra-bold);
 }
 
-.next-interrogations .loading svg {
+.upcoming-assignments-container .loading svg {
     height: 60%;
     min-width: 70px;
     max-width: 120px;

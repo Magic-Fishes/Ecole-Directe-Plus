@@ -965,7 +965,7 @@ export default function App() {
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
-        const nextInterrogation = []
+        const upcomingAssignments = []
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework, i) => {
                 const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
@@ -978,8 +978,8 @@ export default function App() {
                     isDone: effectue,
                 }
 
-                if (interrogation && nextInterrogation.length < 3) {
-                    nextInterrogation.push({
+                if (interrogation && upcomingAssignments.length < 3) {
+                    upcomingAssignments.push({
                         date: day[0],
                         id: idDevoir,
                         index: i,
@@ -991,14 +991,14 @@ export default function App() {
             })]
         }))
 
-        if (nextInterrogation.length > 0 && nextInterrogation.length < 3) {
-            for (let i = 0; i < (3 - nextInterrogation.length); i++) {
-                nextInterrogation.push({
+        if (upcomingAssignments.length > 0 && upcomingAssignments.length < 3) {
+            for (let i = 0; i < (3 - upcomingAssignments.length); i++) {
+                upcomingAssignments.push({
                     id: "dummy",
                 })
             }
         }
-        changeUserData("nextInterrogation", nextInterrogation)
+        changeUserData("upcomingAssignments", upcomingAssignments)
         return sortedHomeworks
     }
 

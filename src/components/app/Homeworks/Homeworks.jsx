@@ -14,7 +14,7 @@ import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
-import NextInterrogation from "./NextInterrogation";
+import UpcomingAssignments from "./UpcomingAssignments";
 
 import "./Homeworks.css";
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
@@ -64,8 +64,8 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
-                            <WindowContent className="next-interrogations">
-                                <NextInterrogation homeworks={homeworks} />
+                            <WindowContent className="upcoming-assignments-container">
+                                <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
                         <Window growthFactor={1.75}>
