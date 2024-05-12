@@ -26,7 +26,7 @@
     }
     to {
         opacity: 1;
-        transform: scale(1.25) translate(-8px, -13px);
+        transform: scale(1.25) translate(-8px, -13.5px);
     }
 }
 
@@ -38,7 +38,7 @@
 
 @keyframes Z-2-growing {
     to {
-        transform: scale(1.34) translate(-9.2px, -9.4px);
+        transform: scale(1.36) translate(-9.8px, -9.4px);
     }
 }
 
