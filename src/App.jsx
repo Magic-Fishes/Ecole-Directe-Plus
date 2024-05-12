@@ -964,20 +964,41 @@ export default function App() {
         setDefaultPeriod(periods)
     }
 
-    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
+        const nextInterrogation = []
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
-            return [day[0], day[1].map((homework) => {
+            return [day[0], day[1].map((homework, i) => {
                 const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
-                return ({
+                const task = {
                     id: idDevoir,
                     subjectCode: codeMatiere,
                     subject: matiere,
                     addDate: donneLe,
                     isInterrogation: interrogation,
                     isDone: effectue,
-                })
+                }
+
+                if (interrogation && nextInterrogation.length < 3) {
+                    nextInterrogation.push({
+                        date: day[0],
+                        id: idDevoir,
+                        index: i,
+                        subject: matiere,
+                    })
+                }
+
+                return task
             })]
         }))
+
+        if (nextInterrogation.length > 0 && nextInterrogation.length < 3) {
+            for (let i = 0; i < (3 - nextInterrogation.length); i++) {
+                nextInterrogation.push({
+                    id: "dummy",
+                })
+            }
+        }
+        changeUserData("nextInterrogation", nextInterrogation)
         return sortedHomeworks
     }
 
@@ -988,9 +1009,9 @@ export default function App() {
                 if (!aFaire) {
                     return null;
                 }
-                
+
                 const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
-                return ({
+                return {
                     id: id,
                     subjectCode: codeMatiere,
                     subject: matiere,
@@ -1002,10 +1023,9 @@ export default function App() {
                     files: document,
                     sessionContent: contenuDeSeance.contenu,
                     sessionContentFiles: contenuDeSeance.documents,
-                })
+                }
             }).filter((item) => item)]
         }))
-        console.log("sortedHomeworks:", sortedHomeworks)
         return sortedHomeworks
     }
 
@@ -1441,6 +1461,7 @@ export default function App() {
                 setTokenState((old) => (response?.token || old));
             })
             .catch((error) => {
+                console.error(error)
                 if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
                     setProxyError(true);
                 }
@@ -1450,7 +1471,7 @@ export default function App() {
             })
     }
 
-    async function fetchHomeworksDone({ tasksDone=[], tasksNotDone=[]}, controller = (new AbortController())) {
+    async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
          * Change the state of selected homeworks
          * @param tasksDone Tasks switched to true 
@@ -1468,7 +1489,7 @@ export default function App() {
                 headers: {
                     "x-token": tokenState
                 },
-                body: "data=" + JSON.stringify({idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone}),
+                body: "data=" + JSON.stringify({ idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone }),
                 signal: controller.signal
             },
         )

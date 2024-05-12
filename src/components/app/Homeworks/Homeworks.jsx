@@ -14,10 +14,9 @@ import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
+import NextInterrogation from "./NextInterrogation";
 
 import "./Homeworks.css";
-
-
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
@@ -65,11 +64,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
-                            <WindowContent>
-
+                            <WindowContent className="next-interrogations">
+                                <NextInterrogation homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.2} WIP={true}>
+                        <Window growthFactor={1.75}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
