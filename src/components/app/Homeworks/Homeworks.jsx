@@ -1,5 +1,6 @@
 
 import { useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
     WindowsContainer,
@@ -11,11 +12,10 @@ import {
 
 import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
-import { useNavigate, useLocation } from "react-router-dom";
-
-import "./Homeworks.css";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
+
+import "./Homeworks.css";
 
 
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
@@ -69,7 +69,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
 
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.2}>
+                        <Window growthFactor={1.2} WIP={true}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
