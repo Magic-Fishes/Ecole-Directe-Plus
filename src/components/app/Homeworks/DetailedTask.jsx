@@ -14,7 +14,7 @@ import { clearHTML } from "../../../utils/html"
 export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
     const isMouseInCheckBoxRef = useRef(false);
     const taskCheckboxRef = useRef(null);
-    const { actualDisplayTheme, fetchHomeworks, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
+    const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
     const settings = useUserSettings();
     const homeworks = userHomeworks.get()
 
@@ -36,17 +36,6 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
             })
         }
     }, [])
-
-    useEffect(() => {
-        const controller = new AbortController();
-        if (!task.content) {
-            fetchHomeworks(controller, day)
-        }
-
-        return () => {
-            controller.abort();
-        }
-    }, [day, task]);
 
     function completedTaskAnimation() {
         const bounds = taskCheckboxRef.current.getBoundingClientRect();

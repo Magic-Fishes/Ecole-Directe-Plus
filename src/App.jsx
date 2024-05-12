@@ -1461,7 +1461,6 @@ export default function App() {
                 setTokenState((old) => (response?.token || old));
             })
             .catch((error) => {
-                console.error(error)
                 if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
                     setProxyError(true);
                 }

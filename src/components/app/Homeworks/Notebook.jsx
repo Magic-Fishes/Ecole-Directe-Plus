@@ -13,7 +13,7 @@ import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
 export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
-    const { actualDisplayTheme, useUserData, useUserSettings } = useContext(AppContext);
+    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
     const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
@@ -278,6 +278,17 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
         }
 
     }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
+
+    useEffect(() => {
+        const controller = new AbortController();
+        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+            fetchHomeworks(controller, selectedDate)
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [selectedDate, homeworks, isLoggedIn]);
 
     return <>
         {!hideDateController
