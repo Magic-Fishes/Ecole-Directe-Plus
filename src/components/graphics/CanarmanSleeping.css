@@ -32,19 +32,19 @@
 
 @keyframes Z-1-growing {
     to {
-        transform: scale(1.27) translate(-6.5px, -12.7px);
+        transform: scale(1.3) translate(-7.5px, -13.2px);
     }
 }
 
 @keyframes Z-2-growing {
     to {
-        transform: scale(1.36) translate(-9.8px, -9.4px);
+        transform: scale(1.36) translate(-10.3px, -9.4px);
     }
 }
 
 @keyframes Z-3-growing {
     to {
-        transform: scale(1.38) translate(-11px, -7.4px);
+        transform: scale(1.38) translate(-11px, -5px);
         opacity: 0;
     }
 }
