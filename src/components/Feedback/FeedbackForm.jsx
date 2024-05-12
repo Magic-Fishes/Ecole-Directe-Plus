@@ -16,6 +16,7 @@ import AtWhite from "../graphics/AtWhite"
 import { getProxiedURL } from "../../utils/requests";
 
 import "./FeedbackForm.css";
+import { getBrowser, getOS } from "../../utils/utils";
 
 
 export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() => {} }) {
@@ -28,6 +29,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
 ### Étapes pour reproduire :
 
 ### Navigateur/OS/Appareil :
+${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable)
 `,
         `### Description de la fonctionnalité :
 
