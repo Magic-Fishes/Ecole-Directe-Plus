@@ -19,6 +19,7 @@
 
 .next-interrogation:is(:hover, :focus-visible) {
     filter: brightness(1.1);
+    outline: none;
 }
 .next-interrogation:active {
     filter: brightness(0.9);
@@ -40,6 +41,11 @@
 
 .next-interrogation input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
     border-color: rgba(0, 0, 0, 0.25);
+}
+
+.next-interrogation input[type="checkbox"]:checked {
+    border-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .next-interrogation span {
