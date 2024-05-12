@@ -9,6 +9,7 @@
     display: flex;
     align-items: stretch;
     justify-content: space-between;
+    outline: none;
     overflow: hidden;
 }
 
@@ -38,6 +39,7 @@
     background-color: rgb(var(--background-color-3));
     border-right: 3px solid rgb(var(--background-color-3));;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .task .check-box :is(input, input:checked) {
@@ -62,7 +64,7 @@
     transition: .1s !important;
 }
 
-.task .check-box:is(:hover, :focus-visible) input {
+.task .check-box:is(:hover, :focus-within) input {
     opacity: .25;
 }
 

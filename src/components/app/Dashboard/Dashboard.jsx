@@ -94,7 +94,7 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
                             </Window>
                         </WindowsLayout>
 
-                        <Window growthFactor={1.5}>
+                        <Window growthFactor={1.7}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>

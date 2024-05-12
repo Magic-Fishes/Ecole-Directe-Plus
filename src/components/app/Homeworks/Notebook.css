@@ -97,11 +97,15 @@
     filter: brightness(.9);
     opacity: .8;
     scroll-snap-align: center;
-    cursor: pointer;
+    cursor: grab;
     transition: .2s;
 
     display: flex;
     flex-flow: column nowrap;
+}
+
+.notebook-day:active {
+    cursor: grabbing;
 }
 
 .notebook-day.selected {

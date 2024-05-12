@@ -46,7 +46,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
         return () => {
             controller.abort();
         }
-    }, [])
+    }, [day, task]);
 
     function completedTaskAnimation() {
         const bounds = taskCheckboxRef.current.getBoundingClientRect();

@@ -49,16 +49,24 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     }
 
     function handleTaskClick(event) {
-        event.stopPropagation()
+        if (event) {
+            event.stopPropagation();
+        }
         const notebookContainer = document.getElementsByClassName("notebook-container")[0];
         if (!isMouseInCheckBoxRef.current && !notebookContainer.classList.contains("mouse-moved")) {
             navigate(`#${day};${task.id}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
         }
     }
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            handleTaskClick()
+        }
+    }
+
     return (
         task?.id
-            ? <div className={`task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} onClick={handleTaskClick} {...props} >
+            ? <div className={`task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} onClick={handleTaskClick} onKeyDown={handleKeyDown} tabIndex={0} {...props} >
                 <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <div className="task-title">
                     <h4>
@@ -67,7 +75,6 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
                     </h4>
                     {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()}</span>}
                     {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
-
                 </div>
             </div>
             : <ContentLoader

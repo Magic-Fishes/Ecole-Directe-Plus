@@ -69,7 +69,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
 
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.2}>
+                        <Window growthFactor={1.2} WIP={true}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
