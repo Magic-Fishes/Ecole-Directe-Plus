@@ -106,6 +106,10 @@
     pointer-events: none;
     filter: brightness(0.6);
 }
+.light .task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    filter: opacity(0.4);
+}
 .task-footer .task-footer-button:is(:hover, :focus-visible) {
     background-color: rgb(var(--background-color-3));
 }

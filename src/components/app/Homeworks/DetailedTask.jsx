@@ -118,7 +118,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                 </ContentLoader>
             </div>
-            <div style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px", borderRadius: "10px", backgroundColor: actualDisplayTheme === "dark" ? "#40405b" : "#9d9dbd"}}></div>
+            <div style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px", borderRadius: "10px", backgroundColor: actualDisplayTheme === "dark" ? "#40405b" : "#ffffff4d"}}></div>
             <div className="task-footer">
                 <div className={`task-footer-button disabled`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</div>
                 <div className={`task-footer-button disabled`}><DownloadIcon className="download-icon" />Fichiers</div>
