@@ -145,12 +145,12 @@ export function getBrowser() { // I didn't check all browsers, see : https://dev
     )
 }
 
-export function textToHSL(str, initialS=50, initialL=60, variationS=20, variationL=0) {
+export function textToHSL(str, initialS=42, initialL=73, variationS=10, variationL=10) {
     let int = parseInt(sha256(str), 16)
     const l = int % 1000
     const intLength = Math.round(Math.log10(int));
     int = Math.round(int / 10**(intLength - 6)).toString()
     const h = parseInt(int.slice(0, 3))
     const s = parseInt(int.slice(-3, int.length))
-    return [360 * (h / 999), initialS + variationS * (s / 999), initialL + variationL * (l / 999)] // [{0-360}, {70-100}, {40-70}]
+    return `hsl(${360 * (h / 999)}, ${initialS + variationS * (s / 999)}%, ${initialL + variationL * (l / 999)}%)` // [{0-360}, {70-100}, {40-70}]
 }
