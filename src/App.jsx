@@ -997,10 +997,9 @@ export default function App() {
                     id: "dummy",
                 })
             }
-            console.log(nextInterrogation)
-            changeUserData("nextInterrogation", nextInterrogation)
-            return sortedHomeworks
         }
+        changeUserData("nextInterrogation", nextInterrogation)
+        return sortedHomeworks
     }
 
     function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
