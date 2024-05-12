@@ -1,7 +1,8 @@
 .detailed-task {
     display: flex;
     flex-direction: column;
-    gap: 5px
+    gap: 5px;
+    flex-shrink: 0;
 }
 
 .task-header {
@@ -70,6 +71,9 @@
 }
 
 /* change task content items appearance */
+.detailed-task .task-content a {
+    word-break: break-word;
+}
 .detailed-task .task-content a:is(:hover, :focus-visible) {
     opacity: .8;
 }

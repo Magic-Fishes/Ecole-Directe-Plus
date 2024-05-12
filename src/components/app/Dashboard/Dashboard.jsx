@@ -10,20 +10,27 @@ import {
     WindowContent
 } from "../../generic/Window";
 import LastGrades from "./LastGrades";
+import Notebook from "../Homeworks/Notebook";
+import BottomSheet from "../../generic/PopUps/BottomSheet";
+import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 
 import "./Dashboard.css";
 
-export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLoggedIn, useUserData, sortGrades }) {
+export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades }) {
     const navigate = useNavigate();
     const userData = useUserData();
 
+    const [bottomSheetSession, setBottomSheetSession] = useState({})
     const sortedGrades = userData.get("sortedGrades");
+    const homeworks = useUserData("sortedHomeworks");
+
+    const hashParameters = location.hash.split(";")
 
     // Behavior
     useEffect(() => {
         document.title = "Accueil • Ecole Directe Plus";
     }, [])
-    
+
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
@@ -38,6 +45,27 @@ export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLo
             controller.abort();
         }
     }, [grades, isLoggedIn, activeAccount]);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        if (isLoggedIn) {
+            if (homeworks.get() === undefined) {
+                fetchHomeworks(controller);
+            }
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [homeworks.get(), isLoggedIn, activeAccount]);
+
+    useEffect(() => {
+        if (hashParameters.length > 2 && !bottomSheetSession.id) {
+            navigate(`${hashParameters[0]};${hashParameters[1]}`)
+        } else if (hashParameters.length < 3 && bottomSheetSession.id) {
+            setBottomSheetSession({})
+        }
+    }, [location.hash])
 
     // JSX DISCODO
     return (
@@ -55,23 +83,23 @@ export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLo
                                     
                                 </WindowContent>
                             </Window> */}
-                            
+
                             <Window WIP={true}>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>
                                     <h2>Prochains contrôles</h2>
                                 </WindowHeader>
                                 <WindowContent>
-                                    
+
                                 </WindowContent>
                             </Window>
                         </WindowsLayout>
 
-                        <Window WIP={true} growthFactor={1.5}>
+                        <Window growthFactor={1.5}>
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
                             <WindowContent>
-                                
+                                <Notebook setBottomSheetSession={setBottomSheetSession} hideDateController={true} />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
@@ -81,12 +109,15 @@ export default function Dashboard({ fetchUserGrades, grades, activeAccount, isLo
                                 <h2>Emploi du temps</h2>
                             </WindowHeader>
                             <WindowContent>
-                                
+
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
                 </WindowsLayout>
             </WindowsContainer>
+            {bottomSheetSession.id && <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`#${bottomSheetSession.day};${bottomSheetSession.id}`); setBottomSheetSession({}) }}>
+                <EncodedHTMLDiv>{bottomSheetSession.content}</EncodedHTMLDiv>
+            </BottomSheet>}
         </div>
     )
 }

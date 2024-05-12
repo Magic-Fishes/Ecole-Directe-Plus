@@ -88,7 +88,8 @@
 }
 
 .notebook-day {
-    min-width: min(300px, 100%);
+    flex-shrink: 0;
+    width: min(300px, 100%);
     max-height: 100%;
     background: rgb(var(--background-color-2));
     border-radius: 25px;
@@ -104,7 +105,7 @@
 }
 
 .notebook-day.selected {
-    min-width: min(600px, 100%);
+    width: min(600px, 100%);
     filter: brightness(1.05);
     opacity: 1;
 }
@@ -121,6 +122,10 @@
     height: 4em;
     align-items: center;
     background: rgb(var(--background-color-3));
+}
+
+#dashboard .notebook-day .notebook-day-header {
+    height: 3em;
 }
 
 .notebook-day .notebook-day-header .progress-circle {
@@ -159,6 +164,7 @@
     background-color: rgb(var(--border-color-contrast));
     border: none;
     transform: translateY(-1.5px);
+    flex-shrink: 0;
 }
 .detailed-task-separator {
     transform: none;

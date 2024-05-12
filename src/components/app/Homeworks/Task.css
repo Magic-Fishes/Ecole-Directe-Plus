@@ -5,6 +5,7 @@
     border-radius: 10px;
     transition: .1s;
     text-decoration: none;
+    flex-shrink: 0;
     display: flex;
     align-items: stretch;
     justify-content: space-between;

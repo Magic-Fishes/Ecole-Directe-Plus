@@ -52,7 +52,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         event.stopPropagation()
         const notebookContainer = document.getElementsByClassName("notebook-container")[0];
         if (!isMouseInCheckBoxRef.current && !notebookContainer.classList.contains("mouse-moved")) {
-            navigate(`#${day};${task.id}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`);
+            navigate(`#${day};${task.id}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
         }
     }
 
