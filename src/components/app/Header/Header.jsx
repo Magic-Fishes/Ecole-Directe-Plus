@@ -148,7 +148,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Accueil",
             link: `/app/${activeAccount}/dashboard`,
             icon: <DashboardIcon />,
-            notifications: notifications?.dashboard || 0
+            notifications: notifications?.dashboard || 0,
+            isNew: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "NOTES").map((item) => item.enable).includes(true) ?? true,
@@ -157,7 +158,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Notes",
             link: `/app/${activeAccount}/grades`,
             icon: <GradesIcon />,
-            notifications: notifications?.grades || 0
+            notifications: notifications?.grades || 0,
+            isNew: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "CAHIER_DE_TEXTES").map((item) => item.enable).includes(true) ?? true,
@@ -166,7 +168,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Cahier de texte",
             link: `/app/${activeAccount}/homeworks`,
             icon: <HomeworksIconOfficial />,
-            notifications: notifications?.homeworks || 0
+            notifications: notifications?.homeworks || 0,
+            isNew: true
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "EDT").map((item) => item.enable).includes(true) ?? true,
@@ -175,7 +178,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Emploi du temps",
             link: `/app/${activeAccount}/timetable`,
             icon: <TimetableIcon />,
-            notifications: notifications?.timetable || 0
+            notifications: notifications?.timetable || 0,
+            isNew: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "MESSAGERIE").map((item) => item.enable).includes(true) ?? true,
@@ -184,7 +188,8 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             title: "Messagerie",
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
-            notifications: notifications?.messaging || 0
+            notifications: notifications?.messaging || 0,
+            isNew: false
         }
     ]
     // Behavior
@@ -210,7 +215,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                         <ul className="header-button-list">
                             {headerNavigationButtons.map((headerButton) => ( headerButton.enabled &&
                                 <li className={`header-button-container`} key={headerButton.id} id={headerButton.name}>
-                                    <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} />
+                                    <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} isNew={headerButton.isNew} />
                                 </li>
                             )
                             )}
