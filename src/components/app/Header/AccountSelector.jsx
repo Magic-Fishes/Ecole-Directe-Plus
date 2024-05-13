@@ -66,7 +66,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
 
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
-                setIsOpen(false);                
+                setIsOpen(false);
             }
         }
 

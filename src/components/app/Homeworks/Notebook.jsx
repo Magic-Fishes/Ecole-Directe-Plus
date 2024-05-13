@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef, useCallback } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter } from "../../../utils/utils";
@@ -10,15 +10,21 @@ import "./Notebook.css";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
+import { canScroll } from "../../../utils/DOM";
 
-export default function Notebook({ }) {
-    const { useUserData } = useContext(AppContext);
+export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
+    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
+    const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
     const navigate = useNavigate();
 
     const notebookContainerRef = useRef(null);
+    const tasksContainersRefs = useRef([]);
+    const isMouseOverTasksContainer = useRef(false);
+    const isMouseIntoScrollableContainer = useRef(false);
     const anchorElement = useRef(null);
+    const contentLoadersRandomValues = useRef({ days: Array.from({ length: Math.floor(Math.random() * 5) + 5 }, (_, i) => i), tasks: Array.from({ length: 10 }, (_, i) => Math.floor(Math.random() * 3) + 1) })
     // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
@@ -54,7 +60,7 @@ export default function Notebook({ }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        navigate("#" + newDate + ";" + ((cleanup && location.hash.split(";")[1]) || ""));
+        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -81,6 +87,31 @@ export default function Notebook({ }) {
         return dates[newDateIdx];
     }
 
+    function customScrollIntoView(element) {
+        const container = notebookContainerRef.current
+
+        const elements = container.querySelectorAll(".notebook-day");
+
+        // get the old selected element (because the behavior changes according to its position with the new selected element)
+        let oldSelectedElementBounds;
+        for (let element of elements) {
+            const elementBounds = element.getBoundingClientRect();
+
+            if (elementBounds.width > 300) {
+                oldSelectedElementBounds = elementBounds;
+                break;
+            }
+        }
+        if (!oldSelectedElementBounds) {
+            return;
+        }
+
+        const bounds = element.getBoundingClientRect();
+        const containerBounds = notebookContainerRef.current.getBoundingClientRect();
+        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width) / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
+
+    }
+
     useEffect(() => {
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
@@ -88,7 +119,8 @@ export default function Notebook({ }) {
         if (validDateFormat(selectedDate)) {
             const element = anchorElement.current;
             if (element !== null) {
-                element.scrollIntoView({ inline: "center" });
+                // element.scrollIntoView({ inline: "center" });
+                customScrollIntoView(element);
             }
         } else {
             if (homeworks) {
@@ -106,12 +138,14 @@ export default function Notebook({ }) {
 
     useEffect(() => {
         const horizontalToVerticalScrolling = (event) => {
-            if (event.deltaY !== 0 && !event.shiftKey) {
-                event.preventDefault();
-                if (event.deltaY !== 0) {
-                    const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
-                    if (!!newDate) {
-                        navigateToDate(newDate)
+            if (!isMouseIntoScrollableContainer.current.vertical) {
+                if (event.deltaY !== 0 && !event.shiftKey) {
+                    event.preventDefault();
+                    if (event.deltaY !== 0) {
+                        const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
+                        if (!!newDate) {
+                            navigateToDate(newDate)
+                        }
                     }
                 }
             }
@@ -123,7 +157,7 @@ export default function Notebook({ }) {
                 notebookContainerRef.current.removeEventListener("wheel", horizontalToVerticalScrolling);
             }
         }
-    }, [selectedDate, homeworks]);
+    }, [selectedDate, homeworks, isMouseIntoScrollableContainer]);
 
     // - - Drag to scroll - -
 
@@ -202,46 +236,6 @@ export default function Notebook({ }) {
         }
     }, [notebookContainerRef.current]);
 
-    // useEffect(() => {
-    //     let timeoutId = null;
-    //     function onScrollEnd() {
-    //         let closestElement = null;
-    //         let closestDistance = Infinity;
-    //         const SCROLL_PADDING = 20;
-
-    //         for (const child of notebookContainerRef.current.children) {
-    //             const rect = child.getBoundingClientRect();
-    //             const distance = Math.abs(rect.left - (SCROLL_PADDING + notebookContainerRef.current.getBoundingClientRect().left));
-
-    //             if (distance < closestDistance) {
-    //                 closestElement = child;
-    //                 closestDistance = distance;
-    //             }
-    //         }
-
-    //         if (closestElement) {
-    //             anchorElement.current = closestElement;
-    //         }
-    //     }
-
-    //     const onScroll = () => {
-    //         if (timeoutId !== null) {
-    //             clearTimeout(timeoutId);
-    //         }
-
-    //         timeoutId = setTimeout(onScrollEnd, 150);
-    //     }
-
-
-    //     notebookContainerRef.current.addEventListener("scroll", onScroll);
-
-    //     return () => {
-    //         if (notebookContainerRef.current) {
-    //             notebookContainerRef.current.removeEventListener("scroll", onScroll);
-    //         }
-    //     }
-    // }, []);
-
     useEffect(() => {
         const script = document.createElement("script");
 
@@ -255,33 +249,118 @@ export default function Notebook({ }) {
         }
     }, []);
 
+    useEffect(() => {
+        tasksContainersRefs.current = [...tasksContainersRefs.current]; // met à jour les références
+
+        const handleMouseEnter = (event) => {
+            isMouseOverTasksContainer.current = true;
+            isMouseIntoScrollableContainer.current = canScroll(event.target);
+        }
+        const handleMouseLeave = (event) => {
+            isMouseOverTasksContainer.current = false;
+            isMouseIntoScrollableContainer.current = canScroll(event.target);
+        }
+
+        for (let tasksContainerRef of tasksContainersRefs.current) {
+            if (tasksContainerRef) {
+                tasksContainerRef.addEventListener("mouseenter", handleMouseEnter);
+                tasksContainerRef.addEventListener("mouseleave", handleMouseLeave);
+            }
+        }
+
+        return () => {
+            for (let tasksContainerRef of tasksContainersRefs.current) {
+                if (tasksContainerRef) {
+                    tasksContainerRef.removeEventListener("mouseenter", handleMouseEnter);
+                    tasksContainerRef.removeEventListener("mouseleave", handleMouseLeave);
+                }
+            }
+        }
+
+    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
+
+    useEffect(() => {
+        const controller = new AbortController();
+        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+            fetchHomeworks(controller, selectedDate)
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [selectedDate, homeworks, isLoggedIn]);
+
     return <>
-        <div className="date-selector">
-            <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-            <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() || "AAAA-MM-JJ"}</time>
-            <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-        </div>
+        {!hideDateController
+            ? <div className="date-selector">
+                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
+                    <DropDownArrow />
+                </span>
+                <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
+            </div>
+            : null
+        }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks ? Object.keys(homeworks).sort().map((el, i) => {
-                const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
-                const elDate = new Date(el)
-                return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                    <div className="notebook-day-header">
-                        <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
-                            <circle cx="50" cy="50" r="40" />
-                            <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1-progression}/>
-                        </svg>
-                        <span className="notebook-day-date">
-                            <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
-                        </span>
+            {homeworks
+                ? Object.keys(homeworks).sort().map((el, index) => {
+                    const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
+                    const elDate = new Date(el)
+                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header">
+                            <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
+                                <circle cx="50" cy="50" r="40" />
+                                <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
+                            </svg>
+                            <span className="notebook-day-date">
+                                <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
+                            </span>
+                        </div>
+                        <hr />
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
+                            {
+                                homeworks[el].map((task, taskIndex) => {
+                                    const result = [
+                                        selectedDate === el
+                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
+                                            : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                    if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
+                                        result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+                                    }
+                                    return result.flat()
+                                })
+                            }
+                        </div>
                     </div>
-                    <hr />
-                    <div className="tasks-container">
-                        {homeworks[el].map((task, taskIndex) => (selectedDate === el ? <><DetailedTask key={task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />{taskIndex < homeworks[el].length-1 ? <hr className="detailed-task-separator"/> : null}</> : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />))}
+                })
+                : contentLoadersRandomValues.current.days.map((el, index) => {
+                    return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header">
+                            <svg className={`progress-circle`} viewBox="0 0 100 100" >
+                                <circle cx="50" cy="50" r="40" />
+                            </svg>
+                            <span className="notebook-day-date">
+                                <ContentLoader
+                                    animate={settings.get("displayMode") === "quality"}
+                                    speed={1}
+                                    backgroundColor={actualDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
+                                    foregroundColor={actualDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
+                                    style={{ width: `${130}px`, maxHeight: "25px" }}
+                                >
+                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
+                                </ContentLoader>
+                            </span>
+                        </div>
+                        <hr />
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
+                            {
+                                index === 0
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} setBottomSheetSession={setBottomSheetSession} />)
+                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
+                            }
+                        </div>
                     </div>
-                </div>
-            })
-            : <p>Chargement des devoirs...</p>}
+                })}
         </div>
     </>
 }

@@ -964,20 +964,41 @@ export default function App() {
         setDefaultPeriod(periods)
     }
 
-    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+    function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
+        const upcomingAssignments = []
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
-            return [day[0], day[1].map((homework) => {
+            return [day[0], day[1].map((homework, i) => {
                 const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
-                return ({
+                const task = {
                     id: idDevoir,
                     subjectCode: codeMatiere,
                     subject: matiere,
                     addDate: donneLe,
                     isInterrogation: interrogation,
                     isDone: effectue,
-                })
+                }
+
+                if (interrogation && upcomingAssignments.length < 3) {
+                    upcomingAssignments.push({
+                        date: day[0],
+                        id: idDevoir,
+                        index: i,
+                        subject: matiere,
+                    })
+                }
+
+                return task
             })]
         }))
+
+        if (upcomingAssignments.length > 0 && upcomingAssignments.length < 3) {
+            for (let i = 0; i < (3 - upcomingAssignments.length); i++) {
+                upcomingAssignments.push({
+                    id: "dummy",
+                })
+            }
+        }
+        changeUserData("upcomingAssignments", upcomingAssignments)
         return sortedHomeworks
     }
 
@@ -985,8 +1006,12 @@ export default function App() {
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                if (!aFaire) {
+                    return null;
+                }
+
                 const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
-                return ({
+                return {
                     id: id,
                     subjectCode: codeMatiere,
                     subject: matiere,
@@ -998,8 +1023,8 @@ export default function App() {
                     files: document,
                     sessionContent: contenuDeSeance.contenu,
                     sessionContentFiles: contenuDeSeance.documents,
-                })
-            })]
+                }
+            }).filter((item) => item)]
         }))
         return sortedHomeworks
     }
@@ -1445,7 +1470,7 @@ export default function App() {
             })
     }
 
-    async function fetchHomeworksDone({ tasksDone=[], tasksNotDone=[]}, controller = (new AbortController())) {
+    async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
          * Change the state of selected homeworks
          * @param tasksDone Tasks switched to true 
@@ -1463,7 +1488,7 @@ export default function App() {
                 headers: {
                     "x-token": tokenState
                 },
-                body: "data=" + JSON.stringify({idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone}),
+                body: "data=" + JSON.stringify({ idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone }),
                 signal: controller.signal
             },
         )
@@ -1844,7 +1869,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
+                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} fetchHomeworks={fetchHomeworks} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
                             path: ":userId/dashboard"
                         },
                         {

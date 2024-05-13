@@ -1,7 +1,8 @@
 .detailed-task {
     display: flex;
     flex-direction: column;
-    gap: 5px
+    gap: 5px;
+    flex-shrink: 0;
 }
 
 .task-header {
@@ -15,6 +16,15 @@
     font-size: var(--font-size-16);
 }
 
+.task-header .check-box input[type="checkbox"] {
+    border-color: rgba(var(--text-color-alt), .6);
+}
+.task-header .check-box:is(:hover, :focus-within) input[type="checkbox"]:not(:checked) {
+    border-color: rgba(var(--text-color-alt), 1) !important;
+}
+.task-header .check-box input[type="checkbox"]:checked {
+    background-color: rgba(var(--text-color-alt), .1);
+}
 .task-header label {
     font-weight: 600;
 }
@@ -33,7 +43,42 @@
 }
 
 .detailed-task .task-content {
-    margin-block: 20px;
+    margin-block: 5px;
+    padding: 15px;
+    padding-right: 45px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.dark .detailed-task .task-content {
+    background-color: rgba(var(--text-color-opposite), 0.15);
+}
+
+.light .detailed-task .task-content {
+    background-color: rgba(var(--text-color-opposite), 0.3);
+}
+
+.detailed-task .task-content .copy-button {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    opacity: 0;
+    transition: .1s;
+}
+
+.detailed-task .task-content:is(:hover, :focus-within) .copy-button {
+    opacity: 1;
+}
+
+/* change task content items appearance */
+.detailed-task .task-content a {
+    word-break: break-word;
+}
+.detailed-task .task-content a:is(:hover, :focus-visible) {
+    opacity: .8;
+}
+.detailed-task .task-content a:active {
+    opacity: .6;
 }
 
 .task-footer {
@@ -54,11 +99,34 @@
     align-items: center;
     transition: .1s;
     cursor: pointer;
+    text-decoration: none;
+}
+
+.task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    filter: brightness(0.6);
+}
+.light .task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    filter: opacity(0.4);
 }
 .task-footer .task-footer-button:is(:hover, :focus-visible) {
     background-color: rgb(var(--background-color-3));
 }
 .task-footer .task-footer-button:active {
     background-color: rgb(var(--background-color-3), .7);
+}
+
+.task-footer .task-footer-button .download-icon {
+    height: 20px;
+    margin-right: 10px;
+}
+.task-footer .task-footer-button .session-content-icon {
+    height: 20px;
+    scale: 1.5;
+    margin-right: 7px;
+}
+.task-footer .task-footer-button svg * {
+    stroke: rgb(var(--text-color-alt));
 }
 

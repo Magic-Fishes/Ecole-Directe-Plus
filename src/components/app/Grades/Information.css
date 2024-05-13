@@ -126,6 +126,9 @@
 .information .file .download-icon {
     height: 40px;
 }
+.information .file .download-icon * {
+    stroke: rgb(var(--text-color-alt));
+}
 
 .information .file .download-loading-animation {
     height: 40px;
