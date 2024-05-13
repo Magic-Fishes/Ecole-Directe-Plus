@@ -4,7 +4,7 @@ import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
 import { applyZoom } from "../../../utils/zoom";
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import "./DetailedTask.css"
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
@@ -14,7 +14,7 @@ import { clearHTML } from "../../../utils/html"
 export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
     const isMouseInCheckBoxRef = useRef(false);
     const taskCheckboxRef = useRef(null);
-    const { actualDisplayTheme, fetchHomeworks, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
+    const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
     const settings = useUserSettings();
     const homeworks = userHomeworks.get()
 
@@ -34,17 +34,6 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                 id: task.id,
                 content: task.sessionContent,
             })
-        }
-    }, [])
-
-    useEffect(() => {
-        const controller = new AbortController();
-        if (!task.content) {
-            fetchHomeworks(controller, day)
-        }
-
-        return () => {
-            controller.abort();
         }
     }, [])
 
@@ -98,7 +87,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                         id: task.id,
                         content: task.sessionContent,
                     })
-                }} to={`#${day};${task.id};s`} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
+                }} to={`#${day};${task.id};s`} replace={true} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
                 <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</div>
             </div>
         </div>
@@ -129,7 +118,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                 </ContentLoader>
             </div>
-            <div style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px", borderRadius: "10px", backgroundColor: actualDisplayTheme === "dark" ? "#40405b" : "#9d9dbd"}}></div>
+            <div style={{ width: "100%", height: contentLoadersRandomValues.current.contentHeight + "px", marginBlock: "5px", borderRadius: "10px", backgroundColor: actualDisplayTheme === "dark" ? "#40405b" : "#ffffff4d"}}></div>
             <div className="task-footer">
                 <div className={`task-footer-button disabled`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</div>
                 <div className={`task-footer-button disabled`}><DownloadIcon className="download-icon" />Fichiers</div>

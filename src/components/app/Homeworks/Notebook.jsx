@@ -12,8 +12,8 @@ import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
-export default function Notebook({ setBottomSheetSession }) {
-    const { actualDisplayTheme, useUserData, useUserSettings } = useContext(AppContext);
+export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
+    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
     const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
@@ -60,7 +60,7 @@ export default function Notebook({ setBottomSheetSession }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`);
+        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -105,10 +105,10 @@ export default function Notebook({ setBottomSheetSession }) {
         if (!oldSelectedElementBounds) {
             return;
         }
-        
+
         const bounds = element.getBoundingClientRect();
         const containerBounds = notebookContainerRef.current.getBoundingClientRect();
-        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width)/2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width/2, 0)
+        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width) / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
 
     }
 
@@ -279,18 +279,34 @@ export default function Notebook({ setBottomSheetSession }) {
 
     }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
 
+    useEffect(() => {
+        const controller = new AbortController();
+        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+            fetchHomeworks(controller, selectedDate)
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [selectedDate, homeworks, isLoggedIn]);
+
     return <>
-        <div className="date-selector">
-            <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-            <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
-            <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
-        </div>
+        {!hideDateController
+            ? <div className="date-selector">
+                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
+                    <DropDownArrow />
+                </span>
+                <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
+            </div>
+            : null
+        }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks
                 ? Object.keys(homeworks).sort().map((el, index) => {
                     const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                     const elDate = new Date(el)
-                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`)} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">
                             <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
                                 <circle cx="50" cy="50" r="40" />

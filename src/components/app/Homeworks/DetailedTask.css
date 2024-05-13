@@ -1,7 +1,8 @@
 .detailed-task {
     display: flex;
     flex-direction: column;
-    gap: 5px
+    gap: 5px;
+    flex-shrink: 0;
 }
 
 .task-header {
@@ -18,8 +19,8 @@
 .task-header .check-box input[type="checkbox"] {
     border-color: rgba(var(--text-color-alt), .6);
 }
-.task-header .check-box:is(:hover, :focus-visible) input[type="checkbox"]:not(:checked) {
-    border-color: rgba(var(--text-color-alt), 1);
+.task-header .check-box:is(:hover, :focus-within) input[type="checkbox"]:not(:checked) {
+    border-color: rgba(var(--text-color-alt), 1) !important;
 }
 .task-header .check-box input[type="checkbox"]:checked {
     background-color: rgba(var(--text-color-alt), .1);
@@ -70,6 +71,9 @@
 }
 
 /* change task content items appearance */
+.detailed-task .task-content a {
+    word-break: break-word;
+}
 .detailed-task .task-content a:is(:hover, :focus-visible) {
     opacity: .8;
 }
@@ -100,7 +104,11 @@
 
 .task-footer .task-footer-button.disabled {
     pointer-events: none;
-    opacity: 0.7;
+    filter: brightness(0.6);
+}
+.light .task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    filter: opacity(0.4);
 }
 .task-footer .task-footer-button:is(:hover, :focus-visible) {
     background-color: rgb(var(--background-color-3));

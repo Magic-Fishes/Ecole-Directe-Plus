@@ -68,6 +68,28 @@
     animation: notification-pop-in .2s ease forwards;
 }
 
+.header-button .notifications.new {
+    background-color: rgb(var(--background-color-1));
+    width: 52px;
+    color: rgb(var(--text-color-main));
+    animation: new-feature-notification-animation .8s ease alternate forwards;
+    animation-iteration-count: 20;
+    left: 40px;
+}
+
+.light .header-button .notifications.new {
+    box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+}
+
+@keyframes new-feature-notification-animation {
+    from {
+        scale: .9;
+    }
+    to {
+        scale: 1;
+    }
+}
+
 @keyframes notification-pop-in {
     from {
         opacity: 0;

@@ -1,5 +1,6 @@
 
 import { useContext, useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
     WindowsContainer,
@@ -11,13 +12,11 @@ import {
 
 import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
-import { useNavigate, useLocation } from "react-router-dom";
-
-import "./Homeworks.css";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
+import UpcomingAssignments from "./UpcomingAssignments";
 
-
+import "./Homeworks.css";
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
@@ -65,11 +64,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
-                            <WindowContent>
-
+                            <WindowContent className="upcoming-assignments-container">
+                                <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.2}>
+                        <Window growthFactor={1.75}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
