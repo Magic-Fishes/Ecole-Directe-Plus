@@ -3,6 +3,10 @@
     flex-direction: column;
     gap: 5px;
     flex-shrink: 0;
+    transition: .1s;
+}
+.detailed-task.done {
+    opacity: .4;
 }
 
 .task-header {
