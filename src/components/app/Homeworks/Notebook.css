@@ -181,4 +181,5 @@
     flex-flow: nowrap column;
     gap: 15px;
     padding: 15px;
+    scroll-behavior: smooth;
 }

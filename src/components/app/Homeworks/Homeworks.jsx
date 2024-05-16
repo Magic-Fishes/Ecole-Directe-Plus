@@ -68,7 +68,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.75}>
+                        <Window growthFactor={1.75} WIP={true}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
