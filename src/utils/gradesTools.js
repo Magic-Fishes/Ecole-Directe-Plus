@@ -17,7 +17,11 @@ export function getGradeValue(gradeValue) {
 }
 
 export function safeParseFloat(value) {
-    return isNaN(parseFloat(value?.replace(",", "."))) ? "N/A" : parseFloat(value?.replace(",", "."))
+    if (typeof value === "number") {
+        return value
+    }
+    const parsedValue = parseFloat(value?.replace(",", "."))
+    return isNaN(parsedValue) ? "N/A" : parsedValue
 }
 
 export function calcAverage(list) {

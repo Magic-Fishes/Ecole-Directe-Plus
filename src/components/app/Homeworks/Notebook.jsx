@@ -97,7 +97,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
         for (let element of elements) {
             const elementBounds = element.getBoundingClientRect();
 
-            if (elementBounds.width > 300) {
+            if (elementBounds.width > (document.fullscreenElement?.classList.contains("notebook-window") ? 400 : 300)) {
                 oldSelectedElementBounds = elementBounds;
                 break;
             }
@@ -108,7 +108,8 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
         const bounds = element.getBoundingClientRect();
         const containerBounds = notebookContainerRef.current.getBoundingClientRect();
-        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width) / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
+        const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
+        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
 
     }
 

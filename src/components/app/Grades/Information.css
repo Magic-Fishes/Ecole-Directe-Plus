@@ -43,7 +43,10 @@
     text-align: center;
     font-size: var(--font-size-14);
     color: rgb(var(--text-color-alt));
-    margin-bottom: 5px;
+}
+
+.information .information-hr {
+    margin-top: 5px;
 }
 
 .information .grade-zone {

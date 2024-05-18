@@ -20,7 +20,7 @@ export default function UpcomingAssignments() {
     const [choosenPlaceholder, _] = useState(placeholder[parseInt(Math.random() * placeholder.length)])
 
     return currentUpcomingAssignments?.length
-        ? currentUpcomingAssignments.map((e) => <Interrogation task={e} key={e.id === "dummy" ? crypto.randomUUID() : e.id} />)
+        ? currentUpcomingAssignments.map((e) => <Interrogation task={e} key={e.id} />)
         : <div className="loading">
             {choosenPlaceholder}
             <CanardmanSleeping />
