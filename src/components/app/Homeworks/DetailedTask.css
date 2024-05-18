@@ -76,7 +76,7 @@
 
 /* change task content items appearance */
 .detailed-task .task-content a {
-    word-break: break-word;
+    word-break: break-all;
 }
 .detailed-task .task-content a:is(:hover, :focus-visible) {
     opacity: .8;

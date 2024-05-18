@@ -77,7 +77,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
-                    <Window growthFactor={2.2} allowFullscreen={true}>
+                    <Window growthFactor={2.2} allowFullscreen={true} className="notebook-window">
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>

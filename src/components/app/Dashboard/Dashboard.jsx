@@ -98,13 +98,13 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
-                            <WindowContent>
+                            <WindowContent id="notebook">
                                 <Notebook setBottomSheetSession={setBottomSheetSession} hideDateController={true} />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
                     <WindowsLayout>
-                        <Window WIP={true}>
+                        <Window WIP={true} className="notebook-window">
                             <WindowHeader onClick={() => navigate("../timetable")}>
                                 <h2>Emploi du temps</h2>
                             </WindowHeader>

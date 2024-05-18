@@ -120,7 +120,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                 {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
-            <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} >{task.content}</EncodedHTMLDiv>
+            <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
             <div className="task-footer">
                 <Link onClick={(e) => {
                     e.stopPropagation(); setBottomSheetSession({

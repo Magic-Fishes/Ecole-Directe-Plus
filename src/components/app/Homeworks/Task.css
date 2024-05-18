@@ -12,6 +12,9 @@
     outline: none;
     overflow: hidden;
 }
+.task.done {
+    opacity: .4;
+}
 
 .task .task-title {
     padding: 0.75em;
