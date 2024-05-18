@@ -1,0 +1,81 @@
+{
+    "code": 200,
+    "token": "a781c855-727e-48a6-9d20-894b3179e5ca",
+    "host": "HTTP94",
+    "data": {
+        "date": "2024-05-21",
+        "matieres": [
+            {
+                "entityCode": "T-MATH2",
+                "entityLibelle": "T-MATH2",
+                "entityType": "G",
+                "matiere": "MATHEMATIQUES",
+                "codeMatiere": "MATHS",
+                "nomProf": "Mme BELLINI V.",
+                "id": 19881,
+                "interrogation": false,
+                "blogActif": false,
+                "nbJourMaxRenduDevoir": 0,
+                "aFaire": {
+                    "idDevoir": 19881,
+                    "contenu": "PHA+RmluaXImbmJzcDtleCAxMSBwIDI0NzwvcD4K",
+                    "rendreEnLigne": false,
+                    "donneLe": "2024-05-14",
+                    "effectue": true,
+                    "ressource": "",
+                    "documentsRendusDeposes": false,
+                    "ressourceDocuments": [],
+                    "documents": [],
+                    "elementsProg": [],
+                    "liensManuel": [],
+                    "documentsRendus": [],
+                    "contenuDeSeance": {
+                        "contenu": "PHA+QXV0b21hdGlzbWVzPC9wPgoKPHA+Q291cnMgOiAyKSBDYWxjdWwgZCYjMzk7dW5lIGludCZlYWN1dGU7Z3JhbGUgJmFncmF2ZTsgbCYjMzk7YWlkZSBkJiMzOTt1bmUgcHJpbWl0aXZlPC9wPgoKPHA+RXhlcmNpY2VzIDogZXggNTAsIDQ1IChhLCBjKSwgNDYgcCAyNTU8L3A+Cgo8cD5Db3VycyA6IElJSSBQcm9wcmkmZWFjdXRlO3QmZWFjdXRlO3MgZGUgbCYjMzk7aW50JmVhY3V0ZTtncmFsZSA7IDEpIFByZW1pJmVncmF2ZTtyZXMgcHJvcHJpJmVhY3V0ZTt0JmVhY3V0ZTtzIDsgMikgTGluJmVhY3V0ZTthcml0JmVhY3V0ZTs8L3A+Cgo8cD5FeGVyY2ljZXMgOiBleCA2MSBwIDI1NjwvcD4KCjxwPkNvdXJzIDogMykgUmVsYXRpb24gZGUgQ2hhc2xlczwvcD4KCjxwPkV4ZXJjaWNlcyA6IGV4IDY1IHAgMjU2PC9wPgoKPHA+Q291cnMgOiA0KSBQb3NpdGl2aXQmZWFjdXRlOyA7IDUpIENvbXBhcmFpc29uPC9wPgoKPHA+RXhlcmNpY2VzIDogZXggNjYgKGQpIHAgMjU2IDsgZXggMTEgcCAyNDc8L3A+Cg==",
+                        "documents": []
+                    }
+                }
+            },
+            {
+                "entityCode": "T-MATEX",
+                "entityLibelle": "T-MATEX",
+                "entityType": "G",
+                "matiere": "MATHS EXPERTES",
+                "codeMatiere": "MATEX",
+                "nomProf": "Mme GAUTHERON V.",
+                "id": 19814,
+                "interrogation": true,
+                "blogActif": false,
+                "nbJourMaxRenduDevoir": 0,
+                "aFaire": {
+                    "idDevoir": 19814,
+                    "contenu": "PGRpdj5GaW5pciBsZXMgZXhlcmNpY2VzIDogNDRiY2QuNDguMTRhLjYxYS42My42NC43My43NC43NSBwMTAxIMOgIDEwNyBldCByZWdhcmRlciBsYSBjb3JyZWN0aW9uIGVuIHBpw6hjZSBqb2ludGUuPC9kaXY+PGRpdj48YnI+PC9kaXY+RFMgOiBHcmFwaGVzIGV0IMOJcXVhdGlvbnMgcG9seW5vbWlhbGVzJm5ic3A7",
+                    "rendreEnLigne": false,
+                    "donneLe": "2024-05-15",
+                    "effectue": false,
+                    "ressource": "",
+                    "documentsRendusDeposes": false,
+                    "ressourceDocuments": [],
+                    "documents": [
+                        {
+                            "id": 2014,
+                            "libelle": "Exs Tle Exp.pdf",
+                            "date": "2024-05-15",
+                            "taille": 698351,
+                            "type": "FICHIER_CDT",
+                            "signatureDemandee": false,
+                            "etatSignatures": [],
+                            "signature": {}
+                        }
+                    ],
+                    "elementsProg": [],
+                    "liensManuel": [],
+                    "documentsRendus": [],
+                    "contenuDeSeance": {
+                        "contenu": "",
+                        "documents": []
+                    }
+                }
+            }
+        ]
+    }
+}

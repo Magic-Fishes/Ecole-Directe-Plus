@@ -977,7 +977,7 @@ export default function App() {
                     isInterrogation: interrogation,
                     isDone: effectue,
                 }
-                
+
                 if (interrogation && upcomingAssignments.length < 3) {
                     upcomingAssignments.push({
                         date: day[0],
@@ -1424,52 +1424,54 @@ export default function App() {
         } else {
             endpoint = "cahierdetexte/" + getISODate(date);
         }
-
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            if (date === "incoming") {
+                import("./data/homeworks.json").then((module) => {
+                    changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
+                })
+            } else {
+                import("./data/detailed_homeworks.json").then((module) => {
+                    changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [module.data.date]: module.data.matieres }) })
+                })
+            }
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        } else {
+            fetch(
+                getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                {
+                    method: "POST",
+                    headers: {
+                        "x-token": tokenState
+                    },
+                    body: "data={}",
+                    signal: controller.signal
                 },
-                body: "data={}",
-                signal: controller.signal
-            },
-        )
-            .then((response) => response.json())
-            .then((response) => {
-                let code;
-                if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 49969;
-                } else {
-                    code = response.code;
-                }
-                if (code === 200) {
-                    if (date === "incoming") {
-                        changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
-                    } else {
-                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    const code = response.code;
+                    if (code === 200) {
+                        if (date === "incoming") {
+                            changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
+                        } else {
+                            changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
+                        }
+                    } else if (code === 520 || code === 525) {
+                        // token invalide
+                        console.log("INVALID TOKEN: LOGIN REQUIRED");
+                        requireLogin();
                     }
-                } else if (code === 520 || code === 525) {
-                    // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
-                    requireLogin();
-                } else if (code === 49969) {
-                    let userHomeworks = structuredClone(homeworks);
-                    import("./data/homeworks.json").then((module) => {
-                        changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
-                    })
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
+                    setTokenState((old) => (response?.token || old));
+                })
+                .catch((error) => {
+                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                        setProxyError(true);
+                    }
+                })
+                .finally(() => {
+                    abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+                })
+        }
     }
 
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
