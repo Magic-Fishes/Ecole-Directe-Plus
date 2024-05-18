@@ -12,6 +12,9 @@
     outline: none;
     overflow: hidden;
 }
+.task.done {
+    opacity: .4;
+}
 
 .task .task-title {
     padding: 0.75em;
@@ -64,7 +67,7 @@
     transition: .1s !important;
 }
 
-.task .check-box:is(:hover, :focus-within) input {
+.task .check-box:is(:hover, :has(:focus-visible)) input {
     opacity: .25;
 }
 
