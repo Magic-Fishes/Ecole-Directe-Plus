@@ -6,7 +6,6 @@
 .notebook-container {
     display: flex;
     flex-flow: nowrap row;
-    justify-content: space-between;
     padding: 20px;
     gap: 40px;
     overflow-y: visible;
