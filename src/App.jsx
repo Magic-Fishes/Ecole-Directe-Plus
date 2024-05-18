@@ -936,6 +936,7 @@ export default function App() {
 
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
+        enabledFeatures.coefficient = settings.coefficientNote;
 
         // add the average of all subjects a special type of chart
         for (const period in periods) {
