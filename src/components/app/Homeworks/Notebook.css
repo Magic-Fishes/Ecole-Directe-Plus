@@ -6,7 +6,6 @@
 .notebook-container {
     display: flex;
     flex-flow: nowrap row;
-    justify-content: space-between;
     padding: 20px;
     gap: 40px;
     overflow-y: visible;
@@ -103,6 +102,9 @@
     display: flex;
     flex-flow: column nowrap;
 }
+.performance .notebook-day {
+    border: 2px solid rgb(var(--background-color-3));;
+}
 
 .notebook-day:active {
     cursor: grabbing;
@@ -112,6 +114,13 @@
     width: min(600px, 100%);
     filter: brightness(1.05);
     opacity: 1;
+}
+
+.notebook-window:fullscreen .notebook-day {
+    width: min(400px, 100%);
+}
+.notebook-window:fullscreen .notebook-day.selected {
+    width: min(800px, 100%);
 }
 
 .notebook-day.selected .tasks-container {
@@ -181,4 +190,5 @@
     flex-flow: nowrap column;
     gap: 15px;
     padding: 15px;
+    scroll-behavior: smooth;
 }

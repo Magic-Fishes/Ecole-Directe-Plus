@@ -32,6 +32,8 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
             if (element !== null) {
                 if (element.scrollIntoViewIfNeeded !== undefined) {
                     element.scrollIntoViewIfNeeded();
+                } else {
+                    element.scrollIntoView();
                 }
             }
         }
