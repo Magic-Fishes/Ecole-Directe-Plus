@@ -152,5 +152,5 @@ export function textToHSL(str, initialS=42, initialL=73, variationS=10, variatio
     int = Math.round(int / 10**(intLength - 6)).toString()
     const h = parseInt(int.slice(0, 3))
     const s = parseInt(int.slice(-3, int.length))
-    return `hsl(${360 * (h / 999)}, ${initialS + variationS * (s / 999)}%, ${initialL + variationL * (l / 999)}%)` // [{0-360}, {70-100}, {40-70}]
+    return [360 * (h / 999),initialS + variationS * (s / 999), initialL + variationL * (l / 999)] // [{0-360}, {70-100}, {40-70}]
 }
