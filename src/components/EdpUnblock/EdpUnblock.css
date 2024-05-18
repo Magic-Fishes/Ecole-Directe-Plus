@@ -85,7 +85,7 @@
     font-size: var(--font-size-36);
 }
 
-.edpu-page main > div > p {
+.edpu-page main > div > p, .edpu-page main > div > p span {
     max-width: 650px;
     font-size: var(--font-size-20);
     color: #b4b4f0;

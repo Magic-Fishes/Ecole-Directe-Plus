@@ -1,5 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { v5 as uuidv5 } from "uuid";
+import sha256 from 'js-sha256';
 
 const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
 const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
@@ -51,10 +52,10 @@ export function getISODate(date) {
         date = new Date(date)
     }
     return date.getUTCFullYear() +
-    "-" +
-    (date.getUTCMonth() + 1 + "").padStart(2, "0") +
-    "-" +
-    date.getUTCDate().toString().padStart(2, "0")
+        "-" +
+        (date.getUTCMonth() + 1 + "").padStart(2, "0") +
+        "-" +
+        date.getUTCDate().toString().padStart(2, "0")
 }
 
 export function capitalizeFirstLetter(string) {
@@ -135,12 +136,12 @@ export function getBrowser() { // I didn't check all browsers, see : https://dev
     const UA = navigator.userAgent
     return (
         (UA.includes("OPR/") || UA.includes("Opera/")) ? "Opera" : // verified on my computer
-        (UA.includes("Chromium/")) ? "Chromium" : // not verified
-        (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
-        (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
-        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
-        (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
-        "Safari" // not verified
+            (UA.includes("Chromium/")) ? "Chromium" : // not verified
+                (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
+                    (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
+                        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
+                            (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
+                                "Safari" // not verified
     )
 }
 
@@ -165,4 +166,12 @@ export function getOS() {
     }
 
     return os;
+}
+
+export function textToHSL(str, initialS = 42, initialL = 73, variationS = 10, variationL = 10) {
+    const int = parseInt(sha256(str), 16);
+    const l = int % 10000;
+    const h = Math.round((int % (10 ** 8)) / (10 ** 4));
+    const s = Math.round((int % (10 ** 12)) / (10 ** 8));
+    return [360 * (h / 9999), initialS + variationS * (s / 9999), initialL + variationL * (l / 9999)]; // [{0-360}, {70-100}, {40-70}]
 }

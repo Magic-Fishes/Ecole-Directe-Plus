@@ -13,7 +13,7 @@ import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
 export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
-    const { actualDisplayTheme, useUserData, useUserSettings } = useContext(AppContext);
+    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
     const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
@@ -97,7 +97,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
         for (let element of elements) {
             const elementBounds = element.getBoundingClientRect();
 
-            if (elementBounds.width > 300) {
+            if (elementBounds.width > (document.fullscreenElement?.classList.contains("notebook-window") ? 400 : 300)) {
                 oldSelectedElementBounds = elementBounds;
                 break;
             }
@@ -108,7 +108,8 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
         const bounds = element.getBoundingClientRect();
         const containerBounds = notebookContainerRef.current.getBoundingClientRect();
-        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + Math.min(600, containerBounds.width) / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
+        const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
+        notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
 
     }
 
@@ -279,12 +280,25 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
     }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
 
+    useEffect(() => {
+        const controller = new AbortController();
+        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+            fetchHomeworks(controller, selectedDate)
+        }
+
+        return () => {
+            controller.abort();
+        }
+    }, [selectedDate, homeworks, isLoggedIn]);
+
     return <>
         {!hideDateController
             ? <div className="date-selector">
-                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
+                    <DropDownArrow />
+                </span>
                 <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
-                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} ><DropDownArrow /></span>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
             </div>
             : null
         }

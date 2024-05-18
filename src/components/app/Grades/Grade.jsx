@@ -9,8 +9,9 @@ import { AppContext } from "../../../App";
 import "./Grade.css";
 
 export default function Grade({ grade, className = "", ...props }) {
-    const { useUserSettings, deleteFakeGrade } = useContext(AppContext); // de même pour ça
+    const { useUserSettings, useUserData, deleteFakeGrade } = useContext(AppContext); // de même pour ça
 
+    const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
     const gradeScale = useUserSettings("gradeScale");
     const [classList, setClassList] = useState([]);
@@ -147,7 +148,7 @@ export default function Grade({ grade, className = "", ...props }) {
                 {["Abs", "Disp", "NE", "EA", "Comp"].includes(grade.value) ? grade.value : <span>
                     {(isGradeScaleEnabled.get() && !isNaN(grade.value) ? Math.round((grade.value * gradeScale.get() / (grade.scale ?? 20)) * 100) / 100 : grade.value)?.toString().replace(".", ",")}
                     {isGradeScaleEnabled.get() || ((grade.scale ?? 20) != 20 && <sub>/{grade.scale}</sub>)}
-                    {(grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
+                    {coefficientEnabled && (grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
                 </span>}
                 {(grade.isReal ?? true) === false && <CloseButton className="delete-grade-button" onClick={() => {deleteFakeGrade(grade.id, grade.subjectKey, grade.periodKey)}}/>}
             </span>

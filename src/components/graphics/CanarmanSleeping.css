@@ -1,0 +1,50 @@
+.sleeping-canardman {
+    overflow: visible;
+}
+
+#Z-0 {
+    opacity: 0;
+    animation: Z-0-growing 1.5s infinite;
+}
+
+#Z-1 {
+    animation: Z-1-growing 1.5s infinite;
+}
+
+#Z-2 {
+    animation: Z-2-growing 1.5s infinite;
+}
+
+#Z-3 {
+    opacity: 1;
+    animation: Z-3-growing 1.5s infinite;
+}
+
+@keyframes Z-0-growing {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.25) translate(-8px, -13.5px);
+    }
+}
+
+@keyframes Z-1-growing {
+    to {
+        transform: scale(1.3) translate(-7.5px, -13.2px);
+    }
+}
+
+@keyframes Z-2-growing {
+    to {
+        transform: scale(1.36) translate(-10.3px, -9.4px);
+    }
+}
+
+@keyframes Z-3-growing {
+    to {
+        transform: scale(1.38) translate(-11px, -5px);
+        opacity: 0;
+    }
+}

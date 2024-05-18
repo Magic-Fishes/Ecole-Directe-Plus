@@ -3,6 +3,10 @@
     flex-direction: column;
     gap: 5px;
     flex-shrink: 0;
+    transition: .1s;
+}
+.detailed-task.done {
+    opacity: .4;
 }
 
 .task-header {
@@ -72,7 +76,7 @@
 
 /* change task content items appearance */
 .detailed-task .task-content a {
-    word-break: break-word;
+    word-break: break-all;
 }
 .detailed-task .task-content a:is(:hover, :focus-visible) {
     opacity: .8;
@@ -105,6 +109,10 @@
 .task-footer .task-footer-button.disabled {
     pointer-events: none;
     filter: brightness(0.6);
+}
+.light .task-footer .task-footer-button.disabled {
+    pointer-events: none;
+    filter: opacity(0.4);
 }
 .task-footer .task-footer-button:is(:hover, :focus-visible) {
     background-color: rgb(var(--background-color-3));

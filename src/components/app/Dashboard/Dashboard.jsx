@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
     WindowsContainer,
@@ -15,6 +15,7 @@ import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 
 import "./Dashboard.css";
+import UpcomingAssignments from "../Homeworks/UpcomingAssignments";
 
 export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades }) {
     const navigate = useNavigate();
@@ -84,12 +85,12 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
                                 </WindowContent>
                             </Window> */}
 
-                            <Window WIP={true}>
+                            <Window>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>
                                     <h2>Prochains contrôles</h2>
                                 </WindowHeader>
-                                <WindowContent>
-
+                                <WindowContent className="upcoming-assignments-container">
+                                    <UpcomingAssignments homeworks={homeworks} />
                                 </WindowContent>
                             </Window>
                         </WindowsLayout>
@@ -98,13 +99,13 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
-                            <WindowContent>
+                            <WindowContent id="notebook">
                                 <Notebook setBottomSheetSession={setBottomSheetSession} hideDateController={true} />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
                     <WindowsLayout>
-                        <Window WIP={true}>
+                        <Window WIP={true} className="notebook-window">
                             <WindowHeader onClick={() => navigate("../timetable")}>
                                 <h2>Emploi du temps</h2>
                             </WindowHeader>

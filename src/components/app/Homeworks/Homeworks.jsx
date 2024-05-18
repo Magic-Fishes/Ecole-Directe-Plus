@@ -14,10 +14,9 @@ import { AppContext } from "../../../App";
 import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
+import UpcomingAssignments from "./UpcomingAssignments";
 
 import "./Homeworks.css";
-
-
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
@@ -65,11 +64,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
-                            <WindowContent>
-
+                            <WindowContent className="upcoming-assignments-container">
+                                <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.2} WIP={true}>
+                        <Window growthFactor={1.75} WIP={true}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
@@ -78,7 +77,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
-                    <Window growthFactor={2.2} allowFullscreen={true}>
+                    <Window growthFactor={2.2} allowFullscreen={true} className="notebook-window">
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
