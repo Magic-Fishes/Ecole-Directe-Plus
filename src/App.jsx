@@ -977,25 +977,28 @@ export default function App() {
                     isInterrogation: interrogation,
                     isDone: effectue,
                 }
-
+                
                 if (interrogation && upcomingAssignments.length < 3) {
                     upcomingAssignments.push({
                         date: day[0],
                         id: idDevoir,
                         index: i,
                         subject: matiere,
-                    })
+                        subjectCode: codeMatiere,
+                    });
                 }
 
-                return task
+                return task;
             })]
         }))
 
-        if (upcomingAssignments.length > 0 && upcomingAssignments.length < 3) {
-            for (let i = 0; i < (3 - upcomingAssignments.length); i++) {
+        if (upcomingAssignments.length > 0) {
+            let i = 0;
+            while (upcomingAssignments.length < 3) {
                 upcomingAssignments.push({
-                    id: "dummy",
-                })
+                    id: "dummy" + i,
+                });
+                i++;
             }
         }
         changeUserData("upcomingAssignments", upcomingAssignments)
@@ -1454,8 +1457,7 @@ export default function App() {
                 } else if (code === 49969) {
                     let userHomeworks = structuredClone(homeworks);
                     import("./data/homeworks.json").then((module) => {
-                        userHomeworks[userId] = module.data;
-                        setHomeworks(userHomeworks);
+                        changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
                     })
                 }
                 setTokenState((old) => (response?.token || old));

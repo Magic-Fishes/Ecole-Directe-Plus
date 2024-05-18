@@ -59,7 +59,7 @@ export default function Interrogation({ task }) { // This component only exists 
         }
     }
 
-    const taskColor = task.id !== "dummy" ? textToHSL(task.subject) : undefined;
+    const taskColor = typeof task.id === "number" ? textToHSL(task.subjectCode) : undefined;
 
     return task.id !== "dummy"
         ? <div tabIndex="0" role="a" onKeyDown={(e) => handleKeyDown(e, task.date, task.id)} onClick={() => handleClick(task.date, task.id)} className="upcoming-assignments" style={{ backgroundColor: taskColor }}>
