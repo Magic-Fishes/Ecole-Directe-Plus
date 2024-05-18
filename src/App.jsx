@@ -984,18 +984,21 @@ export default function App() {
                         id: idDevoir,
                         index: i,
                         subject: matiere,
-                    })
+                        subjectCode: codeMatiere,
+                    });
                 }
 
-                return task
+                return task;
             })]
         }))
 
-        if (upcomingAssignments.length > 0 && upcomingAssignments.length < 3) {
-            for (let i = 0; i < (3 - upcomingAssignments.length); i++) {
+        if (upcomingAssignments.length > 0) {
+            let i = 0;
+            while (upcomingAssignments.length < 3) {
                 upcomingAssignments.push({
-                    id: "dummy",
-                })
+                    id: "dummy" + i,
+                });
+                i++;
             }
         }
         changeUserData("upcomingAssignments", upcomingAssignments)
@@ -1421,53 +1424,54 @@ export default function App() {
         } else {
             endpoint = "cahierdetexte/" + getISODate(date);
         }
-
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            if (date === "incoming") {
+                import("./data/homeworks.json").then((module) => {
+                    changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
+                })
+            } else {
+                import("./data/detailed_homeworks.json").then((module) => {
+                    changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [module.data.date]: module.data.matieres }) })
+                })
+            }
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        } else {
+            fetch(
+                getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                {
+                    method: "POST",
+                    headers: {
+                        "x-token": tokenState
+                    },
+                    body: "data={}",
+                    signal: controller.signal
                 },
-                body: "data={}",
-                signal: controller.signal
-            },
-        )
-            .then((response) => response.json())
-            .then((response) => {
-                let code;
-                if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 49969;
-                } else {
-                    code = response.code;
-                }
-                if (code === 200) {
-                    if (date === "incoming") {
-                        changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
-                    } else {
-                        changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    const code = response.code;
+                    if (code === 200) {
+                        if (date === "incoming") {
+                            changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
+                        } else {
+                            changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
+                        }
+                    } else if (code === 520 || code === 525) {
+                        // token invalide
+                        console.log("INVALID TOKEN: LOGIN REQUIRED");
+                        requireLogin();
                     }
-                } else if (code === 520 || code === 525) {
-                    // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
-                    requireLogin();
-                } else if (code === 49969) {
-                    let userHomeworks = structuredClone(homeworks);
-                    import("./data/homeworks.json").then((module) => {
-                        userHomeworks[userId] = module.data;
-                        setHomeworks(userHomeworks);
-                    })
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
+                    setTokenState((old) => (response?.token || old));
+                })
+                .catch((error) => {
+                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                        setProxyError(true);
+                    }
+                })
+                .finally(() => {
+                    abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+                })
+        }
     }
 
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {

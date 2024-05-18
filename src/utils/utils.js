@@ -136,21 +136,20 @@ export function getBrowser() { // I didn't check all browsers, see : https://dev
     const UA = navigator.userAgent
     return (
         (UA.includes("OPR/") || UA.includes("Opera/")) ? "Opera" : // verified on my computer
-            (UA.includes("Chromium/")) ? "Chromium" : // not verified
-                (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
-                    (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
-                        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
-                            (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
-                                "Safari" // not verified
+        (UA.includes("Chromium/")) ? "Chromium" : // not verified
+        (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
+        (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
+        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
+        (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
+        "Safari" // not verified
     )
 }
 
-export function textToHSL(str, initialS=42, initialL=73, variationS=10, variationL=10) {
-    let int = parseInt(sha256(str), 16)
-    const l = int % 1000
-    const intLength = Math.round(Math.log10(int));
-    int = Math.round(int / 10**(intLength - 6)).toString()
-    const h = parseInt(int.slice(0, 3))
-    const s = parseInt(int.slice(-3, int.length))
-    return `hsl(${360 * (h / 999)}, ${initialS + variationS * (s / 999)}%, ${initialL + variationL * (l / 999)}%)` // [{0-360}, {70-100}, {40-70}]
+export function textToHSL(str, initialS = 42, initialL = 73, variationS = 10, variationL = 10) {
+    let int = sha256(str)
+    int = parseInt(int, 16)
+    const l = int % 10000
+    const h = Math.round((int % (10 ** 8)) / (10 ** 4))
+    const s = Math.round((int % (10 ** 12)) / (10 ** 8))
+    return [360 * (h / 9999), initialS + variationS * (s / 9999), initialL + variationL * (l / 9999)] // [{0-360}, {70-100}, {40-70}]
 }

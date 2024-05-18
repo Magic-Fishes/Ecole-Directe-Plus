@@ -15,6 +15,11 @@
     flex: 1;
     cursor: pointer;
     transition: .2s;
+    overflow: hidden;
+}
+
+.upcoming-assignments.done {
+    opacity: .7;
 }
 
 .upcoming-assignments:is(:hover, :focus-visible) {
@@ -34,23 +39,23 @@
 .upcoming-assignments input[type="checkbox"] {
     height: 100%;
     width: 100%;
-    border-color: rgba(0, 0, 0, 0.15);
-    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--text-color-task);
+    background-color: var(--background-color-task);
     border-width: 4px;
 }
 
 .upcoming-assignments input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
-    border-color: rgba(0, 0, 0, 0.25);
+    border-color: rgba(0, 0, 0, 0.3);
 }
 
 .upcoming-assignments input[type="checkbox"]:checked {
-    border-color: rgba(0, 0, 0, 0.15);
-    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--text-color-task);
+    background-color: var(--background-color-task);
 }
 
 .upcoming-assignments span {
     font-weight: var(--font-weight-extra-bold);
-    color: #0004;
+    color: var(--text-color-task);
     flex: 1;
     text-align: center;
     white-space: nowrap;
@@ -63,9 +68,28 @@
     flex: unset;
 }
 
+.upcoming-assignments .interrogation-label {
+    position: relative;
+}
+
+.upcoming-assignments .interrogation-label::after {
+    content: "";
+    width: 0;
+    background-color: var(--text-color-task);
+    height: 2.2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: .5s;
+}
+
+.upcoming-assignments.done .interrogation-label::after {
+    width: 107%;
+}
+
 .dummy-interrogation {
     flex: 1;
-    padding: 15px;
 }
 
 .upcoming-assignments-container .loading {
