@@ -16,7 +16,7 @@ import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills } from "./utils/gradesTools";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
@@ -700,9 +700,9 @@ export default function App() {
                         newSubject.elementType = "subject";
                         newSubject.id = matiere.id.toString();
                         newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
-                        newSubject.classAverage = !isNaN(parseFloat(matiere.moyenneClasse?.replace(",", "."))) ? parseFloat(matiere.moyenneClasse?.replace(",", ".")) : "N/A";
-                        newSubject.minAverage = !isNaN(parseFloat(matiere.moyenneMin?.replace(",", "."))) ? parseFloat(matiere.moyenneMin?.replace(",", ".")) : "N/A";
-                        newSubject.maxAverage = !isNaN(parseFloat(matiere.moyenneMax?.replace(",", "."))) ? parseFloat(matiere.moyenneMax?.replace(",", ".")) : "N/A";
+                        newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
+                        newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
+                        newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
                         newSubject.coef = matiere.coef;
                         newSubject.size = matiere.effectif;
                         newSubject.rank = matiere.rang;
@@ -736,7 +736,7 @@ export default function App() {
             const gradesFromJson = grades[activeAccount].notes;
             const subjectDatas = {};
 
-            const lastGrades = gradesFromJson.toSorted((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
+            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
 
             for (let grade of (gradesFromJson ?? [])) {
                 // handle mock exam periods
@@ -787,12 +787,12 @@ export default function App() {
                 newGrade.type = grade.typeDevoir;
                 newGrade.date = new Date(grade.date);
                 newGrade.entryDate = new Date(grade.dateSaisie);
-                newGrade.coef = parseFloat(grade.coef);
-                newGrade.scale = isNaN(parseFloat(grade.noteSur)) ? "N/A" : parseFloat(grade.noteSur);
+                newGrade.coef = safeParseFloat(grade.coef);
+                newGrade.scale = safeParseFloat(grade.noteSur);
                 newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = isNaN(parseFloat(grade.minClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.minClasse?.replace(",", "."));
-                newGrade.classMax = isNaN(parseFloat(grade.maxClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.maxClasse?.replace(",", "."));
-                newGrade.classAverage = isNaN(parseFloat(grade.moyenneClasse?.replace(",", "."))) ? "N/A" : parseFloat(grade.moyenneClasse?.replace(",", "."));
+                newGrade.classMin = safeParseFloat(grade.minClasse);
+                newGrade.classMax = safeParseFloat(grade.maxClasse);
+                newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
@@ -936,6 +936,7 @@ export default function App() {
 
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
+        enabledFeatures.coefficient = settings.coefficientNote;
 
         // add the average of all subjects a special type of chart
         for (const period in periods) {
@@ -1122,7 +1123,7 @@ export default function App() {
             <hr />
             <div className="edpu-notification-description">
                 <EdpuLogo />
-                <p>Afin de contourner les récentes restrictions de EcoleDirecte, Ecole Directe Plus a besoin de son extension pour fonctionner.</p>
+                <p>Ecole Directe Plus a besoin de son extension de navigateur pour fonctionner. (fourni un accès continu à l'API d'EcoleDirecte)</p>
             </div>
             <hr />
             <div className="extension-download-link">

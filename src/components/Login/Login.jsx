@@ -27,7 +27,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
         if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
             document.body.style.backgroundColor = "white";
         } else {
-            document.body.style.backgroundColor = "rgb(var(--background-color-0))" ;
+            document.body.style.backgroundColor = "" ;
         }
     }
 
@@ -50,6 +50,9 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 <h1>Connexion</h1>
                 <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
+            <p className="not-affiliated-mention">
+                Service non-affilié à Aplim
+            </p>
             <p className="policy">
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>

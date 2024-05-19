@@ -34,6 +34,7 @@ import ProxyErrorNotification from "../Errors/ProxyErrorNotification";
 import "./Lab.css";
 import RadioButton from "../generic/UserInputs/RadioButton";
 import ToggleSwitch from "../generic/UserInputs/ToggleSwitch";
+import { getBrowser, getOS } from "../../utils/utils";
 import TextInput from "../generic/UserInputs/TextInput";
 import { clearHTML } from "../../utils/html";
 import EncodedHTMLDiv from "../generic/CustomDivs/EncodedHTMLDiv";
@@ -289,6 +290,10 @@ export default function Lab({ fetchGrades }) {
             <h3>TOGGLE SWITCH</h3>
             <p>{toggleSwitchState ? "true" : "false"}</p>
             <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)} />
+
+            <h2>OS - BROWSER</h2>
+            <p>userOs: {getOS()}</p>
+            <p>userBrowser: {getBrowser()}</p>
 
             <h3>Dynamic navigate</h3>
             <TextInput textType="text" placeholder="Target url" value={targetURL} onChange={(e) => setTargetURL(e.target.value)} />

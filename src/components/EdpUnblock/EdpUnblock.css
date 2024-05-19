@@ -28,12 +28,14 @@
     gap: 15px;
 }
 
-.edpu-page {
-    height: 100%;
+#edpu-page {
+    position: fixed;
+    width: 100%;
+    height: max(100%, 850px);
     overflow-y: auto;
     scroll-padding-top: 20px;
-    -webkit-backdrop-filter: blur(10px) brightness(0.7);
-    backdrop-filter: blur(10px) brightness(0.7);
+    -webkit-backdrop-filter: blur(10px) brightness(0.6) !important;
+    backdrop-filter: blur(10px) brightness(0.6) !important;
 }
 
 .edpu-page main {
@@ -111,7 +113,7 @@
 .edpu-download-link.disabled {
     pointer-events: none;
     opacity: 0.8;
-    filter: brightness(0.8);
+    filter: brightness(0.8) grayscale(.5);
 }
 
 .edpu-download-link svg:first-child {
@@ -155,6 +157,12 @@
     transform: translateY(10px);
 }
 
+.edpu-download-link .download-unavailable {
+    font-size: 30px;
+    font-weight: 800;
+    margin-right: 10px;
+}
+
 .edpu-about {
     position: absolute;
     left: 50%;
@@ -166,7 +174,7 @@
     border-top-right-radius: 40px;
     border: solid #4a4a5556 2px;
     border-bottom: none;
-    background-color: #151523c9;
+    background-color: rgba(var(--background-color-0), 0.79);
     margin-top: 20px;
 }
 
@@ -174,8 +182,8 @@
     margin-bottom: 20px;
 }
 
-.edpu-about-explanation, .edpu-about-explanation > a {
-    color: #b4b4f0;
+.edpu-about-explanation, .edpu-about-explanation > a, .edpu-page a.suggested-browser {
+    color: rgb(var(--text-color-alt));
 }
 
 .edpu-about-explanation:not(:last-child) {
@@ -222,7 +230,8 @@
 }
 
 .edpu-about-link h5 {
-    color: rgb(var(--text-color-alt));
+    /*color: rgb(var(--text-color-alt));*/
+    color: rgb(180, 180, 240);
     scale: 1.2;
     transition: 0.2s;
 }
@@ -233,7 +242,8 @@
 
 .edpu-about-link svg path {
     transition: 0.2s;
-    stroke: rgb(var(--text-color-alt));
+    /*stroke: rgb(var(--text-color-alt));*/
+    stroke: rgb(180, 180, 240);
 }
 
 .edpu-about-link:is(:hover, :focus-visible) {
@@ -247,16 +257,24 @@
 }
 
 .edpu-about-link:is(:hover, :focus-visible) h5 {
-    color: rgb(var(--text-color-main));
+    /*color: rgb(var(--text-color-main));*/
+    color: white;
 }
 
 .edpu-about-link:is(:hover, :focus-visible) path {
-    stroke: rgb(var(--text-color-main));
+    /*stroke: rgb(var(--text-color-main));*/
+    stroke: white;
 }
 
 @media only screen and (max-width: 1050px) {
     .edpu-title {
         text-align: center;
+    }
+}
+
+@media only screen and (max-width: 810px) {
+    #edpu-page:has(main .suggested-browser) {
+        height: max(100%, 1200px);
     }
 }
 

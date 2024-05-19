@@ -20,14 +20,15 @@ export default function Policy({ onCloseNavigateURL }) {
         <h3 className="part-header">Politique de confidentialité</h3>
         <h4 className="sub-header">Résumé</h4>
         <ul>
+            <p className="legal-content"><span id="info-emoji">ℹ️</span> Ecole Directe Plus n'est en aucun cas affilié à EcoleDirecte ou Aplim, il s'agit d'un service indépendant libre et open source.</p>
             <p className="legal-content">✅ Ecole Directe Plus ne collecte aucune information sur les utilisateurs du service.</p>
             <p className="legal-content">✅ Ecole Directe Plus ne crée pas de compte lors de la connexion, la connexion a lieu sur les serveurs d'Aplim. Autrement dit, nous ne STOCKONS PAS les identifiants des utilisateurs se connectant.</p>
             <p className="legal-content">✅ Ecole Directe Plus ne permet, ni ne prétend donner accès à des données auxquelles l'élève n'a pas accès, incluant, mais ne se limitant pas aux : points aux examens* et au rang de l'élève*.</p>
-            <p className="legal-content"> <span id="info-emoji">ℹ️</span> Les seules données collectées le sont par Aplim (<a className="external-link" href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>) conformément à leur politique de confidentialité décrite dans les <a className="external-link" href="https://www.ecoledirecte.com/login" target="_blank">Mentions Légales.</a></p>
-            <p className="legal-content">*Si l'accès à ces données est possible par l'utilisateur sur la plateforme classique d'EcoleDirecte, ces données peuvent être affichées sur Ecole Directe Plus. Par ailleurs, si les moyennes de l'utilisateur ne sont pas disponibles, elles seront calculées, mais ce de façon locale sur l'appareil du client, les informations ne sont PAS transmises à nos serveurs.</p>
+            <p className="legal-content"><span id="info-emoji">ℹ️</span> Les seules données collectées le sont par Aplim (<a className="external-link" href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>) conformément à leur politique de confidentialité décrite dans leurs <a className="external-link" href="https://www.ecoledirecte.com/login" target="_blank">Mentions Légales.</a></p>
+            <p className="legal-content">*Si l'accès à ces données est possible par l'utilisateur sur la plateforme officielle d'EcoleDirecte, ces données peuvent être affichées sur Ecole Directe Plus. Par ailleurs, si les moyennes de l'utilisateur ne sont pas disponibles, elles seront calculées, mais ce de façon locale sur l'appareil du client, les informations ne sont PAS transmises à nos serveurs.</p>
         </ul>
         <hr className="light-hr" />
-        <h4 className="sub-header">Ecole Directe Plus est un service non-officiel utilisant des données fournis par <a href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>, héritant ainsi de leurs mentions légales qui sont présentées ci-dessous :</h4>
+        <h4 className="sub-header">Ecole Directe Plus est un service non-affilié utilisant des données fournies par <a href="https://www.ecoledirecte.com" target="_blank">EcoleDirecte</a>, héritant ainsi de leurs mentions légales qui sont présentées ci-dessous :</h4>
         <li className="legal-content">Les données personnelles sécurisées figurant sur ce site Internet concernent des élèves et les familles, et sont fournies par le logiciel Charlemagne des établissements scolaires au sein desquels ceux-ci sont scolarisés.</li>
         <li className="legal-content">EcoleDirecte ne collecte aucune donnée personnelle directement sur le site Internet, ni cookie, à l’exception des email et téléphone mobile, utilisés EXCLUSIVEMENT pour la récupération des identifiants.</li>
         <li className="legal-content">Ces établissements scolaires se sont engagés à apporter tous leurs soins dans la qualité des informations diffusées. Il s’agit toutefois d’indications qui, en aucun cas, ne pourraient faire foi en lieu et place des documents usuels (bulletins de notes, relevés de notes, relevés d’absences et de sanctions).</li>
@@ -42,7 +43,7 @@ export default function Policy({ onCloseNavigateURL }) {
         <hr />
         <h3 className="part-header" >Conditions d'utilisations</h3>
         <h4 className="sub-header">1. Général</h4>
-        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus (non officiel) proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
+        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus (non-affilié) proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
         <h4 className="sub-header">2. Description du site et du service</h4>
         <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du service, temporairement ou définitivement.</li>
         <h4 className="sub-header">3. Usages acceptables du service</h4>
@@ -105,7 +106,7 @@ export default function Policy({ onCloseNavigateURL }) {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li className="legal-content" style={{ listStyle: "none", marginBlock: "20px 2px" }}>Dernière révision le 26 mars 2024</li>
+        <li className="legal-content" style={{ listStyle: "none", marginBlock: "20px 2px" }}>Dernière révision le 24 avril 2024</li>
         <li className="legal-content" style={{ listStyle: "none", marginBlock: "2px 20px" }}>Nous contacter : <a href="mailto:contact@ecole-directe.plus" style={{ color: "rgb(var(--text-color-alt))" }} >contact@ecole-directe.plus</a></li>
         <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>

@@ -183,8 +183,8 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
                     </div>
-                    <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>
-                    <hr />
+                    {true && <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>}
+                    <hr className="information-hr"/>
                     <div className="info-zone">
                         <div className="text">
                             <h4>{capitalizeFirstLetter(selectedElement.name)}</h4>
