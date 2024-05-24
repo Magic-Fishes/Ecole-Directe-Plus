@@ -227,7 +227,7 @@ p.policy {
     color: #0000FF!important
 }
 
-#edp-unblock-ad span{
+#edp-unblock-ad .edp-unblock-ad-content {
     color: black!important
 }
 

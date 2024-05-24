@@ -37,8 +37,8 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
             <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
             <Link to="/edp-unblock" className="temp-disclaimer" id="edp-unblock-ad">
                 <ExtensionIcon className="extension-icon" />
-                <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>
-                <Link to="/edp-unblock#about">En savoir plus</Link>
+                <span className="edp-unblock-ad-content">Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>
+                <span className="edp-unblock-ad-link">En savoir plus</span>
             </Link>
             <span className="login-social">
                 <DiscordLink />

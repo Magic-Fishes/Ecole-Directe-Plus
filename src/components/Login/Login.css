@@ -53,13 +53,14 @@
     fill: rgba(var(--text-color-main), .9);
 }
 
-#edp-unblock-ad span {
+#edp-unblock-ad .edp-unblock-ad-content {
     flex: 1;
     color: rgb(var(--text-color-alt));
     transition: .1s;
 }
-#edp-unblock-ad a {
+#edp-unblock-ad .edp-unblock-ad-link {
     color: rgb(var(--text-color-alt));
+    text-decoration: underline;
     transition: .1s;
 }
 #edp-unblock-ad:is(:hover, :focus-visible) :is(span, a) {
