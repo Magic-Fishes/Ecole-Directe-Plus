@@ -30,14 +30,28 @@
 }
 
 .A2F-login .A2F-answers-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.A2F-login .A2F-answers {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
     gap: 5px 20px;
     width: max-content;
     align-content: center;
     margin-inline: auto;
     margin-bottom: 30px;
     max-height: 250px;
+    text-align: left;
+}
+
+.A2F-login .A2F-answers > .radio-button:first-child {
+    padding-top: 10px;
+}
+.A2F-login .A2F-answers > .radio-button:last-child {
+    padding-bottom: 10px;
 }
 
 .A2F-login .A2F-content-loader-container {

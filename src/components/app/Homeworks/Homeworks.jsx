@@ -68,7 +68,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.75}>
+                        <Window growthFactor={1.75} WIP={true}>
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                             </WindowHeader>
@@ -77,7 +77,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
-                    <Window growthFactor={2.2} allowFullscreen={true}>
+                    <Window growthFactor={2.2} allowFullscreen={true} className="notebook-window">
                         <WindowHeader>
                             <h2>Cahier de texte</h2>
                         </WindowHeader>

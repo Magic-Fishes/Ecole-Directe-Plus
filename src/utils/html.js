@@ -97,8 +97,7 @@ export function clearHTML(html, backgroundColor, asString=true) {
      * Decodes, makes readable, sanitizes and improve contrasts of html content with optional inline style
      * @param html HTML content to clear
      * @param backgroundColor The color of the background on which the text will be displayed. Allow the function to improve constrasts. (RGB format: list)
-     */
-
+    */
 
     let decodedHTML = decodeBase64(html);
     let readableOutput = decodeHtmlEscaped(decodedHTML);
@@ -113,6 +112,19 @@ export function clearHTML(html, backgroundColor, asString=true) {
 
         // get all elements that contain inline style and define a text color
         const allElements = parsedHTML.querySelectorAll("*");
+        allElements.forEach(el => {
+            const style = el.getAttribute("style");
+            const WHITES = ["white", "#FFFFFF", "#FFF", "#ffffff", "#fff", "rgb(255, 255, 255)"];
+            if (el?.style && (WHITES.includes(el.style.backgroundColor) || WHITES.includes(el.style.background))) {
+                el.style.background = "";
+                el.style.backgroundColor = "";
+            }
+            if (hasParentWithInlineBackground(el)) {
+                if (!style || !style.includes("color:")) {
+                    el.style.color = "black";
+                }
+            }
+        });
         const elementsWithColor = Array.from(allElements).filter(el => {
             const style = el.getAttribute("style");
             return style && style.includes("color:") && !hasParentWithInlineBackground(el); // selects color and unselects those with parents that has background-color (or highlighting)

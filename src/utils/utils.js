@@ -195,13 +195,10 @@ export function getOS() {
     return os;
 }
 
-
-export function textToHSL(str, initialS=42, initialL=73, variationS=10, variationL=10) {
-    let int = parseInt(sha256(str), 16)
-    const l = int % 1000
-    const intLength = Math.round(Math.log10(int));
-    int = Math.round(int / 10**(intLength - 6)).toString()
-    const h = parseInt(int.slice(0, 3))
-    const s = parseInt(int.slice(-3, int.length))
-    return `hsl(${360 * (h / 999)}, ${initialS + variationS * (s / 999)}%, ${initialL + variationL * (l / 999)}%)` // [{0-360}, {70-100}, {40-70}]
+export function textToHSL(str, initialS = 42, initialL = 73, variationS = 10, variationL = 10) {
+    const int = parseInt(sha256(str), 16);
+    const l = int % 10000;
+    const h = Math.round((int % (10 ** 8)) / (10 ** 4));
+    const s = Math.round((int % (10 ** 12)) / (10 ** 8));
+    return [360 * (h / 9999), initialS + variationS * (s / 9999), initialL + variationL * (l / 9999)]; // [{0-360}, {70-100}, {40-70}]
 }
