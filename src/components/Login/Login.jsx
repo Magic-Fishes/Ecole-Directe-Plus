@@ -1,5 +1,3 @@
-
-import { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import EDPVersion from "../generic/buttons/EDPVersion";
 import Policy from "../generic/Policy";
@@ -34,7 +32,9 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
     // JSX
     return (
         <div id="login">
-            <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
+            <Link to="/">
+                <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
+            </Link>
             <Link to="/edp-unblock" className="temp-disclaimer" id="edp-unblock-ad">
                 <ExtensionIcon className="extension-icon" />
                 <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>

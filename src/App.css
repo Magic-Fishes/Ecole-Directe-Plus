@@ -47,11 +47,6 @@
     
     --font-family: Inter, sans-serif; /* Default value */
 
-    /* responsive */
-    --max-width-mobile: 450px;
-    --max-width-tablet: 869px;
-    --min-width-wide-screen: 2361px;
-
     --background-color-canarman-main: 50, 50, 87;
 
     /*pour que 1rem = 10px*/
@@ -64,7 +59,7 @@
 :root.tritanopia {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
-    --text-color-opposite: 0, 0, 0;
+    --text-color-main-reverse : 0, 0, 0;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 166, 190, 201;
     
@@ -128,7 +123,7 @@
 :root.dark {
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
-    --text-color-opposite: 0, 0, 0;
+    --text-color-main-reverse : 25, 25, 25;
     /* --text-color-alt: 170, 170, 238; */
     --text-color-alt: 180, 180, 240;
     
@@ -149,6 +144,8 @@
     
     --box-shadow-window: 0 0 20px black;
     --box-shadow-element: 0 0 20px rgba(0, 0, 0, 0.6);
+    --color-shadow-element: rgba(0, 0, 60, 0.6);
+    --color-shadow-window: rgb(0, 0, 60);
     
     
     /* - Process states (errors ; warning ; success) - */
@@ -191,9 +188,11 @@
 :root.light {
     --box-shadow-window: 0 0 15px rgba(0, 0, 0, 0.4);
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
+    --color-shadow-element: rgba(0, 0, 0, 0.25);
+    --color-shadow-window: rgba(0, 0, 0, 0.4);
 
     --text-color-main: 0, 0, 0;
-    --text-color-opposite: 255, 255, 255;
+    --text-color-main-reverse: 255, 255, 255;
     --text-color-alt: 76, 76, 184;
     
     --background-color-0: 228, 228, 255;

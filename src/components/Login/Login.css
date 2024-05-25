@@ -194,6 +194,12 @@ p.policy {
     }
 }
 
+@media only screen and (max-width: 869px) {
+    p.not-affiliated-mention {
+        display: none;
+    }
+}
+
 @media only screen and (max-width: 460px) {
     body :has(.login) {
         background-color: rgb(var(--background-color-1)) !important;
