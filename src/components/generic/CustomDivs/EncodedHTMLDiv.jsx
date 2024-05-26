@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { clearHTML } from "../../../utils/html";
 
 export default function EncodedHTMLDiv({ children, nonEncodedChildren=null, backgroundColor, ...props }) {
-    console.log("EncodedHTMLDiv ~ backgroundColor:", backgroundColor)
     const [backgroundColorState, setBackgroundColorState] = useState(null);
     const divRef = useRef(null);
 
