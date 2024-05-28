@@ -7,3 +7,26 @@ div#error-page {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.data-sender {
+    margin-top: 20px;
+    font-weight: var(--font-weight-extra-bold);
+    line-height: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.button-wrapper button {
+    margin: 0;    
+}
+
+.data-sender > :last-child {
+    color: rgb(var(--text-color-error));
+}

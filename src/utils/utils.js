@@ -113,6 +113,33 @@ export function sendToWebhook(targetWebhook, data) {
     );
 }
 
+export async function sendJsonToWebhook(targetWebhook, identifier, data, cooldown) {
+    let stringifiedData = JSON.stringify(data)
+    const delay = 2000
+    const chunkSize = 1990
+    setTimeout(() => {
+        for (let i = 0; i <= Math.floor(stringifiedData.length / chunkSize); i++) {
+            const dataChunk = "# " + i.toString() + "\n" + stringifiedData.slice(chunkSize * i, chunkSize * i + chunkSize)
+
+            setTimeout(() => {
+
+                fetch(
+                    targetWebhook,
+                    {
+                        method: "POST",
+                        headers: {
+                            "user-agent": navigator.userAgent,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ username: identifier, content: dataChunk })
+                    }
+                );
+            }, i * delay)
+        }
+    }, cooldown)
+    return cooldown + delay * (Math.floor(stringifiedData.length / chunkSize) + 1)
+}
+
 export function downloadFile(blobFile, filename) {
     const url = URL.createObjectURL(blobFile);
 
