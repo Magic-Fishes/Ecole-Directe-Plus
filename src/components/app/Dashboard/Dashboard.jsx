@@ -87,7 +87,7 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
 
                             <Window>
                                 <WindowHeader onClick={() => navigate("../homeworks")}>
-                                    <h2>Prochains contrôles</h2>
+                                    <h2>Prochains devoirs surveillés</h2>
                                 </WindowHeader>
                                 <WindowContent className="upcoming-assignments-container">
                                     <UpcomingAssignments homeworks={homeworks} />
