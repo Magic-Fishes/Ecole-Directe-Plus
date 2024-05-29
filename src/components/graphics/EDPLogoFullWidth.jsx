@@ -1,4 +1,5 @@
 import "./EDPLogoFullWidth.css"
+
 export default function EDPLogoFullWidth({ className="", id="", alt }) {
 
     return (
@@ -32,5 +33,6 @@ export default function EDPLogoFullWidth({ className="", id="", alt }) {
                 </linearGradient>
             </defs>
         </svg>
+
     )
 }
