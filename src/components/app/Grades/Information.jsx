@@ -244,11 +244,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                     <div className="info-zone">
                         <div className="text">
                             <h4>{capitalizeFirstLetter(selectedElement.name)}</h4>
-                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{teacher.nom}</address>)}
+                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "M. -------" : teacher.nom}</address>)}
                             {selectedElement.appreciations
                                 ? selectedElement.appreciations.map((appreciation) => {
                                     if (appreciation.length > 0) {
-                                        return <p className="appreciation" key={crypto.randomUUID()}>{decodeBase64(appreciation)}</p>;
+                                        return <p className="appreciation" key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "*Appréciation masquée*" : decodeBase64(appreciation)}</p>;
                                     }
                                 })
                                 : null

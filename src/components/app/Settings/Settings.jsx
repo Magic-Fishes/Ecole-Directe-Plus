@@ -166,7 +166,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="allow-windows-arrangement-cb" label={<span>Permettre le réarrangement des fenêtres</span>} checked={settings.get("allowWindowsArrangement")} onChange={(event) => settings.set("allowWindowsArrangement", event.target.checked)} />
                 </div>
 
-                
+
                 {/^((?!chrome|android).)*safari/i.test(navigator.userAgent) && isStandaloneApp
                     ? <div className="setting" id="refresh-user-data">
                         <Button onClick={resetUserData}>Rafraîchir les informations</Button>
@@ -185,7 +185,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         <CheckBox id="weaknesses-cb" label={<span>Afficher les points faibles</span>} />
                     </div>
                 </div>}
-                
+
 
                 {/* advanced settings */}
                 <div id="advanced-settings">
@@ -193,10 +193,14 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
                     <div className={`setting${isStandaloneApp ? " disabled" : ""}`} id="dev-channel">
                         <div className="setting-label">
-                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
-                        <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
+                            <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
+                            <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
                         </div>
                         <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                    </div>
+
+                    <div className="setting" id="streamer-mode">
+                        <CheckBox id="streamer-mode-cb" label={<span>Activer le mode streamer (bêta)</span>} checked={settings.get("isStreamerModeEnabled")} onChange={(event) => { settings.set("isStreamerModeEnabled", event.target.checked) }} /><InfoButton className="setting-tooltip">Anonymise les informations sensibles. Les données scolaires seront quand même affichées. (Bêta : certaines informations qui devraient être masquées ne le seront peut-être pas.)</InfoButton>
                     </div>
 
                     <div className="setting" id="allow-anonymous-reports">

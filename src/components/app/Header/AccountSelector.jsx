@@ -136,15 +136,15 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                 <div id="active-account" onClick={handleClick} role="button" tabIndex="0" onKeyDown={handleKeyDown}>
                     <div className="account">
                         <div className="pp-container">
-                            <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
+                            <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest" && !settings.get("isStreamerModeEnabled"))
                                 ? getProxiedURL("https:" + accountsList[activeAccount].picture)
                                 : accountsList[activeAccount].picture
                             )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
                         </div>
                         <address className="account-info">
-                            <span className="school-name">{accountsList[activeAccount].schoolName}</span>
-                            <span className="name"><span className="first-name">{accountsList[activeAccount].firstName}</span> <span className="last-name">{accountsList[activeAccount].lastName.toUpperCase()}</span></span>
-                            <span className="class">{accountsList[activeAccount].class[1]}</span>
+                            <span className="school-name">{settings.get("isStreamerModeEnabled") ? "ÉTABLISSEMENT" : accountsList[activeAccount].schoolName}</span>
+                            <span className="name"><span className="first-name">{settings.get("isStreamerModeEnabled") ? "Prénom" : accountsList[activeAccount].firstName}</span> <span className="last-name">{settings.get("isStreamerModeEnabled") ? "NOM" : accountsList[activeAccount].lastName.toUpperCase()}</span></span>
+                            <span className="class">{settings.get("isStreamerModeEnabled") ? "Classe" : accountsList[activeAccount].class[1]}</span>
                         </address>
                         <DropDownArrow className="drop-down-arrow" />
                     </div>

@@ -98,6 +98,7 @@ const defaultSettings = {
     isHighContrastEnabled: false,
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
+    isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
@@ -176,6 +177,9 @@ function initSettings(accountList) {
             },
             isPhotoBlurEnabled: {
                 value: getSetting("isPhotoBlurEnabled", i),
+            },
+            isStreamerModeEnabled: {
+                value: getSetting("isStreamerModeEnabled", i),
             },
             gradeScale: {
                 value: getSetting("gradeScale", i),

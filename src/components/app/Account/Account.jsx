@@ -9,7 +9,9 @@ import { getProxiedURL } from "../../../utils/requests";
 import "./Account.css";
 
 export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, isLoggedIn, activeAccount }) {
-    const { accountsListState, useUserData } = useContext(AppContext)
+    const { accountsListState, useUserData, useUserSettings } = useContext(AppContext)
+
+    const settings = useUserSettings();
 
     const userData = useUserData();
 
@@ -64,8 +66,8 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                     </div>
                     <address id="informations-container">
                         <span>Dernière connexion : <time dateTime={(new Date(accountsListState[activeAccount].lastConnection ?? Date.now())).toISOString()}>{(new Date(accountsListState[activeAccount].lastConnection ?? Date.now())).toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric', hour: "numeric", minute: "numeric" })}</time></span>
-                        <span>Email : {accountsListState[activeAccount].email}</span>
-                        <span>Num. téléphone : {accountsListState[activeAccount].phoneNumber ?? "N/A"}</span>
+                        <span>Email : {settings.get("isStreamerModeEnabled") ? "adresse.email@ecole-directe.plus" : accountsListState[activeAccount].email}</span>
+                        <span>Num. téléphone : {settings.get("isStreamerModeEnabled") ? "XX XX XX XX XX" : accountsListState[activeAccount].phoneNumber ?? "N/A"}</span>
                     </address>
                     <Button disabled={true} id="statistics">Statistiques</Button>
                 </div>
