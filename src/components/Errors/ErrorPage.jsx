@@ -1,17 +1,23 @@
 
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { useRouteError } from "react-router-dom";
 import { AppContext } from "../../App";
 
-import { generateUUID, sendToWebhook } from "../../utils/utils";
+import { generateUUID, sendToWebhook, sendJsonToWebhook } from "../../utils/utils";
 
 import Error404 from "./Error404";
 import "./ErrorPage.css";
+import Button from "../generic/UserInputs/Button";
 
 export default function ErrorPage({ sardineInsolente }) {
+    const { accountsListState, activeAccount, isDevChannel, globalSettings, useUserSettings, useUserData } = useContext(AppContext);
     const error = useRouteError();
     const [reportSent, setReportSent] = useState(false);
-    const { accountsListState, activeAccount, isDevChannel, globalSettings, useUserSettings } = useContext(AppContext);
+    const [userDataSent, setUserDataSent] = useState([]);
+
+    const sendingDelayRef = useRef(0);
+
+    const userData = useUserData();
 
     const settings = useUserSettings();
 
@@ -44,10 +50,26 @@ export default function ErrorPage({ sardineInsolente }) {
                 }
                 if (!reportSent) {
                     sendToWebhook(sardineInsolente, report)
-                    .then(() => setReportSent(true))
-                    .catch((error) => setReportSent(error.toString()));
+                        .then(() => setReportSent(true))
+                        .catch((error) => setReportSent(error.toString()));
                 }
             }
+        }
+
+        function handleDataSend(data) {
+            const report = userData.get(data)
+            console.log(sendingDelayRef.current - new Date().getTime())
+            console.log(Math.max(sendingDelayRef.current - new Date().getTime(), 0))
+            sendJsonToWebhook(
+                "https://discord.com/api/webhooks/1191719781347369023/3-M7JS4i0XyWifa8yUWEPz8-Nm04eWmT3bIz-qGkNGnt-AIb8evoSN7SrNBejoXyjIBC",
+                generateUUID(accountsListState[activeAccount].firstName + accountsListState[activeAccount].lastName) + "(" + data + ")",
+                report,
+                Math.max(sendingDelayRef.current - new Date().getTime(), 0)
+            )
+            .then((cooldown) => {
+                sendingDelayRef.current = cooldown + new Date().getTime()
+            })
+            setUserDataSent(old => [...old, data])
         }
 
         return (
@@ -57,10 +79,23 @@ export default function ErrorPage({ sardineInsolente }) {
                 <p>
                     <i>{error.toString()}</i>
                 </p>
-                {typeof(reportSent) === "boolean"
+                {typeof (reportSent) === "boolean"
                     ? (reportSent ? <p>Error report sent successfully.</p> : <p>Sending error report to support...</p>)
                     : <p>Failed to send error report: {reportSent}</p>
                 }
+                <div className="data-sender">
+                    <h2>Pour nous aider vous pouvez :</h2>
+                    <div className="button-wrapper">
+                        <Button onClick={() => handleDataSend("sortedGrades")} disabled={!userData.get("sortedGrades") || userDataSent.includes("sortedGrades")} >
+                            {userDataSent.includes("sortedGrades") ? "Merci pour votre retour !" : "Envoyer vos notes"}
+                        </Button>
+                        <Button onClick={() => handleDataSend("sortedHomeworks")} disabled={!userData.get("sortedHomeworks") || userDataSent.includes("sortedHomeworks")} >
+                            {userDataSent.includes("sortedHomeworks") ? "Merci pour votre retour !" : "Envoyer vos devoirs"}
+                        </Button>
+                    </div>
+                    
+                    <p>ATTENTION : Ces retours peuvent contenir des informations personnelles mais ils permettront de grandement nous aider à identifier le bug</p>
+                </div>
             </div>
         );
     }

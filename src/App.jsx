@@ -14,6 +14,7 @@ import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
+import MainPage from "./components/Mainpage/MainPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
@@ -1792,7 +1793,7 @@ export default function App() {
             errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
-                    element: <Navigate to="/login" />,
+                    element: <MainPage />,
                     path: "/",
                 },
                 {

@@ -44,6 +44,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/login");
     }
 
+    function redirectToMainPage() {
+        navigate("/")
+    }
 
     function changeFont() {
         let font = prompt("Enter the font name:", document.documentElement.style.getPropertyValue("--font-family"));
@@ -411,13 +414,13 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
                 {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
+                {isAdmin && <input type="button" onClick={redirectToMainPage} value="MAINPAGE" />}
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
                 {isAdmin && <input type="button" onClick={() => resetUserData(false)} value="RESET USER DATA" />}
                 {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
-                {/* isAdmin && <input type="button" onClick={toggleTheme} value="TOGGLE THEME" /> */}
                 {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
                     <option value="auto">THEME: AUTO</option>
                     <option value="dark">THEME: DARK</option>

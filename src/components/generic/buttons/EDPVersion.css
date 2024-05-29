@@ -3,7 +3,7 @@
     background: rgba(var(--text-color-main), 0);
     font-size: var(--font-size-14);
     color: rgb(var(--text-color-alt));
-    position: absolute;
+    position: fixed;
     right: 6px; /*=10px - padding -> aligne avec policy*/
     bottom: 6px;
     padding: 4px;
