@@ -29,7 +29,7 @@ export default function MainPage() {
 
     return (
         <div className="main-page">
-            <section id="nav-bar" ref={navBarRef} >
+            <section id="nav-bar" ref={navBarRef} /* style={{"marginTop": (window.scrollY > 1 ? "2rem" : "3rem")}} Change this  */>
                 <header className="top-section">
                     <nav className="nav-bar-content">
                         <div className="nav-logo">
@@ -41,7 +41,7 @@ export default function MainPage() {
                                     <Link to="#banner" className={`link ${location.hash === "#Home" ? "nav-active" : ""}`} >Home</Link>
                                     <Link to="#community" className={`link ${location.hash === "#Community" ? "nav-active" : ""}`} >Community</Link>
                                     <Link to="#open-source" className={`link ${location.hash === "#Open-Source" ? "nav-active" : ""}`} >Open-Source</Link>
-                                    <Link to="#" className={`link ${location.hash === "#The Extension" ? "nav-active" : ""}`} >The Extension</Link>
+                                    <Link to="/edp-unblock" className={`link ${location.hash === "#The Extension" ? "nav-active" : ""}`} >The Extension</Link>
                                 </div>
                             </div>
                         </div>
