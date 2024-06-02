@@ -119,6 +119,10 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
             {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
                 <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv>
             </BottomSheet>}
+            {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
+                <h2>Fichiers</h2>
+                <div>{selectedTask.file}</div>
+            </PopUp>}
         </div>
     )
 }

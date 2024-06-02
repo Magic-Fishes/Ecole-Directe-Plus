@@ -15,8 +15,10 @@ import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 import UpcomingAssignments from "./UpcomingAssignments";
-
+import PopUp from "../../generic/PopUps/PopUp";
 import "./Homeworks.css";
+import { formatDateRelative } from "../../../utils/date";
+import FileComponent from "../../generic/FileComponent";
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
@@ -89,5 +91,10 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
             <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv>
         </BottomSheet>}
+        {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
+            <h2 className="file-title">Fichiers</h2>
+            <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+            <div className="file-wrapper">{selectedTask.files.map((file) => <FileComponent key={file.id} file={file}/>)}</div>
+        </PopUp>}
     </>
 }
