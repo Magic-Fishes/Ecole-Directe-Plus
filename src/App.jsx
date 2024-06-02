@@ -271,6 +271,63 @@ export default function App() {
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     const createNotification = useCreateNotification();
 
+    class File {
+        constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
+            /**id : 5018 / "654123546545612654984.pdf"
+             * type : NODEVOIR / FICHIER_CDT
+             * file : "file.pdf" / "TEST.txt"
+             * name : "the_name_of_the_file_downloaded_without_extension"
+             * specialParams : params needed in the URL in certains cases
+             */
+            this.id = id
+            this.type = type
+            this.name = name
+            this.extension = file.slice(file.lastIndexOf(".") + 1)
+            this.specialParams = specialParams
+            this.state = "inactive"
+        }
+
+        fetch() {
+            if (!this.blob) {
+                if (this.state !== "requestForInstall") {
+                    this.state = "fetching"
+                }
+                fetchFile(this.id, this.type, this.specialParams)
+                    .then(blob => {
+                        this.blob = blob;
+                        if (this.state === "requestForInstall") {
+                            this.install()
+                        }
+                    })
+            }
+        }
+
+        download() {
+            if (this.blob) {
+                this.install();
+            } else if (this.state === "fetching") {
+                this.state = "requestForInstall"
+            } else {
+                this.state = "requestForInstall"
+                this.fetch()
+            }
+        }
+
+        async install() {
+            const url = URL.createObjectURL(this.blob);
+            const a = document.createElement('a');
+
+            a.href = url;
+            a.download = `${this.name}.${this.extension}`;
+
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Gestion Storage                                                                                 //
@@ -796,7 +853,11 @@ export default function App() {
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
-                newGrade.examCorrectionSRC = grade.uncCorrige;
+                if (grade.id == 6291688) {
+                    console.log(grade)
+                }
+                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.isReal = true;
                 /* Si newGrade.isReal est faux :
                     pas de :
@@ -1014,7 +1075,8 @@ export default function App() {
                     return null;
                 }
 
-                const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
+                const { donneLe, effectue, contenu, contenuDeSeance, documents } = aFaire;
+
                 return {
                     id: id,
                     subjectCode: codeMatiere,
@@ -1024,7 +1086,7 @@ export default function App() {
                     isDone: effectue,
                     teacher: nomProf,
                     content: contenu,
-                    files: document,
+                    files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
                     sessionContent: contenuDeSeance.contenu,
                     sessionContentFiles: contenuDeSeance.documents,
                 }
@@ -1170,7 +1232,6 @@ export default function App() {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-
                     } else {
                         return JSON.parse(data)
                     }
@@ -1321,40 +1382,6 @@ export default function App() {
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             })
-    }
-
-    async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
-        abortControllers.current.push(controller);
-        const data = {
-            forceDownload: 0,
-            idDevoir: id
-        }
-        return await fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    // "user-agent": navigator.userAgent,
-                    "x-token": tokenState
-                },
-                cors: "no-cors",
-                body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer"
-            },
-        )
-            .then(response => response.blob())
-            .then(blob => callback(blob))
-            // .then(blob => {
-            //     console.log(blob.type)
-            //     const blobUrl = URL.createObjectURL(blob);
-            //     return blobUrl
-            // })
-            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-
     }
 
     async function fetchUserGrades(controller = (new AbortController())) {
@@ -1620,6 +1647,24 @@ export default function App() {
                 referrerPolicy: "no-referrer"
             },
         )
+    }
+
+    async function fetchFile(id, type, specialParams) {
+        const { idDevoir } = specialParams
+        return await fetch(
+            `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${id}&leTypeDeFichier=${type}${idDevoir ? `&idDevoir=${idDevoir}` : ""}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                cors: "no-cors",
+                body: `data=${JSON.stringify({ forceDownload: 0 })}`,
+                referrerPolicy: "no-referrer"
+            },
+        )
+            .then(response => response.blob())
+            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1916,7 +1961,6 @@ export default function App() {
     ]);
 
     const appContextValue = useMemo(() => ({
-        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,
@@ -1935,7 +1979,6 @@ export default function App() {
         actualDisplayTheme,
         currentEDPVersion,
     }), [
-        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,

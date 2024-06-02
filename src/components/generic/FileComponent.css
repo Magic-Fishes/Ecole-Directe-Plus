@@ -1,0 +1,65 @@
+.file-component {
+    height: 85px;
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(var(--background-color-2));
+    border: solid .25em rgb(var(--background-color-3));
+    cursor: pointer;
+}
+
+
+.file-component::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: rgb(var(--background-color-3));
+    transition: .9s cubic-bezier(.28,1,.28,1);
+    width: 0;
+    opacity: 0;
+}
+
+.file-component.clicked::after {
+    width: 100.1%;
+    transition: opacity 0s, width .9s cubic-bezier(.28,1,.28,1);
+    opacity: 1;
+}
+.file-component.filled::after {
+    transition: opacity .9s cubic-bezier(.28,1,.28,1), width 0s;
+    width: 100.1%;
+    opacity: 0;
+}
+
+.file-component span {
+    z-index: 1;
+}
+
+.file-component .icon-mort {
+    background-color: red;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.file-component .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-component .button-mort {
+    background-color: red;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-32);
+    font-family: "Concert One", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}

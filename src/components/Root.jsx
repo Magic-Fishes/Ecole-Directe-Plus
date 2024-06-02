@@ -439,7 +439,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
-                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-03-04")) }} value="FETCH DAY HOMEWORKS" />}
+                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

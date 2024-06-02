@@ -140,25 +140,6 @@ export async function sendJsonToWebhook(targetWebhook, identifier, data, cooldow
     return cooldown + delay * (Math.floor(stringifiedData.length / chunkSize) + 1)
 }
 
-export function downloadFile(blobFile, filename) {
-    const url = URL.createObjectURL(blobFile);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename || 'download.pdf';
-
-    // Append the link to the body (usually not necessary to add it to the DOM)
-    document.body.appendChild(a);
-
-    // Trigger the download
-    a.click();
-
-    document.body.removeChild(a);
-
-    // Clean up by revoking the Blob URL
-    URL.revokeObjectURL(url);
-}
-
 export function getBrowser() { // I didn't check all browsers, see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#browser_name_and_version
     const UA = navigator.userAgent
     return (
