@@ -4,14 +4,16 @@ import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
 import { applyZoom } from "../../../utils/zoom";
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import "./DetailedTask.css"
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
 import DownloadIcon from "../../graphics/DownloadIcon"
 import CopyButton from "../../generic/CopyButton"
 import { clearHTML } from "../../../utils/html"
-export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
+export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...props }) {
+    const navigate = useNavigate()
+
     const isMouseInCheckBoxRef = useRef(false);
     const detailedTaskRef = useRef(null);
     const taskCheckboxRef = useRef(null);
@@ -28,24 +30,12 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
 
     const location = useLocation();
     const oldLocationHash = useRef(null);
-    const hashParameters = location.hash.split(";")
-
-    useEffect(() => {
-        if (hashParameters.length > 2 && hashParameters[1] == task.id) {
-            setBottomSheetSession({
-                day,
-                id: task.id,
-                content: task.sessionContent,
-            })
-        }
-    }, [hashParameters]);
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
         const parentBounds = parent.getBoundingClientRect();
         const bounds = element.getBoundingClientRect();
         
-        console.log("scrollIntoViewNearestParent ~ bounds.y - parentBounds.y + parentBounds.scrollTop:", bounds.y - parentBounds.y + parent.scrollTop)
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
 
@@ -109,7 +99,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
     }
 
     return <>{(task?.content
-        ? <div ref={detailedTaskRef} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
+        ? <div ref={detailedTaskRef} onClick={(e) => {navigate(`#${day};${task.id}`); e.stopPropagation()}} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
             <div className="task-header">
                 <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
@@ -122,14 +112,8 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
             <div className="task-footer">
-                <Link onClick={(e) => {
-                    e.stopPropagation(); setBottomSheetSession({
-                        day,
-                        id: task.id,
-                        content: task.sessionContent,
-                    })
-                }} to={`#${day};${task.id};s`} replace={true} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
-                <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</div>
+                <Link to={`#${day};${task.id};s`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
+                <Link to={`#${day};${task.id};f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${task.files.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link>
             </div>
         </div>
         : <div className={`detailed-task`} {...props} >

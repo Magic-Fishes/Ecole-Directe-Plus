@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -22,11 +22,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
 
     const { useUserData } = useContext(AppContext);
     const homeworks = useUserData("sortedHomeworks");
-    const [bottomSheetSession, setBottomSheetSession] = useState({})
     const navigate = useNavigate();
     const location = useLocation();
 
     const hashParameters = location.hash.split(";")
+    const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
 
     // behavior
     useEffect(() => {
@@ -47,10 +47,8 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     }, [isLoggedIn, activeAccount, homeworks.get()]);
 
     useEffect(() => {
-        if (hashParameters.length > 2 && !bottomSheetSession.id) {
-            navigate(`${hashParameters[0]};${hashParameters[1]}`)
-        } else if (hashParameters.length < 3 && bottomSheetSession.id) {
-            setBottomSheetSession({})
+        if (hashParameters.length > 2 && !selectedTask?.sessionContent) {
+            navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
         }
     }, [location.hash])
 
@@ -82,14 +80,14 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
                         <WindowContent id="notebook">
-                            <Notebook setBottomSheetSession={setBottomSheetSession} />
+                            <Notebook />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
             </WindowsContainer>
         </div>
-        {bottomSheetSession.id && <BottomSheet heading="Contenu de séance" onClose={() => {navigate(`#${bottomSheetSession.day};${bottomSheetSession.id}`); setBottomSheetSession({})}}>
-            <EncodedHTMLDiv>{bottomSheetSession.content}</EncodedHTMLDiv>
+        {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
+            <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv>
         </BottomSheet>}
     </>
 }

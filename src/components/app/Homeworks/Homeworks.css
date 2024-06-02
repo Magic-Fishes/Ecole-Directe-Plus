@@ -7,9 +7,23 @@
 #homeworks .windows-layout#test {
     padding: 30px;
     height: 100%;
-}
+}  
 
 #homeworks .windows-layout#test2 {
     padding: 30px;
     height: 100%;
+}
+
+.task-file-pop-up>div {
+    padding: 15px;
+}
+
+.task-file-pop-up .file-subject {
+    margin-bottom: 20px;
+}
+
+.task-file-pop-up .file-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
