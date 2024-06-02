@@ -1150,8 +1150,8 @@ export default function App() {
         }
 
         const payload = {
-            identifiant: username,
-            motdepasse: password,
+            identifiant: encodeURIComponent(username),
+            motdepasse: encodeURIComponent(password),
             isReLogin: false,
             uuid: 0,
             fa: Object.keys(A2FInfo).length > 0 ? [A2FInfo] : []
