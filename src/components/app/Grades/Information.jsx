@@ -28,6 +28,8 @@ import DownloadIcon from "../../graphics/DownloadIcon";
 import LoadingAnimation from "../../graphics/LoadingAnimation";
 
 import "./Information.css";
+import ExpandIcon from "../../graphics/ExpandIcon";
+import ReduceIcon from "../../graphics/ReduceIcon";
 
 function findGradesObjectById(list, value) {
     if (value === "") {
@@ -52,11 +54,12 @@ function findGradesObjectById(list, value) {
 export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
     const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { actualDisplayTheme, useUserSettings, useUserData, fetchCorrection } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData, fetchCorrection } = useContext(AppContext);
 
     const settings = useUserSettings();
     const grades = useUserData();
@@ -79,10 +82,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     }
     
     return (
-        <Window className="information">
+        <Window className="information" growthFactor={isExpanded ? 2 : 1}>
             <WindowHeader>
                 <h2>Informations</h2>
-                <button className="clear-button" onClick={() => navigate("#")} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
+                {!isTabletLayout && <button className="expand-reduce-button" onClick={() => setIsExpanded((old) => !old)} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>{isExpanded ? <ReduceIcon /> : <ExpandIcon />}</button>}
+                <button className="clear-button" onClick={() => {navigate("#"); setIsExpanded(false)}} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
             </WindowHeader>
             <WindowContent>
                 {selectedElement === "loading" ? <div className="element-information">
