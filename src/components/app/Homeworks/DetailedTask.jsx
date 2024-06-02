@@ -107,7 +107,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                 </h4>
             </div>
             <div className="task-subtitle">
-                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
+                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {settings.get("isStreamerModeEnabled") ? "M. -------" : task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>

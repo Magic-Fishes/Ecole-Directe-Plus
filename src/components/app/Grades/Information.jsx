@@ -28,6 +28,8 @@ import DownloadIcon from "../../graphics/DownloadIcon";
 import LoadingAnimation from "../../graphics/LoadingAnimation";
 
 import "./Information.css";
+import ExpandIcon from "../../graphics/ExpandIcon";
+import ReduceIcon from "../../graphics/ReduceIcon";
 
 function findGradesObjectById(list, value) {
     if (value === "") {
@@ -52,11 +54,12 @@ function findGradesObjectById(list, value) {
 export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
     const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
 
     const settings = useUserSettings();
     const grades = useUserData();
@@ -67,10 +70,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     }
     
     return (
-        <Window className="information">
+        <Window className="information" growthFactor={isExpanded ? 2 : 1}>
             <WindowHeader>
                 <h2>Informations</h2>
-                <button className="clear-button" onClick={() => navigate("#")} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
+                {!isTabletLayout && <button className="expand-reduce-button" onClick={() => setIsExpanded((old) => !old)} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>{isExpanded ? <ReduceIcon /> : <ExpandIcon />}</button>}
+                <button className="clear-button" onClick={() => {navigate("#"); setIsExpanded(false)}} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
             </WindowHeader>
             <WindowContent>
                 {selectedElement === "loading" ? <div className="element-information">
@@ -245,11 +249,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                     <div className="info-zone">
                         <div className="text">
                             <h4>{capitalizeFirstLetter(selectedElement.name)}</h4>
-                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{teacher.nom}</address>)}
+                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "M. -------" : teacher.nom}</address>)}
                             {selectedElement.appreciations
                                 ? selectedElement.appreciations.map((appreciation) => {
                                     if (appreciation.length > 0) {
-                                        return <p className="appreciation" key={crypto.randomUUID()}>{decodeBase64(appreciation)}</p>;
+                                        return <p className="appreciation" key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "*Appréciation masquée*" : decodeBase64(appreciation)}</p>;
                                     }
                                 })
                                 : null
