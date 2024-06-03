@@ -152,6 +152,25 @@ body:has(#settings) {
     width: 100%;
 }
 
+/* filters */
+#settings #filters {
+    width: 100%;
+}
+
+#settings #filters-container {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#settings #filters-container div {
+    display: flex;
+    align-items: center;
+}
 
 #settings #reset-windows-layouts {
     column-gap: 10px;
