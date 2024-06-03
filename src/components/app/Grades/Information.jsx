@@ -2,7 +2,7 @@
 import { useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { capitalizeFirstLetter, decodeBase64, downloadFile } from "../../../utils/utils";
+import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 
@@ -59,7 +59,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData, fetchCorrection } = useContext(AppContext);
+    const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
 
     const settings = useUserSettings();
     const grades = useUserData();
@@ -67,18 +67,6 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
     if (sortedGrades && sortedGrades[selectedPeriod]) {
         selectedElement = findGradesObjectById(Object.values(sortedGrades && sortedGrades[selectedPeriod].subjects), location.hash.slice(1));
-    }
-    /*
-    newGrade.isSignificant = !grade.nonSignificatif;
-    newGrade.examSubjectSRC = grade.uncSujet;
-    newGrade.examCorrectionSRC = grade.uncCorrige;
-    */
-
-    async function downloadCorrection(url, id, filename) {
-        const callback = (blob) => {
-            downloadFile(blob, filename || "filename.pdf");
-        }
-        await fetchCorrection(url, id, callback);
     }
     
     return (
@@ -188,7 +176,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                         </div>}
                     </div>
                     {true && <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>}
-                    <hr className="information-hr"/>
+                    <hr className="information-hr" />
                     <div className="info-zone">
                         <div className="text">
                             <h4>{capitalizeFirstLetter(selectedElement.name)}</h4>
@@ -209,18 +197,31 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             </div> : null}
                         </div>
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
-                        {selectedElement.examCorrectionSRC ||selectedElement.examSubjectSRC
-                            ? <div className="files">
-                                {selectedElement.examSubjectSRC ? <div className="file open-correction" role="button" onClick={async () => {setIsSubjectLoading(true); await downloadCorrection( selectedElement.examSubjectSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examSubjectSRC?.split(".").at(-1)); setIsSubjectLoading(false)}}>{isSubjectLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Sujet</span></div> : null}
-                                {selectedElement.examCorrectionSRC ? <div className="file download-correction" role="button" onClick={async () => {setIsCorrectionLoading(true); await downloadCorrection(selectedElement.examCorrectionSRC, selectedElement.id, selectedElement.name + "." + selectedElement.examCorrectionSRC?.split(".").at(-1)); setIsCorrectionLoading(false)}}>{isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}<span className="sub-text">Correction</span></div> : null}
-                            </div> : null}
+                        {(selectedElement.examCorrectionSRC || selectedElement.examSubjectSRC) && <div className="files">
+                            {selectedElement.examSubjectSRC && <div className="file open-correction" role="button" onClick={async () => {
+                                setIsSubjectLoading(true);
+                                await selectedElement.examSubjectSRC.download();
+                                setIsSubjectLoading(false)
+                            }}>
+                                {isSubjectLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}
+                                <span className="sub-text">Sujet</span>
+                            </div>}
+                            {selectedElement.examCorrectionSRC && <div className="file download-correction" role="button" onClick={async () => {
+                                setIsCorrectionLoading(true);
+                                await selectedElement.examCorrectionSRC.download();
+                                setIsCorrectionLoading(false)
+                            }}                                    >
+                                {isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}
+                                <span className="sub-text">Correction</span>
+                            </div>}
+                        </div>}
                     </div>
-                    {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()}/>, <div key={el.id} className="skill-container">
+                    {selectedElement.skill.map(el => [<hr key={crypto.randomUUID()} />, <div key={el.id} className="skill-container">
                         <span className="skill-text">
                             <p className="skill-name">{el.name}</p>
                             <p>{el.description}</p>
                         </span>
-                        <span className="skill-value" style={{"color": (actualDisplayTheme === "dark" ? (el.value === "Non atteint" ? "#FF0000" : el.value === "Partiellement atteint" ? "#FFC000" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#00B050" : "#FFF8") : (el.value === "Non atteint" ? "#F00" : el.value === "Partiellement atteint" ? "#DA8700" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#03a880" : "#0008"))}}>
+                        <span className="skill-value" style={{ "color": (actualDisplayTheme === "dark" ? (el.value === "Non atteint" ? "#FF0000" : el.value === "Partiellement atteint" ? "#FFC000" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#00B050" : "#FFF8") : (el.value === "Non atteint" ? "#F00" : el.value === "Partiellement atteint" ? "#DA8700" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#03a880" : "#0008")) }}>
                             {el.value}
                         </span>
                     </div>].flat())}
