@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -11,17 +11,20 @@ import Button from "../../generic/UserInputs/Button";
 import KeyboardKey from "../../generic/KeyboardKey";
 import StoreCallToAction from "../../generic/StoreCallToAction";
 
+import { AppContext } from "../../../App";
+import { applyZoom } from "../../../utils/zoom";
+import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
+
+import "./Settings.css";
+
 // graphics
 import RefreshIcon from "../../graphics/RefreshIcon";
 import ToggleEnd from "../../graphics/ToggleEnd";
 
-import { AppContext } from "../../../App";
-
-import "./Settings.css";
-import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
     const { isStandaloneApp, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
+
+    const partyModeCheckbox = useRef(null);
 
     const settings = useUserSettings();
 
@@ -64,6 +67,35 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
         resetUserData(false);
         settings.set("schoolYear", schoolYear)
     }
+
+    function confettiAnimation() {
+        const bounds = partyModeCheckbox.current.getBoundingClientRect();
+        const origin = {
+            x: bounds.left + 30 / 2,
+            y: bounds.top + 30 / 2
+        }
+        confetti({
+            particleCount: 40,
+            spread: 70,
+            origin: {
+                x: origin.x / applyZoom(window.innerWidth),
+                y: origin.y / applyZoom(window.innerHeight)
+            },
+        });
+    }
+
+    useEffect(() => {
+        const script = document.createElement("script");
+
+        script.src = "https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js";
+        script.async = true;
+
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        }
+    }, []);
 
     return (
         <div id="settings">
@@ -142,20 +174,32 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
-                <div className="setting" id="sepia-filter">
-                    <CheckBox id="sepia-filter-cb" label={<span>Activer le filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                <div className="setting">
+                    <div id="filters">
+                        <span>Options d'affichage :</span>
+                        <div id="filters-container">
+                            <div id="sepia-filter">
+                                <CheckBox id="sepia-filter-cb" label={<span>Filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                            </div>
+
+                            <div id="high-contrast-filter">
+                                <CheckBox id="high-contrast-filter-cb" label={<span>Mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
+                            </div>
+
+                            <div id="grayscale-filter">
+                                <CheckBox id="grayscale-filter-cb" label={<span>Mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="setting" id="high-contrast-filter">
-                    <CheckBox id="high-contrast-filter-cb" label={<span>Activer le mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
-                </div>
-
-                <div className="setting" id="grayscale-filter">
-                    <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
-                </div>
 
                 <div className="setting" id="photo-blur">
                     <CheckBox id="photo-blur-cb" label={<span>Flouter la photo de profil</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
+                </div>
+
+                <div className="setting" id="party-mode">
+                    <CheckBox id="party-mode-cb" ref={partyModeCheckbox} label={<span>Activer le mode festif 🎉</span>} checked={settings.get("isPartyModeEnabled")} onChange={(event) => { settings.set("isPartyModeEnabled", event.target.checked); if (event.target.checked) { confettiAnimation() } }} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">

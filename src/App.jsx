@@ -98,6 +98,7 @@ const defaultSettings = {
     isHighContrastEnabled: false,
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
+    isPartyModeEnabled: true,
     isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
@@ -177,6 +178,9 @@ function initSettings(accountList) {
             },
             isPhotoBlurEnabled: {
                 value: getSetting("isPhotoBlurEnabled", i),
+            },
+            isPartyModeEnabled: {
+                value: getSetting("isPartyModeEnabled", i),
             },
             isStreamerModeEnabled: {
                 value: getSetting("isStreamerModeEnabled", i),
