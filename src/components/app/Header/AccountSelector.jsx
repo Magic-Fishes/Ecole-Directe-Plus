@@ -143,7 +143,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         </div>
                         <address className="account-info">
                             <span className="school-name">{settings.get("isStreamerModeEnabled") ? "ÉTABLISSEMENT" : accountsList[activeAccount].schoolName}</span>
-                            <span className="name"><span className="first-name">{settings.get("isStreamerModeEnabled") ? "Prénom" : accountsList[activeAccount].firstName}</span> <span className="last-name">{settings.get("isStreamerModeEnabled") ? "NOM" : accountsList[activeAccount].lastName.toUpperCase()}</span></span>
+                            <span className="name"><span className="first-name">{settings.get("isStreamerModeEnabled") ? "Canardman" : accountsList[activeAccount].firstName}</span> <span className="last-name">{settings.get("isStreamerModeEnabled") ? "" : accountsList[activeAccount].lastName.toUpperCase()}</span></span>
                             <span className="class">{settings.get("isStreamerModeEnabled") ? "Classe" : accountsList[activeAccount].class[1]}</span>
                         </address>
                         <DropDownArrow className="drop-down-arrow" />
