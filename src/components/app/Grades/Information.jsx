@@ -70,7 +70,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     }
     
     return (
-        <Window className="information" growthFactor={isExpanded ? 2 : 1}>
+        <Window className="information" growthFactor={(isExpanded && !["none", undefined].includes(selectedElement)) ? 2 : 1}>
             <WindowHeader>
                 <h2>Informations</h2>
                 {!isTabletLayout && <button className="expand-reduce-button" onClick={() => setIsExpanded((old) => !old)} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>{isExpanded ? <ReduceIcon /> : <ExpandIcon />}</button>}
