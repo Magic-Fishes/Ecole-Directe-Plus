@@ -18,7 +18,7 @@ import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
-import { getCurrentSchoolYear } from "./utils/date";
+import { getCurrentSchoolYear, getCurrentWeekDate } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
 
@@ -1103,6 +1103,36 @@ export default function App() {
         return sortedHomeworks
     }
 
+    function sortTimetable(timetable) {
+        const sortedTimetable = {}
+        timetable.forEach((subject) => {
+            const {id, text, matiere, codeMatiere, typeCours, start_date, end_date, prof, salle, groupe, groupeCode, devoirAFaire, isAnnule, isModifie } = subject;
+            const newSubject = {
+                id,
+                libelle: text,
+                subject: matiere,
+                subjectCode: codeMatiere,
+                type: typeCours,
+                start: start_date,
+                end: end_date,
+                teacher: prof,
+                room: salle,
+                isCanceled: isAnnule,
+                isModified: isModifie,
+            };
+            const subjectDate = start_date.split(" ")[0];
+            if (subjectDate in sortedTimetable) {
+                sortedTimetable[subjectDate].push(newSubject);
+            } else {
+                sortedTimetable[subjectDate] = [newSubject];
+            }
+        })
+        for (const i in sortedTimetable) {
+            sortedTimetable[i].sort((e) => e.start)
+        }
+        return sortedTimetable
+    }
+
     function sortSchoolLife(schoolLife, activeAccount) {
         const sortedSchoolLife = {
             delays: [],
@@ -1557,6 +1587,61 @@ export default function App() {
             })
     }
 
+    async function fetchTimetable(date, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const startDate = getCurrentWeekDate(date)
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            import("./data/edt.json").then(module => {
+                changeUserData("sortedTimetable", sortNextHomeworks(module.data));
+            })
+        } else {
+            const headers = new Headers();
+            headers.append("Content-Type", "application/x-www-form-urlencoded");
+            headers.append("X-Token", tokenState);
+            
+            const data = {
+                dateDebut: getISODate(startDate),
+                dateFin: getISODate(new Date(startDate.getTime() + 604800000)), // 604800000 is the ms in a week
+                avecTrous: false
+            }
+
+            const body = new URLSearchParams();
+            body.append("data", JSON.stringify(data));
+
+            fetch(`https://api.ecoledirecte.com/v3/E/${accountsListState[activeAccount].id}/emploidutemps.awp?verbe=get&v=${apiVersion}`,
+                {
+                    method: "POST",
+                    headers,
+                    body,
+                    signal: controller.signal,
+                    referrerPolicy: "no-referrer",
+                })
+                .then((response) => response.json())
+                .then((response) => {
+                    const code = response.code;
+                    if (code === 200) {
+                        changeUserData("sortedTimetable", { ...sortTimetable(response.data), ...getUserData("sortedTimetable") })
+                    } else if (code === 520 || code === 525) {
+                        // token invalide
+                        console.log("INVALID TOKEN: LOGIN REQUIRED");
+                        requireLogin();
+                    } else if (code === 403) {
+                        setTokenState((old) => (response.token || old));
+                    }
+                })
+                .catch((error) => {
+                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                        setProxyError(true);
+                    } else if (error.message !== "The operation was aborted. "){
+                        console.error(error)
+                    }
+                })
+                .finally(() => {
+                    abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+                })
+        }
+    }
+
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
@@ -1951,7 +2036,7 @@ export default function App() {
                             path: "timetable"
                         },
                         {
-                            element: <Timetable />,
+                            element: <Timetable fetchTimetable={fetchTimetable} />,
                             path: ":userId/timetable"
                         },
                         {

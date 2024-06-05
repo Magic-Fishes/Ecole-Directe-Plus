@@ -1,5 +1,5 @@
 export function formatDateRelative(date, short=true) {
-    const dayMs = 24*3600*1000
+    const dayMs = 86400000; // ms in a day
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = new Date(today.getTime() + dayMs);
@@ -46,3 +46,9 @@ export function getCurrentSchoolYear() {
     return [(year - 1), year];
 }
 
+export function getCurrentWeekDate(date = new Date()) {
+    const dayMs = 86400000; // ms in a day
+    const today = new Date(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`)
+    console.log(new Date(today.getTime() - dayMs * (date.getDay() - 1)+1))
+    return new Date(today.getTime() - dayMs * (date.getDay() - 1)+1)
+}
