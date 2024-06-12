@@ -47,7 +47,7 @@ export function getCurrentSchoolYear() {
     return [(year - 1), year];
 }
 
-export function getISODate(date) {
+export function getISODate(date, UTC=true) {
     if (typeof date === "string") {
         date = new Date(date)
     }
@@ -55,7 +55,7 @@ export function getISODate(date) {
         "-" +
         (date.getUTCMonth() + 1 + "").padStart(2, "0") +
         "-" +
-        date.getUTCDate().toString().padStart(2, "0")
+        (UTC ? date.getUTCDate() : date.getDate()).toString().padStart(2, "0")
 }
 
 export function capitalizeFirstLetter(string) {

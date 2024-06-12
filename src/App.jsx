@@ -1103,10 +1103,11 @@ export default function App() {
         return sortedHomeworks
     }
 
-    function sortTimetable(timetable) {
-        const sortedTimetable = {}
+    function sortTimetable(timetable, startDate) {
+        const startDateTime = new Date(startDate).getTime()
+        const sortedTimetable = Object.fromEntries(Array.from({ length: 7 }, (_, i) => [getISODate(new Date(startDateTime + i * 24 * 3600 * 1000), false), []]))
         timetable.forEach((subject) => {
-            const {id, text, matiere, codeMatiere, typeCours, start_date, end_date, prof, salle, groupe, groupeCode, devoirAFaire, isAnnule, isModifie } = subject;
+            const { id, text, matiere, codeMatiere, typeCours, start_date, end_date, prof, salle, groupe, groupeCode, devoirAFaire, isAnnule, isModifie } = subject;
             const newSubject = {
                 id,
                 libelle: text,
@@ -1121,11 +1122,7 @@ export default function App() {
                 isModified: isModifie,
             };
             const subjectDate = start_date.split(" ")[0];
-            if (subjectDate in sortedTimetable) {
-                sortedTimetable[subjectDate].push(newSubject);
-            } else {
-                sortedTimetable[subjectDate] = [newSubject];
-            }
+            sortedTimetable[subjectDate].push(newSubject);
         })
         for (const i in sortedTimetable) {
             sortedTimetable[i].sort((e) => e.start)
@@ -1598,10 +1595,10 @@ export default function App() {
             const headers = new Headers();
             headers.append("Content-Type", "application/x-www-form-urlencoded");
             headers.append("X-Token", tokenState);
-            
+
             const data = {
-                dateDebut: getISODate(startDate),
-                dateFin: getISODate(new Date(startDate.getTime() + 604800000)), // 604800000 is the ms in a week
+                dateDebut: getISODate(startDate, false),
+                dateFin: getISODate(new Date(startDate.getTime() + 518400000), false), // 604800000 is the ms in 6 days
                 avecTrous: false
             }
 
@@ -1620,7 +1617,7 @@ export default function App() {
                 .then((response) => {
                     const code = response.code;
                     if (code === 200) {
-                        changeUserData("sortedTimetable", { ...sortTimetable(response.data), ...getUserData("sortedTimetable") })
+                        changeUserData("sortedTimetable", { ...sortTimetable(response.data, data.dateDebut), ...getUserData("sortedTimetable") })
                     } else if (code === 520 || code === 525) {
                         // token invalide
                         console.log("INVALID TOKEN: LOGIN REQUIRED");
@@ -1632,7 +1629,7 @@ export default function App() {
                 .catch((error) => {
                     if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
                         setProxyError(true);
-                    } else if (error.message !== "The operation was aborted. "){
+                    } else if (error.message !== "The operation was aborted. ") {
                         console.error(error)
                     }
                 })

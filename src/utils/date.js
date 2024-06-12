@@ -49,6 +49,5 @@ export function getCurrentSchoolYear() {
 export function getCurrentWeekDate(date = new Date()) {
     const dayMs = 86400000; // ms in a day
     const today = new Date(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`)
-    console.log(new Date(today.getTime() - dayMs * (date.getDay() - 1)+1))
     return new Date(today.getTime() - dayMs * (date.getDay() - 1)+1)
 }
