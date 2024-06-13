@@ -1,17 +1,21 @@
 
-import { useState } from "react";
+import { useEffect, useRef, useContext } from "react";
+import { AppContext } from "../../App";
+
 import "./StoreCallToAction.css"
 
 export default function StoreCallToAction({ companyLogoSRC, companyLogoAlt="Logo d'une entreprise high tech", targetURL="#", ...props }) {
 
-    
+    const { promptInstallPWA } = useContext(AppContext);
+    console.log("StoreCallToAction ~ promptInstallPWA:", promptInstallPWA)
+
     return (
-       <a className="install-as-application" target="_blank" href={targetURL} {...props}>
+        <button className="install-as-application" target="_blank" href={targetURL} onClick={() => {console.log("testits:", promptInstallPWA); promptInstallPWA()}} {...props}>
             <img className="company-logo" src={companyLogoSRC} alt={companyLogoAlt} />
             <div className="text">
                 <span className="install-as">Installer en tant qu'</span>
                 <span className="application">Application</span>
             </div>
-        </a>
+        </button>
     )
 }

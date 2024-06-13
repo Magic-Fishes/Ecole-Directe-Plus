@@ -238,6 +238,10 @@ function initData(length) {
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 
+let promptInstallPWA = () => {};
+window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
+window.addEventListener("appinstalled", () => { promptInstallPWA = null });
+
 export default function App() {
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
@@ -1976,6 +1980,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        promptInstallPWA,
         activeAccount,
         accountsListState,
         isLoggedIn,
@@ -1994,6 +1999,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        promptInstallPWA,
         activeAccount,
         accountsListState,
         isLoggedIn,
