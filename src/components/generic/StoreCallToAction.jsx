@@ -10,7 +10,7 @@ export default function StoreCallToAction({ companyLogoSRC, companyLogoAlt="Logo
     console.log("StoreCallToAction ~ promptInstallPWA:", promptInstallPWA)
 
     return (
-        <button className="install-as-application" target="_blank" href={targetURL} onClick={() => {console.log("testits:", promptInstallPWA); promptInstallPWA()}} {...props}>
+        <button className="install-as-application" target="_blank" href={targetURL} onClick={() => promptInstallPWA()} {...props}>
             <img className="company-logo" src={companyLogoSRC} alt={companyLogoAlt} />
             <div className="text">
                 <span className="install-as">Installer en tant qu'</span>
