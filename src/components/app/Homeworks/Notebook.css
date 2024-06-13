@@ -20,8 +20,23 @@
 .notebook-container:active {
     cursor: grabbing;
 }
-.notebook-container.mouse-moved * {
+.notebook-container:not(:has(.no-homework-placeholder)).mouse-moved * {
     cursor: grabbing !important;
+}
+
+.no-homework-placeholder, .no-homework-placeholder * {
+    color: rgb(var(--text-color-alt));
+}
+
+.no-homework-placeholder {
+    width: 60%;
+    text-align: center;
+}
+
+.notebook-container:has(.no-homework-placeholder) {
+    align-items: center;
+    justify-content: center;
+    cursor: default;
 }
 
 .date-selector {

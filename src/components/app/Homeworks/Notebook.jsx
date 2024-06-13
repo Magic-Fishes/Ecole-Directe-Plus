@@ -292,7 +292,7 @@ export default function Notebook({ hideDateController = false }) {
     }, [selectedDate, homeworks, isLoggedIn]);
 
     return <>
-        {!hideDateController
+        {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
             ? <div className="date-selector">
                 <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
                     <DropDownArrow />
@@ -304,7 +304,7 @@ export default function Notebook({ hideDateController = false }) {
         }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
             {homeworks
-                ? Object.keys(homeworks).sort().map((el, index) => {
+                ? Object.keys(homeworks).length > 0 ? Object.keys(homeworks).sort().map((el, index) => {
                     const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                     const elDate = new Date(el)
                     return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
@@ -333,7 +333,7 @@ export default function Notebook({ hideDateController = false }) {
                             }
                         </div>
                     </div>
-                })
+                }) : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">
