@@ -1411,69 +1411,95 @@ export default function App() {
             })
     }
 
-    async function fetchHomeworks(controller = (new AbortController()), date = "incoming") {
-        /**
-         * Fetch user homeworks
-         * @param controller AbortController
-         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
-         */
-        abortControllers.current.push(controller);
-        const userId = activeAccount;
+    async function fetchHomeworks(
+      controller = new AbortController(),
+      date = "incoming"
+    ) {
+      /**
+       * Fetch user homeworks
+       * @param controller AbortController
+       * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks
+       */
+      abortControllers.current.push(controller);
+      const userId = activeAccount;
 
-        let endpoint;
+      let endpoint;
+      if (date === "incoming") {
+        endpoint = "cahierdetexte";
+      } else {
+        endpoint = "cahierdetexte/" + getISODate(date);
+      }
+      if (accountsListState[activeAccount].firstName === "Guest") {
         if (date === "incoming") {
-            endpoint = "cahierdetexte";
+          import("./data/homeworks.json").then((module) => {
+            changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
+          });
         } else {
-            endpoint = "cahierdetexte/" + getISODate(date);
+          import("./data/detailed_homeworks.json").then((module) => {
+            changeUserData("sortedHomeworks", {
+              ...getUserData("sortedHomeworks"),
+              ...sortDayHomeworks({ [module.data.date]: module.data.matieres }),
+            });
+          });
         }
-        if (accountsListState[activeAccount].firstName === "Guest") {
-            if (date === "incoming") {
-                import("./data/homeworks.json").then((module) => {
-                    changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
-                })
-            } else {
-                import("./data/detailed_homeworks.json").then((module) => {
-                    changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [module.data.date]: module.data.matieres }) })
-                })
+        abortControllers.current.splice(
+          abortControllers.current.indexOf(controller),
+          1
+        );
+      } else {
+        fetch(
+          getProxiedURL(
+            `https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`,
+            true
+          ),
+          {
+            method: "POST",
+            headers: {
+              "x-token": tokenState,
+            },
+            body: "data={}",
+            signal: controller.signal,
+          }
+        )
+          .then((response) => response.json())
+          .then((response) => {
+            const code = response.code;
+            if (code === 200) {
+              if (date === "incoming") {
+                changeUserData("sortedHomeworks", {
+                  ...sortNextHomeworks(response.data),
+                  ...getUserData("sortedHomeworks"),
+                });
+              } else {
+                changeUserData("sortedHomeworks", {
+                  ...getUserData("sortedHomeworks"),
+                  ...sortDayHomeworks({
+                    [response.data.date]: response.data.matieres,
+                  }),
+                });
+              }
+            } else if (code === 520 || code === 525) {
+              // token invalide
+              console.log("INVALID TOKEN: LOGIN REQUIRED");
+              requireLogin();
             }
-            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-        } else {
-            fetch(
-                getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
-                {
-                    method: "POST",
-                    headers: {
-                        "x-token": tokenState
-                    },
-                    body: "data={}",
-                    signal: controller.signal
-                },
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    const code = response.code;
-                    if (code === 200) {
-                        if (date === "incoming") {
-                            changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
-                        } else {
-                            changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
-                        }
-                    } else if (code === 520 || code === 525) {
-                        // token invalide
-                        console.log("INVALID TOKEN: LOGIN REQUIRED");
-                        requireLogin();
-                    }
-                    setTokenState((old) => (response?.token || old));
-                })
-                .catch((error) => {
-                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                        setProxyError(true);
-                    }
-                })
-                .finally(() => {
-                    abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-                })
-        }
+            setTokenState((old) => response?.token || old);
+          })
+          .catch((error) => {
+            if (
+              error.message ===
+              "Unexpected token 'P', \"Proxy error\" is not valid JSON"
+            ) {
+              setProxyError(true);
+            }
+          })
+          .finally(() => {
+            abortControllers.current.splice(
+              abortControllers.current.indexOf(controller),
+              1
+            );
+          });
+      }
     }
 
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {

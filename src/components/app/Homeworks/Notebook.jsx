@@ -11,6 +11,7 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
+import ToggleSwitch from "../../generic/UserInputs/ToggleSwitch";
 
 export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
     const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
@@ -18,6 +19,8 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
     const navigate = useNavigate();
+
+    const [toggleSwitchState, setToggleSwitchState] = useState(false);
 
     const notebookContainerRef = useRef(null);
     const tasksContainersRefs = useRef([]);
@@ -30,7 +33,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
     const homeworks = userHomeworks.get();
 
-    const selectedDate = location.hash.split(";")[0].slice(1)
+    const selectedDate = location.hash.split(";")[0].slice(1) || new Date().toISOString().split("T")[0]; //today
 
     function calcStrokeColorColorProgression(progression) {
         const startColor = [255, 66, 66];
@@ -280,88 +283,350 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
     }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
 
-    useEffect(() => {
-        const controller = new AbortController();
-        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
-            fetchHomeworks(controller, selectedDate)
-        }
+    // useEffect(() => {
+    //     const controller = new AbortController();
 
-        return () => {
-            controller.abort();
-        }
-    }, [selectedDate, homeworks, isLoggedIn]);
+    //     console.log("Notebook ~ selectedDate:", selectedDate)
+        
+    //     if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+    //         fetchHomeworks(controller, selectedDate)
+    //     }
 
-    return <>
-        {!hideDateController
-            ? <div className="date-selector">
-                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
-                    <DropDownArrow />
-                </span>
-                <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
-                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
-            </div>
-            : null
-        }
-        <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks
-                ? Object.keys(homeworks).sort().map((el, index) => {
-                    const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
-                    const elDate = new Date(el)
-                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                        <div className="notebook-day-header">
-                            <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                                <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
-                            </svg>
-                            <span className="notebook-day-date">
-                                <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
-                            </span>
-                        </div>
-                        <hr />
-                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
-                            {
-                                homeworks[el].map((task, taskIndex) => {
-                                    const result = [
-                                        selectedDate === el
-                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
-                                            : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
-                                    if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
-                                        result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+    //     return () => {
+    //         controller.abort();
+    //     }
+    // }, [selectedDate, homeworks, isLoggedIn]);
+
+    return (
+      <>
+        {!hideDateController ? (
+          <div className="date-selector">
+            <span
+                        onClick={() => {
+
+                            if (toggleSwitchState) {
+                                //if there is aleready a date selected in the date input then ignore this and go to the date from the input -1
+
+                                const currentDate = location.hash.split(";")[0].slice(1)
+
+                                if (currentDate !== "" && validDateFormat(currentDate)) {
+                                    //substraction of 1 day from the currentdate variable 
+                                    const previousDate = new Date(currentDate);
+                                    previousDate.setDate(previousDate.getDate() - 1);
+                                    navigateToDate(previousDate.toISOString().slice(0, 10), true);
+                                    const controller = new AbortController();
+                                    // delete all homeworks
+                                    // userHomeworks.set({});
+                                    fetchHomeworks(controller, previousDate);
+                                } else {
+                                
+                                    const newDate = prompt("Entrez une date (AAAA-MM-JJ) :");
+                                    if (newDate !== null && newDate !== "" && validDateFormat(newDate)) {
+                                        navigateToDate(newDate, true);
+                                        // fetch date homework
+                                        const controller = new AbortController();
+                                        // delete all homeworks
+                                        // userHomeworks.set({});
+                                        fetchHomeworks(controller, newDate);
                                     }
-                                    return result.flat()
-                                })
+                                }
+
+                            } else {
+                                navigateToDate(nearestHomeworkDate(-1, selectedDate));
                             }
-                        </div>
-                    </div>
-                })
-                : contentLoadersRandomValues.current.days.map((el, index) => {
-                    return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
-                        <div className="notebook-day-header">
-                            <svg className={`progress-circle`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                            </svg>
-                            <span className="notebook-day-date">
-                                <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
-                                    speed={1}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
-                                    style={{ width: `${130}px`, maxHeight: "25px" }}
-                                >
-                                    <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
-                                </ContentLoader>
-                            </span>
-                        </div>
-                        <hr />
-                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
-                            {
-                                index === 0
-                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} setBottomSheetSession={setBottomSheetSession} />)
-                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
+                        }
+              }
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  navigateToDate(nearestHomeworkDate(-1, selectedDate));
+                }
+              }}
+            >
+              <DropDownArrow />
+            </span>
+                    <time dateTime={selectedDate || null} className="selected-date"
+                        onClick={
+                            () => {
+                                if (toggleSwitchState) {
+                                    const newDate = prompt("Entrez une date (AAAA-MM-JJ) :");
+                                    if (newDate !== null && newDate !== "" && validDateFormat(newDate)) {
+                                        navigateToDate(newDate, true);
+                                        // fetch date homework
+                                        const controller = new AbortController();
+                                        // delete all homeworks
+                                        // userHomeworks.set({});
+                                        fetchHomeworks(controller, newDate);
+                                    }
+                                }
                             }
-                        </div>
-                    </div>
-                })}
+                        
+                    }>
+              {new Date(selectedDate).toLocaleDateString() == "Invalid Date"
+                ? "AAAA-MM-JJ"
+                : new Date(selectedDate).toLocaleDateString()}
+            </time>
+            <span
+                        onClick={() => {
+
+                            if (toggleSwitchState) {
+                                //if there is aleready a date selected in the date input then ignore this and go to the date from the input -1
+
+                                const currentDate = location.hash.split(";")[0].slice(1)
+
+                                if (currentDate !== "" && validDateFormat(currentDate)) {
+                                    //substraction of 1 day from the current date 
+                                    const previousDate = new Date(currentDate);
+                                    previousDate.setDate(previousDate.getDate() + 1);
+                                    navigateToDate(previousDate.toISOString().slice(0, 10), true);
+                                    const controller = new AbortController();
+                                    // delete all homeworks
+                                    // userHomeworks.set({});
+                                    fetchHomeworks(controller, previousDate);
+                                } else {
+                                
+                                    const newDate = prompt("Entrez une date (AAAA-MM-JJ) :");
+                                    if (newDate !== null && newDate !== "" && validDateFormat(newDate)) {
+                                        navigateToDate(newDate, true);
+                                        // fetch date homework
+                                        const controller = new AbortController();
+                                        // delete all homeworks
+                                        // userHomeworks.set({});
+                                        fetchHomeworks(controller, newDate);
+                                    }
+                                }
+
+                            } else {
+                                navigateToDate(nearestHomeworkDate(-1, selectedDate));
+                            }
+                        }
+                        }
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  navigateToDate(nearestHomeworkDate(1, selectedDate));
+                }
+              }}
+            >
+              <DropDownArrow />
+            </span>
+          </div>
+        ) : null}
+        <div className="switch-container">
+          <label htmlFor="dateSwitch" className="switch-label">
+            <span className="switch-text">A venir</span>
+          </label>
+          <ToggleSwitch
+            value={toggleSwitchState}
+            onChange={(value) => {
+              setToggleSwitchState(!value);
+              if (value) {
+                  // fetch incoming homeworks
+                  const controller = new AbortController();
+                  // delete all homeworks
+                    userHomeworks.set({});
+                    fetchHomeworks(controller, "incoming");
+              } else {
+                  // fetch current date homework
+                  const controller = new AbortController();
+                  // delete all homeworks
+                    userHomeworks.set({});
+                    fetchHomeworks(controller, selectedDate);
+              }
+            }}
+          />
+          <label htmlFor="dateSwitch" className="switch-label">
+            <span className="switch-text">Manuel</span>
+          </label>
         </div>
-    </>
+        <div
+          className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`}
+          ref={notebookContainerRef}
+        >
+          {homeworks
+            ? Object.keys(homeworks)
+                .sort()
+                .map((el, index) => {
+                  const progression =
+                    homeworks[el].filter((task) => task.isDone).length /
+                    homeworks[el].length;
+                  const elDate = new Date(el);
+                  return (
+                    <div
+                      className={`notebook-day ${
+                        selectedDate === el ? "selected" : ""
+                      }`}
+                      onClick={() =>
+                        !hasMouseMoved &&
+                        navigate(
+                          `#${el};${
+                            selectedDate === el
+                              ? location.hash.split(";")[1]
+                              : homeworks[el][0].id
+                          }${
+                            location.hash.split(";").length === 3
+                              ? ";" + location.hash.split(";")[2]
+                              : ""
+                          }`,
+                          { replace: true }
+                        )
+                      }
+                      key={el}
+                      id={el}
+                      ref={selectedDate === el ? anchorElement : null}
+                    >
+                      <div className="notebook-day-header">
+                        <svg
+                          className={`progress-circle ${
+                            progression === 1 ? "filled" : ""
+                          }`}
+                          viewBox="0 0 100 100"
+                        >
+                          <circle cx="50" cy="50" r="40" />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            strokeLinecap="round"
+                            stroke={calcStrokeColorColorProgression(
+                              progression
+                            )}
+                            pathLength="1"
+                            strokeDasharray="1"
+                            strokeDashoffset={1 - progression}
+                          />
+                        </svg>
+                        <span className="notebook-day-date">
+                          <time dateTime={elDate.toISOString()}>
+                            {capitalizeFirstLetter(
+                              elDate.toLocaleDateString(
+                                navigator.language || "fr-FR",
+                                {
+                                  weekday: "long",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )
+                            )}
+                          </time>
+                        </span>
+                      </div>
+                      <hr />
+                      <div
+                        className="tasks-container"
+                        ref={(el) => (tasksContainersRefs.current[index] = el)}
+                      >
+                        {homeworks[el].map((task, taskIndex) => {
+                          const result = [
+                            selectedDate === el ? (
+                              <DetailedTask
+                                key={"detailed-" + task.id}
+                                task={task}
+                                userHomeworks={userHomeworks}
+                                taskIndex={taskIndex}
+                                day={el}
+                                setBottomSheetSession={setBottomSheetSession}
+                              />
+                            ) : (
+                              <Task
+                                key={task.id}
+                                day={el}
+                                task={task}
+                                taskIndex={taskIndex}
+                                userHomeworks={userHomeworks}
+                              />
+                            ),
+                          ];
+                          if (
+                            selectedDate === el &&
+                            taskIndex < homeworks[el].length - 1
+                          ) {
+                            result.push(
+                              <hr
+                                key={toString(task.id) + "-hr"}
+                                className="detailed-task-separator"
+                              />
+                            );
+                          }
+                          return result.flat();
+                        })}
+                      </div>
+                    </div>
+                  );
+                })
+            : contentLoadersRandomValues.current.days.map((el, index) => {
+                return (
+                  <div
+                    className={`notebook-day ${index === 0 ? "selected" : ""}`}
+                    key={index}
+                    ref={selectedDate === el ? anchorElement : null}
+                  >
+                    <div className="notebook-day-header">
+                      <svg className={`progress-circle`} viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                      </svg>
+                      <span className="notebook-day-date">
+                        <ContentLoader
+                          animate={settings.get("displayMode") === "quality"}
+                          speed={1}
+                          backgroundColor={
+                            actualDisplayTheme === "dark"
+                              ? "#9E9CCC"
+                              : "#676997"
+                          }
+                          foregroundColor={
+                            actualDisplayTheme === "dark"
+                              ? "#807FAD"
+                              : "#8F90C1"
+                          }
+                          style={{ width: `${130}px`, maxHeight: "25px" }}
+                        >
+                          <rect
+                            x="0"
+                            y="0"
+                            rx="10"
+                            ry="10"
+                            style={{ width: "100%", height: "100%" }}
+                          />
+                        </ContentLoader>
+                      </span>
+                    </div>
+                    <hr />
+                    <div
+                      className="tasks-container"
+                      ref={(el) => (tasksContainersRefs.current[index] = el)}
+                    >
+                      {index === 0
+                        ? Array.from({
+                            length:
+                              contentLoadersRandomValues.current.tasks[el],
+                          }).map((el, i) => (
+                            <DetailedTask
+                              key={"detailed-" + i}
+                              task={{}}
+                              userHomeworks={userHomeworks}
+                              taskIndex={index}
+                              day={el}
+                              setBottomSheetSession={setBottomSheetSession}
+                            />
+                          ))
+                        : Array.from({
+                            length:
+                              contentLoadersRandomValues.current.tasks[el],
+                          }).map((el, i) => (
+                            <Task
+                              key={i}
+                              day={el}
+                              task={{}}
+                              taskIndex={index}
+                              userHomeworks={userHomeworks}
+                            />
+                          ))}
+                    </div>
+                  </div>
+                );
+              })}
+        </div>
+      </>
+    );
 }

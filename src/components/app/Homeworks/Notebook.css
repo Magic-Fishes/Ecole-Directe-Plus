@@ -192,3 +192,11 @@
     padding: 15px;
     scroll-behavior: smooth;
 }
+
+.switch-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
