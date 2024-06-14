@@ -685,6 +685,7 @@ export default function App() {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {

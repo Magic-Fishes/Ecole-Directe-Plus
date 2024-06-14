@@ -238,3 +238,29 @@
 #results .grades-values .grade {
     margin-right: 10px;
 }
+
+
+#mean-tooltip {
+    width: max-content;
+    margin: 0 auto;
+}
+
+#grades #mean-tooltip * {
+    pointer-events: auto;
+}
+
+#grades #mean-tooltip [class="fill"] {
+    fill: rgb(var(--border-color-1));
+}
+
+#grades #mean-tooltip [class="stroke"] {
+    stroke: rgb(var(--border-color-1));
+}
+
+#grades #mean-tooltip:is(:hover, :has(:focus-visible)) [class="fill"] {
+    fill: rgb(var(--text-color-alt));
+}
+
+#grades #mean-tooltip:is(:hover, :has(:focus-visible)) [class="stroke"] {
+    stroke: rgb(var(--text-color-alt));
+}
