@@ -121,7 +121,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // re-login
 
     useEffect(() => {
-        if ((location.pathname === "/login" || location.pathname === "/") && (!!token && accountsList.length > 0)) {
+        if ((location.pathname === "/login") && (token && accountsList.length > 0)) {
             redirectToApp();
             console.log("redirected to app")
         }

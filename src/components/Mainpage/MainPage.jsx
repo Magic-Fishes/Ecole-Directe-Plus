@@ -7,7 +7,7 @@ import { AppContext } from "../../App"
 
 import "./MainPage.css";
 
-export default function MainPage() {
+export default function MainPage({token, accountsList, activeAccount}) {
     const { useUserSettings } = useContext(AppContext);
 
     const location = useLocation()
@@ -47,7 +47,8 @@ export default function MainPage() {
                         </div>
                         <div className="login-theme">
                             <div className="nav-login">
-                                <Link to="/login">Log-In</Link>
+                                {/* navigate(`/app/${activeAccount}/dashboard`, { replace: true }); */}
+                                <Link to={(token && accountsList.length > 0) ? `/app/${activeAccount}/dashboard` : "/login"}>{(token && accountsList.length > 0) ? "Dashboard" : "Se Connnecter"}</Link>
                             </div>
                             <div className="change-theme">
                                 <button id="toggle-button" onClick={changeTheme}>

@@ -1850,7 +1850,7 @@ export default function App() {
             errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
-                    element: <MainPage />,
+                    element: <MainPage token={tokenState} accountsList={accountsListState} activeAccount={activeAccount} />,
                     path: "/",
                 },
                 {
