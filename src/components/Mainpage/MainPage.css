@@ -1,0 +1,498 @@
+* {
+    box-shadow: 0 0 0 3px transparent;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+}
+
+p.policy {
+    /* Bloquer par rapport a la page les policy, pour ne pas qu'ils bougent au scroll */
+    position: fixed;
+}
+
+#notifications-container {
+    display: none;
+}
+
+#nav-bar {
+    position: fixed;
+    top: 3rem;
+    left: 2rem; /* Décalage de 50px du bord gauche de l'écran */
+    right: 2rem; /* Décalage de 50px du bord droit de l'écran */
+    width: calc(100% - 4rem); /* La largeur de la barre de navigation est la largeur de l'écran moins les décalages gauche et droit */
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+    transition: top 0.3s;
+}
+
+
+.main-page {
+
+    /* height est a modifier si on veux ajouter d'autres elements */
+    
+    height: 179em; /* Hauteur parfaite pour tous les éléments (le gradient, c'est une méthode de bucheron accesoirement) */
+    background: linear-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
+
+}
+
+.nav-bar-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.top-section {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.nav-links-container {
+    background-color: rgb(var(--background-color-2));
+    border-radius: 99999px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+}
+
+.nav-links {
+    display: flex;
+    /* justify-content: center; */
+    margin: 0.7rem 1rem;
+    gap: 2rem;
+}
+
+.link {
+    text-decoration: none;
+    padding: 1rem 1.6rem;
+    border-radius: 999999px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.link:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    color: rgb(var(--text-color-main-reverse));
+}
+
+.nav-login {
+    display: flex;
+    margin: auto;
+}
+
+.nav-hambuger-menu-div {
+
+    display: none;
+}
+
+.nav-logo a {
+    display: flex;
+    text-decoration: none;
+    background-color: rgb(var(--background-color-2));
+    padding: 1.7rem 1.4rem;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    transition: all 0.2s ease;
+}
+
+.EDPLogo {
+    margin-top: 2px;
+    margin-right: 10px;
+}
+
+.nav-logo a:hover {
+    color: rgb(var(--text-color-main-reverse));
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+.login-theme a {
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.7rem 2.6rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--background-color-2));
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    transition: all 0.2s ease-in;
+}
+
+.login-theme a:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    color: rgb(var(--text-color-main-reverse));
+    transform: scale(1.03);
+}
+
+.login-theme {
+    display: flex;
+}
+
+.change-theme {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    margin-left: 10px;
+}
+
+.change-theme button {
+    position: relative;
+    padding: 2.65rem;
+    border: 0;
+    background-color: rgb(var(--background-color-3));
+    border-radius: 1rem;
+    transition: all 0.2s ease-in;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+}
+
+.change-theme button::before {
+    display: none;
+    position: absolute;
+    content: "";
+    background-color: rgba(190, 190, 200, 0.5);
+    background-image:
+    radial-gradient(circle at 10% 20%, rgba(200, 200, 210, 0.7), transparent 30%),
+    radial-gradient(circle at 30% 70%, rgba(180, 180, 190, 0.7), transparent 30%),
+    radial-gradient(circle at 70% 40%, rgba(210, 210, 220, 0.7), transparent 30%),
+    radial-gradient(circle at 20% 60%, rgba(190, 190, 200, 0.7), transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(170, 170, 180, 0.7), transparent 30%);
+    box-shadow: 1px 0 4px rgb(0, 0, 0);
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    transition: all 0.2s ease-in;
+}
+
+.change-theme button::after {
+    display: block;
+    position: absolute;
+    content: "";
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    background-color: rgba(255, 200, 80, 0.5);
+    background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 80, 0.7), transparent 30%),
+    radial-gradient(circle at 30% 70%, rgba(255, 180, 60, 0.315), transparent 30%),
+    radial-gradient(circle at 70% 40%, rgba(255, 220, 100, 0.7), transparent 30%),
+    radial-gradient(circle at 20% 60%, rgba(255, 190, 90, 0.7), transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(255, 210, 70, 0.7), transparent 30%);
+    background-position: 0 0, 50px 50px, 100px 0, 0px 100px, 100px 100px;
+    box-shadow: 0 0 0 1px rgb(255, 200, 80),0 0 5px 0px rgb(255, 200, 80);
+}
+
+.change-theme button:hover,
+.change-theme button:hover {
+    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+.change-theme button::before,
+
+.change-theme button::after {
+    width: 23px;
+    height: 23px;
+}
+
+.dark .change-theme button::before {
+    display: block;
+}
+
+.dark .change-theme button::after {
+    display: none;
+}
+
+/* ------------------ Partie pour animer le menu hamburger ------------------ */
+
+input[type="checkbox"]:checked ~ #sidebarMenu {
+    transform: translateX(0);
+}
+
+input[type=checkbox] {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    display: none;
+}
+
+.sidebarIconToggle {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: absolute;
+    z-index: 99;
+    height: 100%;
+    width: 100%;
+    height: 22px;
+    width: 22px;
+    }
+    
+.sidebarIconToggle > span {
+    border-radius: 10px;
+}
+
+.spinner {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background-color: rgb(var(--border-color-1));
+}
+
+.horizontal {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin-top: 3px;
+}
+
+.diagonal.part-1 {
+    position: relative;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    float: left;
+}
+
+.diagonal.part-2 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+    margin-top: 3px;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    opacity: 0;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    transform: rotate(135deg);
+    margin-top: 8px;
+}
+
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    transform: rotate(-135deg);
+    margin-top: -9px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Banner                                   */
+/* -------------------------------------------------------------------------- */
+
+/* ------------------------------- BANNER-SPAN ------------------------------ */
+
+.more-info {
+    color: rgb(83, 87, 150);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.more-info:hover {
+    color: rgb(43, 47, 100);
+}
+
+/* --------------------------------- BANNER --------------------------------- */
+
+#banner {
+    scroll-margin-top: 20rem;
+    position: absolute;
+    display: flex;
+    top: 50%;
+    background-color: rgba(var(--background-color-2), 0.6);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 2rem;
+    box-shadow: var(--color-shadow-element) 0px 25px 50px -12px;
+}
+
+/* -------------------------- BANNER-BOX-CONTAINER -------------------------- */
+
+
+/* ------------------------------ BANNER-TITLE ------------------------------ */
+
+.ban-title {
+    position: relative;
+    padding: 20px;
+    width: 85rem;
+    left: 4rem;
+
+}
+
+.ban-title h4 {
+    background-color: rgba(var(--background-color-0), 0.6);
+    font-size: 30px;
+    font-weight: 600;
+    padding: 20px;
+    margin-bottom: 3rem;
+    border-radius: 1rem;
+    box-shadow: var(--color-shadow-element) 1px 1px 6px 0px;
+}
+
+/* ------------------------------- BANNER-BOX ------------------------------- */
+
+.ban-box {
+    display: flex;
+}
+
+/* ---------------------------- BANNER-BOX-DESING --------------------------- */
+
+.ban-box-desing {
+    padding: 25px;
+    text-align: center;
+    width: 34rem;
+    height: 30rem;
+    background-color: rgb(var(--background-color-0), 0.4);
+    margin: 2rem;
+    border-radius: 2rem;
+    border: solid rgb(var(--border-color-1)) 1.2px;
+    box-shadow: var(--color-shadow-element) 3px 3px 10px 0px;
+    transition: all 0.3s ease;
+}
+.ban-box-desing:hover {
+    transform: scale(1.01);
+    border: solid 2.3px rgba(var(--border-color-0), 0.8);
+}
+
+.ban-box-desing h3 {
+    position: relative;
+    margin-bottom: -10px;
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.ban-box-desing h6 {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* --------------------------- Community category --------------------------- */
+
+#community {
+    scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
+    display: flex;
+    position: absolute;
+    background-color: rgb(var(--background-color-2), 0.6);
+    box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px;
+    top: 155%;
+    padding: 20px;
+    border-radius: 2rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 INFO-DESING                                */
+/* -------------------------------------------------------------------------- */
+
+.box-desing-title {
+    position: relative;
+    padding: 20px;
+}
+
+.box-desing-title h4 {
+    text-align: center;
+    background-color: rgba(var(--background-color-0), 0.6);
+    font-size: 30px;
+    font-weight: 600;
+    padding: 20px;
+    margin-bottom: 3rem;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    box-shadow: var(--color-shadow-element) 1px 1px 6px 0px;
+}
+
+
+.presentation-box {
+    display: flex;
+}
+
+/* ----------------------- For dimentions of the logo ----------------------- */
+
+.discord-logo {
+    width: 40rem;
+    padding: 20px;
+}
+
+
+.box-desing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40rem;
+    border-radius: 1rem;
+    margin: 20px;
+    background-color: rgba(var(--background-color-0), 0.6);
+    border: solid 2.1px rgba(var(--border-color-0), 0.8);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    
+}
+
+
+
+.box-desing h6 {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.linked-button {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+
+    transition: all 0.2s ease;
+}
+
+.linked-button:hover {
+    background-color: rgb(var(--background-color-0));
+    transform: scale(1.04);
+}
+
+/* -------------------------- Open Source category -------------------------- */
+
+#open-source {
+    scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
+    display: flex;
+    position: absolute;
+    background-color: rgb(var(--background-color-2), 0.6);
+    box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px;
+    top: 260%;
+    padding: 20px;
+    border-radius: 2rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ----------------------- For dimentions of the logo ----------------------- */
+
+.github-logo {
+    width: 23rem;
+    padding: 20px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*                                 RESPONSIVE                                 */
+/* -------------------------------------------------------------------------- */
