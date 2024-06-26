@@ -173,7 +173,7 @@ Nous avons pensé à ceux qui ont un petit forfait. Accédez aux paramètres et 
 
 // TODO : Ecole Directe Plus est un site web gratuit, libre et open source.
 
-#RACISTE Nous croiriez-vous si l'on vous dit qu'il y a plus d'easter-eggs sur ED+ que de chinois ?
+#RACISTE Nous croiriez-vous si l'on vous dit qu'il y a plus d'easter-eggs sur EDP que de chinois ?
 
 #RACISTE Ecole Directe Plus traite avec équité toutes les races humaines, même les inférieures
 

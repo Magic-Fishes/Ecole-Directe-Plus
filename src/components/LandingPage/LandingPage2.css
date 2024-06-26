@@ -1,0 +1,127 @@
+
+.landing-page #hero-banner {
+    width: 100%;
+    height: calc(100vh + 2px);
+    /* position: absolute; */
+    border-bottom: 2px solid rgba(var(--text-color-alt), .5);
+    background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
+    background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0%, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
+    padding-top: 250px;
+}
+
+.landing-page .affiliation-disclaimer {
+    font-size: var(--font-size-13);
+    background: rgb(var(--text-color-alt), .1);
+    color: rgb(var(--text-color-alt));
+    border: 1px solid rgb(var(--text-color-alt), .2);
+    border-radius: 15px;
+    width: max-content;
+    padding: 5px 10px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    flex-flow: row nowrap;
+    gap: 8px;
+}
+.landing-page .affiliation-disclaimer svg {
+    height: 12px;
+    transform: scale(1.6);
+}
+.landing-page .affiliation-disclaimer svg path {
+    stroke: rgb(var(--text-color-alt));
+}
+
+.landing-page .text-center {
+    /* position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    width: min(654px, 100%);
+    margin: 0 auto;
+    padding-inline: 10px;
+    /* margin-top: 300px; */
+    text-align: center;
+}
+
+.landing-page h1 {
+    font-size: var(--font-size-36);
+}
+.landing-page .heading-emphasis {
+    color: rgb(var(--text-color-alt));
+}
+.landing-page p {
+    color: rgb(var(--text-color-alt));
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.landing-page .login-call-to-action {
+    display: inline-block;
+    margin-top: 45px;
+    text-decoration: none;
+    border: 2px solid rgb(var(--text-color-main));
+    border-radius: 10px;
+    font-weight: var(--font-weight-semi-bold);
+    padding: 10px 15px;
+    transition: .2s;
+    outline: none;
+    overflow: hidden;
+}
+.landing-page .login-call-to-action::after {
+    content: "-->";
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0;
+    opacity: 0;
+    width: 0;
+    transition: .2s;
+}
+
+
+.landing-page .login-call-to-action:is(:hover, :focus-visible) {
+    background-color: rgb(var(--text-color-main));
+    color: rgb(var(--text-color-main-reverse));
+    box-shadow: 0 0 20px rgb(var(--text-color-main), .3);
+}
+.landing-page .login-call-to-action:is(:hover, :focus-visible)::after {
+    content: "-->";
+    opacity: 1;
+    padding-left: 10px;
+    width: 35px;
+    color: rgb(var(--text-color-main-reverse));
+}
+
+.landing-page .login-call-to-action:active {
+    opacity: .6;
+}
+
+.landing-page .fade-out-image {
+    margin: 0 auto;
+    margin-top: 100px;
+    width: min(1200px, calc(100% - 40px));
+    overflow: hidden;
+    position: relative;
+}
+
+.landing-page .fade-out-image:has(.mobile) {
+    width: min(350px, calc(100% - 40px));
+}
+.landing-page .fade-out-image:has(.tablet) {
+    width: min(450px, calc(100% - 40px));
+}
+.landing-page .fade-out-image img {
+    width: 100%;
+    display: block;
+    border: 1px solid rgba(var(--text-color-alt), .2);
+    border-radius: 10px;
+}
+.landing-page .fade-out-image::after {
+    content: "";
+    background: linear-gradient(180deg, transparent, rgb(var(--background-color-0)) 90%, rgb(var(--background-color-0)));
+    height: 90%;
+    bottom: -1px;
+    left: -1px;
+    width: calc(100% + 2px);
+    position: absolute;
+}

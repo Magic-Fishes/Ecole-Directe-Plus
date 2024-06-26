@@ -44,7 +44,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/login");
     }
 
-    function redirectToMainPage() {
+    function redirectToLandingPage() {
         navigate("/")
     }
 
@@ -414,7 +414,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
                 {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
-                {isAdmin && <input type="button" onClick={redirectToMainPage} value="MAINPAGE" />}
+                {isAdmin && <input type="button" onClick={redirectToLandingPage} value="LANDING PAGE" />}
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
