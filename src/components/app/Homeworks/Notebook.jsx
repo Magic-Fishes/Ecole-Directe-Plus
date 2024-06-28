@@ -29,17 +29,17 @@ export default function Notebook({ hideDateController = false }) {
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const homeworks = userHomeworks.get();
+    const hashParameters = location.hash.split(";")
+    const selectedDate = hashParameters[0].slice(1)
 
-    const selectedDate = location.hash.split(";")[0].slice(1)
-
-    function calcStrokeColorColorProgression(progression) {
+    /*function calcStrokeColorColorProgression(progression) {
         const startColor = [255, 66, 66];
         const endColor = [0, 255, 56];
         // I have absolutely no idea of why but with the condition under it makes orange when progresion is on the middle
         // (this what I wanted but I though that it would need another intermediate color)
         // so for no reason this works and I will not change it (it's only luck)
         return `rgb(${progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
-    }
+    }*/
 
 
     function validDateFormat(dateString) {
@@ -60,7 +60,7 @@ export default function Notebook({ hideDateController = false }) {
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
+        navigate(`#${newDate};${(cleanup && hashParameters[1]) || ""}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true });
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -294,11 +294,11 @@ export default function Notebook({ hideDateController = false }) {
     return <>
         {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
             ? <div className="date-selector">
-                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
+                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
                     <DropDownArrow />
                 </span>
                 <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString()}</time>
-                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } }} ><DropDownArrow /></span>
             </div>
             : null
         }
@@ -307,16 +307,13 @@ export default function Notebook({ hideDateController = false }) {
                 ? Object.keys(homeworks).length > 0 ? Object.keys(homeworks).sort().map((el, index) => {
                     const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                     const elDate = new Date(el)
-                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                        <div className="notebook-day-header">
-                            <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                                <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
-                            </svg>
+                    return homeworks[el].length ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
                             <span className="notebook-day-date">
                                 <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
                             </span>
                         </div>
+                        {/* <hr style={{ width: `${progression * 100}%`}} /> */}
                         <hr />
                         <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
                             {
@@ -337,9 +334,6 @@ export default function Notebook({ hideDateController = false }) {
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">
-                            <svg className={`progress-circle`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                            </svg>
                             <span className="notebook-day-date">
                                 <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
