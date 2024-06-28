@@ -1,6 +1,7 @@
 import { useRef } from "react"
 
 import "./FileComponent.css"
+import DefaultFileIcon from "../graphics/file/DefaultFileIcon";
 
 export default function FileComponent({ file, ...props }) {
     const timeOutRef = useRef(null);
@@ -39,7 +40,7 @@ export default function FileComponent({ file, ...props }) {
     }
 
     return <div className="file-component" onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} {...props}>
-        <span className="icon-mort"></span>
+        <DefaultFileIcon extension={file.extension} className="file-icon"/>
         <span className="file-name" >{file.name}.{file.extension}</span>
         {/* <span className="button-mort">{file.extension}</span> */}
     </div>

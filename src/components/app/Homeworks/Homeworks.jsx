@@ -94,7 +94,11 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
             <h2 className="file-title">Fichiers</h2>
             <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
-            <div className="file-wrapper">{selectedTask.files.map((file) => <FileComponent key={file.id} file={file}/>)}</div>
+            <div className="file-scroller">
+                <div className="file-wrapper">
+                    {selectedTask.files.map((file) => <FileComponent key={file.id} file={file} />)}
+                </div>
+            </div>
         </PopUp>}
     </>
 }
