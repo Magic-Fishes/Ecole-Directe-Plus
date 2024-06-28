@@ -71,3 +71,17 @@
 #lab-page .inner-html-test {
     background-color: blue;
 }
+
+#lab-page .outline-effect-div-test {
+    width: 800px;
+    margin: 0 auto;
+}
+#lab-page .outline-effect-div-test .inner-container {
+    padding: 10px;
+    background-color: rgb(var(--background-color-0));
+    transition: .1s;
+}
+
+#lab-page .outline-effect-div-test .inner-container:hover {
+    background-color: color-mix(in srgb, rgb(var(--text-color-alt)) 5%, rgb(var(--background-color-0)));
+}

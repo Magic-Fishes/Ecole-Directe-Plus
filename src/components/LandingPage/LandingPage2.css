@@ -1,4 +1,9 @@
 
+
+html:has(.landing-page) {
+    overflow-x: hidden;
+}
+
 .landing-page #hero-banner {
     width: 100%;
     height: calc(100vh + 2px);
@@ -125,3 +130,92 @@
     width: calc(100% + 2px);
     position: absolute;
 }
+
+#bento {
+    margin-top: 200px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: min(740px, 100%);
+    gap: 100px;
+}
+#bento h2 {
+    font-size: var(--font-size-32)
+}
+
+#bento .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    gap: 20px;
+    /* height: 700px; */
+}
+
+#bento .bento-card:hover {
+    /* scale: 1.03; */
+    transform: translateY(-4px);
+    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
+}
+#bento .bento-card h4 {
+    scale: 1;
+    transition: .25s;
+}
+#bento .bento-card:hover h4 {
+    scale: 1.1;
+}
+#bento .bento-card {
+    border: 2px solid rgba(var(--text-color-alt), .2);
+    border-radius: 10px;
+    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
+    transition: .25s;
+}
+
+#bento .bento-outline-effect {
+    height: 100%;
+    background-color: rgb(var(--background-color-0));
+    padding: 20px;
+    border-radius: 8px;
+    transition: background .2s;
+}
+#bento .bento-outline-effect:hover {
+    background-color: rgba(var(--background-color-0), .95);
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2; }
+.div2 { grid-area: 1 / 2 / 3 / 3; }
+.div3 { grid-area: 2 / 1 / 4 / 2; }
+.div4 { grid-area: 3 / 2 / 4 / 3; }
+.div5 { grid-area: 4 / 1 / 5 / 2; }
+.div6 { grid-area: 5 / 1 / 6 / 2; }
+.div7 { grid-area: 4 / 2 / 6 / 3; }
+
+.parallax-item {
+    position: absolute;
+}
+.blob {
+    opacity: .5;
+    filter: blur(50px);
+    animation: blob-rotate linear 5s infinite;
+}
+.blob1 {
+    top: 160vh;
+    width: 200px;
+}
+.blob2 {
+    right: -50px;
+    top: 130vh;
+    width: 200px;
+}
+
+.blob path {
+    fill: rgb(var(--text-color-alt))
+}
+
+@keyframes blob-rotate {
+    from {
+        rotate: 0deg;
+    }
+    to {
+        rotate: 359deg;
+    }
+}
+

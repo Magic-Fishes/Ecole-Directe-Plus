@@ -60,7 +60,7 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                         <img
                             ref={(el) => (profilePictureRefs.current[0] = el)}
                             className="profile-picture"
-                            src={((accountsListState[activeAccount].firstName !== "Guest") ? getProxiedURL("https:" + accountsListState[activeAccount].picture) : accountsListState[activeAccount].picture)}
+                            src={(settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : ((accountsListState[activeAccount].firstName !== "Guest") ? getProxiedURL("https:" + accountsListState[activeAccount].picture) : accountsListState[activeAccount].picture))}
                             alt={"Photo de profil de " + accountsListState[activeAccount].firstName}
                         />
                     </div>
