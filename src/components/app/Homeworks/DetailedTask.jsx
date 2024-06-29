@@ -6,11 +6,18 @@ import { AppContext } from "../../../App"
 import { applyZoom } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
-import "./DetailedTask.css"
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
 import DownloadIcon from "../../graphics/DownloadIcon"
 import CopyButton from "../../generic/CopyButton"
 import { clearHTML } from "../../../utils/html"
+
+import "./DetailedTask.css"
+
+const supposedNoSessionContent = [
+    "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
+    "",
+]
+
 export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...props }) {
     const navigate = useNavigate()
 
@@ -23,10 +30,6 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
 
     const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
 
-    const supposedNoSessionContent = [
-        "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
-        "",
-    ]
 
     const location = useLocation();
     const oldLocationHash = useRef(null);

@@ -1,17 +1,16 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { capitalizeFirstLetter } from "../../../utils/utils";
+import { capitalizeFirstLetter, getISODate } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 import Task from "./Task";
-
-import "./Notebook.css";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
+import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
     const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
     const settings = useUserSettings();
@@ -72,7 +71,7 @@ export default function Notebook({ hideDateController = false }) {
             return;
         }
 
-        const dates = Object.keys(homeworks);
+        const dates = Object.keys(homeworks).filter(e => homeworks[e].length);
         if (!dates.includes(date)) {
             dates.push(date);
         }
@@ -275,7 +274,7 @@ export default function Notebook({ hideDateController = false }) {
 
     useEffect(() => {
         const controller = new AbortController();
-        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+        if ((homeworks && homeworks[selectedDate] && homeworks[selectedDate].length && !homeworks[selectedDate][0].content) && isLoggedIn) {
             fetchHomeworks(controller, selectedDate)
         }
 
@@ -323,7 +322,8 @@ export default function Notebook({ hideDateController = false }) {
                             }
                         </div>
                     </div>
-                }) : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
+                        : null
+                }).filter(e => e) : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">
