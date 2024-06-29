@@ -37,6 +37,54 @@ p.policy {
 
 }
 
+.active {
+    position: absolute;
+    margin: -75px; /* To cancel the cursor effect when the button is with opacity 0 */
+}
+
+.go-to-top {
+    background-color: rgb(var(--background-color-3));
+    position: fixed;
+    right: 26px;
+    bottom: 26px;
+    border-radius: 9999px;
+    padding: 27px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px transparent;
+
+    transition: all 0.4s ease;
+}
+  
+.go-to-top:hover {
+    background-color: rgb(var(--background-color-2));
+    border-color: rgb(var(--border-color-0));
+    box-shadow:0 0 14px rgba(var(--text-color-alt), 0.6);
+}
+  
+.go-to-top:active {
+    background-color: rgb(var(--background-color-1));
+}
+  
+.go-to-top::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 8px;
+    height: 8px;
+    margin-top: 2px;
+    border-left: 5px solid rgb(var(--text-color-main));
+    border-bottom: 5px solid rgb(var(--text-color-main));
+    rotate: 135deg;
+    transition: rotate 0.5s ease;
+}
+
+.go-to-top.active::before {
+    rotate: -90deg;
+}
+
 .nav-bar-content {
     display: flex;
     width: 100%;

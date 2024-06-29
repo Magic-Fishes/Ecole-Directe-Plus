@@ -283,6 +283,7 @@ export default function App() {
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     const createNotification = useCreateNotification();
+    const [isTop, setIsTop] = useState(true);
 
     class File {
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
@@ -571,6 +572,19 @@ export default function App() {
             setKeepLoggedIn(false);
         }
     }, [userIds]);
+
+    useEffect(() => {
+
+        const handleScroll = () => {
+            setIsTop(window.scrollY === 0);
+        };
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+
+    },[]);
 
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
@@ -1984,6 +1998,7 @@ export default function App() {
         promptInstallPWA,
         activeAccount,
         accountsListState,
+        isTop,
         isLoggedIn,
         isMobileLayout,
         isTabletLayout,
@@ -2004,6 +2019,7 @@ export default function App() {
         activeAccount,
         accountsListState,
         isLoggedIn,
+        isTop,
         isMobileLayout,
         isTabletLayout,
         isStandaloneApp,

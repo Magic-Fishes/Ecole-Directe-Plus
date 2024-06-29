@@ -1,4 +1,4 @@
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import EDPLogo from "../graphics/EDPLogo";
 import DiscordFullLogoSmall from "../graphics/DiscordFullLogo";
@@ -14,8 +14,8 @@ import "./LandingPage.css";
 import "./LandingPage2.css";
 
 export default function LandingPage() {
-    const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
-
+    const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings, isTop } = useContext(AppContext);
+    
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -26,6 +26,8 @@ export default function LandingPage() {
         theme.set(theme.get() === "light" ? "dark" : "light");
     };
 
+      
+
     useEffect(() => {
         if (!location.hash) {
             navigate("#home", { replace: true });
@@ -35,6 +37,12 @@ export default function LandingPage() {
             section.scrollIntoView()
         }
     }, [location.hash]);
+
+    // useEffect(() => {
+
+    //     const handleScroll
+
+    // })
 
     useEffect(() => {
         const handleScroll = () => {
@@ -86,6 +94,7 @@ export default function LandingPage() {
                 </nav>
             </header>
             <section id="hero-banner">
+                <Link to="#hero-banner" style={{opacity: `${isTop ? "0" : "1"}`}} onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "active" : ""}`}></Link>
                 <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
                 <div className="text-center">
                     <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
