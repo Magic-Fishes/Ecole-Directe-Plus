@@ -125,14 +125,7 @@ export default function Notebook({ hideDateController = false }) {
             }
         } else {
             if (homeworks) {
-                if (selectedDate) {
-                    navigateToDate(selectedDate);
-                } else {
-                    const firstDate = Object.keys(homeworks).sort()[0];
-                    if (!!firstDate) {
-                        navigateToDate(firstDate);
-                    }
-                }
+                navigateToDate(getISODate(new Date()));
             }
         }
     }, [location, homeworks, anchorElement.current]);
