@@ -9,7 +9,7 @@
 }
 
 #unsubscribe-emails * {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 #unsubscribe-emails > h1 {
@@ -25,7 +25,7 @@
 }
 
 #unsubscribe-emails #loading-animation circle {
-    stroke: rgb(var(--text-color-alt));
+    stroke: rgb(var(--text-color-alt-0));
 }
 
 #unsubscribe-emails #error-message {
@@ -40,7 +40,7 @@
     appearance: none;
     text-decoration: none;
     padding: 15px 20px;
-    border: 2px solid rgb(var(--text-color-alt));
+    border: 2px solid rgb(var(--text-color-alt-0));
     border-radius: 50px;
     font-weight: 600;
     margin-block: 20px;
@@ -48,10 +48,10 @@
 }
 
 #unsubscribe-emails #call-to-action:hover {
-    background-color: rgb(var(--text-color-alt));
+    background-color: rgb(var(--text-color-alt-0));
     color: #181829;
 }
 
 #unsubscribe-emails #call-to-action:active {
-    background-color: rgba(var(--text-color-alt), .6);
+    background-color: rgba(var(--text-color-alt-0), .6);
 }

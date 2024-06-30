@@ -60,8 +60,8 @@
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
     --text-color-main-reverse : 0, 0, 0;
-    /* --text-color-alt: 170, 170, 238; */
-    --text-color-alt: 166, 190, 201;
+    /* --text-color-alt-0: 170, 170, 238; */
+    --text-color-alt-0: 166, 190, 201;
     
     --background-color-0: 22, 28, 28;
     --background-color-1: 38, 59, 64;
@@ -124,8 +124,9 @@
     /* - Main (darker to lighter) - */
     --text-color-main: 255, 255, 255;
     --text-color-main-reverse : 25, 25, 25;
-    /* --text-color-alt: 170, 170, 238; */
-    --text-color-alt: 180, 180, 240;
+    /* --text-color-alt-0: 170, 170, 238; */
+    --text-color-alt-0: 180, 180, 240;
+    --text-color-alt-1: 198, 198, 255;
     
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
@@ -193,8 +194,9 @@
 
     --text-color-main: 0, 0, 0;
     --text-color-main-reverse: 255, 255, 255;
-    --text-color-alt: 76, 76, 184;
-    
+    --text-color-alt-0: 76, 76, 184;
+    --text-color-alt-1: 82, 82, 255;
+
     --background-color-0: 228, 228, 255;
     --background-color-1: 210, 210, 255;
     --background-color-2: 200, 200, 240;
@@ -368,7 +370,7 @@ p.error-message a {
 }
 
 ::placeholder {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .invalid ::placeholder, .invalid::placeholder {

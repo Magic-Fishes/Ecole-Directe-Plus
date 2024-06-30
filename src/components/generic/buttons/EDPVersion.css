@@ -2,7 +2,7 @@
 #edp-version {
     background: rgba(var(--text-color-main), 0);
     font-size: var(--font-size-14);
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     position: fixed;
     right: 6px; /*=10px - padding -> aligne avec policy*/
     bottom: 6px;

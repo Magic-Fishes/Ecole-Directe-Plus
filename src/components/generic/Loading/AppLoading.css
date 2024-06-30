@@ -48,7 +48,7 @@
 #loading-box #loading-screen-tip *,
 #loading-box #loading-screen-tip ::before,
 #loading-box #loading-screen-tip ::after {
-    color: rgb(var(--text-color-alt))
+    color: rgb(var(--text-color-alt-0))
 }
 
 

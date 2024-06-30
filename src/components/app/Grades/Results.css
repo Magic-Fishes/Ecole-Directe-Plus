@@ -62,7 +62,7 @@
 }
 
 #SUN-form p {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     font-size: var(--font-size-13);
 }
 
@@ -114,14 +114,14 @@
 }
 
 #SUN-form .simulation-form-button.close {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 #SUN-form .simulation-form-button.close:is(:hover, :focus-visible) {
     background-color: transparent;
-    border-color: rgb(var(--text-color-alt));
+    border-color: rgb(var(--text-color-alt-0));
 }
 #SUN-form .simulation-form-button.close:active {
-    background-color: rgb(var(--text-color-alt), .2);
+    background-color: rgb(var(--text-color-alt-0), .2);
 }
 
 #SUN-form .simulation-form-button.submit {

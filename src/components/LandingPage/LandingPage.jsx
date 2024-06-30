@@ -12,6 +12,7 @@ import InfoTypoIcon from "../graphics/InfoTypoIcon";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
+import UpArrow from "../graphics/UpArrow";
 
 export default function LandingPage() {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings, isTop } = useContext(AppContext);
@@ -94,7 +95,7 @@ export default function LandingPage() {
                 </nav>
             </header>
             <section id="hero-banner">
-                <Link to="#hero-banner" style={{opacity: `${isTop ? "0" : "1"}`}} onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "active" : ""}`}></Link>
+                <Link to="#hero-banner" style={{opacity: `${isTop ? "0" : "1"}`}} onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "active" : ""}`}><UpArrow className="up-arrow"/></Link>
                 <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
                 <div className="text-center">
                     <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
