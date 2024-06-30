@@ -1,17 +1,27 @@
-
-
 html:has(.landing-page) {
     overflow-x: hidden;
 }
 
-.landing-page #hero-banner {
+#hero-banner {
     width: 100%;
-    height: calc(100vh + 2px);
-    /* position: absolute; */
+    /* height: calc(100vh + 2px);
+    position: absolute;
     border-bottom: 2px solid rgba(var(--text-color-alt), .5);
     background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
-    background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0%, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
+    background: radial-gradient(circle at 0 100vh, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) calc(50vh + 1px), transparent calc(100vh + 2px)); */
     padding-top: 250px;
+}
+
+#hero-banner::before {
+    content: "";
+    z-index: -1;
+    width: 100%;
+    height: calc(100vh + 2px);
+    position: absolute;
+    top: 0;
+    border-bottom: 2px solid rgba(var(--text-color-alt), .5);
+    background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
+    background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
 }
 
 .landing-page .affiliation-disclaimer {
@@ -55,7 +65,7 @@ html:has(.landing-page) {
 .landing-page .heading-emphasis {
     color: rgb(var(--text-color-alt));
 }
-.landing-page p {
+#hero-banner p {
     color: rgb(var(--text-color-alt));
     margin: 0 auto;
     margin-top: 20px;
@@ -112,9 +122,11 @@ html:has(.landing-page) {
 .landing-page .fade-out-image:has(.mobile) {
     width: min(350px, calc(100% - 40px));
 }
+
 .landing-page .fade-out-image:has(.tablet) {
     width: min(450px, calc(100% - 40px));
 }
+
 .landing-page .fade-out-image img {
     width: 100%;
     display: block;
@@ -131,15 +143,16 @@ html:has(.landing-page) {
     position: absolute;
 }
 
+.landing-page h2.section-title {
+    font-size: var(--font-size-32)
+}
+
 #bento {
     margin-top: 200px;
     display: flex;
     flex-flow: column nowrap;
     width: min(740px, 100%);
     gap: 100px;
-}
-#bento h2 {
-    font-size: var(--font-size-32)
 }
 
 #bento .bento-grid {
@@ -150,32 +163,49 @@ html:has(.landing-page) {
     /* height: 700px; */
 }
 
-#bento .bento-card:hover {
-    /* scale: 1.03; */
-    transform: translateY(-4px);
-    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
-}
 #bento .bento-card h4 {
-    scale: 1;
-    transition: .25s;
+    transition: .25s ease-out;
+    font-size: var(--font-size-20);
+    margin-bottom: 10px;
 }
-#bento .bento-card:hover h4 {
-    scale: 1.1;
+
+#bento .bento-card p {
+    transition: .25s ease-out;
+    color: rgba(var(--text-color-alt), .8);
 }
+
 #bento .bento-card {
     border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
-    transition: .25s;
+    transition: .25s ease-out;
 }
 
 #bento .bento-outline-effect {
     height: 100%;
     background-color: rgb(var(--background-color-0));
+    transition: .25s ease-out;
     padding: 20px;
     border-radius: 8px;
     transition: background .2s;
 }
+
+#bento .bento-card:hover {
+    /* scale: 1.03; */
+    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
+    /* transform: translateY(-4px); */
+}
+
+#bento .bento-card:hover h4 {
+    /* color: rgb(var(--text-color-alt)); */
+    /* scale: 1.1; */
+    transform: scaleX(1.1);
+}
+
+#bento .bento-card:hover p {
+    color: rgba(var(--text-color-main), 1);
+}
+
 #bento .bento-outline-effect:hover {
     background-color: rgba(var(--background-color-0), .95);
 }
@@ -187,6 +217,62 @@ html:has(.landing-page) {
 .div5 { grid-area: 4 / 1 / 5 / 2; }
 .div6 { grid-area: 5 / 1 / 6 / 2; }
 .div7 { grid-area: 4 / 2 / 6 / 3; }
+
+.floating-section {
+    height: 100vh;
+    box-sizing: border-box;
+    transition: 2s;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 75px;
+}
+
+.floating-section a {
+    transition: text-decoration-color .2s;
+    text-decoration-color: rgba(var(--text-color-alt), 0);
+}
+
+.floating-section a:hover {
+    text-decoration-color: rgba(var(--text-color-alt), 1);
+}
+
+.floating-section > h2 {
+    padding-inline: 10%;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+.floating-section > div {
+    width: 70%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 50px;
+}
+
+.floating-section > div > :is(p, a) {
+    opacity: 0;
+    transition: opacity 2s;
+}
+
+.floating-section p {
+    width: 450px;
+    font-size: var(--font-size-24);
+}
+
+.floating-section > div > a {
+    width: 250px;
+    display: flex;
+    align-items: center;
+}
+
+#open-source p {
+    text-align: right;
+}
 
 .parallax-item {
     position: absolute;

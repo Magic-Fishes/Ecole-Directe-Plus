@@ -399,22 +399,6 @@ p.policy {
     font-weight: 500;
 }
 
-/* --------------------------- Community category --------------------------- */
-
-.landing-page #community {
-    scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
-    display: flex;
-    position: absolute;
-    background-color: rgb(var(--background-color-2), 0.6);
-    /* box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px; */
-    box-shadow: var(--box-shadow-window);
-    top: 155%;
-    padding: 20px;
-    border-radius: 2rem;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 /* -------------------------------------------------------------------------- */
 /*                                 INFO-DESING                                */
 /* -------------------------------------------------------------------------- */
@@ -442,12 +426,6 @@ p.policy {
     display: flex;
 }
 
-/* ----------------------- For dimentions of the logo ----------------------- */
-
-.landing-page .discord-logo {
-    width: 40rem;
-    padding: 20px;
-}
 
 
 .landing-page .box-desing {
@@ -485,20 +463,6 @@ p.policy {
     transform: scale(1.04);
 }
 
-/* -------------------------- Open Source category -------------------------- */
-
-.landing-page #open-source {
-    scroll-margin-top: 20rem;   /* Permet de faire un décalage pour que la section ne soit pas collée en haut quand on clique dans la navbar */
-    display: flex;
-    position: absolute;
-    background-color: rgb(var(--background-color-2), 0.6);
-    box-shadow: var(--color-shadow-element) 0px 13px 27px -5px, var(--color-shadow-window) 0px 8px 16px -8px;
-    top: 260%;
-    padding: 20px;
-    border-radius: 2rem;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 
 /* ----------------------- For dimentions of the logo ----------------------- */
 
