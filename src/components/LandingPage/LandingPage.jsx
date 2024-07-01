@@ -1,21 +1,22 @@
-import { useRef, useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, isTop } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import EDPLogo from "../graphics/EDPLogo";
-import DiscordFullLogoSmall from "../graphics/DiscordFullLogo";
-import GitHubFullLogo from "../graphics/GitHubFullLogo";
+
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 import { AppContext } from "../../App"
 
 // graphics
 import EdpuLogo from "../graphics/EdpuLogo";
 import InfoTypoIcon from "../graphics/InfoTypoIcon";
+import UpArrow from "../graphics/UpArrow";
+import EDPLogo from "../graphics/EDPLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
-import UpArrow from "../graphics/UpArrow";
+
 
 export default function LandingPage() {
-    const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings, isTop } = useContext(AppContext);
+    const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
+    const [isTop, setIsTop] = useState(true);
     
     const location = useLocation()
     const navigate = useNavigate()
@@ -27,7 +28,18 @@ export default function LandingPage() {
         theme.set(theme.get() === "light" ? "dark" : "light");
     };
 
-      
+    useEffect(() => {
+
+        const handleScroll = () => {
+            setIsTop(window.scrollY === 0);
+        };
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+
+    },[]);
 
     useEffect(() => {
         if (!location.hash) {
@@ -39,11 +51,6 @@ export default function LandingPage() {
         }
     }, [location.hash]);
 
-    // useEffect(() => {
-
-    //     const handleScroll
-
-    // })
 
     useEffect(() => {
         const handleScroll = () => {
@@ -76,10 +83,10 @@ export default function LandingPage() {
                     <div className="nav-links-container">
                         <div className="inline">
                             <div className="nav-links">
-                                <Link to="#home" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
+                                <Link to="#hero-banner" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
                                 <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
                                 <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
-                                <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
+                                <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo"/> </Link>
                             </div>
                         </div>
                     </div>
@@ -95,7 +102,7 @@ export default function LandingPage() {
                 </nav>
             </header>
             <section id="hero-banner">
-                <Link to="#hero-banner" style={{opacity: `${isTop ? "0" : "1"}`}} onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "active" : ""}`}><UpArrow className="up-arrow"/></Link>
+                <Link to="#hero-banner" onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`}/></Link>
                 <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
                 <div className="text-center">
                     <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>

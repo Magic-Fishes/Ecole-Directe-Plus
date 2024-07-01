@@ -107,6 +107,11 @@ html:has(.landing-page) {
     width: min(1200px, calc(100% - 40px));
     overflow: hidden;
     position: relative;
+    transition: transform .3s ease;
+}
+
+.landing-page .fade-out-image:hover {
+    transform: scale(1.025);
 }
 
 .landing-page .fade-out-image:has(.mobile) {

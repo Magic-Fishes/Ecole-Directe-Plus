@@ -117,6 +117,8 @@
     --box-shadow-color-scrollbar-thumb: 108, 126, 133;
     --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
     
+    --ajustable-monochorme: 0, 0, 0;
+
     --alpha-shadow-color-scroll-shaded-div: 0.5;
 }
 
@@ -127,6 +129,8 @@
     /* --text-color-alt-0: 170, 170, 238; */
     --text-color-alt-0: 180, 180, 240;
     --text-color-alt-1: 198, 198, 255;
+
+    
     
     --background-color-0: 24, 24, 41;
     --background-color-1: 50, 50, 87;
@@ -182,7 +186,9 @@
     --box-shadow-color-scrollbar-track: 199, 199, 255, 0.133;
     --box-shadow-color-scrollbar-thumb: 118, 118, 162;
     --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
-    
+
+    --ajustable-monochorme: 0, 0, 0;
+
     --alpha-shadow-color-scroll-shaded-div: 0.5;
 }
 
@@ -193,7 +199,7 @@
     --color-shadow-element: rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
-    --text-color-main-reverse: 255, 255, 255;
+    --text-color-main-reverse: 235, 235, 235;
     --text-color-alt-0: 76, 76, 184;
     --text-color-alt-1: 82, 82, 255;
 
@@ -244,6 +250,8 @@
     --box-shadow-color-scrollbar-thumb: 136, 136, 184;
     --box-shadow-color-scrollbar-thumb-on-hover: 116, 116, 164;
     
+    --ajustable-monochorme: 135, 135, 145;
+
     --alpha-shadow-color-scroll-shaded-div: 0.3;
 }
 
