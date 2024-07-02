@@ -19,6 +19,8 @@ import PopUp from "../../generic/PopUps/PopUp";
 import { formatDateRelative } from "../../../utils/date";
 import FileComponent from "../../generic/FileComponent";
 import { getISODate } from "../../../utils/utils";
+import DateSelector from "./Calendar";
+import InfoButton from "../../generic/Informative/InfoButton";
 
 import "./Homeworks.css";
 
@@ -80,12 +82,16 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.75} WIP={true}>
+                        <Window growthFactor={1.75} >
                             <WindowHeader>
                                 <h2>Calendrier</h2>
+                                <InfoButton className="calendar-info">
+                                    <p>Calendrier</p>
+                                    <p>Permet de sélectionner une date.</p>
+                                </InfoButton>
                             </WindowHeader>
                             <WindowContent>
-
+                                <DateSelector defaultSelectedDate={selectedDate}/>
                             </WindowContent>
                         </Window>
                     </WindowsLayout>

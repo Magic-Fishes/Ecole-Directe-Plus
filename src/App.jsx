@@ -754,6 +754,7 @@ export default function App() {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
@@ -1083,12 +1084,12 @@ export default function App() {
     function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
-                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf, contenuDeSeance } = homework;
                 if (!aFaire) {
                     return null;
                 }
 
-                const { donneLe, effectue, contenu, contenuDeSeance, documents } = aFaire;
+                const { donneLe, effectue, contenu, documents } = aFaire;
 
                 return {
                     id: id,
