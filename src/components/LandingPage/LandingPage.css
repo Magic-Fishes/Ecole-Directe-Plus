@@ -1,5 +1,6 @@
 /* Global Styles */
 * {
+    /* Reset box-shadow, box-sizing, padding, margin, and scroll-behavior */
     box-shadow: 0 0 0 3px transparent;
     box-sizing: border-box;
     padding: 0;
@@ -10,17 +11,19 @@
 /* Fixed Elements */
 p.policy,
 #nav-bar {
+    /* Position policy and nav-bar elements fixed */
     position: fixed;
 }
 
 #notifications-container {
+    /* Hide notifications container */
     display: none;
 }
 
 /* Navigation Bar */
 #nav-bar {
+    /* Position nav-bar at the top right of the viewport */
     top: 3rem;
-    left: 2rem;
     right: 2rem;
     width: calc(100% - 4rem);
     z-index: 10;
@@ -30,24 +33,26 @@ p.policy,
 }
 
 .nav-bar-content {
+    /* Display nav-bar content in a flex container with space between items */
     display: flex;
     width: 100%;
     justify-content: space-between;
 }
 
 .nav-links-container {
-    backdrop-filter: blur(4px);
+    /* Round the corners of the nav-links container */
     border-radius: 999px;
-    
 }
 
 .nav-links {
+    /* Display nav-links in a flex container with a gap between items */
     display: flex;
     margin: 0.7rem;
     gap: 2rem;
 }
 
 #nav-bar .link[href="/edp-unblock"] {
+    /* Display EDP Unblock link as a flex container with a gap between items */
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -55,16 +60,19 @@ p.policy,
 }
 
 #nav-bar .edpu-logo {
+    /* Style the EDP Unblock logo */
     height: 20px;
     transform: scale(1.3);
 }
 
 /* Landing Page */
 .landing-page {
+    /* Set the height of the landing page */
     height: 179em;
 }
 
 .landing-page .link {
+    /* Style the links on the landing page */
     text-decoration: none;
     padding: 1rem 1.6rem;
     border-radius: 999999px;
@@ -73,30 +81,36 @@ p.policy,
 }
 
 .landing-page .link.selected,
-.landing-page .link:hover {
+.landing-page .link:hover,
+.landing-page .nav-login a:hover,
+.landing-page .change-theme button:hover {
+    /* Style the selected and hovered links on the landing page */
     background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
-    color: rgba(var(--text-color-main-reverse), 0.9);
+    color: rgba(var(--text-color-main-reverse), 0.6);
 }
 
 .landing-page .link:hover svg path {
+    /* Style the hovered link's SVG path */
     fill: rgb(var(--text-color-main-reverse));
     transition: .1s;
 }
 
 .landing-page .nav-login,
 .landing-page .nav-hambuger-menu-div {
+    /* Display the login and hamburger menu div as flex containers */
     display: flex;
     margin: auto;
 }
 
 .landing-page .nav-hambuger-menu-div {
+    /* Hide the hamburger menu div */
     display: none;
 }
 
 .landing-page .nav-logo span {
+    /* Style the nav logo span */
     display: flex;
     text-decoration: none;
-    backdrop-filter: blur(4px);
     padding: 1.7rem 1.4rem;
     border-radius: 1rem;
     user-select: none;
@@ -106,6 +120,7 @@ p.policy,
 
 /* Go to Top Button */
 .go-to-top {
+    /* Style the go-to-top button */
     position: fixed;
     z-index: 100;
     display: flex;
@@ -120,16 +135,19 @@ p.policy,
 }
 
 .go-to-top.active {
+    /* Style the active go-to-top button */
     opacity: 1;
 }
 
 .go-to-top.unactive {
+    /* Style the inactive go-to-top button */
     opacity: 0.45;
     bottom: -43px;
     right: -62px;
 }
 
 .go-to-top:hover {
+    /* Style the hovered go-to-top button */
     transform: scale(1.1);
     background-color: rgb(var(--background-color-2));
     border-color: rgb(var(--border-color-0));
@@ -138,6 +156,7 @@ p.policy,
 
 /* Up Arrow */
 .up-arrow {
+    /* Style the up arrow */
     z-index: 110;
     display: flex;
     justify-content: center;
@@ -149,18 +168,20 @@ p.policy,
 }
 
 .up-arrow.active {
+    /* Style the active up arrow */
     transform: rotate(0deg);
 }
 
 /* Theme and Login */
 .landing-page .login-theme,
 .landing-page .change-theme {
+    /* Display the login and theme divs as flex containers */
     display: flex;
-    
 }
 
 .landing-page .login-theme a,
 .landing-page .change-theme button {
+    /* Style the login and theme buttons */
     padding: 1.7rem 2.6rem;
     border-radius: 1rem;
     text-decoration: none;
@@ -169,26 +190,26 @@ p.policy,
     transition: all .2s ease;
 }
 
-.landing-page .login-theme a:hover {
-    color: rgb(var(--text-color-main-reverse));
-}
-
 .landing-page .change-theme {
+    /* Style the theme div */
     justify-content: center;
     align-self: center;
     margin-left: 10px;
 }
 
 .landing-page .change-theme button {
+    /* Style the theme button */
     position: relative;
     display: flex;
     padding: 2.65rem;
     border: 0;
     background-color: rgb(var(--background-color-2));
+    cursor: pointer;
 }
 
 .landing-page .change-theme button::before,
 .landing-page .change-theme button::after {
+    /* Style the theme button's pseudo-elements */
     position: absolute;
     content: "";
     border-radius: 100%;
@@ -198,6 +219,7 @@ p.policy,
 }
 
 .landing-page .change-theme button::before {
+    /* Style the theme button's before pseudo-element */
     display: none;
     background-color: rgba(190, 190, 200, 0.5);
     background-image:
@@ -210,6 +232,7 @@ p.policy,
 }
 
 .landing-page .change-theme button::after {
+    /* Style the theme button's after pseudo-element */
     display: block;
     background-color: rgba(255, 200, 80, 0.5);
     background-image:
@@ -221,76 +244,21 @@ p.policy,
     box-shadow: 0 0 0 1px rgb(255, 200, 80), 0 0 5px 0px rgb(255, 200, 80);
 }
 
-.landing-page .change-theme button:hover {
-    background-color: rgb(var(--background-color-3));
-    cursor: pointer;
-    transform: scale(1.03);
-    
-}
-
 .dark .landing-page .change-theme button::before {
+    /* Style the theme button's before pseudo-element in dark mode */
     display: block;
 }
 
 .dark .landing-page .change-theme button::after {
+    /* Style the theme button's after pseudo-element in dark mode */
     display: none;
-}
-
-/* Hamburger Menu */
-.landing-page input[type="checkbox"] {
-    display: none;
-}
-
-.landing-page .sidebarIconToggle {
-    transition: all 0.3s;
-    cursor: pointer;
-    position: absolute;
-    z-index: 99;
-    height: 22px;
-    width: 22px;
-}
-
-.landing-page .sidebarIconToggle > span {
-    border-radius: 10px;
-}
-
-.landing-page .spinner {
-    transition: all 0.3s;
-    position: absolute;
-    height: 3px;
-    width: 100%;
-    background-color: rgb(var(--border-color-1));
-}
-
-.landing-page .horizontal {
-    margin-top: 3px;
-}
-
-.landing-page .diagonal.part-1 {
-    margin-top: 3px;
-}
-
-.landing-page .diagonal.part-2 {
-    margin-top: -9px;
-}
-
-.landing-page input[type="checkbox"]:checked ~ .sidebarIconToggle > .horizontal {
-    opacity: 0;
-}
-
-.landing-page input[type="checkbox"]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
-    transform: rotate(135deg);
-    margin-top: 8px;
-}
-
-.landing-page input[type="checkbox"]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
-    transform: rotate(-135deg);
 }
 
 /* Banner */
 .landing-page #home,
 .landing-page #community,
 .landing-page #open-source {
+    /* Style the home, community, and open-source sections */
     scroll-margin-top: 20rem;
     position: absolute;
     background-color: rgb(var(--background-color-2), 0.6);
@@ -302,41 +270,40 @@ p.policy,
 }
 
 .landing-page #home {
+    /* Style the home section */
     top: 50%;
 }
 
 .landing-page #community {
+    /* Style the community section */
     top: 150%;
 }
 
 .landing-page #open-source {
+    /* Style the open-source section */
     top: 250%;
 }
 
 /* Login */
 .landing-page .nav-login a {
-    text-decoration: none;
+    /* Style the login link */
     padding: 1.7rem;
-    border-radius: 1rem;
-    background-color: rgb(var(--background-color-2), 0.7);
-    backdrop-filter: blur(4px);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    font-weight: var(--font-weight-semi-bold);
     transition: all .3s ease;
 }
 
 .landing-page .EDPLogo {
-    margin-top: 2px;
+    /* Style the EDP logo */
+    margin-top: 3px;
     margin-right: 10px;
-}
-
-.landing-page .nav-login a:hover {
-    background-color: rgb(var(--background-color-3));
 }
 
 .landing-page .nav-logo span,
 .landing-page .nav-login a,
 .landing-page .change-theme button,
 .landing-page .nav-links-container {
+    /* Apply box-shadow, background-color, and backdrop-filter to the nav logo span, login link, theme button, and nav links container */
     box-shadow: rgba(var(--ajustable-monochorme), 0.16) 0px 3px 6px, rgba(var(--ajustable-monochorme), 0.23) 0px 3px 6px;
     background-color: rgb(var(--background-color-2), .7);
+    backdrop-filter: blur(4px);
 }
