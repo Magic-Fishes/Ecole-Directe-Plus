@@ -6,14 +6,14 @@
 #homeworks .windows-layout#test {
     padding: 30px;
     height: 100%;
-}  
+}
 
 #homeworks .windows-layout#test2 {
     padding: 30px;
     height: 100%;
 }
 
-.task-file-pop-up > div {
+.task-file-pop-up>div {
     padding: 15px;
     padding-bottom: 0;
     max-width: 550px !important;
@@ -33,4 +33,13 @@
     flex-direction: column;
     gap: 15px;
     padding-bottom: 15px;
+}
+
+.calendar-info {
+    position: absolute;
+    right: 10px;
+}
+
+.calendar-info * {
+    pointer-events: auto !important;
 }

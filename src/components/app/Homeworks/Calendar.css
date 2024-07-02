@@ -1,0 +1,114 @@
+.month {
+    display: flex;
+    justify-content: space-between;
+    background-color: #323257;
+    border-radius: 15px;
+    padding: 7px;
+    margin: 15px 15px 10px 15px;
+    font-weight: bolder;
+}
+
+.arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    transition: .15s;
+    background-color: rgba(var(--text-color-alt), 0);
+    cursor: pointer;
+    outline: 4px solid rgba(var(--text-color-alt), 0);
+}
+
+.arrow svg path {
+    stroke: white;
+}
+
+.arrow:hover {
+    background-color: rgba(var(--text-color-alt), 0.1);
+    outline: 4px solid rgba(var(--text-color-alt), 0.1);
+}
+
+.arrowleft {
+    transform: rotate(90deg);
+}
+
+.arrowright {
+    transform: rotate(-90deg);
+}
+
+.month-name {
+    font-size: 1.2em;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 10px;
+}
+
+.weekdays span {
+    text-align: center;
+    font-weight: bold;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px 0px;
+    margin-bottom: 10px;
+}
+
+.day {
+    text-align: center;
+    padding: 3px;
+    border-radius: 100%;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    transition: background-color 0.15s;
+    margin: auto;
+    line-height: 1.5;
+}
+
+.day:hover {
+    background-color: rgba(var(--text-color-alt), 0.1);
+}
+
+.blue {
+    background-color: #3f3cc9;
+}
+
+.red {
+    background-color: #c93f3f;
+}
+
+.green {
+    background-color: #3fc93f;
+}
+
+.grey {
+    color: #9191a3;
+}
+
+.selected {
+    outline: 2px solid #cde1e5;
+}
+
+.today {
+    background-color: #3f3cc9;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 15px 15px 15px;
+    gap: 10px;
+}
+
+.buttonReturn {
+    min-width: 130px;
+}
