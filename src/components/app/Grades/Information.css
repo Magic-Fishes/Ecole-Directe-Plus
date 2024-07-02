@@ -7,7 +7,7 @@
     border-radius: 8px;
     background: none;
     border: none;
-    color: rgba(var(--text-color-alt), .5);
+    color: rgba(var(--text-color-alt-0), .5);
     font-size: var(--font-size-20);
     font-weight: var(--font-weight-extra-bold);
     cursor: pointer;
@@ -34,7 +34,7 @@
 }
 
 .information .expand-reduce-button svg {
-    fill: rgba(var(--text-color-alt), .5);
+    fill: rgba(var(--text-color-alt-0), .5);
     transform: translateY(2px);
     transition: .1s;
 }
@@ -62,13 +62,13 @@
 .information .element-information hr {
     height: 2px;
     width: 100%;
-    background-color: rgba(var(--text-color-alt), .5);
+    background-color: rgba(var(--text-color-alt-0), .5);
     border: none;
 }
 .information .selected-coefficient {
     text-align: center;
     font-size: var(--font-size-14);
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .information .information-hr {
@@ -156,7 +156,7 @@
     height: 40px;
 }
 .information .file .download-icon * {
-    stroke: rgb(var(--text-color-alt));
+    stroke: rgb(var(--text-color-alt-0));
 }
 
 .information .file .download-loading-animation {
@@ -164,11 +164,11 @@
 }
 .information .file .download-loading-animation circle {
     height: 40px;
-    stroke: rgb(var(--text-color-alt));
+    stroke: rgb(var(--text-color-alt-0));
 }
 
 .information .file .sub-text {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .information .badges-zone {
@@ -184,7 +184,7 @@
     gap: 3px;
 }
 .information .badges-zone .badge-value .badge-number {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     font-size: var(--font-size-12);
 }
 
@@ -195,8 +195,8 @@
 .information .element-information .appreciation {
     margin-top: 5px;
     padding-left: 7px;
-    border-left: 3px solid rgb(var(--text-color-alt));
-    color: rgb(var(--text-color-alt));
+    border-left: 3px solid rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .information .no-selected-grades {
@@ -218,7 +218,7 @@
 .information .no-selected-grades p {
     text-align: center;
     width: 70%;
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .skill-container {
@@ -234,7 +234,7 @@
 }
 
 .skill-text p {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 .skill-name {

@@ -16,7 +16,7 @@ h3.part-header {
 .legal-content {
     margin-left: 10px;
     margin-bottom: 10px;
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 #info-emoji {
@@ -24,7 +24,7 @@ h3.part-header {
 }
 
 .light-hr {
-    background-color: rgb(var(--text-color-alt));
+    background-color: rgb(var(--text-color-alt-0));
     height: 2px;
     opacity: .5;
     margin-block: 20px 20px;

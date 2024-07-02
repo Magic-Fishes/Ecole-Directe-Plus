@@ -21,7 +21,7 @@ fieldset.display-theme-controller:hover {
 }
 
 fieldset.display-theme-controller:has(:focus-visible) {
-    outline: 2px solid rgb(var(--text-color-alt))
+    outline: 2px solid rgb(var(--text-color-alt-0))
 }
 
 .display-theme-controller .slider {
@@ -51,7 +51,7 @@ fieldset.display-theme-controller:has(:focus-visible) {
     white-space: nowrap; /* enfer pour les utilisateurs mobile */
     overflow: hidden;
     text-overflow: ellipsis; /* cut un texte avec points de suspension*/
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     background-color: transparent;
     outline: none;
     cursor: pointer;
@@ -67,7 +67,7 @@ fieldset.display-theme-controller:has(:focus-visible) {
     color: rgb(var(--text-color-main))
 }
 .display-theme-controller label.option:active {
-    color: rgba(var(--text-color-alt), 0.8)
+    color: rgba(var(--text-color-alt-0), 0.8)
 }
 
 .display-theme-controller label.option.selected {
@@ -83,13 +83,13 @@ fieldset.display-theme-controller:has(:focus-visible) {
 }
 
 .display-theme-controller label.option path {
-    stroke: rgb(var(--text-color-alt));
+    stroke: rgb(var(--text-color-alt-0));
 }
 .display-theme-controller label.option:hover path {
     stroke: rgb(var(--text-color-main));
 }
 .display-theme-controller label.option:active path {
-    stroke: rgba(var(--text-color-alt), 0.8);
+    stroke: rgba(var(--text-color-alt-0), 0.8);
 }
 
 .quality .display-theme-controller label.option path {

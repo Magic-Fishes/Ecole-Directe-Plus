@@ -23,7 +23,7 @@
     position: absolute;
     width: 80%;
     height: 2px;
-    background-color: rgba(var(--text-color-alt), .5);
+    background-color: rgba(var(--text-color-alt-0), .5);
     left: 50%;
     transform: translate(-50%, -1px);
 }
@@ -88,7 +88,7 @@
     flex-basis: auto;
     flex-shrink: 0;
     white-space: nowrap;
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 
 @container (max-height: 175px) {

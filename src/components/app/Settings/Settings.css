@@ -317,20 +317,20 @@ body:has(#settings) {
 /* footer */
 #settings #important-note {
     margin-top: 10px;
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     font-size: var(--font-size-14);
 }
 
 #settings #diverse-links,
 #settings #diverse-links a {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     text-decoration: none;
 }
 #settings #diverse-links a:hover {
-    color: rgba(var(--text-color-alt), 0.8);
+    color: rgba(var(--text-color-alt-0), 0.8);
 }
 #settings #diverse-links a:active {
-    color: rgba(var(--text-color-alt), 0.6);
+    color: rgba(var(--text-color-alt-0), 0.6);
 }
 
 #settings #diverse-links {

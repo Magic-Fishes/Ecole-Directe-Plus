@@ -123,7 +123,7 @@ div.drop-zone:focus-within {
 }
 
 #preview-container label {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
 }
 .invalid #preview-container label {
     color: rgb(var(--text-color-soft-error-alt));
@@ -180,7 +180,7 @@ div.drop-zone:focus-within {
 }
 
 p#usage-info {
-    color: rgb(var(--text-color-alt));
+    color: rgb(var(--text-color-alt-0));
     text-align: right;
     font-size: var(--font-size-14);
 }

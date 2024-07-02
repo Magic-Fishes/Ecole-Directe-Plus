@@ -23,9 +23,9 @@
 
 .info-button:hover .info-icon .fill,
 .info-button:focus-within .info-icon .fill {
-    fill: rgb(var(--text-color-alt));
+    fill: rgb(var(--text-color-alt-0));
 }
 .info-button:hover .info-icon .stroke,
 .info-button:focus-within .info-icon .stroke {
-    stroke: rgb(var(--text-color-alt));
+    stroke: rgb(var(--text-color-alt-0));
 }

@@ -30,7 +30,7 @@ fieldset.segmented-control:focus-within {
     white-space: nowrap; /* enfer pour les utilisateurs mobile */
     overflow: hidden;
     text-overflow: ellipsis; /* cut un texte avec points de suspension*/
-    color: rgb(var(--text-color-alt)); /* safari */
+    color: rgb(var(--text-color-alt-0)); /* safari */
     background-color: transparent;
     flex-grow: 1;
     outline: none;

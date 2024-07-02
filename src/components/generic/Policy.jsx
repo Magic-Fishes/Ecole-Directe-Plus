@@ -107,7 +107,7 @@ export default function Policy({ onCloseNavigateURL }) {
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
         <li className="legal-content" style={{ listStyle: "none", marginBlock: "20px 2px" }}>Dernière révision le 24 avril 2024</li>
-        <li className="legal-content" style={{ listStyle: "none", marginBlock: "2px 20px" }}>Nous contacter : <a href="mailto:contact@ecole-directe.plus" style={{ color: "rgb(var(--text-color-alt))" }} >contact@ecole-directe.plus</a></li>
+        <li className="legal-content" style={{ listStyle: "none", marginBlock: "2px 20px" }}>Nous contacter : <a href="mailto:contact@ecole-directe.plus" style={{ color: "rgb(var(--text-color-alt-0))" }} >contact@ecole-directe.plus</a></li>
         <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>
 

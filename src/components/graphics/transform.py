@@ -35,7 +35,7 @@ def colorsToCSSVar(txt):
         "border-0": "--border-color-0",
         "border-1": "--border-color-1",
         "background-header": "--background-color-header",
-        "text-alt": "--text-color-alt",
+        "text-alt": "--text-color-alt-0",
         "text-soft-error-main": "--text-color-soft-error-main",
         "canardman-main": "--background-color-canarman-main",
     }
