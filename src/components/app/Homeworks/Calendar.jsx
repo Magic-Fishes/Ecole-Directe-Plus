@@ -9,7 +9,7 @@ import DropDownArrow from "../../graphics/DropDownArrow";
 import Button from "../../generic/UserInputs/Button";
 
 const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
-    const { useUserData, fetchHomeworks } = useContext(AppContext);
+    const { useUserData, fetchHomeworksSequentially, } = useContext(AppContext);
     const location = useLocation();
     const initialDate = defaultSelectedDate || new Date();
     const [currentDate, setCurrentDate] = useState(initialDate);
@@ -108,7 +108,7 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
         const eventsfiltered = events.filter(event => event.date === dayStr);
         const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
 
-        console.log(eventsfiltered);
+        //console.log(eventsfiltered);
 
         if (eventsfiltered.length > 0) {
             //if all the events in the day have the color green, we want to set the color to green
@@ -141,16 +141,24 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
 
     async function fetchAllHomeworks() {
         // Set the button to loading by changing the class
+        // Set display to block for the progress bar
+        document.getElementById("progress").style.display = "block";
+        var progressPercentage = 0.0;
         document.getElementById("fetchHomework").classList.add("submitting");
         const controller = new AbortController();
         let currentDate = new Date(selectedDate);
 
         while (currentDate <= new Date()) {
-            await fetchHomeworks(controller, currentDate);
-            currentDate = addDays(currentDate, 1);
+            await fetchHomeworksSequentially(controller, currentDate);
+            // Set the progress bar to the percentage of completion (a value between 0.0 and 1.0)
+            progressPercentage = (currentDate - new Date(selectedDate)) / (new Date() - new Date(selectedDate));
+            document.getElementById("progress").value = progressPercentage;
+            // Go to the date on the clendar
+            setCurrentDate(currentDate);
+            setSelectedDate(currentDate);
+            navigateToDate(format(currentDate, 'yyyy-MM-dd'), true);
 
-            // Add a delay between each fetch to avoid overloading the server
-            await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay between requests
+            currentDate = addDays(currentDate, 1);
         }
 
         // When all the homeworks are fetched, remove the loading class
@@ -159,8 +167,11 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
 
         setTimeout(() => {
             document.getElementById("fetchHomework").classList.remove("submitted");
+            // Hide the progress bar
+            document.getElementById("progress").style.display = "none";
         }, 2000);
     }
+
 
 
     return (
@@ -194,6 +205,9 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
 
             } className='buttonReturn'>Retourner à Aujourd'hui</Button>
                 <Button id="fetchHomework" onClick={() => fetchAllHomeworks()} state='' buttonType="submit">Récupérer tous les devoirs à partir de la date sélectionnée</Button>
+            </div>
+            <div className='progressContainer'>
+                <progress className="progressBar" id="progress" value={0} />
             </div>
         </div>
     );

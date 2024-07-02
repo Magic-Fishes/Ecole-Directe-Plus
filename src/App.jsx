@@ -1516,6 +1516,72 @@ export default function App() {
         }
     }
 
+    async function fetchHomeworksSequentially(controller = new AbortController(), date = "incoming") {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+
+        let endpoint;
+        if (date === "incoming") {
+            endpoint = "cahierdetexte";
+        } else {
+            endpoint = "cahierdetexte/" + getISODate(date);
+        }
+
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            if (date === "incoming") {
+                const module = await import("./data/homeworks.json");
+                changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
+            } else {
+                const module = await import("./data/detailed_homeworks.json");
+                changeUserData("sortedHomeworks", {
+                    ...getUserData("sortedHomeworks"),
+                    ...sortDayHomeworks({ [module.data.date]: module.data.matieres })
+                });
+            }
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        } else {
+            try {
+                const response = await fetch(
+                    getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                    {
+                        method: "POST",
+                        headers: {
+                            "x-token": tokenState
+                        },
+                        body: "data={}",
+                        signal: controller.signal
+                    }
+                );
+                const responseData = await response.json();
+                const code = responseData.code;
+                if (code === 200) {
+                    if (date === "incoming") {
+                        changeUserData("sortedHomeworks", {
+                            ...sortNextHomeworks(responseData.data),
+                            ...getUserData("sortedHomeworks")
+                        });
+                    } else {
+                        changeUserData("sortedHomeworks", {
+                            ...getUserData("sortedHomeworks"),
+                            ...sortDayHomeworks({ [responseData.data.date]: responseData.data.matieres })
+                        });
+                    }
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState(old => responseData?.token || old);
+            } catch (error) {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            } finally {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            }
+        }
+    }
+
+
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
          * Change the state of selected homeworks
@@ -1982,6 +2048,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
         promptInstallPWA,
         activeAccount,
         accountsListState,
@@ -2001,6 +2068,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
         promptInstallPWA,
         activeAccount,
         accountsListState,

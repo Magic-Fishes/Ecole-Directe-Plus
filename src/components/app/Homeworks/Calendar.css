@@ -112,3 +112,29 @@
 .buttonReturn {
     min-width: 130px;
 }
+
+.progressContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 0 15px;
+}
+
+.progressBar {
+    /* display: none; */
+    width: 100%;
+    border-radius: 10px;
+    background-color: #b4b4f0;
+    height: 15px;
+    color: #6867b3;
+    display: none;
+}
+
+progress {
+    color: #6867b3;
+}
+
+progress::-moz-progress-bar {
+    background: #6867b3;
+}
