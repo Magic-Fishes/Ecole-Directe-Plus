@@ -78,9 +78,13 @@ export default function Notebook({ hideDateController = false }) {
         dates.sort();
         const newDateIdx = dates.indexOf(date) + dir;
         if (newDateIdx < 0) {
-            return dates[0];
+            const prevDate = new Date(date);
+            prevDate.setDate(prevDate.getDate() - 1);
+            return getISODate(prevDate);
         } else if (newDateIdx >= dates.length) {
-            return dates[dates.length - 1];
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 1);
+            return getISODate(nextDate);
         }
 
         return dates[newDateIdx];
@@ -295,9 +299,9 @@ export default function Notebook({ hideDateController = false }) {
             : null
         }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks
-                ? Object.keys(homeworks).length > 0 ? Object.keys(homeworks).sort().map((el, index) => {
-                    const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
+            {homeworks ? Object.keys(homeworks).length > 0 && Object.values(homeworks).some(arr => arr.some(task => task.content)) ? Object.keys(homeworks).sort().map((el, index) => {
+                console.log(homeworks)    
+                const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                     const elDate = new Date(el)
                     return homeworks[el].length ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>

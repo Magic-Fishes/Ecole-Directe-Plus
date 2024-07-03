@@ -63,8 +63,13 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     }, [isLoggedIn, activeAccount, homeworks.get(), location.hash]);
 
     useEffect(() => {
-        if (hashParameters.length > 2 && !selectedTask?.sessionContent) {
-            navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
+        if (hashParameters.length > 2) {
+            if (hashParameters[2] === "s" && !selectedTask?.sessionContent) {
+                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
+            }
+            if (hashParameters[2] === "f" && !selectedTask?.files?.length) {
+                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
+            }
         }
     }, [location.hash])
 

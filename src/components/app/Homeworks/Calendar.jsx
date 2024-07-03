@@ -151,7 +151,13 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
         while (currentDate <= new Date()) {
             await fetchHomeworksSequentially(controller, currentDate);
             // Set the progress bar to the percentage of completion (a value between 0.0 and 1.0)
-            progressPercentage = (currentDate - new Date(selectedDate)) / (new Date() - new Date(selectedDate));
+            // the date should be all taken at midnight
+            const midnightCurrentDate = new Date(currentDate.setHours(0, 0, 0, 0));
+            const midnightSelectedDate = new Date(selectedDate.setHours(0, 0, 0, 0));
+            const midnightToday = new Date().setHours(0, 0, 0, 0);
+
+            progressPercentage = (midnightCurrentDate - midnightSelectedDate) / (midnightToday - midnightSelectedDate);
+            console.log(progressPercentage);
             document.getElementById("progress").value = progressPercentage;
             // Go to the date on the clendar
             setCurrentDate(currentDate);

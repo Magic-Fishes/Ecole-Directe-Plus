@@ -1084,9 +1084,14 @@ export default function App() {
     function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
-                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf, contenuDeSeance } = homework;
+                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                var contenuDeSeance = homework.contenuDeSeance;
                 if (!aFaire) {
                     return null;
+                }
+
+                if (!contenuDeSeance) {
+                    contenuDeSeance = aFaire
                 }
 
                 const { donneLe, effectue, contenu, documents } = aFaire;
