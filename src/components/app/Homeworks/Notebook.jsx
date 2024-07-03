@@ -311,7 +311,7 @@ export default function Notebook({ hideDateController = false }) {
                         </div>
                         {/* <hr style={{ width: `${progression * 100}%`}} /> */}
                         <hr />
-                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 homeworks[el].map((task, taskIndex) => {
                                     const result = [
