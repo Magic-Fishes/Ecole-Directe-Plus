@@ -59,8 +59,8 @@
 }
 
 .grade-scale-toggle :is(.top, .bottom) {
-    color: rgb(var(--text-color-alt-0));
-    border-color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
+    border-color: rgb(var(--text-color-alt));
     font-size: var(--font-size-12);
 }
 

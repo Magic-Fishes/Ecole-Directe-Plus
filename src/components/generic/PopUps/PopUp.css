@@ -44,7 +44,7 @@ body:has(#bottom-sheet) {
     top: 12px;
     right: 12px;
     font-weight: var(--font-weight-extra-bold);
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     outline: none;
     cursor: pointer;
     z-index: 1;

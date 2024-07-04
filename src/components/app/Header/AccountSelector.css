@@ -196,7 +196,7 @@
     background-color: rgba(var(--background-color-0), 0.6);
 }
 #account-selector .options-container .links span.link-text {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -214,7 +214,7 @@
 #account-selector .options-container .links #patch-notes svg { scale: 1.3 }
 
 #account-selector .options-container .links #account-page path {
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
 }
 
 #account-selector .change-display-theme-shortcut {

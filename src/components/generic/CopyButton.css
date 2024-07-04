@@ -10,11 +10,11 @@
 }
 
 .copy-button:is(:hover, :focus-visible) {
-    background-color: rgba(var(--text-color-alt-0), .1);
+    background-color: rgba(var(--text-color-alt), .1);
 }
 
 .copy-button:active {
-    background-color: rgba(var(--text-color-alt-0), .2);
+    background-color: rgba(var(--text-color-alt), .2);
 }
 
 .copy-button .checked-icon {
@@ -23,5 +23,5 @@
 }
 
 .copy-button .checked-icon path {
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
 }

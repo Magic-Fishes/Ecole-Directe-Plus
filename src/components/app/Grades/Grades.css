@@ -36,10 +36,10 @@
     stroke: rgb(var(--border-color-1));
 }
 #grades .results-legend:is(:hover, :has(:focus-visible)) [class="fill"] {
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
 }
 #grades .results-legend:is(:hover, :has(:focus-visible)) [class="stroke"] {
-    stroke: rgb(var(--text-color-alt-0));
+    stroke: rgb(var(--text-color-alt));
 }
 
 #grades .general-average {

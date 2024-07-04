@@ -10,7 +10,7 @@
 
 .login-bottom-sheet .explanation {
     text-align: center;
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     margin-bottom: 25px;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .login-bottom-sheet #login-bs-logout {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     width: max-content;
     margin: 0 auto;
     cursor: pointer;

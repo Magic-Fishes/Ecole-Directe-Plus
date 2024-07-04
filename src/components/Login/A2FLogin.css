@@ -13,7 +13,7 @@
 }
 
 .A2F-login .explanation {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     padding: 10px 20px;
     font-size: var(--font-size-14);
 }
@@ -88,14 +88,14 @@
 }
 
 .A2F-login .A2F-buttons .cancel-A2F {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
 }
 .A2F-login .A2F-buttons .cancel-A2F:is(:hover, :focus-visible) {
     background-color: transparent;
-    border-color: rgb(var(--text-color-alt-0));
+    border-color: rgb(var(--text-color-alt));
 }
 .A2F-login .A2F-buttons .cancel-A2F:active {
-    background-color: rgb(var(--text-color-alt-0), .2);
+    background-color: rgb(var(--text-color-alt), .2);
 }
 
 .A2F-login .A2F-buttons .submit-A2F {

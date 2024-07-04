@@ -32,14 +32,14 @@
     transition: fill 0.2s;
 }
 .header-button:not(.selected) svg [class="fill-text-main"] {
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
 }
 
 .header-button svg [class="stroke-text-main"] {
     transition: stroke 0.2s;
 }
 .header-button:not(.selected) svg [class="stroke-text-main"] {
-    stroke: rgb(var(--text-color-alt-0));
+    stroke: rgb(var(--text-color-alt));
 }
 
 .header-button .icon-container {
@@ -105,7 +105,7 @@
 .header-button .header-button-title {
     text-align: center;
     font-weight: var(--font-weight-semi-bold);
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

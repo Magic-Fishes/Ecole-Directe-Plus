@@ -10,7 +10,7 @@
     width: 95%;
     max-width: 900px;
     
-    border: 2px solid rgb(var(--text-color-alt-0));
+    border: 2px solid rgb(var(--text-color-alt));
     border-radius: 10px;
     
     animation: edp-unblock-ad-pop-in .3s var(--timing-function-spring-effect) forwards;
@@ -27,7 +27,7 @@
 }
 
 .dark #edp-unblock-ad {
-    background-color: rgba(var(--text-color-alt-0), .2);
+    background-color: rgba(var(--text-color-alt), .2);
     -webkit-backdrop-filter: blur(8px) brightness(.5);
     backdrop-filter: blur(8px) brightness(.5);
 }
@@ -45,7 +45,7 @@
 
 #edp-unblock-ad .extension-icon {
     height: 35px;
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
     transition: .1s;
 }
 
@@ -55,11 +55,11 @@
 
 #edp-unblock-ad span {
     flex: 1;
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     transition: .1s;
 }
 #edp-unblock-ad a {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     transition: .1s;
 }
 #edp-unblock-ad:is(:hover, :focus-visible) :is(span, a) {
@@ -151,11 +151,11 @@
 /* .login-option a#password-forgotten-link {
     text-align: right;
     text-decoration: none;
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     cursor: pointer;
 } */
 /* .login-option a#password-forgotten-link:hover {
-    color: rgba(var(--text-color-alt-0), 0.7);
+    color: rgba(var(--text-color-alt), 0.7);
 } */
 
 p.not-affiliated-mention {
@@ -163,14 +163,14 @@ p.not-affiliated-mention {
     left: 10px;
     bottom: 10px; /* aligne avec la baseline du numéro de version */
     font-size: var(--font-size-14);
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
 }
 
 p.policy {
     width: calc(100vw - 2*50px); /* fullscreen width - taille de EDPVersion */
     text-align: center;
     font-size: var(--font-size-14);
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     position: absolute;
     left: 50%;
     bottom: 10px; /* aligne avec la baseline du numéro de version */

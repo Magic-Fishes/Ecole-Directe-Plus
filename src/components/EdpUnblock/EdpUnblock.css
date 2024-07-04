@@ -184,7 +184,7 @@
 }
 
 .edpu-about-explanation, .edpu-about-explanation > a, .edpu-page a.suggested-browser {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
 }
 
 .edpu-about-explanation:not(:last-child) {
@@ -231,7 +231,7 @@
 }
 
 .edpu-about-link h5 {
-    /*color: rgb(var(--text-color-alt-0));*/
+    /*color: rgb(var(--text-color-alt));*/
     color: rgb(180, 180, 240);
     scale: 1.2;
     transition: 0.2s;
@@ -243,7 +243,7 @@
 
 .edpu-about-link svg path {
     transition: 0.2s;
-    /*stroke: rgb(var(--text-color-alt-0));*/
+    /*stroke: rgb(var(--text-color-alt));*/
     stroke: rgb(180, 180, 240);
 }
 

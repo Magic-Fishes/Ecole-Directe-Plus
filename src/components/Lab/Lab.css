@@ -83,5 +83,5 @@
 }
 
 #lab-page .outline-effect-div-test .inner-container:hover {
-    background-color: color-mix(in srgb, rgb(var(--text-color-alt-0)) 5%, rgb(var(--background-color-0)));
+    background-color: color-mix(in srgb, rgb(var(--text-color-alt)) 5%, rgb(var(--background-color-0)));
 }

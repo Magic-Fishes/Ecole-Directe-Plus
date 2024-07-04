@@ -91,7 +91,7 @@
 
 .task .add-date {
     display: inline-block;
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     font-size: var(--font-size-14);
 }
 

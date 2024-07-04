@@ -56,7 +56,7 @@
 }
 
 .notification-close-arrow path {
-    stroke: rgb(var(--text-color-alt-0));
+    stroke: rgb(var(--text-color-alt));
     stroke-width: 3px;
     transition: 0.2s;
 }

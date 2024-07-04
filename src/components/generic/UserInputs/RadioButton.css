@@ -32,7 +32,7 @@
 }
 
 .radio-button label {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     flex: 1;
     cursor: pointer;
 }

@@ -8,7 +8,7 @@ kbd.keyboard-key {
     font-size: var(--font-size-14);
     
     background-color: rgb(var(--background-color-1));
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     
     padding-inline: 5px;
     border: 1px solid transparent;
@@ -25,7 +25,7 @@ kbd.keyboard-key:hover:not(:active, .active) {
 
 kbd.keyboard-key:active,
 kbd.keyboard-key.active {
-    color: rgba(var(--text-color-alt-0), 0.5);
+    color: rgba(var(--text-color-alt), 0.5);
     margin-bottom: 2px;
     border: 1px solid rgb(var(--background-color-2));
     transform: none;

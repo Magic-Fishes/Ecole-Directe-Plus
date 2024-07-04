@@ -33,7 +33,7 @@
     background-color: rgba(var(--background-color-1), 0.5);
     text-align: center;
     font-weight: var(--font-weight-semi-bold);
-    color: rgba(var(--text-color-alt-0), .8);
+    color: rgba(var(--text-color-alt), .8);
     padding: 12px;
     box-shadow: var(--box-shadow-window);
     border-radius: 15px;

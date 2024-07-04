@@ -71,13 +71,13 @@ body:has(#account) {
 }
 .coming-soon {
     height: 100%;
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px;
     padding: 20px;
-    border: 2px solid rgb(var(--text-color-alt-0));
+    border: 2px solid rgb(var(--text-color-alt));
     border-radius: 8px;
     opacity: .5;
 }

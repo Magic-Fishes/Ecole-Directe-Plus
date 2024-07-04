@@ -8,17 +8,17 @@ html:has(.landing-page) {
     width: 100%;
     height: calc(100vh + 2px);
     /* position: absolute; */
-    border-bottom: 2px solid rgba(var(--text-color-alt-0), .5);
+    border-bottom: 2px solid rgba(var(--text-color-alt), .5);
     background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
-    background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt-0), .3) 0%, rgba(var(--text-color-alt-0), .1) 50%, transparent 100%);
+    background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0%, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
     padding-top: 250px;
 }
 
 .landing-page .affiliation-disclaimer {
     font-size: var(--font-size-13);
-    background: rgb(var(--text-color-alt-0), .1);
-    color: rgb(var(--text-color-alt-0));
-    border: 1px solid rgb(var(--text-color-alt-0), .2);
+    background: rgb(var(--text-color-alt), .1);
+    color: rgb(var(--text-color-alt));
+    border: 1px solid rgb(var(--text-color-alt), .2);
     border-radius: 15px;
     width: max-content;
     padding: 5px 10px;
@@ -34,7 +34,7 @@ html:has(.landing-page) {
     transform: scale(1.6);
 }
 .landing-page .affiliation-disclaimer svg path {
-    stroke: rgb(var(--text-color-alt-0));
+    stroke: rgb(var(--text-color-alt));
 }
 
 .landing-page .text-center {
@@ -53,10 +53,10 @@ html:has(.landing-page) {
     font-size: var(--font-size-36);
 }
 .landing-page .heading-emphasis {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
 }
 .landing-page p {
-    color: rgb(var(--text-color-alt-0));
+    color: rgb(var(--text-color-alt));
     margin: 0 auto;
     margin-top: 20px;
 }
@@ -123,7 +123,7 @@ html:has(.landing-page) {
 .landing-page .fade-out-image img {
     width: 100%;
     display: block;
-    border: 1px solid rgba(var(--text-color-alt-0), .2);
+    border: 1px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
 }
 .landing-page .fade-out-image::after {
@@ -158,7 +158,7 @@ html:has(.landing-page) {
 #bento .bento-card:hover {
     /* scale: 1.03; */
     transform: translateY(-4px);
-    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt-0), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt-0), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt-0), .2);
+    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
 }
 #bento .bento-card h4 {
     scale: 1;
@@ -168,9 +168,9 @@ html:has(.landing-page) {
     scale: 1.1;
 }
 #bento .bento-card {
-    border: 2px solid rgba(var(--text-color-alt-0), .2);
+    border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
-    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt-0), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt-0), .1) 0px 1px 2px -1px;
+    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
     transition: .25s;
 }
 
@@ -212,7 +212,7 @@ html:has(.landing-page) {
 }
 
 .blob path {
-    fill: rgb(var(--text-color-alt-0))
+    fill: rgb(var(--text-color-alt))
 }
 
 @keyframes blob-rotate {

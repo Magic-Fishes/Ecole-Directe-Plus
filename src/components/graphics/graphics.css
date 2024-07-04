@@ -1,9 +1,9 @@
 .fill-text-alt {
-    fill: rgb(var(--text-color-alt-0));
+    fill: rgb(var(--text-color-alt));
 }
 
 .stroke-text-alt {
-    stroke: rgb(var(--text-color-alt-0));
+    stroke: rgb(var(--text-color-alt));
 }
 
 .fill-text-main {

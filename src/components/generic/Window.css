@@ -69,12 +69,12 @@
     animation-delay: 0s !important;
     background-color: transparent;
     box-shadow: none;
-    border: 2px solid rgba(var(--text-color-alt-0), .3);
+    border: 2px solid rgba(var(--text-color-alt), .3);
     min-height: 200px;
 }
 .window.work-in-progress::after {
     content: "En cours de développement... (Bientôt disponible)";
-    color: rgba(var(--text-color-alt-0), .5);
+    color: rgba(var(--text-color-alt), .5);
     position: absolute;
     top: 50%;
     left: 50%;
