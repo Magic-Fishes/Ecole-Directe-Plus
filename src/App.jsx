@@ -22,6 +22,7 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
+import { add } from "date-fns";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -754,6 +755,7 @@ export default function App() {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
@@ -1084,25 +1086,50 @@ export default function App() {
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
-                if (!aFaire) {
+                var contenuDeSeance = homework.contenuDeSeance;
+                if (!aFaire && !contenuDeSeance) {
                     return null;
                 }
 
-                const { donneLe, effectue, contenu, contenuDeSeance, documents } = aFaire;
-
-                return {
-                    id: id,
-                    subjectCode: codeMatiere,
-                    subject: matiere,
-                    addDate: donneLe,
-                    isInterrogation: interrogation,
-                    isDone: effectue,
-                    teacher: nomProf,
-                    content: contenu,
-                    files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
-                    sessionContent: contenuDeSeance.contenu,
-                    sessionContentFiles: contenuDeSeance.documents,
+                if (!contenuDeSeance) {
+                    contenuDeSeance = aFaire
                 }
+
+                if (aFaire) {
+
+                    const { donneLe, effectue, contenu, documents } = aFaire;
+
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: donneLe,
+                        isInterrogation: interrogation,
+                        isDone: effectue,
+                        teacher: nomProf,
+                        content: contenu,
+                        files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                else {
+                    // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: day[0],
+                        isInterrogation: false,
+                        isDone: false,
+                        teacher: nomProf,
+                        content: "Ti9B",
+                        files: [],
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                
             }).filter((item) => item)]
         }))
         return sortedHomeworks
@@ -1514,6 +1541,72 @@ export default function App() {
                 })
         }
     }
+
+    async function fetchHomeworksSequentially(controller = new AbortController(), date = "incoming") {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+
+        let endpoint;
+        if (date === "incoming") {
+            endpoint = "cahierdetexte";
+        } else {
+            endpoint = "cahierdetexte/" + getISODate(date);
+        }
+
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            if (date === "incoming") {
+                const module = await import("./data/homeworks.json");
+                changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
+            } else {
+                const module = await import("./data/detailed_homeworks.json");
+                changeUserData("sortedHomeworks", {
+                    ...getUserData("sortedHomeworks"),
+                    ...sortDayHomeworks({ [module.data.date]: module.data.matieres })
+                });
+            }
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        } else {
+            try {
+                const response = await fetch(
+                    getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                    {
+                        method: "POST",
+                        headers: {
+                            "x-token": tokenState
+                        },
+                        body: "data={}",
+                        signal: controller.signal
+                    }
+                );
+                const responseData = await response.json();
+                const code = responseData.code;
+                if (code === 200) {
+                    if (date === "incoming") {
+                        changeUserData("sortedHomeworks", {
+                            ...sortNextHomeworks(responseData.data),
+                            ...getUserData("sortedHomeworks")
+                        });
+                    } else {
+                        changeUserData("sortedHomeworks", {
+                            ...getUserData("sortedHomeworks"),
+                            ...sortDayHomeworks({ [responseData.data.date]: responseData.data.matieres })
+                        });
+                    }
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState(old => responseData?.token || old);
+            } catch (error) {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            } finally {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            }
+        }
+    }
+
 
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
@@ -1981,6 +2074,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
         promptInstallPWA,
         activeAccount,
         accountsListState,
@@ -2000,6 +2094,7 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
         promptInstallPWA,
         activeAccount,
         accountsListState,
