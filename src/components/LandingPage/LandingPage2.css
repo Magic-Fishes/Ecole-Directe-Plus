@@ -7,10 +7,9 @@ html:has(.landing-page) {
 .landing-page #hero-banner {
     width: 100%;
     height: calc(min(100vh, 1100px) + 2px);
-    position: absolute;
-    top: 0;
     border-bottom: 2px solid rgba(var(--text-color-alt), .5);
     background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
+    padding-top: 250px;
 }
 
 .landing-page .affiliation-disclaimer {
@@ -108,11 +107,6 @@ html:has(.landing-page) {
     position: relative;
     transition: transform .3s ease;
 }
-
-.landing-page .fade-out-image:hover {
-    transform: scale(1.025);
-}
-
 .landing-page .fade-out-image:has(.mobile) {
     width: min(350px, calc(100% - 40px));
 }
@@ -135,15 +129,16 @@ html:has(.landing-page) {
     position: absolute;
 }
 
+.landing-page .section-title {
+    font-size: var(--font-size-32)
+}
+
 #bento {
     margin-top: 200px;
     display: flex;
     flex-flow: column nowrap;
     width: min(740px, 100%);
     gap: 100px;
-}
-#bento h2 {
-    font-size: var(--font-size-32)
 }
 
 #bento .bento-grid {
@@ -154,23 +149,11 @@ html:has(.landing-page) {
     /* height: 700px; */
 }
 
-#bento .bento-card:hover {
-    /* scale: 1.03; */
-    transform: translateY(-4px);
-    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
-}
-#bento .bento-card h4 {
-    scale: 1;
-    transition: .25s;
-}
-#bento .bento-card:hover h4 {
-    scale: 1.1;
-}
 #bento .bento-card {
     border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
-    transition: .25s;
+    transition: .25s ease-out;
 }
 
 #bento .bento-outline-effect {

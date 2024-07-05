@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, isTop } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
@@ -10,10 +10,12 @@ import EdpuLogo from "../graphics/EdpuLogo";
 import InfoTypoIcon from "../graphics/InfoTypoIcon";
 import UpArrow from "../graphics/UpArrow";
 import EDPLogo from "../graphics/EDPLogo";
+import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
+import DiscordFullLogo from "../graphics/DiscordFullLogo";
+import GitHubFullLogo from "../graphics/GitHubFullLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
-import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
 function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires maths skills that I definitely don't have but it returns a number between 0 and one and is smoothly increasing. See: https://en.wikipedia.org/wiki/Normal_distribution
     // Fonction d'erreur approximée
@@ -44,7 +46,14 @@ function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires
 export default function LandingPage() {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const [isTop, setIsTop] = useState(true);
-    
+    // const [debugHeight, setDebugHeight] = useState(0);
+    // const [debugAngle, setDebugAngle] = useState(0);
+    // const [debugHeightVector, setDebugHeightVector] = useState(0);
+    // const [debugAngleVector, setDebugAngleVector] = useState(0);
+
+    const communitySectionRef = useRef(null)
+    const openSourceSectionRef = useRef(null)
+
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -52,7 +61,7 @@ export default function LandingPage() {
     const displayMode = useUserSettings("displayMode");
 
     const changeTheme = () => {
-        theme.set(theme.get() === "light" ? "dark" : "light");
+        theme.set(actualDisplayTheme === "light" ? "dark" : "light");
     };
 
     useEffect(() => {
@@ -75,6 +84,15 @@ export default function LandingPage() {
             rootMargin: "0px 0px -250px 0px",
             threshold: 0.1,
         })
+        
+        if (communitySectionRef.current && openSourceSectionRef.current) {
+            observer.observe(communitySectionRef.current)
+            observer.observe(openSourceSectionRef.current)
+            return () => {
+                if (communitySectionRef.current) observer.unobserve(communitySectionRef.current)
+                if (openSourceSectionRef.current) observer.unobserve(openSourceSectionRef.current)
+            }
+        }
 
         const handleScroll = () => {
             setIsTop(window.scrollY === 0);
@@ -85,7 +103,7 @@ export default function LandingPage() {
             window.removeEventListener("scroll", handleScroll);
         };
 
-    },[]);
+    }, []);
 
     useEffect(() => {
         if (!location.hash) {
@@ -102,7 +120,7 @@ export default function LandingPage() {
         const handleScroll = () => {
             const parallaxItems = document.querySelectorAll(".parallax-item");
             let scrollPosition = window.scrollY;
-        
+
             parallaxItems.forEach(item => {
                 let speed = item.getAttribute("data-speed");
                 let yPos = -(scrollPosition * speed);
@@ -137,10 +155,10 @@ export default function LandingPage() {
         const translationDistance = bentoBoxRect.width * Math.abs(Math.cos(mouseAngle)) + bentoBoxRect.height * Math.abs(Math.sin(mouseAngle))
         const translation = cumulativeDistributionFunction(mouseDistance, (translationDistance + 50) / 4, translationDistance / 7) * 5
         // console.log(translation)
-        setDebugHeight(mouseDistance)
-        setDebugAngle(mouseAngle)
-        setDebugHeightVector(Math.sqrt((translation * Math.cos(mouseAngle)) ** 2 + (translation * Math.sin(mouseAngle)) ** 2))
-        setDebugAngleVector(Math.atan2(translation * Math.sin(mouseAngle), translation * Math.cos(mouseAngle)))
+        // setDebugHeight(mouseDistance)
+        // setDebugAngle(mouseAngle)
+        // setDebugHeightVector(Math.sqrt((translation * Math.cos(mouseAngle)) ** 2 + (translation * Math.sin(mouseAngle)) ** 2))
+        // setDebugAngleVector(Math.atan2(translation * Math.sin(mouseAngle), translation * Math.cos(mouseAngle)))
         bentoBox.style.transform = `translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`
         // console.log(`translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`)
     }
@@ -184,36 +202,26 @@ export default function LandingPage() {
                 <div className="nav-links-container">
                     <div className="inline">
                         <div className="nav-links">
-                            <Link to="#hero-banner" className={`link ${location.hash === "#hero-banner" ? "selected" : ""}`} replace={true} >Accueil</Link>
+                            <Link to="#hero-banner" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
                             <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
                             <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
                             <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
                         </div>
                     </div>
-                    <div className="nav-links-container">
-                        <div className="inline">
-                            <div className="nav-links">
-                                <Link to="#hero-banner" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
-                                <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
-                                <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
-                                <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo"/> </Link>
-                            </div>
-                        </div>
+                </div>
+                <div className="login-theme">
+                    <div className="nav-login">
+                        <Link to="/login">Se connecter</Link>
                     </div>
-                    <div className="login-theme">
-                        <div className="nav-login">
-                            <Link to="/login">Se connecter</Link>
-                        </div>
-                        <div className="change-theme">
-                            <button id="toggle-button" onClick={changeTheme}>
-                            </button>
-                        </div>
+                    <div className="change-theme">
+                        <button id="toggle-button" onClick={changeTheme}>
+                        </button>
                     </div>
                 </div>
             </nav>
         </header>
         <section id="hero-banner">
-            <Link to="#hero-banner" onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`}/></Link>
+            <Link to="#hero-banner" onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`} /></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>

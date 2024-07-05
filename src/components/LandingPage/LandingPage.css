@@ -8,27 +8,15 @@
     scroll-behavior: smooth;
 }
 
-/* Fixed Elements */
-p.policy,
-#nav-bar {
-    /* Position policy and nav-bar elements fixed */
-    position: fixed;
-}
-
-#notifications-container {
-    /* Hide notifications container */
-    display: none;
-}
-
 /* Navigation Bar */
 #nav-bar {
     /* Position nav-bar at the top right of the viewport */
+    position: fixed;
     top: 3rem;
     right: 2rem;
     width: calc(100% - 4rem);
     z-index: 10;
     padding: 0;
-    margin: auto;
     transition: top 0.3s;
 }
 
@@ -75,18 +63,18 @@ p.policy,
     /* Style the links on the landing page */
     text-decoration: none;
     padding: 1rem 1.6rem;
-    border-radius: 999999px;
+    border-radius: 99px;
     font-weight: 500;
-    transition: .3s ease;
+    transition: .2s ease;
 }
 
-.landing-page .link.selected,
-.landing-page .link:hover,
+.landing-page .nav-links .link.selected,
+.landing-page .nav-links .link:hover,
 .landing-page .nav-login a:hover,
 .landing-page .change-theme button:hover {
     /* Style the selected and hovered links on the landing page */
     background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
-    color: rgba(var(--text-color-main-reverse), 0.6);
+    color: rgba(var(--text-color-main-reverse), 0.8);
 }
 
 .landing-page .link:hover svg path {
@@ -254,41 +242,11 @@ p.policy,
     display: none;
 }
 
-/* Banner */
-.landing-page #home,
-.landing-page #community,
-.landing-page #open-source {
-    /* Style the home, community, and open-source sections */
-    scroll-margin-top: 20rem;
-    position: absolute;
-    background-color: rgb(var(--background-color-2), 0.6);
-    box-shadow: var(--box-shadow-window);
-    padding: 20px;
-    border-radius: 2rem;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.landing-page #home {
-    /* Style the home section */
-    top: 50%;
-}
-
-.landing-page #community {
-    /* Style the community section */
-    top: 150%;
-}
-
-.landing-page #open-source {
-    /* Style the open-source section */
-    top: 250%;
-}
-
 /* Login */
 .landing-page .nav-login a {
     /* Style the login link */
     padding: 1.7rem;
-    font-weight: var(--font-weight-semi-bold);
+    font-weight: 500;
     transition: all .3s ease;
 }
 
