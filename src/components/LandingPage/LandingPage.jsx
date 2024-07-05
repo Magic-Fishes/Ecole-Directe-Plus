@@ -229,7 +229,7 @@ export default function LandingPage({ token, accountsList }) {
             </nav>
         </header>
         <section id="home">
-            <Link to="#home" onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`} /></Link>
+            <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`} /></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>

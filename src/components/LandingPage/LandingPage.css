@@ -1,13 +1,3 @@
-/* Global Styles */
-* {
-    /* Reset box-shadow, box-sizing, padding, margin, and scroll-behavior */
-    box-shadow: 0 0 0 3px transparent;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    scroll-behavior: smooth;
-}
-
 /* Navigation Bar */
 #nav-bar {
     /* Position nav-bar at the top right of the viewport */
@@ -73,7 +63,7 @@
 .landing-page .nav-login a:hover,
 .landing-page .change-theme button:hover {
     /* Style the selected and hovered links on the landing page */
-    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
+    background-color: rgba(var(--text-color-alt), .8);
     color: rgba(var(--text-color-main-reverse), 0.8);
 }
 
@@ -113,13 +103,15 @@
     z-index: 100;
     display: flex;
     padding: 14px;
-    background-color: rgb(var(--background-color-3));
+    /* background-color: rgb(var(--background-color-3)); */
+    background-color: rgb(var(--background-color-2), .7);
     cursor: pointer;
-    border-radius: 999999px;
+    border-radius: 99px;
     bottom: 26px;
     right: 26px;
     border: solid 1px transparent;
-    transition: all .7s ease;
+    outline: none;
+    transition: .25s;
 }
 
 .go-to-top.active {
@@ -134,12 +126,16 @@
     right: -62px;
 }
 
-.go-to-top:hover {
+.go-to-top:is(:hover, :focus-visible) {
     /* Style the hovered go-to-top button */
     transform: scale(1.1);
-    background-color: rgb(var(--background-color-2));
-    border-color: rgb(var(--border-color-0));
-    box-shadow: 0 0 14px rgba(var(--text-color-alt), 0.6);
+    background-color: rgb(var(--text-color-alt));
+    border-color: rgb(var(--text-color-alt));
+}
+
+.go-to-top:active {
+    transform: scale(.9);
+    opacity: .8;
 }
 
 /* Up Arrow */
@@ -150,7 +146,7 @@
     justify-content: center;
     align-items: center;
     height: 18px;
-    fill: rgb(var(--text-color-alt-1));
+    fill: rgb(var(--text-color-alt));
     transition: all .4s ease;
     transform: rotate(270deg);
 }
@@ -259,7 +255,8 @@
 .landing-page .nav-logo span,
 .landing-page .nav-login a,
 .landing-page .change-theme button,
-.landing-page .nav-links-container {
+.landing-page .nav-links-container,
+.landing-page .go-to-top {
     /* Apply box-shadow, background-color, and backdrop-filter to the nav logo span, login link, theme button, and nav links container */
     box-shadow: rgba(var(--ajustable-monochorme), 0.16) 0px 3px 6px, rgba(var(--ajustable-monochorme), 0.23) 0px 3px 6px;
     background-color: rgb(var(--background-color-2), .7);

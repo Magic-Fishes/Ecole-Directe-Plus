@@ -2,6 +2,7 @@
 
 html:has(.landing-page) {
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 
