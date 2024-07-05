@@ -22,6 +22,7 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
+import { add } from "date-fns";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -1086,7 +1087,7 @@ export default function App() {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
                 var contenuDeSeance = homework.contenuDeSeance;
-                if (!aFaire) {
+                if (!aFaire && !contenuDeSeance) {
                     return null;
                 }
 
@@ -1094,21 +1095,41 @@ export default function App() {
                     contenuDeSeance = aFaire
                 }
 
-                const { donneLe, effectue, contenu, documents } = aFaire;
+                if (aFaire) {
 
-                return {
-                    id: id,
-                    subjectCode: codeMatiere,
-                    subject: matiere,
-                    addDate: donneLe,
-                    isInterrogation: interrogation,
-                    isDone: effectue,
-                    teacher: nomProf,
-                    content: contenu,
-                    files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
-                    sessionContent: contenuDeSeance.contenu,
-                    sessionContentFiles: contenuDeSeance.documents,
+                    const { donneLe, effectue, contenu, documents } = aFaire;
+
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: donneLe,
+                        isInterrogation: interrogation,
+                        isDone: effectue,
+                        teacher: nomProf,
+                        content: contenu,
+                        files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
                 }
+                else {
+                    // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: day[0],
+                        isInterrogation: false,
+                        isDone: false,
+                        teacher: nomProf,
+                        content: "Ti9B",
+                        files: [],
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                
             }).filter((item) => item)]
         }))
         return sortedHomeworks

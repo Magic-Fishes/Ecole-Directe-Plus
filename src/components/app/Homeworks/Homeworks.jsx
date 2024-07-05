@@ -1,6 +1,6 @@
 
 import { useContext, useEffect } from "react";
-import { useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 
 import {
     WindowsContainer,
@@ -21,8 +21,10 @@ import FileComponent from "../../generic/FileComponent";
 import { getISODate } from "../../../utils/utils";
 import DateSelector from "./Calendar";
 import InfoButton from "../../generic/Informative/InfoButton";
+import DownloadIcon from "../../graphics/DownloadIcon"
 
 import "./Homeworks.css";
+import "./DetailedTask.css";
 
 const supposedNoSessionContent = [
     "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
@@ -112,7 +114,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             </WindowsContainer>
         </div>
         {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && (!supposedNoSessionContent.includes(selectedTask.sessionContent) ? <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
-            <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv>
+            <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv><div className="task-footer"><Link to={`#${selectedDate};${selectedTask.id};s;f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link></div>
         </BottomSheet> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`}/>)}
         {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && (selectedTask.files.length ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
             <h2 className="file-title">Fichiers</h2>
@@ -122,6 +124,15 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                     {selectedTask.files.map((file) => <FileComponent key={file.id} file={file} />)}
                 </div>
             </div>
-        </PopUp> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`}/>)}
+        </PopUp> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
+        {(hashParameters.length > 3 && hashParameters[2] === "s" && hashParameters[3] === "f" && selectedTask) && (selectedTask.sessionContentFiles.length ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]};s`, { replace: true }) }}>
+            <h2 className="file-title">Fichiers</h2>
+            <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+            <div className="file-scroller">
+                <div className="file-wrapper">
+                    {selectedTask.sessionContentFiles.map((file) => <FileComponent key={file.id} file={file} />)}
+                </div>
+            </div>
+        </PopUp> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
     </>
 }
