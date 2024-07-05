@@ -1,10 +1,20 @@
-
-
 html:has(.landing-page) {
     overflow-x: hidden;
 }
 
-.landing-page #hero-banner {
+#hero-banner {
+    width: 100%;
+    /* height: calc(100vh + 2px);
+    position: absolute;
+    border-bottom: 2px solid rgba(var(--text-color-alt), .5);
+    background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
+    background: radial-gradient(circle at 0 100vh, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) calc(50vh + 1px), transparent calc(100vh + 2px)); */
+    padding-top: 250px;
+}
+
+#hero-banner::before {
+    content: "";
+    z-index: -1;
     width: 100%;
     height: calc(min(100vh, 1100px) + 2px);
     position: absolute;
@@ -54,7 +64,7 @@ html:has(.landing-page) {
 .landing-page .heading-emphasis {
     color: rgb(var(--text-color-alt));
 }
-.landing-page p {
+#hero-banner p {
     color: rgb(var(--text-color-alt));
     margin: 0 auto;
     margin-top: 20px;
@@ -106,19 +116,16 @@ html:has(.landing-page) {
     width: min(1200px, calc(100% - 40px));
     overflow: hidden;
     position: relative;
-    transition: transform .3s ease;
-}
-
-.landing-page .fade-out-image:hover {
-    transform: scale(1.025);
 }
 
 .landing-page .fade-out-image:has(.mobile) {
     width: min(350px, calc(100% - 40px));
 }
+
 .landing-page .fade-out-image:has(.tablet) {
     width: min(450px, calc(100% - 40px));
 }
+
 .landing-page .fade-out-image img {
     width: 100%;
     display: block;
@@ -135,15 +142,16 @@ html:has(.landing-page) {
     position: absolute;
 }
 
+.landing-page h2.section-title {
+    font-size: var(--font-size-32)
+}
+
 #bento {
     margin-top: 200px;
     display: flex;
     flex-flow: column nowrap;
     width: min(740px, 100%);
     gap: 100px;
-}
-#bento h2 {
-    font-size: var(--font-size-32)
 }
 
 #bento .bento-grid {
@@ -154,28 +162,28 @@ html:has(.landing-page) {
     /* height: 700px; */
 }
 
-#bento .bento-card:hover {
-    /* scale: 1.03; */
-    transform: translateY(-4px);
-    box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
-}
 #bento .bento-card h4 {
-    scale: 1;
-    transition: .25s;
+    transition: .25s ease-out;
+    font-size: var(--font-size-20);
+    margin-bottom: 10px;
 }
-#bento .bento-card:hover h4 {
-    scale: 1.1;
+
+#bento .bento-card p {
+    transition: .25s ease-out;
+    color: rgba(var(--text-color-alt), .8);
 }
+
 #bento .bento-card {
     border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
-    transition: .25s;
+    transition: .25s ease-out;
 }
 
 #bento .bento-outline-effect {
     height: 100%;
     background-color: rgb(var(--background-color-0));
+    transition: .25s ease-in-out;
     padding: 20px;
     border-radius: 8px;
     transition: background .2s;
@@ -202,6 +210,7 @@ html:has(.landing-page) {
 .div5 { grid-area: 4 / 1 / 5 / 2; }
 .div6 { grid-area: 5 / 1 / 6 / 2; }
 .div7 { grid-area: 4 / 2 / 6 / 3; }
+
 
 .parallax-item {
     position: absolute;
@@ -316,6 +325,7 @@ html:has(.landing-page) {
 
     display: flex;
     flex-flow: column nowrap;
+
 }
 .last-call-to-action h3 {
     font-size: var(--font-size-24);
