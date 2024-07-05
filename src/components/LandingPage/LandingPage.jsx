@@ -1,7 +1,6 @@
-import { useRef, useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, isTop } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import EDPLogo from "../graphics/EDPLogo";
-import GitHubFullLogo from "../graphics/GitHubFullLogo";
+
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 import { applyZoom } from "../../utils/zoom";
 import { AppContext } from "../../App"
@@ -9,7 +8,8 @@ import { AppContext } from "../../App"
 // graphics
 import EdpuLogo from "../graphics/EdpuLogo";
 import InfoTypoIcon from "../graphics/InfoTypoIcon";
-import DiscordFullLogo from "../graphics/DiscordFullLogo";
+import UpArrow from "../graphics/UpArrow";
+import EDPLogo from "../graphics/EDPLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
@@ -43,19 +43,17 @@ function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires
 
 export default function LandingPage() {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
-
+    const [isTop, setIsTop] = useState(true);
+    
     const location = useLocation()
     const navigate = useNavigate()
 
     const theme = useUserSettings("displayTheme")
     const displayMode = useUserSettings("displayMode");
-    const communitySectionRef = useRef(null)
-    const openSourceSectionRef = useRef(null)
 
-    const [debugHeight, setDebugHeight] = useState(0);
-    const [debugAngle, setDebugAngle] = useState(0);
-    const [debugHeightVector, setDebugHeightVector] = useState(0);
-    const [debugAngleVector, setDebugAngleVector] = useState(0);
+    const changeTheme = () => {
+        theme.set(theme.get() === "light" ? "dark" : "light");
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
@@ -78,20 +76,16 @@ export default function LandingPage() {
             threshold: 0.1,
         })
 
-        if (communitySectionRef.current && openSourceSectionRef.current) {
-            observer.observe(communitySectionRef.current)
-            observer.observe(openSourceSectionRef.current)
-            return () => {
-                if (communitySectionRef.current) observer.unobserve(communitySectionRef.current)
-                if (openSourceSectionRef.current) observer.unobserve(openSourceSectionRef.current)
-            }
-        }
-    })
+        const handleScroll = () => {
+            setIsTop(window.scrollY === 0);
+        };
+        window.addEventListener("scroll", handleScroll);
 
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
 
-    const changeTheme = () => {
-        theme.set(theme.get() === "light" ? "dark" : "light");
-    };
+    },[]);
 
     useEffect(() => {
         if (!location.hash) {
@@ -103,11 +97,12 @@ export default function LandingPage() {
         }
     }, [location.hash]);
 
+
     useEffect(() => {
         const handleScroll = () => {
             const parallaxItems = document.querySelectorAll(".parallax-item");
             let scrollPosition = window.scrollY;
-
+        
             parallaxItems.forEach(item => {
                 let speed = item.getAttribute("data-speed");
                 let yPos = -(scrollPosition * speed);
@@ -195,19 +190,30 @@ export default function LandingPage() {
                             <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
                         </div>
                     </div>
-                </div>
-                <div className="login-theme">
-                    <div className="nav-login">
-                        <Link to="/login">Se connecter</Link>
+                    <div className="nav-links-container">
+                        <div className="inline">
+                            <div className="nav-links">
+                                <Link to="#hero-banner" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
+                                <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
+                                <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
+                                <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo"/> </Link>
+                            </div>
+                        </div>
                     </div>
-                    <div className="change-theme">
-                        <button id="toggle-button" onClick={changeTheme}>
-                        </button>
+                    <div className="login-theme">
+                        <div className="nav-login">
+                            <Link to="/login">Se connecter</Link>
+                        </div>
+                        <div className="change-theme">
+                            <button id="toggle-button" onClick={changeTheme}>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>
         </header>
         <section id="hero-banner">
+            <Link to="#hero-banner" onClick={(event => (event, props.history))} className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`}/></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
