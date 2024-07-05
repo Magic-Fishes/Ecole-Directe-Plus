@@ -10,6 +10,6 @@ export default defineConfig({
     ],
     https: true,
     server: {
-        port: 30200,
+        port: 3000,
     },
 })
