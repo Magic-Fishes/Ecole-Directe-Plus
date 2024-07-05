@@ -1,7 +1,6 @@
 import { useRef, useEffect, useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import EDPLogo from "../graphics/EDPLogo";
-import GitHubFullLogo from "../graphics/GitHubFullLogo";
+
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 import { applyZoom } from "../../utils/zoom";
 import { AppContext } from "../../App"
@@ -9,11 +8,14 @@ import { AppContext } from "../../App"
 // graphics
 import EdpuLogo from "../graphics/EdpuLogo";
 import InfoTypoIcon from "../graphics/InfoTypoIcon";
+import UpArrow from "../graphics/UpArrow";
+import EDPLogo from "../graphics/EDPLogo";
+import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import DiscordFullLogo from "../graphics/DiscordFullLogo";
+import GitHubFullLogo from "../graphics/GitHubFullLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
-import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 
 function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires maths skills that I definitely don't have but it returns a number between 0 and one and is smoothly increasing. See: https://en.wikipedia.org/wiki/Normal_distribution
     // Fonction d'erreur approximée
@@ -41,21 +43,33 @@ function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires
     return 0.5 * (1 + erf((x - mu) / (sigma * Math.sqrt(2))));
 }
 
-export default function LandingPage() {
+export default function LandingPage({ token, accountsList }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
 
-    const location = useLocation()
-    const navigate = useNavigate()
+    const [isLoggedIn, setIsLoggedIn] = useState(token && accountsList.length > 0); // this one is different from the one in App.jsx
 
-    const theme = useUserSettings("displayTheme")
-    const displayMode = useUserSettings("displayMode");
+    const [isTop, setIsTop] = useState(true);
+    // const [debugHeight, setDebugHeight] = useState(0);
+    // const [debugAngle, setDebugAngle] = useState(0);
+    // const [debugHeightVector, setDebugHeightVector] = useState(0);
+    // const [debugAngleVector, setDebugAngleVector] = useState(0);
+    
     const communitySectionRef = useRef(null)
     const openSourceSectionRef = useRef(null)
 
-    const [debugHeight, setDebugHeight] = useState(0);
-    const [debugAngle, setDebugAngle] = useState(0);
-    const [debugHeightVector, setDebugHeightVector] = useState(0);
-    const [debugAngleVector, setDebugAngleVector] = useState(0);
+    const location = useLocation()
+    const navigate = useNavigate()
+    
+    const theme = useUserSettings("displayTheme")
+    const displayMode = useUserSettings("displayMode");
+    
+    const changeTheme = () => {
+        theme.set(actualDisplayTheme === "light" ? "dark" : "light");
+    };
+    
+    useEffect(() => {
+        setIsLoggedIn(token && accountsList.length > 0);
+    }, [token, accountsList])
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
@@ -77,7 +91,7 @@ export default function LandingPage() {
             rootMargin: "0px 0px -250px 0px",
             threshold: 0.1,
         })
-
+        
         if (communitySectionRef.current && openSourceSectionRef.current) {
             observer.observe(communitySectionRef.current)
             observer.observe(openSourceSectionRef.current)
@@ -86,22 +100,29 @@ export default function LandingPage() {
                 if (openSourceSectionRef.current) observer.unobserve(openSourceSectionRef.current)
             }
         }
-    })
+    }, []);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsTop(window.scrollY === 0);
+        };
+        window.addEventListener("scroll", handleScroll);
 
-    const changeTheme = () => {
-        theme.set(theme.get() === "light" ? "dark" : "light");
-    };
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     useEffect(() => {
         if (!location.hash) {
-            navigate("#hero-banner", { replace: true });
+            navigate("#home", { replace: true });
         }
         const section = document.getElementById(location.hash.slice(1))
         if (section) {
-            section.scrollIntoView({ block: "center" })
+            section.scrollIntoView({ block: (location.hash === "#home" ? "start" : "center") })
         }
     }, [location.hash]);
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -142,10 +163,10 @@ export default function LandingPage() {
         const translationDistance = bentoBoxRect.width * Math.abs(Math.cos(mouseAngle)) + bentoBoxRect.height * Math.abs(Math.sin(mouseAngle))
         const translation = cumulativeDistributionFunction(mouseDistance, (translationDistance + 50) / 4, translationDistance / 7) * 5
         // console.log(translation)
-        setDebugHeight(mouseDistance)
-        setDebugAngle(mouseAngle)
-        setDebugHeightVector(Math.sqrt((translation * Math.cos(mouseAngle)) ** 2 + (translation * Math.sin(mouseAngle)) ** 2))
-        setDebugAngleVector(Math.atan2(translation * Math.sin(mouseAngle), translation * Math.cos(mouseAngle)))
+        // setDebugHeight(mouseDistance)
+        // setDebugAngle(mouseAngle)
+        // setDebugHeightVector(Math.sqrt((translation * Math.cos(mouseAngle)) ** 2 + (translation * Math.sin(mouseAngle)) ** 2))
+        // setDebugAngleVector(Math.atan2(translation * Math.sin(mouseAngle), translation * Math.cos(mouseAngle)))
         bentoBox.style.transform = `translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`
         // console.log(`translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`)
     }
@@ -189,7 +210,7 @@ export default function LandingPage() {
                 <div className="nav-links-container">
                     <div className="inline">
                         <div className="nav-links">
-                            <Link to="#hero-banner" className={`link ${location.hash === "#hero-banner" ? "selected" : ""}`} replace={true} >Accueil</Link>
+                            <Link to="#home" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
                             <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
                             <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
                             <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
@@ -198,7 +219,7 @@ export default function LandingPage() {
                 </div>
                 <div className="login-theme">
                     <div className="nav-login">
-                        <Link to="/login">Se connecter</Link>
+                        <Link to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
                     </div>
                     <div className="change-theme">
                         <button id="toggle-button" onClick={changeTheme}>
@@ -207,12 +228,13 @@ export default function LandingPage() {
                 </div>
             </nav>
         </header>
-        <section id="hero-banner">
+        <section id="home">
+            <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`} /></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
                 <p>EDP offre une expérience unique avec une interface moderne et intuitive, enrichie de fonctionnalités exclusives, le tout de façon gratuite, libre et open-source.</p>
-                <Link to="/login" className="login-call-to-action">Se connecter</Link>
+                <Link to="/login" className="login-call-to-action">{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
             </div>
             <div className="fade-out-image">
                 <img src={isTabletLayout ? (isMobileLayout ? `/images/EDP-preview-mobile-${actualDisplayTheme}.jpeg` : `/images/EDP-preview-tablet-${actualDisplayTheme}.jpeg`) : `/images/EDP-preview-${actualDisplayTheme}.jpeg`} className={isTabletLayout ? (isMobileLayout ? "mobile" : "tablet") : "dekstop"} alt="Capture d'écran du site" />
@@ -307,7 +329,7 @@ export default function LandingPage() {
             <OutlineEffectDiv>
                 <h3>Prêt à basculer sur Ecole Directe Plus ?</h3>
                 <p>Il vous suffit d'identifiants EcoleDirecte</p>
-                <Link to="/login" className="login-call-to-action">Se connecter</Link>
+                <Link to="/login" className="login-call-to-action">{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
             </OutlineEffectDiv>
         </div>
         <footer>
@@ -317,13 +339,13 @@ export default function LandingPage() {
                 <li><Link to="/login#policy">Confidentialité</Link></li>
                 <li><Link to="/login#policy">Conditions d'utilisation</Link></li>
                 <li><Link to="/feedback">Faire un retour</Link></li>
-                <li><Link to="/app/dashboard">Tableau de bord</Link></li>
-                <li><Link to="/app/grades">Notes</Link></li>
-                <li><Link to="/app/homeworks">Cahier de texte</Link></li>
-                <li><Link to="/app/timetable">Emploi du temps</Link></li>
-                <li><Link to="/app/messaging">Messagerie</Link></li>
-                <li><Link to="/app/settings">Paramètres</Link></li>
-                <li><Link to="/app/account">Compte</Link></li>
+                <li><Link to="/app/dashboard" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Tableau de bord</Link></li>
+                <li><Link to="/app/grades" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Notes</Link></li>
+                <li><Link to="/app/homeworks" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Cahier de texte</Link></li>
+                <li><Link to="/app/timetable" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Emploi du temps</Link></li>
+                <li><Link to="/app/messaging" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Messagerie</Link></li>
+                <li><Link to="/app/settings" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Paramètres</Link></li>
+                <li><Link to="/app/account" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Compte</Link></li>
                 <li><Link to="/edp-unblock">EDP Unblock</Link></li>
             </ul>
 

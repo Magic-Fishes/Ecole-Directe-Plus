@@ -1,18 +1,22 @@
+
+
 html:has(.landing-page) {
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
-#hero-banner {
+
+/* -------------------------------------------------------------------------- */
+/*                                HERO BANNER                                 */
+/* -------------------------------------------------------------------------- */
+
+#home {
     width: 100%;
-    /* height: calc(100vh + 2px);
-    position: absolute;
-    border-bottom: 2px solid rgba(var(--text-color-alt), .5);
-    background: radial-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0)));
-    background: radial-gradient(circle at 0 100vh, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) calc(50vh + 1px), transparent calc(100vh + 2px)); */
     padding-top: 250px;
 }
 
-#hero-banner::before {
+#home::before {
+    /* that could be done with the hero-banner background, but it's necessary to keep the height of hero-banner flexible in order to keep a coherent stacking of elements, that's why we use ::before here */
     content: "";
     z-index: -1;
     width: 100%;
@@ -22,6 +26,8 @@ html:has(.landing-page) {
     border-bottom: 2px solid rgba(var(--text-color-alt), .5);
     background: radial-gradient(circle at bottom left, rgba(var(--text-color-alt), .3) 0, rgba(var(--text-color-alt), .1) 50%, transparent 100%);
 }
+
+/* AFFILIATION DISCLAIMER */
 
 .landing-page .affiliation-disclaimer {
     font-size: var(--font-size-13);
@@ -46,6 +52,8 @@ html:has(.landing-page) {
     stroke: rgb(var(--text-color-alt));
 }
 
+/* HERO CONTENT */
+
 .landing-page .text-center {
     /* position: absolute;
     top: 50%;
@@ -64,7 +72,7 @@ html:has(.landing-page) {
 .landing-page .heading-emphasis {
     color: rgb(var(--text-color-alt));
 }
-#hero-banner p {
+#home p {
     color: rgb(var(--text-color-alt));
     margin: 0 auto;
     margin-top: 20px;
@@ -116,16 +124,14 @@ html:has(.landing-page) {
     width: min(1200px, calc(100% - 40px));
     overflow: hidden;
     position: relative;
+    transition: transform .3s ease;
 }
-
 .landing-page .fade-out-image:has(.mobile) {
     width: min(350px, calc(100% - 40px));
 }
-
 .landing-page .fade-out-image:has(.tablet) {
     width: min(450px, calc(100% - 40px));
 }
-
 .landing-page .fade-out-image img {
     width: 100%;
     display: block;
@@ -142,9 +148,13 @@ html:has(.landing-page) {
     position: absolute;
 }
 
-.landing-page h2.section-title {
+.landing-page .section-title {
     font-size: var(--font-size-32)
 }
+
+/* -------------------------------------------------------------------------- */
+/*                             FEATURES OVERVIEW                              */
+/* -------------------------------------------------------------------------- */
 
 #bento {
     margin-top: 200px;
@@ -162,17 +172,6 @@ html:has(.landing-page) {
     /* height: 700px; */
 }
 
-#bento .bento-card h4 {
-    transition: .25s ease-out;
-    font-size: var(--font-size-20);
-    margin-bottom: 10px;
-}
-
-#bento .bento-card p {
-    transition: .25s ease-out;
-    color: rgba(var(--text-color-alt), .8);
-}
-
 #bento .bento-card {
     border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
@@ -183,7 +182,6 @@ html:has(.landing-page) {
 #bento .bento-outline-effect {
     height: 100%;
     background-color: rgb(var(--background-color-0));
-    transition: .25s ease-in-out;
     padding: 20px;
     border-radius: 8px;
     transition: background .2s;
@@ -211,6 +209,10 @@ html:has(.landing-page) {
 .div6 { grid-area: 5 / 1 / 6 / 2; }
 .div7 { grid-area: 4 / 2 / 6 / 3; }
 
+
+/* -------------------------------------------------------------------------- */
+/*                               PARALAX ITEMS                                */
+/* -------------------------------------------------------------------------- */
 
 .parallax-item {
     position: absolute;
@@ -245,6 +247,11 @@ html:has(.landing-page) {
     }
 }
 
+
+
+/* -------------------------------------------------------------------------- */
+/*            FLOATING SECTIONS (community & open-source sections)            */
+/* -------------------------------------------------------------------------- */
 
 .floating-section {
     margin-top: 400px;
@@ -315,6 +322,8 @@ html:has(.landing-page) {
 }
 
 
+/* LAST CALL TO ACTION */
+
 .last-call-to-action {
     width: 50%;
     margin: 0 auto;
@@ -325,7 +334,6 @@ html:has(.landing-page) {
 
     display: flex;
     flex-flow: column nowrap;
-
 }
 .last-call-to-action h3 {
     font-size: var(--font-size-24);
@@ -346,6 +354,10 @@ html:has(.landing-page) {
     border-radius: 8px;
     transition: background .2s;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  FOOTER                                    */
+/* -------------------------------------------------------------------------- */
 
 .landing-page footer {
     margin-top: 100px;
@@ -388,6 +400,10 @@ html:has(.landing-page) {
 }
 .landing-page ul.sitemap a:active {
     opacity: .8;
+}
+.landing-page ul.sitemap a.disabled {
+    pointer-events: none;
+    opacity: .5;
 }
 
 @media only screen and (max-width: 869px) {

@@ -1,50 +1,36 @@
-* {
-    box-shadow: 0 0 0 3px transparent;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    scroll-behavior: smooth;
-}
-
-p.policy {
-    /* Bloquer par rapport a la page les policy, pour ne pas qu'ils bougent au scroll */
-    position: fixed;
-}
-
-#notifications-container {
-    display: none;
-}
-
+/* Navigation Bar */
 #nav-bar {
+    /* Position nav-bar at the top right of the viewport */
     position: fixed;
     top: 3rem;
-    left: 2rem; /* Décalage de 50px du bord gauche de l'écran */
-    right: 2rem; /* Décalage de 50px du bord droit de l'écran */
-    width: calc(100% - 4rem); /* La largeur de la barre de navigation est la largeur de l'écran moins les décalages gauche et droit */
+    right: 2rem;
+    width: calc(100% - 4rem);
     z-index: 10;
     padding: 0;
-    margin: 0;
     transition: top 0.3s;
 }
 
-
-.landing-page {
-
-    /* height est a modifier si on veux ajouter d'autres elements */
-    
-    height: 179em; /* Hauteur parfaite pour tous les éléments (le gradient, c'est une méthode de bucheron accesoirement) */
-    /* background: linear-gradient( 3deg, rgb(var(--background-color-1)), rgb(var(--background-color-0))); */
-
-}
-
 .nav-bar-content {
+    /* Display nav-bar content in a flex container with space between items */
     display: flex;
     width: 100%;
     justify-content: space-between;
 }
 
+.nav-links-container {
+    /* Round the corners of the nav-links container */
+    border-radius: 999px;
+}
+
+.nav-links {
+    /* Display nav-links in a flex container with a gap between items */
+    display: flex;
+    margin: 0.7rem;
+    gap: 2rem;
+}
 
 #nav-bar .link[href="/edp-unblock"] {
+    /* Display EDP Unblock link as a flex container with a gap between items */
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -52,244 +38,230 @@ p.policy {
 }
 
 #nav-bar .edpu-logo {
+    /* Style the EDP Unblock logo */
     height: 20px;
     transform: scale(1.3);
 }
 
-#nav-bar {
-    margin-right: auto;
-    margin-left: auto;
-}
-
-.nav-links-container {
-    background-color: rgb(var(--background-color-2), .7);
-    backdrop-filter: blur(4px);
-    border-radius: 99999px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-}
-
-.nav-links {
-    display: flex;
-    /* justify-content: center; */
-    margin: 0.7rem .7rem;
-    gap: 2rem;
+/* Landing Page */
+.landing-page {
+    /* Set the height of the landing page */
+    height: 179em;
 }
 
 .landing-page .link {
+    /* Style the links on the landing page */
     text-decoration: none;
     padding: 1rem 1.6rem;
-    border-radius: 999999px;
+    border-radius: 99px;
     font-weight: 500;
-    transition: 0.2s ease;
+    transition: .2s ease;
 }
 
-.landing-page .link.selected, .link:hover {
-    background-color: rgb(var(--box-shadow-color-scrollbar-thumb-on-hover));
-    color: rgb(var(--text-color-main-reverse));
+.landing-page .nav-links .link.selected,
+.landing-page .nav-links .link:hover,
+.landing-page .nav-login a:hover,
+.landing-page .change-theme button:hover {
+    /* Style the selected and hovered links on the landing page */
+    background-color: rgba(var(--text-color-alt), .8);
+    color: rgba(var(--text-color-main-reverse), 0.8);
 }
 
 .landing-page .link:hover svg path {
+    /* Style the hovered link's SVG path */
     fill: rgb(var(--text-color-main-reverse));
     transition: .1s;
 }
 
-.landing-page .nav-login {
+.landing-page .nav-login,
+.landing-page .nav-hambuger-menu-div {
+    /* Display the login and hamburger menu div as flex containers */
     display: flex;
     margin: auto;
 }
 
 .landing-page .nav-hambuger-menu-div {
-
+    /* Hide the hamburger menu div */
     display: none;
 }
 
 .landing-page .nav-logo span {
+    /* Style the nav logo span */
     display: flex;
     text-decoration: none;
-    background-color: rgb(var(--background-color-2), .7);
-    backdrop-filter: blur(4px);
     padding: 1.7rem 1.4rem;
     border-radius: 1rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
     user-select: none;
     cursor: default;
+    background-color: rgb(var(--background-color-2));
 }
 
-.landing-page .EDPLogo {
-    margin-top: 2px;
-    margin-right: 10px;
+/* Go to Top Button */
+.go-to-top {
+    /* Style the go-to-top button */
+    position: fixed;
+    z-index: 100;
+    display: flex;
+    padding: 14px;
+    /* background-color: rgb(var(--background-color-3)); */
+    background-color: rgb(var(--background-color-2), .7);
+    cursor: pointer;
+    border-radius: 99px;
+    bottom: 26px;
+    right: 26px;
+    border: solid 1px transparent;
+    outline: none;
+    transition: .25s;
 }
 
-.landing-page .login-theme a {
+.go-to-top.active {
+    /* Style the active go-to-top button */
+    opacity: 1;
+}
+
+.go-to-top.unactive {
+    /* Style the inactive go-to-top button */
+    opacity: 0.45;
+    bottom: -43px;
+    right: -62px;
+}
+
+.go-to-top:is(:hover, :focus-visible) {
+    /* Style the hovered go-to-top button */
+    transform: scale(1.1);
+    background-color: rgb(var(--text-color-alt));
+    border-color: rgb(var(--text-color-alt));
+}
+
+.go-to-top:active {
+    transform: scale(.9);
+    opacity: .8;
+}
+
+/* Up Arrow */
+.up-arrow {
+    /* Style the up arrow */
+    z-index: 110;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 18px;
+    fill: rgb(var(--text-color-alt));
+    transition: all .4s ease;
+    transform: rotate(270deg);
+}
+
+.up-arrow.active {
+    /* Style the active up arrow */
+    transform: rotate(0deg);
+}
+
+/* Theme and Login */
+.landing-page .login-theme,
+.landing-page .change-theme {
+    /* Display the login and theme divs as flex containers */
+    display: flex;
+}
+
+.landing-page .login-theme a,
+.landing-page .change-theme button {
+    /* Style the login and theme buttons */
+    padding: 1.7rem 2.6rem;
+    border-radius: 1rem;
     text-decoration: none;
     align-items: center;
     justify-content: center;
-    padding: 1.7rem 2.6rem;
-    border-radius: 1rem;
-    background-color: rgb(var(--background-color-2), .7);
-    backdrop-filter: blur(4px);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-    transition: .2s ease;
-}
-
-.landing-page .login-theme a:hover {
-    background-color: rgb(var(--background-color-3));
-    color: rgb(var(--text-color-main-reverse));
-}
-
-.landing-page .login-theme {
-    display: flex;
+    transition: all .2s ease;
 }
 
 .landing-page .change-theme {
-    display: flex;
+    /* Style the theme div */
     justify-content: center;
     align-self: center;
     margin-left: 10px;
 }
 
 .landing-page .change-theme button {
+    /* Style the theme button */
     position: relative;
+    display: flex;
     padding: 2.65rem;
     border: 0;
-    background-color: rgb(var(--background-color-2), .7);
-    backdrop-filter: blur(4px);
-    border-radius: 1rem;
-    transition: .2s;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-}
-
-.landing-page .change-theme button::before {
-    display: none;
-    position: absolute;
-    content: "";
-    background-color: rgba(190, 190, 200, 0.5);
-    background-image:
-    radial-gradient(circle at 10% 20%, rgba(200, 200, 210, 0.7), transparent 30%),
-    radial-gradient(circle at 30% 70%, rgba(180, 180, 190, 0.7), transparent 30%),
-    radial-gradient(circle at 70% 40%, rgba(210, 210, 220, 0.7), transparent 30%),
-    radial-gradient(circle at 20% 60%, rgba(190, 190, 200, 0.7), transparent 30%),
-    radial-gradient(circle at 50% 80%, rgba(170, 170, 180, 0.7), transparent 30%);
-    box-shadow: 1px 0 4px rgb(0, 0, 0);
-    border-radius: 100%;
-    width: 30px;
-    height: 30px;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    margin: auto;
-    transition: all 0.2s ease-in;
-}
-
-.landing-page .change-theme button::after {
-    display: block;
-    position: absolute;
-    content: "";
-    border-radius: 100%;
-    width: 30px;
-    height: 30px;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    margin: auto;
-    background-color: rgba(255, 200, 80, 0.5);
-    background-image: radial-gradient(circle at 10% 20%, rgba(255, 200, 80, 0.7), transparent 30%),
-    radial-gradient(circle at 30% 70%, rgba(255, 180, 60, 0.315), transparent 30%),
-    radial-gradient(circle at 70% 40%, rgba(255, 220, 100, 0.7), transparent 30%),
-    radial-gradient(circle at 20% 60%, rgba(255, 190, 90, 0.7), transparent 30%),
-    radial-gradient(circle at 50% 80%, rgba(255, 210, 70, 0.7), transparent 30%);
-    background-position: 0 0, 50px 50px, 100px 0, 0px 100px, 100px 100px;
-    box-shadow: 0 0 0 1px rgb(255, 200, 80),0 0 5px 0px rgb(255, 200, 80);
-}
-
-.landing-page .change-theme button:hover {
     background-color: rgb(var(--background-color-2));
     cursor: pointer;
-    transform: scale(1.03);
 }
 
 .landing-page .change-theme button::before,
 .landing-page .change-theme button::after {
+    /* Style the theme button's pseudo-elements */
+    position: absolute;
+    content: "";
+    border-radius: 100%;
     width: 23px;
     height: 23px;
+    transition: all 0.2s ease-in;
+}
+
+.landing-page .change-theme button::before {
+    /* Style the theme button's before pseudo-element */
+    display: none;
+    background-color: rgba(190, 190, 200, 0.5);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(200, 200, 210, 0.7), transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(180, 180, 190, 0.7), transparent 30%),
+        radial-gradient(circle at 70% 40%, rgba(210, 210, 220, 0.7), transparent 30%),
+        radial-gradient(circle at 20% 60%, rgba(190, 190, 200, 0.7), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(170, 170, 180, 0.7), transparent 30%);
+    box-shadow: 1px 0 4px rgb(0, 0, 0);
+}
+
+.landing-page .change-theme button::after {
+    /* Style the theme button's after pseudo-element */
+    display: block;
+    background-color: rgba(255, 200, 80, 0.5);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 200, 80, 0.7), transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(255, 180, 60, 0.315), transparent 30%),
+        radial-gradient(circle at 70% 40%, rgba(255, 220, 100, 0.7), transparent 30%),
+        radial-gradient(circle at 20% 60%, rgba(255, 190, 90, 0.7), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(255, 210, 70, 0.7), transparent 30%);
+    box-shadow: 0 0 0 1px rgb(255, 200, 80), 0 0 5px 0px rgb(255, 200, 80);
 }
 
 .dark .landing-page .change-theme button::before {
+    /* Style the theme button's before pseudo-element in dark mode */
     display: block;
 }
 
 .dark .landing-page .change-theme button::after {
+    /* Style the theme button's after pseudo-element in dark mode */
     display: none;
 }
 
-/* ------------------ Partie pour animer le menu hamburger ------------------ */
-
-.landing-page input[type="checkbox"]:checked ~ #sidebarMenu {
-    transform: translateX(0);
+/* Login */
+.landing-page .nav-login a {
+    /* Style the login link */
+    padding: 1.7rem;
+    font-weight: 500;
+    transition: all .3s ease;
 }
 
-.landing-page input[type=checkbox] {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    display: none;
-}
-
-.landing-page .sidebarIconToggle {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    cursor: pointer;
-    position: absolute;
-    z-index: 99;
-    height: 100%;
-    width: 100%;
-    height: 22px;
-    width: 22px;
-}
-    
-.landing-page .landing-page.sidebarIconToggle > span {
-    border-radius: 10px;
-}
-
-.landing-page .spinner {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    position: absolute;
-    height: 3px;
-    width: 100%;
-    background-color: rgb(var(--border-color-1));
-}
-
-.landing-page .horizontal {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    position: relative;
-    float: left;
+.landing-page .EDPLogo {
+    /* Style the EDP logo */
     margin-top: 3px;
+    margin-right: 10px;
 }
 
-.landing-page .diagonal.part-1 {
-    position: relative;
-    transition: all 0.3s;
-    box-sizing: border-box;
-    float: left;
+.landing-page .nav-logo span,
+.landing-page .nav-login a,
+.landing-page .change-theme button,
+.landing-page .nav-links-container,
+.landing-page .go-to-top {
+    /* Apply box-shadow, background-color, and backdrop-filter to the nav logo span, login link, theme button, and nav links container */
+    box-shadow: rgba(var(--ajustable-monochorme), 0.16) 0px 3px 6px, rgba(var(--ajustable-monochorme), 0.23) 0px 3px 6px;
+    background-color: rgb(var(--background-color-2), .7);
+    backdrop-filter: blur(4px);
 }
-
-.landing-page .diagonal.part-2 {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    position: relative;
-    float: left;
-    margin-top: 3px;
-}
-
-.landing-page input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
-    transition: all 0.3s;
-    box-sizing: border-box;
-    opacity: 0;
-}
-
 .landing-page input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
     transition: all 0.3s;
     box-sizing: border-box;
@@ -303,175 +275,3 @@ p.policy {
     transform: rotate(-135deg);
     margin-top: -9px;
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                   Banner                                   */
-/* -------------------------------------------------------------------------- */
-
-/* ------------------------------- BANNER-SPAN ------------------------------ */
-
-.landing-page .more-info {
-    color: rgb(83, 87, 150);
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.landing-page .more-info:hover {
-    color: rgb(43, 47, 100);
-}
-
-/* --------------------------------- BANNER --------------------------------- */
-
-.landing-page #home {
-    scroll-margin-top: 20rem;
-    position: absolute;
-    display: flex;
-    top: 50%;
-    background-color: rgba(var(--background-color-2), 0.6);
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border-radius: 1rem;
-    box-shadow: var(--box-shadow-window);
-}
-
-/* -------------------------- BANNER-BOX-CONTAINER -------------------------- */
-
-
-/* ------------------------------ BANNER-TITLE ------------------------------ */
-
-.landing-page .ban-title {
-    position: relative;
-    padding: 20px;
-    width: 85rem;
-    left: 4rem;
-
-}
-
-.landing-page .ban-title h4 {
-    background-color: rgba(var(--background-color-0), 0.6);
-    font-size: 30px;
-    font-weight: 600;
-    padding: 20px;
-    margin-bottom: 3rem;
-    border-radius: 1rem;
-    box-shadow: var(--box-shadow-element);
-}
-
-/* ------------------------------- BANNER-BOX ------------------------------- */
-
-.landing-page .ban-box {
-    display: flex;
-}
-
-/* ---------------------------- BANNER-BOX-DESING --------------------------- */
-
-.landing-page .ban-box-desing {
-    padding: 25px;
-    text-align: center;
-    width: 34rem;
-    height: 30rem;
-    background-color: rgb(var(--background-color-0), 0.4);
-    margin: 2rem;
-    border-radius: 2rem;
-    border: solid rgb(var(--border-color-1)) 1.2px;
-    box-shadow: var(--box-shadow-element);
-    transition: all 0.3s ease;
-}
-.landing-page .ban-box-desing:hover {
-    transform: scale(1.01);
-    border: solid 2.3px rgba(var(--border-color-0), 0.8);
-}
-
-.landing-page .ban-box-desing h3 {
-    position: relative;
-    margin-bottom: -10px;
-    font-size: 21px;
-    font-weight: 600;
-}
-
-.landing-page .ban-box-desing h6 {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-    font-weight: 500;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 INFO-DESING                                */
-/* -------------------------------------------------------------------------- */
-
-.landing-page .box-desing-title {
-    position: relative;
-    padding: 20px;
-}
-
-.landing-page .box-desing-title h4 {
-    text-align: center;
-    background-color: rgba(var(--background-color-0), 0.6);
-    font-size: 30px;
-    font-weight: 600;
-    padding: 20px;
-    margin-bottom: 3rem;
-    border-radius: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 8px;
-    box-shadow: var(--color-shadow-element) 1px 1px 6px 0px;
-}
-
-
-.landing-page .presentation-box {
-    display: flex;
-}
-
-
-
-.landing-page .box-desing {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40rem;
-    border-radius: 1rem;
-    margin: 20px;
-    background-color: rgba(var(--background-color-0), 0.6);
-    border: 2px solid rgba(var(--text-color-main-reverse), 0.8);
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    
-}
-
-
-
-.landing-page .box-desing h6 {
-    padding: 20px;
-    font-size: 20px;
-    font-weight: 500;
-    color: rgb(var(--text-color-alt));
-}
-
-.landing-page .linked-button {
-    display: flex;
-    justify-content: center;
-    align-self: center;
-
-    transition: all 0.2s ease;
-}
-
-.landing-page .linked-button:hover {
-    background-color: rgb(var(--background-color-0));
-    transform: scale(1.04);
-}
-
-
-/* ----------------------- For dimentions of the logo ----------------------- */
-
-.landing-page .github-logo {
-    width: 23rem;
-    padding: 20px;
-}
-
-
-/* -------------------------------------------------------------------------- */
-/*                                 RESPONSIVE                                 */
-/* -------------------------------------------------------------------------- */
