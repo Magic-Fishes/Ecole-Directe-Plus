@@ -70,7 +70,7 @@ export default function LandingPage({ token, accountsList }) {
     useEffect(() => {
         setIsLoggedIn(token && accountsList.length > 0);
     }, [token, accountsList])
-    
+
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
             for (const intersection of intersections) {
@@ -100,7 +100,9 @@ export default function LandingPage({ token, accountsList }) {
                 if (openSourceSectionRef.current) observer.unobserve(openSourceSectionRef.current)
             }
         }
+    }, []);
 
+    useEffect(() => {
         const handleScroll = () => {
             setIsTop(window.scrollY === 0);
         };
@@ -109,7 +111,6 @@ export default function LandingPage({ token, accountsList }) {
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-
     }, []);
 
     useEffect(() => {
