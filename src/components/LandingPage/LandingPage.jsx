@@ -315,7 +315,7 @@ export default function LandingPage({ token, accountsList }) {
             <h2 className="section-title">Un communauté <strong className="heading-emphasis">passionnée</strong> et <strong className="heading-emphasis">bienveillante</strong></h2>
             <div>
                 <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><DiscordFullLogo /></a>
-                <p>Rejoignez notre <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><strong className="heading-emphasis">serveur Discord</strong></a> !<br />Vous pourrez y rencontrer les développeurs et discuter avec les membres les plus investis dans Ecole Directe Plus !</p>
+                <p>Rejoignez notre <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><strong className="heading-emphasis">serveur Discord</strong></a> !<br />Vous pourrez y rencontrer les développeurs et discuter avec les membres les plus investis d'Ecole Directe Plus !</p>
             </div>
         </section>
         <section id="open-source" className="floating-section" ref={openSourceSectionRef}>

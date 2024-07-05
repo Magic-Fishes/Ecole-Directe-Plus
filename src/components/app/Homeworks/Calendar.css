@@ -1,4 +1,4 @@
-.month {
+.calendar .month {
     display: flex;
     justify-content: space-between;
     background-color: #323257;
@@ -8,7 +8,7 @@
     font-weight: bolder;
 }
 
-.arrow {
+.calendar .arrow {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,46 +21,46 @@
     outline: 4px solid rgba(var(--text-color-alt), 0);
 }
 
-.arrow svg path {
+.calendar .arrow svg path {
     stroke: white;
 }
 
-.arrow:hover {
+.calendar .arrow:hover {
     background-color: rgba(var(--text-color-alt), 0.1);
     outline: 4px solid rgba(var(--text-color-alt), 0.1);
 }
 
-.arrowleft {
+.calendar .arrowleft {
     transform: rotate(90deg);
 }
 
-.arrowright {
+.calendar .arrowright {
     transform: rotate(-90deg);
 }
 
-.month-name {
+.calendar .month-name {
     font-size: 1.2em;
 }
 
-.weekdays {
+.calendar .weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     margin-bottom: 10px;
 }
 
-.weekdays span {
+.calendar .weekdays span {
     text-align: center;
     font-weight: bold;
 }
 
-.days {
+.calendar .days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px 0px;
     margin-bottom: 10px;
 }
 
-.day {
+.calendar .day {
     text-align: center;
     padding: 3px;
     border-radius: 100%;
@@ -74,46 +74,46 @@
     line-height: 1.5;
 }
 
-.day:hover {
+.calendar .day:hover {
     background-color: rgba(var(--text-color-alt), 0.1);
 }
 
-.blue {
+.calendar .blue {
     background-color: #3f3cc9;
 }
 
-.red {
+.calendar .red {
     background-color: #c93f3f;
 }
 
-.green {
+.calendar .green {
     background-color: #3fc93f;
 }
 
-.grey {
+.calendar .grey {
     color: #9191a3;
 }
 
-.selected {
+.calendar .selected {
     outline: 2px solid #cde1e5;
 }
 
-.today {
+.calendar .today {
     background-color: #3f3cc9;
 }
 
-.buttons {
+.calendar .buttons {
     display: flex;
     justify-content: space-between;
     margin: 20px 15px 15px 15px;
     gap: 10px;
 }
 
-.buttonReturn {
+.calendar .buttonReturn {
     min-width: 130px;
 }
 
-.progressContainer {
+.calendar .progressContainer {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,7 +121,7 @@
     padding: 0 15px;
 }
 
-.progressBar {
+.calendar .progressBar {
     /* display: none; */
     width: 100%;
     border-radius: 10px;
@@ -131,10 +131,10 @@
     display: none;
 }
 
-progress {
+.calendar progress {
     color: #6867b3;
 }
 
-progress::-moz-progress-bar {
+.calendar progress::-moz-progress-bar {
     background: #6867b3;
 }
