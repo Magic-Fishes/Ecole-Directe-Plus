@@ -28,7 +28,7 @@ export default function Error404() {
                     {/* On dirait que Canardman a dérobé la page que vous cherchez... */}
                     On dirait que Canardman n'a pas trouvé la page que vous cherchez...
                 </p>
-                <Link to="/login" className="button">Retourner à l'accueil</Link>
+                <Link to="/" className="button">Retourner à l'accueil</Link>
             </div>
             {/* Canardman le VOYOU */}
             {/* Oh LALA NON */}

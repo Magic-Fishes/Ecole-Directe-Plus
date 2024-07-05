@@ -3,12 +3,14 @@
     position: relative;
 }
 
+:is(.balanced, .quality) .outline-effect-div::before {
+    border-radius: var(--border-radius);
+}
 .outline-effect-div::before {
     position: absolute;
     inset: -2px;
     z-index: -1;
     content: "";
-    border-radius: var(--border-radius);
     background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgb(var(--text-color-alt)) 0, transparent 100%);
     will-change: background;
 }

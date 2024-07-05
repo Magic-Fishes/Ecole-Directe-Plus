@@ -97,7 +97,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
         
         // localStorage.clear();
-        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
+        if (location.pathname !== "/" && localStorage.getItem("EDPVersion") !== currentEDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
                 setIsNewUser(true);
             } else {
@@ -121,7 +121,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // re-login
 
     useEffect(() => {
-        if ((location.pathname === "/login") && (token && accountsList.length > 0)) {
+        if ((location.pathname === "/login") && (location.hash !== "#policy") && (token && accountsList.length > 0)) {
             redirectToApp();
             console.log("redirected to app")
         }
