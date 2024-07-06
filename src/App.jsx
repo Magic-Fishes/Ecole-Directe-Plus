@@ -759,10 +759,10 @@ export default function App() {
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
-                        if (matiere.sousMatiere) {
-                            continue;
-                        }
-                        let subjectCode = matiere.codeMatiere;
+                        // if (matiere.sousMatiere) {
+                        //     continue;
+                        // }
+                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
                         if (matiere.groupeMatiere) {
                             subjectCode = "category" + i.toString();
                             i++;
@@ -771,7 +771,11 @@ export default function App() {
                         newSubject.code = subjectCode;
                         newSubject.elementType = "subject";
                         newSubject.id = matiere.id.toString();
-                        newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        if (matiere.sousMatiere) {
+                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
+                        } else {
+                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        }
                         newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
                         newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
                         newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
@@ -779,6 +783,7 @@ export default function App() {
                         newSubject.size = matiere.effectif;
                         newSubject.rank = matiere.rang;
                         newSubject.isCategory = matiere.groupeMatiere;
+                        newSubject.isSubSubject = matiere.sousMatiere;
                         newSubject.teachers = matiere.professeurs;
                         newSubject.appreciations = matiere.appreciations;
                         newSubject.grades = [];
@@ -823,7 +828,7 @@ export default function App() {
                 }
 
                 const periodCode = newPeriodCode;
-                const subjectCode = grade.codeMatiere;
+                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
                 // try to rebuild the subject if it doesn't exist (happen when changing school year)
                 if (periods[periodCode].subjects[subjectCode] === undefined) {
                     periods[periodCode].subjects[subjectCode] = {

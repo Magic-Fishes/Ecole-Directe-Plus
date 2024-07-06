@@ -71,10 +71,20 @@ export function calcCategoryAverage(period, category) {
     while (i < subjectsKeys.length && period.subjects[subjectsKeys[i]].name !== category.name) { i++ }
     while (++i < subjectsKeys.length && !period.subjects[subjectsKeys[i]].isCategory) {
         const currentSubject = period.subjects[subjectsKeys[i]];
+        let coefMultiplicator = 1;
+        if (currentSubject.isSubSubject) {
+            const subjectCode = currentSubject.name.split(" - ")[0];
+            const validKeys = Object.keys(period.subjects).filter((key) => (key !== subjectCode && key.includes(subjectCode))); // selects other subsubjects (and exclude the parent subject)
+            let sum = 0;
+            for (let validKey of validKeys) {
+                sum += period.subjects[validKey].coef;
+            }
+            coefMultiplicator = period.subjects[subjectCode].coef / sum;
+        }
         list.push({
-            value: currentSubject.average,
+            value: currentSubject.average ?? 0,
             scale: 20,
-            coef: currentSubject.coef
+            coef: currentSubject.average === undefined ? 0 : (currentSubject.coef * coefMultiplicator)
         })
     }
 
@@ -82,14 +92,25 @@ export function calcCategoryAverage(period, category) {
 }
 
 export function calcGeneralAverage(period) {
+    console.log("period:", period)
     const list = []
     for (let subject in period.subjects) {
         const currentSubject = period.subjects[subject];
         if (!currentSubject.isCategory) {
+            let coefMultiplicator = 1;
+            if (currentSubject.isSubSubject) {
+                const subjectCode = currentSubject.name.split(" - ")[0];
+                const validKeys = Object.keys(period.subjects).filter((key) => (key !== subjectCode && key.includes(subjectCode))); // selects other subsubjects (and exclude the parent subject)
+                let sum = 0;
+                for (let validKey of validKeys) {
+                    sum += period.subjects[validKey].coef;
+                }
+                coefMultiplicator = period.subjects[subjectCode].coef / sum;
+            }
             list.push({
                 value: currentSubject.average ?? 0,
                 scale: 20,
-                coef: currentSubject.average === undefined ? 0 : currentSubject.coef
+                coef: currentSubject.average === undefined ? 0 : (currentSubject.coef * coefMultiplicator)
             })
         }
     }
