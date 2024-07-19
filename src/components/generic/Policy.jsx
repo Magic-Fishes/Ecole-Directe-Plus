@@ -66,15 +66,14 @@ export default function Policy({ onCloseNavigateURL }) {
             Autres contributeurs :<br />
             - Akash Banchhor<br />
             - Oeildelynx<br />
-            - xav35000<br /><br />
+            - xav35000<br />
+            - Matrism<br />
+            - Fefe_du_973<br /><br />
 
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - ImgBB<br />
-            - Discord Webhooks<br />
-            - Pipedream<br />
-            - Netlify<br />
-            - 000webhost<br /><br />
+            - Discord Webhooks<br /><br />
 
             Dépendances :<br />
             - React<br />
