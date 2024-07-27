@@ -193,6 +193,12 @@ html:has(.landing-page) {
     /* transform: translateY(-4px); */
 }
 
+#bento .bento-card h4 {
+    margin-bottom: 10px;
+}
+#bento .bento-card p {
+    color: rgb(var(--text-color-alt));
+}
 #bento .bento-card:hover p {
     color: rgba(var(--text-color-main), .9);
 }
@@ -266,12 +272,13 @@ html:has(.landing-page) {
 }
 
 .floating-section a {
-    transition: text-decoration-color .2s;
-    text-decoration-color: rgba(var(--text-color-alt), 0);
+    color: rgba(var(--text-color-main), .9);
+    text-decoration-color: rgba(var(--text-color-main), 0);
+    transition: text-decoration-color .1s;
 }
 
 .floating-section a:hover {
-    text-decoration-color: rgba(var(--text-color-alt), 1);
+    text-decoration-color: rgba(var(--text-color-main), 1);
 }
 
 .floating-section > h2 {
@@ -300,16 +307,21 @@ html:has(.landing-page) {
 .floating-section p {
     flex: 1;
     font-size: var(--font-size-20);
+    color: rgb(var(--text-color-alt));
 }
 
 .floating-section > div > a {
     width: 250px;
     display: flex;
     align-items: center;
+    justify-content: center;
     transition: opacity 2s, transform 2s, filter .2s;
 }
 .floating-section > div > a:is(:hover, :focus-visible) {
     filter: drop-shadow(0 0 15px rgba(var(--text-color-main), .3))
+}
+.floating-section .github-logo {
+    width: 180px;
 }
 
 .floating-section .visible {
