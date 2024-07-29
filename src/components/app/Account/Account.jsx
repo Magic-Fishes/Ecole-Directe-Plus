@@ -63,7 +63,8 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                         />
                     </div>
                     <address id="informations-container">
-                        <span>Dernière connexion : <time dateTime={(new Date(accountsListState[activeAccount].lastConnection ?? Date.now())).toISOString()}>
+                        <span>Dernière connexion : <time
+                            dateTime={(new Date(accountsListState[activeAccount].lastConnection ?? Date.now())).toISOString()}>
                         {new Date(accountsListState[activeAccount].lastConnection ?? Date.now()).toLocaleDateString("fr-FR", {
                             year: 'numeric',
                             month: 'long',
@@ -76,11 +77,34 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                         {accountsListState[activeAccount].phoneNumber &&
                             <span>Num. téléphone : {accountsListState[activeAccount].phoneNumber}</span>}
                     </address>
-                    <Button disabled={true} id="statistics">Statistiques</Button>
                 </div>
-                <div className="coming-soon">
-                    En cours de développement (bientôt disponible)
-                </div>
+                <br/><br/><br/>
+                <section className="frame" id="behavior">
+                    <h2 className="frame-heading">Statistiques</h2>
+                    <div className="behavior-types">
+                        <div className="behavior-type">
+                            <span>heures en cours</span>
+                            <span
+                                className={"count" + (!userData.get("sortedGrades")?.delays ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.delays ?? <>
+                                <span style={{"--index": 0}}>.</span><span style={{"--index": 1}}>.</span><span
+                                style={{"--index": 2}}>.</span></>}</span>
+                        </div>
+                        <div className="behavior-type">
+                            <span>Meilleure matière</span>
+                            <span
+                                className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.absences.length ?? <>
+                                <span style={{"--index": 3}}>.</span><span style={{"--index": 4}}>.</span><span
+                                style={{"--index": 5}}>.</span></>}</span>
+                        </div>
+                        <div className="behavior-type">
+                            <span>Pire matière</span>
+                            <span
+                                className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.sanctions.length ?? <>
+                                <span style={{"--index": 6}}>.</span><span style={{"--index": 7}}>.</span><span
+                                style={{"--index": 8}}>.</span></>}</span>
+                        </div>
+                    </div>
+                </section>
             </HolographicDiv>
             <section className="frame" id="documents">
                 <h2 className="frame-heading">Documents</h2>
@@ -93,11 +117,17 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                 <div className="behavior-types">
                     <div className="behavior-type">
                         <span>Retards</span>
-                        <span className={"count" + (!userData.get("sortedSchoolLife")?.delays.length ? " loading" : " loading") }>{userData.get("sortedSchoolLife")?.delays.length ?? <><span style={{"--index": 0}}>.</span><span style={{"--index": 1}}>.</span><span style={{"--index": 2}}>.</span></>}</span>
+                        <span
+                            className={"count" + (!userData.get("sortedSchoolLife")?.delays.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.delays.length ?? <>
+                            <span style={{"--index": 0}}>.</span><span style={{"--index": 1}}>.</span><span
+                            style={{"--index": 2}}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Absences</span>
-                        <span className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading") }>{userData.get("sortedSchoolLife")?.absences.length ?? <><span style={{"--index": 3}}>.</span><span style={{"--index": 4}}>.</span><span style={{"--index": 5}}>.</span></>}</span>
+                        <span
+                            className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.absences.length ?? <>
+                            <span style={{"--index": 3}}>.</span><span style={{"--index": 4}}>.</span><span
+                            style={{"--index": 5}}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Sanctions</span>
