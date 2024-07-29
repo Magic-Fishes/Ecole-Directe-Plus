@@ -137,14 +137,14 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                     <div className="account">
                         <div className="pp-container">
                             <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
-                                ? getProxiedURL("https:" + accountsList[activeAccount].picture)
+                                ? settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : getProxiedURL("https:" + accountsList[activeAccount].picture)
                                 : accountsList[activeAccount].picture
                             )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
                         </div>
                         <address className="account-info">
-                            <span className="school-name">{accountsList[activeAccount].schoolName}</span>
-                            <span className="name"><span className="first-name">{accountsList[activeAccount].firstName}</span> <span className="last-name">{accountsList[activeAccount].lastName.toUpperCase()}</span></span>
-                            <span className="class">{accountsList[activeAccount].class[1]}</span>
+                            <span className="school-name">{settings.get("isStreamerModeEnabled") ? "ÉTABLISSEMENT" : accountsList[activeAccount].schoolName}</span>
+                            <span className="name"><span className="first-name">{settings.get("isStreamerModeEnabled") ? "Canardman" : accountsList[activeAccount].firstName}</span> <span className="last-name">{settings.get("isStreamerModeEnabled") ? "" : accountsList[activeAccount].lastName.toUpperCase()}</span></span>
+                            <span className="class">{settings.get("isStreamerModeEnabled") ? "Classe" : accountsList[activeAccount].class[1]}</span>
                         </address>
                         <DropDownArrow className="drop-down-arrow" />
                     </div>

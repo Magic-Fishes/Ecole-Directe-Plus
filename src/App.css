@@ -188,8 +188,8 @@
 :root.light {
     --box-shadow-window: 0 0 15px rgba(0, 0, 0, 0.4);
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
-    --color-shadow-element: rgba(0, 0, 0, 0.25);
     --color-shadow-window: rgba(0, 0, 0, 0.4);
+    --color-shadow-element: rgba(0, 0, 0, 0.25);
 
     --text-color-main: 0, 0, 0;
     --text-color-main-reverse: 255, 255, 255;

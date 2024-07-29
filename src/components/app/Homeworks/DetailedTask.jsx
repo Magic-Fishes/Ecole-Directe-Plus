@@ -4,14 +4,23 @@ import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
 import { applyZoom } from "../../../utils/zoom";
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
-import "./DetailedTask.css"
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
 import DownloadIcon from "../../graphics/DownloadIcon"
 import CopyButton from "../../generic/CopyButton"
 import { clearHTML } from "../../../utils/html"
-export default function DetailedTask({ task, userHomeworks, day, taskIndex, setBottomSheetSession, ...props }) {
+
+import "./DetailedTask.css"
+
+const supposedNoSessionContent = [
+    "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
+    "",
+]
+
+export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...props }) {
+    const navigate = useNavigate()
+
     const isMouseInCheckBoxRef = useRef(false);
     const detailedTaskRef = useRef(null);
     const taskCheckboxRef = useRef(null);
@@ -21,31 +30,15 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
 
     const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
 
-    const supposedNoSessionContent = [
-        "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
-        "",
-    ]
 
     const location = useLocation();
     const oldLocationHash = useRef(null);
-    const hashParameters = location.hash.split(";")
-
-    useEffect(() => {
-        if (hashParameters.length > 2 && hashParameters[1] == task.id) {
-            setBottomSheetSession({
-                day,
-                id: task.id,
-                content: task.sessionContent,
-            })
-        }
-    }, [hashParameters]);
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
         const parentBounds = parent.getBoundingClientRect();
         const bounds = element.getBoundingClientRect();
         
-        console.log("scrollIntoViewNearestParent ~ bounds.y - parentBounds.y + parentBounds.scrollTop:", bounds.y - parentBounds.y + parent.scrollTop)
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
 
@@ -102,14 +95,16 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
         })
         fetchHomeworksDone(tasksToUpdate);
         if (tasksToUpdate.tasksDone !== undefined) {
-            completedTaskAnimation();
+            if (settings.get("isPartyModeEnabled") && settings.get("displayMode") === "quality") {
+                completedTaskAnimation();
+            }
         }
         homeworks[date][taskIndex].isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
 
     return <>{(task?.content
-        ? <div ref={detailedTaskRef} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
+        ? <div ref={detailedTaskRef} onClick={(e) => {navigate(`#${day};${task.id}`); e.stopPropagation()}} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
             <div className="task-header">
                 <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
@@ -117,19 +112,13 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, setB
                 </h4>
             </div>
             <div className="task-subtitle">
-                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {task.teacher}</span>}
+                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()} par {settings.get("isStreamerModeEnabled") ? "M. -------" : task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
             <div className="task-footer">
-                <Link onClick={(e) => {
-                    e.stopPropagation(); setBottomSheetSession({
-                        day,
-                        id: task.id,
-                        content: task.sessionContent,
-                    })
-                }} to={`#${day};${task.id};s`} replace={true} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
-                <div className={`task-footer-button ${task.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</div>
+                <Link to={`#${day};${task.id};s`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${supposedNoSessionContent.includes(task.sessionContent) ? "disabled" : ""}`}><PatchNotesIcon className="session-content-icon" />Contenu de séance</Link>
+                <Link to={`#${day};${task.id};f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${task.files.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link>
             </div>
         </div>
         : <div className={`detailed-task`} {...props} >

@@ -1,0 +1,58 @@
+.file-component {
+    height: 110px;
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 15px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(var(--background-color-2));
+    border: solid .25em rgb(var(--background-color-3));
+    cursor: pointer;
+}
+
+.file-component::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: rgb(var(--background-color-3));
+    transition: .9s cubic-bezier(.28, 1, .28, 1);
+    width: 0;
+    opacity: 0;
+}
+
+.file-component.clicked::after {
+    width: 100%;
+    transition: opacity 0s, width .9s cubic-bezier(.28, 1, .28, 1);
+    opacity: 1;
+}
+
+.file-component.filled::after {
+    transition: opacity .9s cubic-bezier(.28, 1, .28, 1), width 0s;
+    width: 100.1%;
+    opacity: 0;
+}
+
+.file-component * {
+    z-index: 1;
+}
+
+.file-component .file-icon {
+    height: 80%;
+    aspect-ratio: 1 / 1;
+}
+
+.file-component .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--font-size-20);
+    -webkit-user-drag: none;
+    user-drag: none;
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+    -webkit-touch-callout: none; /* Safari */
+}

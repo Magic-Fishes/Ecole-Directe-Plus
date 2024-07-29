@@ -24,7 +24,7 @@ export default function WelcomePopUp({ currentEDPVersion, onClose }) {
                 <ol>
                     <li>Installez <a href="https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr">l'extension de navigateur EDP Unblock</a> afin d'accéder à Ecole Directe Plus sans interruption.</li>
                     <li>Dans le menu de connexion, connectez vous simplement à l'aide de vos identifiants EcoleDirecte.</li>
-                    <li>Félicitations, vous êtes connecté et prêt à utiliser ED+ ! Profitez d'une multitude de fonctionnalités inédites :</li>
+                    <li>Félicitations, vous êtes connecté et prêt à utiliser EDP ! Profitez d'une multitude de fonctionnalités inédites :</li>
                     <ul>
                         <li>Calcul instantané des moyennes par matière</li>
                         <li>Calcul automatique de la <strong><em>moyenne générale</em></strong></li>

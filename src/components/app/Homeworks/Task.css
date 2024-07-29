@@ -12,8 +12,13 @@
     outline: none;
     overflow: hidden;
 }
+
 .task.done {
     opacity: .4;
+}
+
+.task.done:is(:hover, :focus-visible) {
+    opacity: 1;
 }
 
 .task .task-title {

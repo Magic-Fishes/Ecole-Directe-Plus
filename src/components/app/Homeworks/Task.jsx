@@ -42,7 +42,9 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
         })
         fetchHomeworksDone(tasksToUpdate);
         if (tasksToUpdate.tasksDone !== undefined) {
-            completedTaskAnimation();
+            if (settings.get("isPartyModeEnabled") && settings.get("displayMode") === "quality") {
+                completedTaskAnimation();
+            }
         }
         homeworks[date][taskIndex].isDone = !task.isDone;
         userHomeworks.set(homeworks);

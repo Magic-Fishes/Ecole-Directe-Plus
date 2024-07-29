@@ -87,7 +87,7 @@
     animation: none;
     opacity: 1;
     scale: 1;
-    transition: scale 0.1s;
+    transition: scale 0.1s, flex-grow .3s ease-in-out;
 }
 .window.grabbing {
     scale: 0.95;

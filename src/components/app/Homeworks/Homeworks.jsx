@@ -1,6 +1,6 @@
 
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 
 import {
     WindowsContainer,
@@ -15,18 +15,33 @@ import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 import UpcomingAssignments from "./UpcomingAssignments";
+import PopUp from "../../generic/PopUps/PopUp";
+import { formatDateRelative } from "../../../utils/date";
+import FileComponent from "../../generic/FileComponent";
+import { getISODate } from "../../../utils/utils";
+import DateSelector from "./Calendar";
+import InfoButton from "../../generic/Informative/InfoButton";
+import DownloadIcon from "../../graphics/DownloadIcon"
 
 import "./Homeworks.css";
+import "./DetailedTask.css";
+
+const supposedNoSessionContent = [
+    "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",
+    "",
+]
+
 export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
     // States
 
     const { useUserData } = useContext(AppContext);
     const homeworks = useUserData("sortedHomeworks");
-    const [bottomSheetSession, setBottomSheetSession] = useState({})
     const navigate = useNavigate();
     const location = useLocation();
 
     const hashParameters = location.hash.split(";")
+    const selectedDate = hashParameters.length ? hashParameters[0].slice(1) : getISODate(new Date())
+    const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[selectedDate]?.find(e => e.id == hashParameters[1])
 
     // behavior
     useEffect(() => {
@@ -39,18 +54,24 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             if (homeworks.get() === undefined) {
                 fetchHomeworks(controller);
             }
+            if (homeworks.get() === undefined || !homeworks.get().hasOwnProperty(selectedDate)) {
+                fetchHomeworks(controller, new Date(selectedDate));
+            }
         }
 
         return () => {
             controller.abort();
         }
-    }, [isLoggedIn, activeAccount, homeworks.get()]);
+    }, [isLoggedIn, activeAccount, homeworks.get(), location.hash]);
 
     useEffect(() => {
-        if (hashParameters.length > 2 && !bottomSheetSession.id) {
-            navigate(`${hashParameters[0]};${hashParameters[1]}`)
-        } else if (hashParameters.length < 3 && bottomSheetSession.id) {
-            setBottomSheetSession({})
+        if (hashParameters.length > 2) {
+            if (hashParameters[2] === "s" && !selectedTask?.sessionContent) {
+                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
+            }
+            if (hashParameters[2] === "f" && !selectedTask?.files?.length) {
+                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
+            }
         }
     }, [location.hash])
 
@@ -68,12 +89,16 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 <UpcomingAssignments homeworks={homeworks} />
                             </WindowContent>
                         </Window>
-                        <Window growthFactor={1.75} WIP={true}>
+                        <Window growthFactor={1.75} >
                             <WindowHeader>
                                 <h2>Calendrier</h2>
+                                <InfoButton className="calendar-info">
+                                    <p>Calendrier</p>
+                                    <p>Permet de sélectionner une date.</p>
+                                </InfoButton>
                             </WindowHeader>
                             <WindowContent>
-
+                                <DateSelector defaultSelectedDate={selectedDate}/>
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
@@ -82,14 +107,32 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <h2>Cahier de texte</h2>
                         </WindowHeader>
                         <WindowContent id="notebook">
-                            <Notebook setBottomSheetSession={setBottomSheetSession} />
+                            <Notebook />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
             </WindowsContainer>
         </div>
-        {bottomSheetSession.id && <BottomSheet heading="Contenu de séance" onClose={() => {navigate(`#${bottomSheetSession.day};${bottomSheetSession.id}`); setBottomSheetSession({})}}>
-            <EncodedHTMLDiv>{bottomSheetSession.content}</EncodedHTMLDiv>
-        </BottomSheet>}
+        {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && (!supposedNoSessionContent.includes(selectedTask.sessionContent) ? <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
+            <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv><div className="task-footer"><Link to={`#${selectedDate};${selectedTask.id};s;f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link></div>
+        </BottomSheet> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`}/>)}
+        {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && (selectedTask.files.length ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
+            <h2 className="file-title">Fichiers</h2>
+            <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+            <div className="file-scroller">
+                <div className="file-wrapper">
+                    {selectedTask.files.map((file) => <FileComponent key={file.id} file={file} />)}
+                </div>
+            </div>
+        </PopUp> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
+        {(hashParameters.length > 3 && hashParameters[2] === "s" && hashParameters[3] === "f" && selectedTask) && (selectedTask.sessionContentFiles.length ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]};s`, { replace: true }) }}>
+            <h2 className="file-title">Fichiers</h2>
+            <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+            <div className="file-scroller">
+                <div className="file-wrapper">
+                    {selectedTask.sessionContentFiles.map((file) => <FileComponent key={file.id} file={file} />)}
+                </div>
+            </div>
+        </PopUp> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
     </>
 }

@@ -94,7 +94,7 @@ export default function ErrorPage({ sardineInsolente }) {
                         </Button>
                     </div>
                     
-                    <p>ATTENTION : Ces retours peuvent contenir des informations personnelles mais ils permettront de grandement nous aider à identifier le bug</p>
+                    <p>IMPORTANT : Ces retours peuvent contenir des informations personnelles, c'est pourquoi nous avons besoin de votre consentement pour les effectuer, mais ils nous permettrons de mieux identifier le bug qui vous a touché.</p>
                 </div>
             </div>
         );

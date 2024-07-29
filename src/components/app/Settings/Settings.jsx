@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -11,17 +11,20 @@ import Button from "../../generic/UserInputs/Button";
 import KeyboardKey from "../../generic/KeyboardKey";
 import StoreCallToAction from "../../generic/StoreCallToAction";
 
+import { AppContext } from "../../../App";
+import { applyZoom } from "../../../utils/zoom";
+import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
+
+import "./Settings.css";
+
 // graphics
 import RefreshIcon from "../../graphics/RefreshIcon";
 import ToggleEnd from "../../graphics/ToggleEnd";
 
-import { AppContext } from "../../../App";
-
-import "./Settings.css";
-import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-
 export default function Settings({ usersSettings, accountsList, getCurrentSchoolYear, resetUserData }) {
-    const { isStandaloneApp, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
+    const { isStandaloneApp, promptInstallPWA, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
+
+    const partyModeCheckbox = useRef(null);
 
     const settings = useUserSettings();
 
@@ -64,6 +67,35 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
         resetUserData(false);
         settings.set("schoolYear", schoolYear)
     }
+
+    function confettiAnimation() {
+        const bounds = partyModeCheckbox.current.getBoundingClientRect();
+        const origin = {
+            x: bounds.left + 30 / 2,
+            y: bounds.top + 30 / 2
+        }
+        confetti({
+            particleCount: 40,
+            spread: 70,
+            origin: {
+                x: origin.x / applyZoom(window.innerWidth),
+                y: origin.y / applyZoom(window.innerHeight)
+            },
+        });
+    }
+
+    useEffect(() => {
+        const script = document.createElement("script");
+
+        script.src = "https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js";
+        script.async = true;
+
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        }
+    }, []);
 
     return (
         <div id="settings">
@@ -142,20 +174,32 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
-                <div className="setting" id="sepia-filter">
-                    <CheckBox id="sepia-filter-cb" label={<span>Activer le filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                <div className="setting">
+                    <div id="filters">
+                        <span>Options d'affichage :</span>
+                        <div id="filters-container">
+                            <div id="sepia-filter">
+                                <CheckBox id="sepia-filter-cb" label={<span>Filtre sepia</span>} checked={settings.get("isSepiaEnabled")} onChange={(event) => { settings.set("isSepiaEnabled", event.target.checked) }} />
+                            </div>
+
+                            <div id="high-contrast-filter">
+                                <CheckBox id="high-contrast-filter-cb" label={<span>Mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
+                            </div>
+
+                            <div id="grayscale-filter">
+                                <CheckBox id="grayscale-filter-cb" label={<span>Mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="setting" id="high-contrast-filter">
-                    <CheckBox id="high-contrast-filter-cb" label={<span>Activer le mode contraste élevé</span>} checked={settings.get("isHighContrastEnabled")} onChange={(event) => { settings.set("isHighContrastEnabled", event.target.checked) }} />
-                </div>
-
-                <div className="setting" id="grayscale-filter">
-                    <CheckBox id="grayscale-filter-cb" label={<span>Activer le mode Noir et Blanc</span>} checked={settings.get("isGrayscaleEnabled")} onChange={(event) => { settings.set("isGrayscaleEnabled", event.target.checked) }} />
-                </div>
 
                 <div className="setting" id="photo-blur">
                     <CheckBox id="photo-blur-cb" label={<span>Flouter la photo de profil</span>} checked={settings.get("isPhotoBlurEnabled")} onChange={(event) => { settings.set("isPhotoBlurEnabled", event.target.checked) }} />
+                </div>
+
+                <div className="setting" id="party-mode">
+                    <CheckBox id="party-mode-cb" ref={partyModeCheckbox} label={<span>Activer le mode festif 🎉</span>} checked={settings.get("isPartyModeEnabled")} onChange={(event) => { settings.set("isPartyModeEnabled", event.target.checked); if (event.target.checked) { confettiAnimation() } }} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">
@@ -166,7 +210,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="allow-windows-arrangement-cb" label={<span>Permettre le réarrangement des fenêtres</span>} checked={settings.get("allowWindowsArrangement")} onChange={(event) => settings.set("allowWindowsArrangement", event.target.checked)} />
                 </div>
 
-                
+
                 {/^((?!chrome|android).)*safari/i.test(navigator.userAgent) && isStandaloneApp
                     ? <div className="setting" id="refresh-user-data">
                         <Button onClick={resetUserData}>Rafraîchir les informations</Button>
@@ -185,7 +229,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         <CheckBox id="weaknesses-cb" label={<span>Afficher les points faibles</span>} />
                     </div>
                 </div>}
-                
+
 
                 {/* advanced settings */}
                 <div id="advanced-settings">
@@ -193,10 +237,14 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     {/* prevent switching to dev channel only if installed as standalone app and on safari due to redirecting issues */}
                     <div className={`setting${isStandaloneApp ? " disabled" : ""}`} id="dev-channel">
                         <div className="setting-label">
-                        <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
-                        <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
+                            <span>Basculer sur le canal {globalSettings.isDevChannel.value ? "stable" : "développeur"}</span>
+                            <InfoButton className="setting-tooltip">Profitez des dernières fonctionnalités en avant première. Avertissement : ce canal peut être instable et susceptible de dysfonctionner. Signalez nous quelconque problème à travers la page de retour</InfoButton>
                         </div>
                         <Button onClick={handleDevChannelSwitchingToggle} className="toggle-button">Basculer<ToggleEnd /></Button>
+                    </div>
+
+                    <div className="setting" id="streamer-mode">
+                        <CheckBox id="streamer-mode-cb" label={<span>Activer le mode streamer (bêta)</span>} checked={settings.get("isStreamerModeEnabled")} onChange={(event) => { settings.set("isStreamerModeEnabled", event.target.checked) }} /><InfoButton className="setting-tooltip">Anonymise les informations sensibles. Les données scolaires seront tout de même affichées. (Bêta : certaines informations qui devraient être masquées ne le seront peut-être pas.)</InfoButton>
                     </div>
 
                     <div className="setting" id="allow-anonymous-reports">
@@ -319,11 +367,11 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 </div>
                 <p id="important-note">Ces paramètres sont exclusifs {usersSettings.syncNomDeDossierTier ? (globalSettings.shareSettings.value ? "à l'appareil et au compte" : "à l'appareil, au compte et au profil") : (globalSettings.shareSettings.value ? "au compte" : "au compte et au profil")} que vous utilisez en ce moment</p>
                 {/* Install as application (iOS/Android/Windows) */}
-                <div className="setting" id="install-as-application-tutorials">
+                {!isStandaloneApp && promptInstallPWA !== null && <div className="setting" id="install-as-application-tutorials">
                     <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo d'Apple" targetURL="https://www.clubic.com/tutoriels/article-889913-1-comment-ajouter-raccourci-web-page-accueil-iphone.html " />
                     <StoreCallToAction companyLogoSRC="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://www.nextpit.fr/comment-creer-applications-web-raccourcis-android" />
                     <StoreCallToAction companyLogoSRC="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://www.01net.com/astuces/windows-10-comment-transformer-vos-sites-web-preferes-en-applications-natives-1968951.html" />
-                </div>
+                </div>}
                 <div id="diverse-links">
                     <Link to="#patch-notes">Patch Notes</Link> • <Link to="#policy">Mentions légales</Link> • <Link to="/feedback">Faire un retour</Link> • <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">Github</a> • <a href="https://discord.gg/AKAqXfTgvE" target="_blank">Discord</a>
                 </div>

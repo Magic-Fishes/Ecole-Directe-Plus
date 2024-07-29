@@ -20,8 +20,23 @@
 .notebook-container:active {
     cursor: grabbing;
 }
-.notebook-container.mouse-moved * {
+.notebook-container:not(:has(.no-homework-placeholder)).mouse-moved * {
     cursor: grabbing !important;
+}
+
+.no-homework-placeholder, .no-homework-placeholder * {
+    color: rgb(var(--text-color-alt));
+}
+
+.no-homework-placeholder {
+    width: 60%;
+    text-align: center;
+}
+
+.notebook-container:has(.no-homework-placeholder) {
+    align-items: center;
+    justify-content: center;
+    cursor: default;
 }
 
 .date-selector {
@@ -42,6 +57,7 @@
     background-color: rgba(var(--text-color-alt), 0);
     cursor: pointer;
 }
+
 .date-selector span path {
     stroke: rgb(var(--text-color-alt));
     transition: .1s;
@@ -82,6 +98,7 @@
     user-select: none;
     transition: .1s;
 }
+
 .selected-date:hover {
     background-color: rgba(var(--text-color-alt), .07);
 }
@@ -102,8 +119,9 @@
     display: flex;
     flex-flow: column nowrap;
 }
+
 .performance .notebook-day {
-    border: 2px solid rgb(var(--background-color-3));;
+    border: 2px solid rgb(var(--background-color-3));
 }
 
 .notebook-day:active {
@@ -119,6 +137,7 @@
 .notebook-window:fullscreen .notebook-day {
     width: min(400px, 100%);
 }
+
 .notebook-window:fullscreen .notebook-day.selected {
     width: min(800px, 100%);
 }
@@ -135,50 +154,56 @@
     height: 4em;
     align-items: center;
     background: rgb(var(--background-color-3));
+    position: relative;
+    overflow: hidden;
 }
+
+.notebook-day .notebook-day-header::after {
+    --reflect-color: #fff5;
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    opacity: var(--after-opacity);
+    transition: .5s;
+    background: linear-gradient(123deg, transparent 10%,  var(--reflect-color) 10%, var(--reflect-color) 15%, transparent 15%, transparent 25%, var(--reflect-color) 25%, var(--reflect-color) 40%, transparent 40%);
+    animation: reflection 4s linear infinite;
+}
+
 
 #dashboard .notebook-day .notebook-day-header {
     height: 3em;
 }
 
-.notebook-day .notebook-day-header .progress-circle {
-    height: 100%;
-    margin: 5px;
-    transform: rotate(-90deg);
-}
-
-.notebook-day .notebook-day-header .progress-circle circle {
-    fill: none;
-    stroke-width: 0.8em;
-    transition: 1s;
-}
-
-.notebook-day .notebook-day-header .progress-circle circle:first-child {
-    stroke: rgba(var(--text-color-main), .3);
-}
-
-
 .notebook-day .notebook-day-header .notebook-day-date {
     text-align: center;
     width: 100%;
+    z-index: 1;
 }
 
-.notebook-day .notebook-day-header::after {
-    height: 100%;
-    margin: 5px;
-    aspect-ratio: 1 / 1;
-    content: "";
-}
-
-.notebook-day .notebook-day-header + hr, .detailed-task-separator {
+.notebook-day .notebook-day-header+hr,
+.detailed-task-separator {
+    background-color: rgb(var(--border-color-contrast));
     height: 3px;
     border-radius: 3px;
-    margin-inline: 15%;
-    background-color: rgb(var(--border-color-contrast));
     border: none;
     transform: translateY(-1.5px);
     flex-shrink: 0;
+
+    margin-inline: 15%;
 }
+
+/* .notebook-day .notebook-day-header+hr {
+    transition: .75s ease-in-out;
+}
+ */
+/* .notebook-day .notebook-day-header+hr {
+    transition: .5s ease-in-out;
+    display: none;
+} */
+
+
 .detailed-task-separator {
     transform: none;
 }
@@ -191,4 +216,16 @@
     gap: 15px;
     padding: 15px;
     scroll-behavior: smooth;
+}
+
+@keyframes reflection { /* pretty sad but it works */
+    0% {
+        left: -100%;
+    }
+    20% {
+        left: 100%;
+    }
+    100% {
+        left: 100%;
+    }
 }

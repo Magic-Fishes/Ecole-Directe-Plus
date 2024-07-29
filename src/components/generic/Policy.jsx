@@ -43,11 +43,11 @@ export default function Policy({ onCloseNavigateURL }) {
         <hr />
         <h3 className="part-header" >Conditions d'utilisations</h3>
         <h4 className="sub-header">1. Général</h4>
-        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "ED+", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus (non-affilié) proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
+        <li className="legal-content">Les noms et pronoms "Ecole Directe Plus", "EDP", "service", "Nous", "Notre/Nos" renvoient au service Ecole Directe Plus (non-affilié) proposé par le groupuscule Magic-Fish. L'accès et l'utilisation du service Ecole Directe Plus est l'objet de ces présentes conditions d'utilisations. En accédant ou utilisant n'importe quelle partie de l'application, vous déclarez avoir lu, compris, et accepté ces présentes mentions légales.</li>
         <h4 className="sub-header">2. Description du site et du service</h4>
         <li className="legal-content">Ecole Directe Plus a pour objectif d'offrir à ses utilisateurs un cadre agréable à la consultation des données scolaires. Ecole Directe Plus se réserve le droit, à sa seule discrétion et à n'importe quel moment, de mettre à jour, modifier, suspendre, apporter des améliorations ou interrompre tout aspect du service, temporairement ou définitivement.</li>
         <h4 className="sub-header">3. Usages acceptables du service</h4>
-        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe quelle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillant pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'ED+. Par ailleurs, bien que nous ayons pour objectif d'offrir à nos utilisateurs un service toujours plus complet et fiable, l'usage d'Ecole Directe Plus ne se substitue en aucun cas entièrement à celui d'EcoleDirecte, notamment en ce qui concerne des fonctionnalités avancées telles que les QCM, les visio-conférences, la vie de la classe, et toute autre fonctionnalité encore indisponible sur ED+. Il est ainsi déconseillé de faire usage exclusivement d'Ecole Directe Plus.</li>
+        <li className="legal-content">Vous êtes responsable de votre usage du service, et de n'importe quelle manipulation faite avec votre compte. Notre objectif est de fournir un service agréable, utile, et sécurisé pour tous les utilisateurs. Pour parvenir à cet objectif, nous condamnons tout comportement malveillant pouvant être offensant envers d'autres utilisateurs ou envers l'équipe d'EDP. Par ailleurs, bien que nous ayons pour objectif d'offrir à nos utilisateurs un service toujours plus complet et fiable, l'usage d'Ecole Directe Plus ne se substitue en aucun cas entièrement à celui d'EcoleDirecte, notamment en ce qui concerne des fonctionnalités avancées telles que les QCM, les visio-conférences, la vie de la classe, et toute autre fonctionnalité encore indisponible sur EDP. Il est ainsi déconseillé de faire usage exclusivement d'Ecole Directe Plus.</li>
         <h4 className="sub-header">4. Connexion</h4>
         <li className="legal-content">En vous connectant à Ecole Directe Plus avec votre compte EcoleDirecte, vous acceptez de nous fournir des informations précises, actuelles, et complètes à propos de vous et votre établissement. Pour garantir la confidentialité de vos informations, nous ne partageons à des fins commerciales ni ne stockons dans des serveurs vos données personnelles. En outre, vous êtes le seul responsable de l'usage qu'il est fait de vos données.</li>
         <h4 className="sub-header">5. Retour utilisateur</h4>
@@ -55,7 +55,7 @@ export default function Policy({ onCloseNavigateURL }) {
         <h4 className="sub-header">6. Liens, sites et services tiers</h4>
         <li className="legal-content">Le service peut contenir des liens vers des sites Web tiers, des services, ou d'autres événements ou activités qui ne sont ni détenus ni contrôlés par Ecole Directe Plus. Nous n'approuvons ni n'assumons aucune responsabilité pour ces sites, informations, matériaux, ou services tiers. Si vous accédez à un site Web, un service ou un contenu tiers d'Ecole Directe Plus, vous comprenez que ces conditions générales et notre politique de confidentialité ne s'appliquent pas à votre utilisation de ces sites. Vous reconnaissez et acceptez expressément qu'Ecole Directe Plus ne sera pas responsable, directement ou indirectement, de tout dommage ou perte résultant de votre utilisation de tout site Web, service ou contenu tiers.</li>
         <h4 className="sub-header">7. Résiliation</h4>
-        <li className="legal-content">Ecole Directe Plus peut résilier votre accès et votre utilisation du service à tout moment, pour quelque raison que ce soit, et à ce moment-là, vous n'aurez plus le droit d'utiliser le service. Attention, même si vous n'avez plus accès à ED+, cela ne signifie pas que votre accès à EcoleDirecte ait été résilié, les deux sites étant des entitées indépendantes.</li>
+        <li className="legal-content">Ecole Directe Plus peut résilier votre accès et votre utilisation du service à tout moment, pour quelque raison que ce soit, et à ce moment-là, vous n'aurez plus le droit d'utiliser le service. Attention, même si vous n'avez plus accès à EDP, cela ne signifie pas que votre accès à EcoleDirecte ait été résilié, les deux sites étant des entitées indépendantes.</li>
         <hr />
         <h3 className="part-header">Crédits</h3>
         <li className="legal-content">Ecole Directe Plus est l'initiative du groupuscule Magic-Fish :<br /><br />
@@ -66,15 +66,14 @@ export default function Policy({ onCloseNavigateURL }) {
             Autres contributeurs :<br />
             - Akash Banchhor<br />
             - Oeildelynx<br />
-            - xav35000<br /><br />
+            - xav35000<br />
+            - Matrism<br />
+            - Fefe_du_973<br /><br />
 
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - ImgBB<br />
-            - Discord Webhooks<br />
-            - Pipedream<br />
-            - Netlify<br />
-            - 000webhost<br /><br />
+            - Discord Webhooks<br /><br />
 
             Dépendances :<br />
             - React<br />

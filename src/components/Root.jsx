@@ -44,7 +44,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         navigate("/login");
     }
 
-    function redirectToMainPage() {
+    function redirectToLandingPage() {
         navigate("/")
     }
 
@@ -97,7 +97,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
         
         // localStorage.clear();
-        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
+        if (location.pathname !== "/" && localStorage.getItem("EDPVersion") !== currentEDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
                 setIsNewUser(true);
             } else {
@@ -121,7 +121,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // re-login
 
     useEffect(() => {
-        if ((location.pathname === "/login" || location.pathname === "/") && (!!token && accountsList.length > 0)) {
+        if ((location.pathname === "/login") && (location.hash !== "#policy") && (token && accountsList.length > 0)) {
             redirectToApp();
             console.log("redirected to app")
         }
@@ -414,7 +414,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
                 {isAdmin && <input type="button" onClick={redirectToLogin} value="LOGIN" />}
-                {isAdmin && <input type="button" onClick={redirectToMainPage} value="MAINPAGE" />}
+                {isAdmin && <input type="button" onClick={redirectToLandingPage} value="LANDING PAGE" />}
                 {isAdmin && <input type="button" onClick={redirectToFeedback} value="FEEDBACK" />}
                 {isAdmin && <input type="button" onClick={redirectToLab} value="LAB" />}
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
@@ -442,7 +442,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
-                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-03-04")) }} value="FETCH DAY HOMEWORKS" />}
+                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

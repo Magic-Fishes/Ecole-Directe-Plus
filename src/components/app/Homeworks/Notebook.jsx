@@ -1,18 +1,17 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
-import { capitalizeFirstLetter } from "../../../utils/utils";
+import { capitalizeFirstLetter, getISODate } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 import Task from "./Task";
-
-import "./Notebook.css";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import { canScroll } from "../../../utils/DOM";
 
-export default function Notebook({ setBottomSheetSession, hideDateController = false }) {
+import "./Notebook.css";
+export default function Notebook({ hideDateController = false }) {
     const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
     const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
@@ -29,17 +28,17 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const homeworks = userHomeworks.get();
+    const hashParameters = location.hash.split(";")
+    const selectedDate = hashParameters[0].slice(1)
 
-    const selectedDate = location.hash.split(";")[0].slice(1)
-
-    function calcStrokeColorColorProgression(progression) {
+    /*function calcStrokeColorColorProgression(progression) {
         const startColor = [255, 66, 66];
         const endColor = [0, 255, 56];
         // I have absolutely no idea of why but with the condition under it makes orange when progresion is on the middle
         // (this what I wanted but I though that it would need another intermediate color)
         // so for no reason this works and I will not change it (it's only luck)
         return `rgb(${progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
-    }
+    }*/
 
 
     function validDateFormat(dateString) {
@@ -60,7 +59,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
     }
 
     function navigateToDate(newDate, cleanup = false) {
-        navigate(`#${newDate};${(cleanup && location.hash.split(";")[1]) || ""}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true });
+        navigate(`#${newDate};${(cleanup && hashParameters[1]) || ""}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true });
     }
 
     function nearestHomeworkDate(dir = 1, date) {
@@ -72,16 +71,20 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
             return;
         }
 
-        const dates = Object.keys(homeworks);
+        const dates = Object.keys(homeworks).filter(e => homeworks[e].length);
         if (!dates.includes(date)) {
             dates.push(date);
         }
         dates.sort();
         const newDateIdx = dates.indexOf(date) + dir;
         if (newDateIdx < 0) {
-            return dates[0];
+            const prevDate = new Date(date);
+            prevDate.setDate(prevDate.getDate() - 1);
+            return getISODate(prevDate);
         } else if (newDateIdx >= dates.length) {
-            return dates[dates.length - 1];
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 1);
+            return getISODate(nextDate);
         }
 
         return dates[newDateIdx];
@@ -125,14 +128,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
             }
         } else {
             if (homeworks) {
-                if (selectedDate) {
-                    navigateToDate(selectedDate);
-                } else {
-                    const firstDate = Object.keys(homeworks).sort()[0];
-                    if (!!firstDate) {
-                        navigateToDate(firstDate);
-                    }
-                }
+                navigateToDate(getISODate(new Date()));
             }
         }
     }, [location, homeworks, anchorElement.current]);
@@ -282,7 +278,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
 
     useEffect(() => {
         const controller = new AbortController();
-        if ((homeworks && homeworks[selectedDate] && !homeworks[selectedDate][0].content) && isLoggedIn) {
+        if ((homeworks && homeworks[selectedDate] && homeworks[selectedDate].length && !homeworks[selectedDate][0].content) && isLoggedIn) {
             fetchHomeworks(controller, selectedDate)
         }
 
@@ -292,38 +288,35 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
     }, [selectedDate, homeworks, isLoggedIn]);
 
     return <>
-        {!hideDateController
+        {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
             ? <div className="date-selector">
-                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } } } >
+                <span onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
                     <DropDownArrow />
                 </span>
-                <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "AAAA-MM-JJ" : (new Date(selectedDate)).toLocaleDateString()}</time>
-                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } } } ><DropDownArrow /></span>
+                <time dateTime={selectedDate || null} className="selected-date">{(new Date(selectedDate)).toLocaleDateString() == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString()}</time>
+                <span onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } }} ><DropDownArrow /></span>
             </div>
             : null
         }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks
-                ? Object.keys(homeworks).sort().map((el, index) => {
-                    const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
+            {homeworks ? Object.keys(homeworks).length > 0 && Object.values(homeworks).some(arr => arr.some(task => task.content)) ? Object.keys(homeworks).sort().map((el, index) => {
+                console.log(homeworks)    
+                const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
                     const elDate = new Date(el)
-                    return <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? location.hash.split(";")[1] : homeworks[el][0].id)}${location.hash.split(";").length === 3 ? ";" + location.hash.split(";")[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                        <div className="notebook-day-header">
-                            <svg className={`progress-circle ${progression === 1 ? "filled" : ""}`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                                <circle cx="50" cy="50" r="40" strokeLinecap="round" stroke={calcStrokeColorColorProgression(progression)} pathLength="1" strokeDasharray="1" strokeDashoffset={1 - progression} />
-                            </svg>
+                    return homeworks[el].length ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                        <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
                             <span className="notebook-day-date">
                                 <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
                             </span>
                         </div>
+                        {/* <hr style={{ width: `${progression * 100}%`}} /> */}
                         <hr />
-                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)} >
+                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 homeworks[el].map((task, taskIndex) => {
                                     const result = [
                                         selectedDate === el
-                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} setBottomSheetSession={setBottomSheetSession} />
+                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
                                             : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
                                     if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
                                         result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
@@ -333,13 +326,11 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
                             }
                         </div>
                     </div>
-                })
+                        : null
+                }).filter(e => e) : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">
-                            <svg className={`progress-circle`} viewBox="0 0 100 100" >
-                                <circle cx="50" cy="50" r="40" />
-                            </svg>
                             <span className="notebook-day-date">
                                 <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}
@@ -356,7 +347,7 @@ export default function Notebook({ setBottomSheetSession, hideDateController = f
                         <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 index === 0
-                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} setBottomSheetSession={setBottomSheetSession} />)
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} />)
                                     : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
                             }
                         </div>

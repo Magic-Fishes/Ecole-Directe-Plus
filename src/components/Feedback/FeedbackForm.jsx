@@ -72,7 +72,9 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
     const [allowSharing, setAllowSharing] = useState(true);
 
-    const { isDevChannel, currentEDPVersion } = useContext(AppContext);
+    const { isDevChannel, currentEDPVersion, useUserSettings } = useContext(AppContext);
+
+    const settings = useUserSettings();
 
     // Refs
     const imgRef = useRef(null);
@@ -357,7 +359,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
             </div>
             <div id="contact">
                 <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
+                <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser && !settings.get("isStreamerModeEnabled") ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
             </div>
             <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
             {errorMessage && <p className="error-message">{errorMessage}</p>}

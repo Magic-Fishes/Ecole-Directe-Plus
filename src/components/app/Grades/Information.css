@@ -1,11 +1,9 @@
 
-.information .clear-button {
+.information .clear-button, .information .expand-reduce-button {
     position: absolute;
     line-height: 22px;
     top: 50%;
     transform: translateY(-50%);
-    right: 10px;
-    padding: 3px 6px;
     border-radius: 8px;
     background: none;
     border: none;
@@ -16,13 +14,41 @@
     pointer-events: auto;
     transition: all .1s, outline 0s;
 }
-.information .clear-button:hover {
+.information .clear-button {
+    right: 6.5px;
+    padding: 5.5px 9px;
+}
+.information .clear-button:is(:hover, :focus-visible) {
     color: rgb(var(--text-color-main));
     background-color: rgba(var(--text-color-main), .15);
 }
 .information .clear-button:active {
     color: rgb(var(--text-color-main), .5);
     background-color: rgba(var(--text-color-main), .10);
+}
+
+.information .expand-reduce-button {
+    padding: 3px 6px;
+    right: 46px;
+    width: 35px;
+}
+
+.information .expand-reduce-button svg {
+    fill: rgba(var(--text-color-alt), .5);
+    transform: translateY(2px);
+    transition: .1s;
+}
+.information .expand-reduce-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-main), .15);
+}
+.information .expand-reduce-button:is(:hover, :focus-visible) svg {
+    fill: rgba(var(--text-color-main));
+}
+.information .expand-reduce-button:active {
+    background-color: rgba(var(--text-color-main), .10);
+}
+.information .expand-reduce-button:active svg {
+    fill: rgba(var(--text-color-main), .5);
 }
 
 .information .element-information {

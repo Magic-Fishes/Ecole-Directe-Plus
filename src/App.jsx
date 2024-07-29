@@ -14,7 +14,7 @@ import Login from "./components/Login/Login";
 import ErrorPage from "./components/Errors/ErrorPage";
 import Canardman from "./components/Canardman/Canardman";
 import AppLoading from "./components/generic/Loading/AppLoading";
-import MainPage from "./components/Mainpage/MainPage";
+import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
@@ -22,6 +22,7 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
+import { add } from "date-fns";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -99,6 +100,8 @@ const defaultSettings = {
     isHighContrastEnabled: false,
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
+    isPartyModeEnabled: true,
+    isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
@@ -178,6 +181,12 @@ function initSettings(accountList) {
             isPhotoBlurEnabled: {
                 value: getSetting("isPhotoBlurEnabled", i),
             },
+            isPartyModeEnabled: {
+                value: getSetting("isPartyModeEnabled", i),
+            },
+            isStreamerModeEnabled: {
+                value: getSetting("isStreamerModeEnabled", i),
+            },
             gradeScale: {
                 value: getSetting("gradeScale", i),
                 min: 1,
@@ -231,6 +240,10 @@ function initData(length) {
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 
+let promptInstallPWA = () => {};
+window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
+window.addEventListener("appinstalled", () => { promptInstallPWA = null });
+
 export default function App() {
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
@@ -271,6 +284,63 @@ export default function App() {
     const entryURL = useRef(window.location.href);
     const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
     const createNotification = useCreateNotification();
+
+    class File {
+        constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
+            /**id : 5018 / "654123546545612654984.pdf"
+             * type : NODEVOIR / FICHIER_CDT
+             * file : "file.pdf" / "TEST.txt"
+             * name : "the_name_of_the_file_downloaded_without_extension"
+             * specialParams : params needed in the URL in certains cases
+             */
+            this.id = id
+            this.type = type
+            this.name = name
+            this.extension = file.slice(file.lastIndexOf(".") + 1)
+            this.specialParams = specialParams
+            this.state = "inactive"
+        }
+
+        fetch() {
+            if (!this.blob) {
+                if (this.state !== "requestForInstall") {
+                    this.state = "fetching"
+                }
+                fetchFile(this.id, this.type, this.specialParams)
+                    .then(blob => {
+                        this.blob = blob;
+                        if (this.state === "requestForInstall") {
+                            this.install()
+                        }
+                    })
+            }
+        }
+
+        download() {
+            if (this.blob) {
+                this.install();
+            } else if (this.state === "fetching") {
+                this.state = "requestForInstall"
+            } else {
+                this.state = "requestForInstall"
+                this.fetch()
+            }
+        }
+
+        async install() {
+            const url = URL.createObjectURL(this.blob);
+            const a = document.createElement('a');
+
+            a.href = url;
+            a.download = `${this.name}.${this.extension}`;
+
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -685,13 +755,14 @@ export default function App() {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
-                        if (matiere.sousMatiere) {
-                            continue;
-                        }
-                        let subjectCode = matiere.codeMatiere;
+                        // if (matiere.sousMatiere) {
+                        //     continue;
+                        // }
+                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
                         if (matiere.groupeMatiere) {
                             subjectCode = "category" + i.toString();
                             i++;
@@ -700,7 +771,11 @@ export default function App() {
                         newSubject.code = subjectCode;
                         newSubject.elementType = "subject";
                         newSubject.id = matiere.id.toString();
-                        newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        if (matiere.sousMatiere) {
+                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
+                        } else {
+                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        }
                         newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
                         newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
                         newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
@@ -708,6 +783,7 @@ export default function App() {
                         newSubject.size = matiere.effectif;
                         newSubject.rank = matiere.rang;
                         newSubject.isCategory = matiere.groupeMatiere;
+                        newSubject.isSubSubject = matiere.sousMatiere;
                         newSubject.teachers = matiere.professeurs;
                         newSubject.appreciations = matiere.appreciations;
                         newSubject.grades = [];
@@ -752,7 +828,7 @@ export default function App() {
                 }
 
                 const periodCode = newPeriodCode;
-                const subjectCode = grade.codeMatiere;
+                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
                 // try to rebuild the subject if it doesn't exist (happen when changing school year)
                 if (periods[periodCode].subjects[subjectCode] === undefined) {
                     periods[periodCode].subjects[subjectCode] = {
@@ -797,7 +873,11 @@ export default function App() {
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
-                newGrade.examCorrectionSRC = grade.uncCorrige;
+                if (grade.id == 6291688) {
+                    console.log(grade)
+                }
+                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.isReal = true;
                 /* Si newGrade.isReal est faux :
                     pas de :
@@ -1011,24 +1091,50 @@ export default function App() {
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
-                if (!aFaire) {
+                var contenuDeSeance = homework.contenuDeSeance;
+                if (!aFaire && !contenuDeSeance) {
                     return null;
                 }
 
-                const { donneLe, effectue, contenu, contenuDeSeance, document } = aFaire;
-                return {
-                    id: id,
-                    subjectCode: codeMatiere,
-                    subject: matiere,
-                    addDate: donneLe,
-                    isInterrogation: interrogation,
-                    isDone: effectue,
-                    teacher: nomProf,
-                    content: contenu,
-                    files: document,
-                    sessionContent: contenuDeSeance.contenu,
-                    sessionContentFiles: contenuDeSeance.documents,
+                if (!contenuDeSeance) {
+                    contenuDeSeance = aFaire
                 }
+
+                if (aFaire) {
+
+                    const { donneLe, effectue, contenu, documents } = aFaire;
+
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: donneLe,
+                        isInterrogation: interrogation,
+                        isDone: effectue,
+                        teacher: nomProf,
+                        content: contenu,
+                        files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                else {
+                    // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
+                    return {
+                        id: id,
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: day[0],
+                        isInterrogation: false,
+                        isDone: false,
+                        teacher: nomProf,
+                        content: "Ti9B",
+                        files: [],
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                
             }).filter((item) => item)]
         }))
         return sortedHomeworks
@@ -1147,8 +1253,8 @@ export default function App() {
         }
 
         const payload = {
-            identifiant: username,
-            motdepasse: password,
+            identifiant: encodeURIComponent(username),
+            motdepasse: encodeURIComponent(password),
             isReLogin: false,
             uuid: 0,
             fa: Object.keys(A2FInfo).length > 0 ? [A2FInfo] : []
@@ -1171,7 +1277,6 @@ export default function App() {
                 return response.text().then((data) => {
                     if (!data) {
                         setIsEDPUnblockInstalled(false);
-
                     } else {
                         return JSON.parse(data)
                     }
@@ -1324,40 +1429,6 @@ export default function App() {
             })
     }
 
-    async function fetchCorrection(file, id, callback = (() => { }), controller = (new AbortController())) {
-        abortControllers.current.push(controller);
-        const data = {
-            forceDownload: 0,
-            idDevoir: id
-        }
-        return await fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${file}&leTypeDeFichier=NODEVOIR&idDevoir=${id}&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    // "user-agent": navigator.userAgent,
-                    "x-token": tokenState
-                },
-                cors: "no-cors",
-                body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer"
-            },
-        )
-            .then(response => response.blob())
-            .then(blob => callback(blob))
-            // .then(blob => {
-            //     console.log(blob.type)
-            //     const blobUrl = URL.createObjectURL(blob);
-            //     return blobUrl
-            // })
-            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-
-    }
-
     async function fetchUserGrades(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
@@ -1475,6 +1546,72 @@ export default function App() {
                 })
         }
     }
+
+    async function fetchHomeworksSequentially(controller = new AbortController(), date = "incoming") {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+
+        let endpoint;
+        if (date === "incoming") {
+            endpoint = "cahierdetexte";
+        } else {
+            endpoint = "cahierdetexte/" + getISODate(date);
+        }
+
+        if (accountsListState[activeAccount].firstName === "Guest") {
+            if (date === "incoming") {
+                const module = await import("./data/homeworks.json");
+                changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
+            } else {
+                const module = await import("./data/detailed_homeworks.json");
+                changeUserData("sortedHomeworks", {
+                    ...getUserData("sortedHomeworks"),
+                    ...sortDayHomeworks({ [module.data.date]: module.data.matieres })
+                });
+            }
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        } else {
+            try {
+                const response = await fetch(
+                    getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                    {
+                        method: "POST",
+                        headers: {
+                            "x-token": tokenState
+                        },
+                        body: "data={}",
+                        signal: controller.signal
+                    }
+                );
+                const responseData = await response.json();
+                const code = responseData.code;
+                if (code === 200) {
+                    if (date === "incoming") {
+                        changeUserData("sortedHomeworks", {
+                            ...sortNextHomeworks(responseData.data),
+                            ...getUserData("sortedHomeworks")
+                        });
+                    } else {
+                        changeUserData("sortedHomeworks", {
+                            ...getUserData("sortedHomeworks"),
+                            ...sortDayHomeworks({ [responseData.data.date]: responseData.data.matieres })
+                        });
+                    }
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState(old => responseData?.token || old);
+            } catch (error) {
+                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
+                    setProxyError(true);
+                }
+            } finally {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            }
+        }
+    }
+
 
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
@@ -1621,6 +1758,24 @@ export default function App() {
                 referrerPolicy: "no-referrer"
             },
         )
+    }
+
+    async function fetchFile(id, type, specialParams) {
+        const { idDevoir } = specialParams
+        return await fetch(
+            `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${id}&leTypeDeFichier=${type}${idDevoir ? `&idDevoir=${idDevoir}` : ""}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                cors: "no-cors",
+                body: `data=${JSON.stringify({ forceDownload: 0 })}`,
+                referrerPolicy: "no-referrer"
+            },
+        )
+            .then(response => response.blob())
+            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1793,7 +1948,7 @@ export default function App() {
             errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
-                    element: <MainPage />,
+                    element: <LandingPage token={tokenState} accountsList={accountsListState} />,
                     path: "/",
                 },
                 {
@@ -1917,7 +2072,6 @@ export default function App() {
     ]);
 
     const appContextValue = useMemo(() => ({
-        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,
@@ -1925,6 +2079,8 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
+        promptInstallPWA,
         activeAccount,
         accountsListState,
         isLoggedIn,
@@ -1936,7 +2092,6 @@ export default function App() {
         actualDisplayTheme,
         currentEDPVersion,
     }), [
-        fetchCorrection,
         useUserData,
         useUserSettings,
         refreshApp,
@@ -1944,6 +2099,8 @@ export default function App() {
         deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworks,
+        fetchHomeworksSequentially,
+        promptInstallPWA,
         activeAccount,
         accountsListState,
         isLoggedIn,
