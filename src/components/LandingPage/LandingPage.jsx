@@ -16,6 +16,9 @@ import GitHubFullLogo from "../graphics/GitHubFullLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
+import SunIcon from "../graphics/SunIcon";
+import PadlockIcon from "../graphics/PadlockIcon";
+import DisplayThemeController from "../generic/UserInputs/DisplayThemeController";
 
 function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires maths skills that I definitely don't have but it returns a number between 0 and one and is smoothly increasing. See: https://en.wikipedia.org/wiki/Normal_distribution
     // Fonction d'erreur approximée
@@ -269,43 +272,43 @@ export default function LandingPage({ token, accountsList }) {
                     <div className="bento-card div1" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Points forts</h4>
-                            <p>Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor aliquam nulla facilisi</p>
+                            <p>Découvrez vos talents cachés grâce à un aperçu rapide de vos points forts. Parce que vous méritez de savoir à quel point vous êtes incroyable, nous mettons en lumière les matières dans lesquelles vous excellez.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div2" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Calcul automatique et instantané des moyennes</h4>
-                            <p>Diam maecenas sed enim ut sem viverra aliquet eget sit amet tellus cras adipiscing enim eu turpis egestas pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt dui ut ornare lectus</p>
+                            <p>Fini les calculs laborieux à la main. EDP fait tout le boulot pour vous. Parce que votre temps est précieux et doit être consacré à des choses plus importantes, comme procrastiner efficacement.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div3" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Thème de couleur</h4>
-                            <p>Porta nibh venenatis cras sed felis eget velit aliquet sagittis id consectetur purus ut faucibus pulvinar elementum integer enim neque</p>
+                            <p>Choisissez votre camp : clair comme le jour ou sombre comme votre âme. Passez du mode Clair au mode Sombre en un clic et offrez à vos yeux le repos qu'ils méritent. Parce que même votre interface se doit d'avoir du style.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div4" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Dernières notes</h4>
-                            <p>Massa tincidunt dui ut ornare lectus sit amet est placerat in egestas erat imperdiet sed</p>
+                            <p>Un coup d'œil et vous saurez tout. Avec l'aperçu rapide des dernières notes, regarder vos résultats en vif pendant l'intercours sera plus rapide que la formule 1 de Max Verstappen.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div5" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Score de Streak</h4>
-                            <p>Auctor augue mauris augue neque gravida in fermentum et sollicitudin ac orci phasellus egestas tellus</p>
+                            <p>Atteignez le nirvana académique avec le Score de streak. Surpassez vous, cumulez les bonnes notes et débloquez des badges ! N'hésitez pas à flex quand vous avez une meilleure streak que vos amis.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div6" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Contrôles à venir</h4>
-                            <p>purus faucibus ornare suspendisse sed nisi lacus sed viverra tellus in hac habitasse platea dictumst</p>
+                            <p>Restez aux aguets avec l'aperçu des prochains contrôles. Anticipez les futurs contrôles et organisez vos révisions comme un pro. Enfin, en théorie… on ne peut pas vous garantir que vous ne procrastinerez pas quand même.</p>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div7" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Sécurité et confidentialité</h4>
-                            <p>Sapien eget mi proin sed libero enim sed faucibus turpis in eu mi bibendum neque egestas congue quisque egestas diam in arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc sed blandit libero volutpat</p>
+                            <p>Votre sécurité, notre priorité, parce qu’il n’y a que vous et votre conscience qui devez connaître vos petits secrets académiques. EDP ne collecte AUCUNE information personnelle ou personnellement identifiable sur les utilisateurs du service. En tant que service non-affilié à Aplim, nous utilisons l'API d'EcoleDirecte pour que vous ayez accès à vos informations.</p>
                         </OutlineEffectDiv>
                     </div>
                 </div>
@@ -315,13 +318,13 @@ export default function LandingPage({ token, accountsList }) {
             <h2 className="section-title">Un communauté <strong className="heading-emphasis">passionnée</strong> et <strong className="heading-emphasis">bienveillante</strong></h2>
             <div>
                 <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><DiscordFullLogo /></a>
-                <p>Rejoignez notre <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><strong className="heading-emphasis">serveur Discord</strong></a> !<br />Vous pourrez y rencontrer les développeurs et discuter avec les membres les plus investis d'Ecole Directe Plus !</p>
+                <p>Rejoignez notre <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><strong>serveur Discord</strong></a> !<br />Vous pourrez y rencontrer les développeurs et discuter avec les membres les plus investis d'Ecole Directe Plus !</p>
             </div>
         </section>
         <section id="open-source" className="floating-section" ref={openSourceSectionRef}>
-            <h2 className="section-title">Un projet développé <strong className="heading-emphasis">par des élèves</strong>, <strong className="heading-emphasis">pour des élèves</strong></h2>
+            <h2 className="section-title">Un projet développé <strong className="heading-emphasis">par des élèves</strong>, <strong className="heading-emphasis">pour les élèves</strong></h2>
             <div>
-                <p>EDP est un projet open source distribué sous licence MIT, n'importe qui peut participer !<br />Nous partageons en toute transparence le code source d'EDP sur notre <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank"><strong className="heading-emphasis">dépôt GitHub</strong></a>. Ainsi, n'importe qui peut contribuer au projet, rapporter des bugs, ou auditer le code à la recherche de failles. C'est une garantie de sécurité, de fiabilité et de résilience.</p>
+                <p>EDP est un projet open source distribué sous licence MIT, n'importe qui peut participer !<br />Nous partageons en toute transparence le code source d'EDP sur notre <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank"><strong>dépôt GitHub</strong></a>. Ainsi, n'importe qui peut contribuer au projet, rapporter des bugs, ou auditer le code à la recherche de failles. C'est une garantie de sécurité, de fiabilité et de résilience.</p>
                 <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank"><GitHubFullLogo /></a>
             </div>
         </section>

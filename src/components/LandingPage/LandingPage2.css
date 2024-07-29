@@ -187,6 +187,10 @@ html:has(.landing-page) {
     transition: background .2s;
 }
 
+#bento .div2 .bento-outline-effect {
+    /* background: url("/public/images/lightning-dark.svg") */
+}
+
 #bento .bento-card:hover {
     /* scale: 1.03; */
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
