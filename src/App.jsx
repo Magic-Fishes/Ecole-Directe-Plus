@@ -657,7 +657,6 @@ function sortGrades(grades, activeAccount) {
      * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
      */
     const periodsFromJson = grades[activeAccount].periodes;
-    console.log(periodsFromJson)
     const periods = {};
     const generalAverageHistory = {}; // used for charts
     const streakScoreHistory = {}; // used for charts
@@ -1019,7 +1018,6 @@ function sortGrades(grades, activeAccount) {
     enabledFeatures.moyenneMax = settings.moyenneMax;
     enabledFeatures.coefficient = settings.coefficientNote;
 
-    console.log(periods);
     // add the average of all subjects a special type of chart
     for (const period in periods) {
         for (const subject in periods[period].subjects) {

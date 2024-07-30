@@ -10,7 +10,6 @@ import "./Account.css";
 
 export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, isLoggedIn, activeAccount }) {
     const { accountsListState, useUserData } = useContext(AppContext)
-
     const userData = useUserData();
 
     const profilePictureRefs = useRef([]);
@@ -49,6 +48,21 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
         }
     }, [schoolLife, isLoggedIn, activeAccount]);
 
+    // Initialiser les variables pour stocker la meilleure matière et sa moyenne
+    let bestSubject = null;
+    let bestAverage = -Infinity;
+
+    // Parcourir les matières pour trouver celle avec la meilleure moyenne
+    for (const key in userData.get("sortedGrades")?.allYear.subjects) {
+        const subject = userData.get("sortedGrades")?.allYear.subjects[key];
+        if (subject.elementType === 'subject') {
+            if (subject.average > bestAverage) {
+                bestAverage = subject.average;
+                bestSubject = subject.name;
+            }
+        }
+    }
+
     return (
         <div id="account">
             <HolographicDiv borderRadius={10} intensity={.2} className="frame" id="profile">
@@ -84,24 +98,18 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                     <div className="behavior-types">
                         <div className="behavior-type">
                             <span>heures en cours</span>
-                            <span
-                                className={"count" + (!userData.get("sortedGrades")?.delays ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.delays ?? <>
-                                <span style={{"--index": 0}}>.</span><span style={{"--index": 1}}>.</span><span
-                                style={{"--index": 2}}>.</span></>}</span>
+                            <br/>
+                            <span>En cours de développement (bientôt disponible)</span>
+                        </div>
+                        <div className="behavior-type">
+                            <span>Moyenne générale de l'année</span>
+                            <br/>
+                            <span>{userData.get("sortedGrades")?.allYear.generalAverage}</span>
                         </div>
                         <div className="behavior-type">
                             <span>Meilleure matière</span>
-                            <span
-                                className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.absences.length ?? <>
-                                <span style={{"--index": 3}}>.</span><span style={{"--index": 4}}>.</span><span
-                                style={{"--index": 5}}>.</span></>}</span>
-                        </div>
-                        <div className="behavior-type">
-                            <span>Pire matière</span>
-                            <span
-                                className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.sanctions.length ?? <>
-                                <span style={{"--index": 6}}>.</span><span style={{"--index": 7}}>.</span><span
-                                style={{"--index": 8}}>.</span></>}</span>
+                            <br/>
+                            <span>{bestSubject} avec ({bestAverage})</span>
                         </div>
                     </div>
                 </section>
