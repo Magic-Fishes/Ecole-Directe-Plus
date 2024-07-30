@@ -97,19 +97,19 @@ export default function Account({ schoolLife, fetchSchoolLife, sortSchoolLife, i
                     <h2 className="frame-heading">Statistiques</h2>
                     <div className="behavior-types">
                         <div className="behavior-type">
-                            <span>heures en cours</span>
+                            <span>Temps total passé en cours (en heures)</span>
                             <br/>
                             <span>En cours de développement (bientôt disponible)</span>
                         </div>
                         <div className="behavior-type">
-                            <span>Moyenne générale de l'année</span>
+                            <span>Moyenne générale annuelle</span>
                             <br/>
                             <span>{userData.get("sortedGrades")?.allYear.generalAverage}</span>
                         </div>
                         <div className="behavior-type">
                             <span>Meilleure matière</span>
                             <br/>
-                            <span>{bestSubject} avec ({bestAverage})</span>
+                            <span>{bestSubject} (avec {bestAverage})</span>
                         </div>
                     </div>
                 </section>
