@@ -208,7 +208,7 @@ export default function LandingPage({ token, accountsList }) {
         <header id="nav-bar" className="top-section">
             <nav className="nav-bar-content">
                 <div className="nav-logo">
-                    <span><EDPLogo height="15" className="EDPLogo" />Ecole Directe Plus</span>
+                    <EDPLogoFullWidth className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
                 </div>
                 <div className="nav-links-container">
                     <div className="inline">
@@ -342,13 +342,13 @@ export default function LandingPage({ token, accountsList }) {
                 <li><Link to="/login#policy">Confidentialité</Link></li>
                 <li><Link to="/login#policy">Conditions d'utilisation</Link></li>
                 <li><Link to="/feedback">Faire un retour</Link></li>
-                <li><Link to="/app/dashboard" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Tableau de bord</Link></li>
-                <li><Link to="/app/grades" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Notes</Link></li>
-                <li><Link to="/app/homeworks" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Cahier de texte</Link></li>
-                <li><Link to="/app/timetable" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Emploi du temps</Link></li>
-                <li><Link to="/app/messaging" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Messagerie</Link></li>
-                <li><Link to="/app/settings" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Paramètres</Link></li>
-                <li><Link to="/app/account" className={isLoggedIn ? "" : "disabled"} tabIndex={isLoggedIn ? "0" : "-1"}>Compte</Link></li>
+                <li><Link to={isLoggedIn ? "/app/dashboard" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Tableau de bord</Link></li>
+                <li><Link to={isLoggedIn ? "/app/grades" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Notes</Link></li>
+                <li><Link to={isLoggedIn ? "/app/homeworks" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Cahier de texte</Link></li>
+                <li><Link to={isLoggedIn ? "/app/timetable" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Emploi du temps</Link></li>
+                <li><Link to={isLoggedIn ? "/app/messaging" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Messagerie</Link></li>
+                <li><Link to={isLoggedIn ? "/app/settings" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Paramètres</Link></li>
+                <li><Link to={isLoggedIn ? "/app/account" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Compte</Link></li>
                 <li><Link to="/edp-unblock">EDP Unblock</Link></li>
             </ul>
 
