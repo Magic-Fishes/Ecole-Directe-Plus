@@ -342,13 +342,13 @@ export default function LandingPage({ token, accountsList }) {
                 <li><Link to="/login#policy">Confidentialité</Link></li>
                 <li><Link to="/login#policy">Conditions d'utilisation</Link></li>
                 <li><Link to="/feedback">Faire un retour</Link></li>
-                <li><Link to={isLoggedIn ? "/app/dashboard" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Tableau de bord</Link></li>
-                <li><Link to={isLoggedIn ? "/app/grades" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Notes</Link></li>
-                <li><Link to={isLoggedIn ? "/app/homeworks" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Cahier de texte</Link></li>
-                <li><Link to={isLoggedIn ? "/app/timetable" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Emploi du temps</Link></li>
-                <li><Link to={isLoggedIn ? "/app/messaging" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Messagerie</Link></li>
-                <li><Link to={isLoggedIn ? "/app/settings" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Paramètres</Link></li>
-                <li><Link to={isLoggedIn ? "/app/account" : "/login"} tabIndex={isLoggedIn ? "0" : "-1"}>Compte</Link></li>
+                <li><Link to="/app/dashboard" tabIndex={isLoggedIn ? "0" : "-1"}>Tableau de bord</Link></li>
+                <li><Link to="/app/grades" tabIndex={isLoggedIn ? "0" : "-1"}>Notes</Link></li>
+                <li><Link to="/app/homeworks" tabIndex={isLoggedIn ? "0" : "-1"}>Cahier de texte</Link></li>
+                <li><Link to="/app/timetable" tabIndex={isLoggedIn ? "0" : "-1"}>Emploi du temps</Link></li>
+                <li><Link to="/app/messaging" tabIndex={isLoggedIn ? "0" : "-1"}>Messagerie</Link></li>
+                <li><Link to="/app/settings" tabIndex={isLoggedIn ? "0" : "-1"}>Paramètres</Link></li>
+                <li><Link to="/app/account" tabIndex={isLoggedIn ? "0" : "-1"}>Compte</Link></li>
                 <li><Link to="/edp-unblock">EDP Unblock</Link></li>
             </ul>
 
