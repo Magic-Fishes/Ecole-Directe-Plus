@@ -41,6 +41,15 @@
     /* Style the EDP Unblock logo */
     height: 20px;
     transform: scale(1.3);
+    transition: .2s ease;
+}
+
+#nav-bar .edpu-logo > path {
+    fill: rgba(var(--text-color-alt), .7);
+}
+
+a[href="/edp-unblock"]:hover .edpu-logo > path {
+    fill: rgba(var(--text-color-main-reverse), 0.7)!important;
 }
 
 /* Landing Page */
@@ -85,15 +94,9 @@
     display: none;
 }
 
-.landing-page .nav-logo span {
-    /* Style the nav logo span */
-    display: flex;
-    text-decoration: none;
-    padding: 1.7rem 1.4rem;
-    border-radius: 1rem;
-    user-select: none;
-    cursor: default;
-    background-color: rgb(var(--background-color-2));
+.landing-logo {
+    height: 50px;
+    width: auto;
 }
 
 /* Go to Top Button */

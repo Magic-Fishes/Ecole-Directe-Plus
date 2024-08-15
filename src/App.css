@@ -444,7 +444,7 @@ p.error-message a {
 }
 
 @-moz-document url-prefix() {
-    body {
+    * {
         scrollbar-color: rgb(var(--background-color-3)) transparent;
         scrollbar-size: auto;
     }
