@@ -22,7 +22,7 @@ body:has(#bottom-sheet) {
     top: 50%;
     left: 50%;
     filter: blur(10px);
-    transform: translate(-50%, -50%) scale(0.8);
+    transform: translate(-50%, -50%) scale(1);
     border-radius: 20px;
     width: 100%;
     /* max-width: 400px; */
@@ -30,13 +30,13 @@ body:has(#bottom-sheet) {
     /* max-width: 450px; */
     /* max-width: 500px; */
     max-height: 100%;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     box-shadow: var(--box-shadow-window);
     filter: none;
     /* cubic-bezier(.31,1.83,.53,.63) */
     animation: 0.3s ease-out 0s blur-in;
     animation-timing-function: var(--timing-function-spring-effect);
-    animation-fill-mode: forwards;
+    /* animation-fill-mode: forwards; */
 }
 
 #pop-up-background.info .default-closing-cross {
