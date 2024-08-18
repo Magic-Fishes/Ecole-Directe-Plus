@@ -73,6 +73,7 @@
     font-size: var(--font-size-13);
     padding: 12px;
     background-color: rgb(var(--background-color-0), .5);
+    border-radius: 0 0 20px 20px;
 
     display: flex;
     justify-content: space-around;
