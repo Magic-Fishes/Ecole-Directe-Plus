@@ -161,7 +161,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                         globalSettings.isDevChannel.set(false);
                     }
                     
-                    navigate("/");
+                    navigate(window.location.pathname);
                 } else {
                     if (globalSettings.isDevChannel.value) {
                         if (window.location.hostname !== "dev.ecole-directe.plus") {

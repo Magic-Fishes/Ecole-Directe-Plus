@@ -9,6 +9,7 @@
     text-align: center;
     padding: 20px;
     background-color: rgb(var(--background-color-0), .5);
+    border-radius: 20px 20px 0 0;
     /* margin-bottom: 20px; */
 }
 
