@@ -635,11 +635,13 @@ export default function App() {
             }
         }
 
-        window.addEventListener("resize", handleWindowResize);
-        handleWindowResize();
-
-        return () => {
-            window.removeEventListener("resize", handleWindowResize);
+        if (getBrowser() !== "Firefox") {
+            window.addEventListener("resize", handleWindowResize);
+            handleWindowResize();
+    
+            return () => {
+                window.removeEventListener("resize", handleWindowResize);
+            }
         }
     }, []);
 
