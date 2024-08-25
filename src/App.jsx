@@ -240,7 +240,7 @@ function initData(length) {
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 
-let promptInstallPWA = () => {};
+let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
@@ -610,38 +610,38 @@ export default function App() {
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
 
-            // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
-            if (window.innerWidth > 869 && window.innerWidth < 1250) {
-                if (window.innerWidth >= 995) {
-                    document.documentElement.style.zoom = (.2 / 170) * window.innerWidth - .47;
-                } else {
-                    document.documentElement.style.zoom = .7;
-                }
-
-                let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                if (isSafari) {
-                    const newFontSize = (.125 / 170) * window.innerWidth - .294;
-                    if (newFontSize < 8) {
-                        document.documentElement.style.fontSize = "8px";
-                    } else if (newFontSize > 10) {
-                        document.documentElement.style.fontSize = "";
+            if (getBrowser() !== "Firefox") {
+                // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
+                if (window.innerWidth >= 869 && window.innerWidth < 1250) {
+                    if (window.innerWidth >= 995) {
+                        document.documentElement.style.zoom = (.2 / 170) * window.innerWidth - .47;
                     } else {
-                        document.documentElement.style.fontSize = newFontSize + "em";
+                        document.documentElement.style.zoom = .7;
                     }
+
+                    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                    if (isSafari) {
+                        const newFontSize = (.125 / 170) * window.innerWidth - .294;
+                        if (newFontSize < 8) {
+                            document.documentElement.style.fontSize = "8px";
+                        } else if (newFontSize > 10) {
+                            document.documentElement.style.fontSize = "";
+                        } else {
+                            document.documentElement.style.fontSize = newFontSize + "em";
+                        }
+                    }
+                } else {
+                    document.documentElement.style.fontSize = "";
+                    document.documentElement.style.zoom = "";
                 }
-            } else {
-                document.documentElement.style.fontSize = "";
-                document.documentElement.style.zoom = "";
             }
         }
 
-        if (getBrowser() !== "Firefox") {
-            window.addEventListener("resize", handleWindowResize);
-            handleWindowResize();
-    
-            return () => {
-                window.removeEventListener("resize", handleWindowResize);
-            }
+        window.addEventListener("resize", handleWindowResize);
+        handleWindowResize();
+
+        return () => {
+            window.removeEventListener("resize", handleWindowResize);
         }
     }, []);
 
@@ -1136,7 +1136,6 @@ export default function App() {
                         sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
                     }
                 }
-                
             }).filter((item) => item)]
         }))
         return sortedHomeworks
