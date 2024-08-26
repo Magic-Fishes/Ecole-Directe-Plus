@@ -163,15 +163,10 @@ export default function LandingPage({ token, accountsList }) {
 
         const mouseAngle = Math.atan2(deltaMouse.y, deltaMouse.x)
         const mouseDistance = Math.sqrt(deltaMouse.x ** 2 + deltaMouse.y ** 2)
-        const translationDistance = bentoBoxRect.width * Math.abs(Math.cos(mouseAngle)) + bentoBoxRect.height * Math.abs(Math.sin(mouseAngle))
-        const translation = cumulativeDistributionFunction(mouseDistance, (translationDistance + 50) / 4, translationDistance / 7) * 5
-        // console.log(translation)
-        // setDebugHeight(mouseDistance)
-        // setDebugAngle(mouseAngle)
-        // setDebugHeightVector(Math.sqrt((translation * Math.cos(mouseAngle)) ** 2 + (translation * Math.sin(mouseAngle)) ** 2))
-        // setDebugAngleVector(Math.atan2(translation * Math.sin(mouseAngle), translation * Math.cos(mouseAngle)))
-        bentoBox.style.transform = `translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`
-        // console.log(`translate(${translation * Math.cos(mouseAngle)}%,${translation * Math.sin(mouseAngle)}%)`)
+        const translationDistance = bentoBoxRect.width * Math.abs(Math.cos(mouseAngle)) + bentoBoxRect.height * Math.abs(Math.sin(mouseAngle));
+        // Sorry, I don't remember why I choosed this values (but it is not random, just accept that it works :/) 
+        const translation = cumulativeDistributionFunction(mouseDistance, (translationDistance + 50) / 4, translationDistance / 7);
+        bentoBox.style.transform = `translate(${(translation * Math.cos(mouseAngle)) * 15}px,${(translation * Math.sin(mouseAngle)) * 15}px)`
     }
 
     function handleBentoMouseLeave(event) {
