@@ -5,6 +5,26 @@ html:has(.landing-page) {
     scroll-behavior: smooth;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                HEADER MENU                                 */
+/* -------------------------------------------------------------------------- */
+
+.landing-page .nav-logo {
+    height: 100%;
+    padding: 1.7rem 1.4rem;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgb(var(--background-color-2));
+    text-decoration: none;
+    user-select: none;
+    cursor: default;
+}
+
+.landing-page .nav-logo svg {
+    height: 100%;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                HERO BANNER                                 */
@@ -16,7 +36,9 @@ html:has(.landing-page) {
 }
 
 #home::before {
-    /* that could be done with the hero-banner background, but it's necessary to keep the height of hero-banner flexible in order to keep a coherent stacking of elements, that's why we use ::before here */
+    /* that could be done with the hero-banner background, but it's necessary 
+    to keep the height of hero-banner flexible in order to keep a coherent 
+    stacking of elements, that's why we use ::before here */
     content: "";
     z-index: -1;
     width: 100%;
@@ -428,5 +450,11 @@ html:has(.landing-page) {
     }
     .landing-page .footer-logo {
         flex: auto;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .landing-page .nav-logo svg {
+        display: none;
     }
 }

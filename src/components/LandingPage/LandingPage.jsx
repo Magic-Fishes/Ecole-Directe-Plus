@@ -52,24 +52,21 @@ export default function LandingPage({ token, accountsList }) {
     const [isLoggedIn, setIsLoggedIn] = useState(token && accountsList.length > 0); // this one is different from the one in App.jsx
 
     const [isTop, setIsTop] = useState(true);
-    // const [debugHeight, setDebugHeight] = useState(0);
-    // const [debugAngle, setDebugAngle] = useState(0);
-    // const [debugHeightVector, setDebugHeightVector] = useState(0);
-    // const [debugAngleVector, setDebugAngleVector] = useState(0);
-    
+    const [isScrollNAvigation, setIsScrollNavigation] = useState(false);
+    const homeSectionRef = useRef(null)
     const communitySectionRef = useRef(null)
     const openSourceSectionRef = useRef(null)
 
     const location = useLocation()
     const navigate = useNavigate()
-    
+
     const theme = useUserSettings("displayTheme")
     const displayMode = useUserSettings("displayMode");
-    
+
     const changeTheme = () => {
         theme.set(actualDisplayTheme === "light" ? "dark" : "light");
     };
-    
+
     useEffect(() => {
         setIsLoggedIn(token && accountsList.length > 0);
     }, [token, accountsList])
@@ -178,56 +175,23 @@ export default function LandingPage({ token, accountsList }) {
     }
 
     return (<div className="landing-page">
-        {/* <div id="debug" style={{
-            position: "fixed",
-            top: "200px",
-            left: "200px",
-            background: "red",
-            width: "1px",
-            zIndex: 1000,
-            height: debugHeight,
-            transformOrigin: "0 0",
-            transform: `rotate(${debugAngle - Math.PI / 2}rad)`,
-        }}></div>
-        <div id="debug2" style={{
-            position: "fixed",
-            top: "200px",
-            left: "200px",
-            background: "green",
-            width: "3px",
-            zIndex: 1000,
-            height: debugHeightVector * 5,
-            transformOrigin: "0 0",
-            transform: `rotate(${debugAngleVector - Math.PI / 2}rad)`,
-        }}></div> */}
-        <header id="nav-bar" className="top-section">
-            <nav className="nav-bar-content">
-                <div className="nav-logo">
-                    <EDPLogoFullWidth className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
-                </div>
-                <div className="nav-links-container">
-                    <div className="inline">
-                        <div className="nav-links">
-                            <Link to="#home" className={`link ${location.hash === "#home" ? "selected" : ""}`} replace={true} >Accueil</Link>
-                            <Link to="#community" className={`link ${location.hash === "#community" ? "selected" : ""}`} replace={true} >Communauté</Link>
-                            <Link to="#open-source" className={`link ${location.hash === "#open-source" ? "selected" : ""}`} replace={true} >Open-Source</Link>
-                            <Link to="/edp-unblock" className={`link ${location.hash === "#edp-unblock" ? "selected" : ""}`} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
-                        </div>
-                    </div>
-                </div>
-                <div className="login-theme">
-                    <div className="nav-login">
-                        <Link to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
-                    </div>
-                    <div className="change-theme">
-                        <button id="toggle-button" onClick={changeTheme}>
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        </header>
-        <section id="home">
-            <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className={`up-arrow ${isTop ? "unactive" : "active"}`} /></Link>
+        {!isMobileLayout && <header id="nav-bar" className="top-section">
+            <span className="nav-logo">
+                <EDPLogo className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />Ecole Directe Plus
+            </span>
+            {!isTabletLayout && !isMobileLayout && <nav className="nav-links">
+                <Link to="#home" className={location.hash === "#home" ? "selected" : ""} replace={true} >Accueil</Link>
+                <Link to="#community" className={location.hash === "#community" ? "selected" : ""} replace={true} >Communauté</Link>
+                <Link to="#open-source" className={location.hash === "#open-source" ? "selected" : ""} replace={true} >Open-Source</Link>
+                <Link to="/edp-unblock" className={location.hash === "#edp-unblock" ? "selected" : ""} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
+            </nav>}
+            <div className="nav-buttons">
+                <Link className="nav-login" to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
+                <button className="change-theme" onClick={changeTheme} />
+            </div>
+        </header>}
+        <section id="home" ref={homeSectionRef}>
+            <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className="up-arrow" /></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
