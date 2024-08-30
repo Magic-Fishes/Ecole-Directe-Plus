@@ -209,10 +209,6 @@ html:has(.landing-page) {
     transition: background .2s;
 }
 
-#bento .div2 .bento-outline-effect {
-    /* background: url("/public/images/lightning-dark.svg") */
-}
-
 #bento .bento-card:hover {
     /* scale: 1.03; */
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px, 0px 5px 8px -2px rgb(var(--text-color-alt), .2);
@@ -241,6 +237,88 @@ html:has(.landing-page) {
 .div6 { grid-area: 5 / 1 / 6 / 2; }
 .div7 { grid-area: 4 / 2 / 6 / 3; }
 
+#bento .div3 .inner-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#bento .div3 .theme-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    padding-bottom: 40px;
+    flex-grow: 1;
+}
+
+#bento .div3 .theme-buttons button {
+    border: solid 2px transparent;
+    display: flex;
+    flex-grow: 1;
+    transition: .2s !important;
+}
+
+#bento .div3 .theme-buttons button:first-child {
+    margin-right: -1px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #D2D2FF;
+}
+
+#bento .div3 .theme-buttons button:last-child {
+    margin-left: -1px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: #323257;
+}
+
+#bento .div3 .theme-buttons button:first-child:not(.activated):is(:hover, :focus-visible) {
+    outline: none;
+    background-color: #BEBEF3;
+    border-color: transparent;
+}
+
+#bento .div3 .theme-buttons button:first-child:is(.activated, :hover, :focus-visible) {
+    outline: none;
+    background-color: #BEBEF3;
+    border-color: #323257;
+}
+
+#bento .div3 .theme-buttons button:last-child:not(.activated):is(:hover, :focus-visible) {
+    outline: none;
+    background-color: #434369;
+    border-color: transparent;
+}
+
+#bento .div3 .theme-buttons button:last-child:is(.activated, :hover, :focus-visible) {
+    outline: none;
+    background-color: #434369;
+    border-color: #D2D2FF;
+}
+
+#bento .div3 .theme-buttons button svg {
+    padding: 25%;
+    transition: .5s !important;
+}
+
+#bento .div3 .theme-buttons button.activated:first-child svg {
+    rotate: 180deg;
+}
+
+#bento .div3 .theme-buttons button.activated:last-child svg {
+    scale: -1 1;
+}
+
+#bento .div3 .theme-buttons button:first-child svg path{
+    stroke: black;
+}
+
+#bento .div3 .theme-buttons button:last-child svg path{
+    stroke: white;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                               PARALAX ITEMS                                */

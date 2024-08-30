@@ -13,6 +13,8 @@ import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import DiscordFullLogo from "../graphics/DiscordFullLogo";
 import GitHubFullLogo from "../graphics/GitHubFullLogo";
+import SunIcon from "../graphics/SunIcon";
+import MoonIcon from "../graphics/MoonIcon";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
@@ -250,8 +252,18 @@ export default function LandingPage({ token, accountsList }) {
                     </div>
                     <div className="bento-card div3" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
                         <OutlineEffectDiv className="bento-outline-effect">
-                            <h4>Thème de couleur</h4>
-                            <p>Choisissez votre camp : clair comme le jour ou sombre comme votre âme. Passez du mode Clair au mode Sombre en un clic et offrez à vos yeux le repos qu'ils méritent. Parce que même votre interface se doit d'avoir du style.</p>
+                            <div>
+                                <h4>Thème de couleur</h4>
+                                <p>Choisissez votre camp : clair comme le jour ou sombre comme votre âme. Passez du mode Clair au mode Sombre en un clic et offrez à vos yeux le repos qu'ils méritent. Parce que même votre interface se doit d'avoir du style.</p>
+                            </div>
+                            <div className="theme-buttons">
+                                <button onClick={() => theme.set("light")} className={theme.get() == "light" ? "activated" : ""}>
+                                    <SunIcon />
+                                </button>
+                                <button onClick={() => theme.set("dark")} className={theme.get() == "dark" ? "activated" : ""}>
+                                    <MoonIcon />
+                                </button>
+                            </div>
                         </OutlineEffectDiv>
                     </div>
                     <div className="bento-card div4" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
