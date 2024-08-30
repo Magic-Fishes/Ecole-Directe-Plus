@@ -458,3 +458,16 @@ html:has(.landing-page) {
         display: none;
     }
 }
+
+@media only screen and (max-width: 737px) {
+    #bento .bento-grid {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #bento .bento-grid > div {
+        max-width: 400px;
+    }
+}
