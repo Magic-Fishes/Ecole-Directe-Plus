@@ -16,9 +16,6 @@ import GitHubFullLogo from "../graphics/GitHubFullLogo";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
-import SunIcon from "../graphics/SunIcon";
-import PadlockIcon from "../graphics/PadlockIcon";
-import DisplayThemeController from "../generic/UserInputs/DisplayThemeController";
 
 function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires maths skills that I definitely don't have but it returns a number between 0 and one and is smoothly increasing. See: https://en.wikipedia.org/wiki/Normal_distribution
     // Fonction d'erreur approximée
@@ -31,9 +28,7 @@ function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires
         var a5 = 1.061405429;
         var p = 0.3275911;
 
-        /*
-            This is a simplified version of the function because we know that x will always be positive 
-        */
+        // This is a simplified version of the function because we know that x will always be positive 
 
         // A&S formula 7.1.26
         var t = 1.0 / (1.0 + p * x);
@@ -148,22 +143,35 @@ export default function LandingPage({ token, accountsList }) {
         if (displayMode.get() !== "quality") {
             return;
         }
-        let bentoBox = event.target
-        while (!bentoBox.attributes.class || !bentoBox.attributes.class.value.includes("bento-card")) {
-            bentoBox = bentoBox.parentElement
+        let bentoBox = event.target;
+        while (!bentoBox.classList || !bentoBox.classList.contains("bento-card")) {
+            bentoBox = bentoBox.parentElement;
         }
         const bentoBoxRect = bentoBox.getBoundingClientRect();
-        const deltaMouse = {
+        const deltaMouse = { // distance of the mouse from the center
             x: applyZoom(event.clientX ?? event.touches[0].clientX) - (bentoBoxRect.x + bentoBoxRect.width / 2),
             y: applyZoom(event.clientY ?? event.touches[0].clientY) - (bentoBoxRect.y + bentoBoxRect.height / 2),
         }
-
-        const mouseAngle = Math.atan2(deltaMouse.y, deltaMouse.x)
-        const mouseDistance = Math.sqrt(deltaMouse.x ** 2 + deltaMouse.y ** 2)
-        const translationDistance = bentoBoxRect.width * Math.abs(Math.cos(mouseAngle)) + bentoBoxRect.height * Math.abs(Math.sin(mouseAngle));
-        // Sorry, I don't remember why I choosed this values (but it is not random, just accept that it works :/) 
-        const translation = cumulativeDistributionFunction(mouseDistance, (translationDistance + 50) / 4, translationDistance / 7);
-        bentoBox.style.transform = `translate(${(translation * Math.cos(mouseAngle)) * 15}px,${(translation * Math.sin(mouseAngle)) * 15}px)`
+        /**Little course about Cumulative Distribution Function (CDF)
+         * The CDF returns an int between 0 and 1 given by a the cumulative probability for a given x value
+         * (go to highschool and/or search for images of CDF it's easier to understand)
+         * this functions takes in parameter 3 variables:
+         * - x :         classic x as for every function.
+         *                  We will use the distance of the mouse from the center of the box.
+         *                  => Math.abs(deltaMouse.x)
+         * - μ (mu) :    the average of the function (basically the middle and where is positionned the function), 
+         *               you can understand this as the position where CDF(x) == 0.5.
+         *                  We will use the dimension of the box divided by 4 to get the middle between the box 
+         *                  and an edge as the middle of the CDF.
+         *                  => bentoBoxRect.width / 4
+         * - σ (sigma) : the standard deviation of the function. It will control the width of the function. 
+         *               (the lowest it is, the fastest the CDF will grow).
+         *                  We will use the width divided by 5,1516 this value allow us to contains 99% of the values 
+         *                  between 0 and the width of the box(I have no idea why but trust me 👍)
+         */
+        const translationX = cumulativeDistributionFunction(Math.abs(deltaMouse.x), bentoBoxRect.width / 4, bentoBoxRect.width / 5.1516);
+        const translationY = cumulativeDistributionFunction(Math.abs(deltaMouse.y), bentoBoxRect.height / 4, bentoBoxRect.height / 5.1516);
+        bentoBox.style.transform = `translate(${(translationX * 15) * (deltaMouse.x > 0 ? 1 : -1)}px,${(translationY * 15) * (deltaMouse.y > 0 ? 1 : -1)}px)`
     }
 
     function handleBentoMouseLeave(event) {
