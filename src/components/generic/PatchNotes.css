@@ -14,6 +14,13 @@
     margin-top: 15px;
 }
 
+#patch-notes .contributor {
+    font-size: var(--font-size-14);
+}
+
+#patch-notes .sub-paragraph {
+    font-size: var(--font-size-16);
+}
 
 #discord-picture-new-version {
     width: 100%;
