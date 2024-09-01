@@ -63,6 +63,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback</li>
                         <li>Ecole Directe Plus a son propre <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord</a> ! Rejoignez le maintenant pour discuter avec les développeurs et tout le Canardman-Gang !</li>
                         <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
+                        <iframe style={ { display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" } } src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullscreen></iframe>
                     </ul>
 
                     {/* <hr />

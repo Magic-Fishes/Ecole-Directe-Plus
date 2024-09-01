@@ -16,7 +16,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     const settings = useUserSettings();
 
     const createNotification = useCreateNotification();
-    
+
     const [isNewUser, setIsNewUser] = useState(false);
     const [isNewEDPVersion, setIsNewEDPVersion] = useState(false);
     const [popUp, setPopUp] = useState(false);
@@ -63,9 +63,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
 
         document.addEventListener("keydown", handleKeyDown);
-        
+
         return () => {
-            document.removeEventListener("keydown", handleKeyDown);            
+            document.removeEventListener("keydown", handleKeyDown);
         }
     }, [])
 
@@ -95,11 +95,17 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 localStorage.clear();
             }
         }
-        
+
         // localStorage.clear();
-        if (location.pathname !== "/" && localStorage.getItem("EDPVersion") !== currentEDPVersion) {
+        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
-                setIsNewUser(true);
+                if (location.pathname !== "/") {
+                    setIsNewUser(true);
+                } else {
+                    localStorage.setItem("EDPVersion", currentEDPVersion);
+                    setIsNewEDPVersion(true);
+                    necessaryResets(localStorage.getItem("EDPVersion"));
+                }
             } else {
                 setIsNewEDPVersion(true);
                 necessaryResets(localStorage.getItem("EDPVersion"));
@@ -154,13 +160,13 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 if (isVerifiedOrigin || isStandaloneApp) {
                     console.log("verified origin");
                     entryURL.current = window.location.origin;
-                    
+
                     if (window.location.hostname === "dev.ecole-directe.plus") {
                         globalSettings.isDevChannel.set(true);
                     } else {
                         globalSettings.isDevChannel.set(false);
                     }
-                    
+
                     navigate(window.location.pathname);
                 } else {
                     if (globalSettings.isDevChannel.value) {
@@ -270,7 +276,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         document.addEventListener("keydown", handleKeyDown);
         document.addEventListener("keyup", handleKeyUp);
         window.addEventListener("blur", handleUnfocusing)
-        
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
@@ -328,7 +334,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             // l'utilisateur n'est pas sur une page du header
             pageId = siteMap.indexOf("dashboard");
         } else {
-            pageId += delta;            
+            pageId += delta;
         }
         if (pageId < 0) {
             pageId = 0;
@@ -387,7 +393,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // full screen
     const toggleFullScreen = () => {
         let fullScreenState;
-        setIsFullScreen(oldValue => { fullScreenState = !oldValue ; return !oldValue});
+        setIsFullScreen(oldValue => { fullScreenState = !oldValue; return !oldValue });
         if (fullScreenState) {
             document.documentElement.requestFullscreen();
         } else {
@@ -400,7 +406,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     const focusAccountSelector = () => {
         const accountSelector = document.querySelector("#active-account");
         if (accountSelector) {
-            accountSelector.focus();            
+            accountSelector.focus();
         }
     }
 
@@ -420,7 +426,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <input type="button" onClick={redirectToMuseum} value="MUSEUM" />}
                 {isAdmin && <input type="button" onClick={() => localStorage.clear()} value="CLEAR LS" />}
                 {isAdmin && <input type="button" onClick={() => resetUserData(false)} value="RESET USER DATA" />}
-                {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST"  style={(!isAdmin ? { opacity: 0.2 } : {})} />}
+                {(!process.env.NODE_ENV || process.env.NODE_ENV === "development") && <input type="button" onClick={fakeLogin} value="LOGIN AS GUEST" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
                 {isAdmin && <select title="Display theme" value={displayTheme} name="display-theme" id="display-theme-select" onChange={updateDisplayTheme}>
                     <option value="auto">THEME: AUTO</option>
                     <option value="dark">THEME: DARK</option>
@@ -431,9 +437,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     <option value="balanced">DISPLAY: BALANCED</option>
                     <option value="performance">DISPLAY: PERF</option>
                 </select>}
-                {isAdmin && <input type="button" onClick={() => { document.documentElement.classList.remove("dark") ; document.documentElement.classList.remove("light") ; document.documentElement.classList.add("tritanopia")}} value="TRITANOPIA" />}
+                {isAdmin && <input type="button" onClick={() => { document.documentElement.classList.remove("dark"); document.documentElement.classList.remove("light"); document.documentElement.classList.add("tritanopia") }} value="TRITANOPIA" />}
                 {isAdmin && <input type="button" onClick={syncSettings} value="SYNC SETTINGS" />}
-                {isAdmin && <input type="button" onClick={() => {createFolderStorage("123test123")}} value="FOLDER" />}
+                {isAdmin && <input type="button" onClick={() => { createFolderStorage("123test123") }} value="FOLDER" />}
                 {isAdmin && <form action="https://docs.google.com/document/d/1eiE_DTuimyt7r9pIe9ST3ppqU9cLYashXm9inhBIC4A/edit" method="get" target="_blank" style={{ display: "inline" }}>
                     <button type="submit" style={{ display: "inline" }}>G DOCS</button>
                 </form>}
