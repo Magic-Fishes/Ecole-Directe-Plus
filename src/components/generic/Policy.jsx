@@ -12,7 +12,7 @@ export default function Policy({ onCloseNavigateURL }) {
     const navigate = useNavigate();
 
     // randomize the appariton order of the lead developpers (credits)
-    const leadDeveloppers = ["Saumon Brulé", "Truite Séchée"];
+    const leadDeveloppers = [<a href="https://github.com/saumon-brule">Saumon Brulé</a>, <a href="https://github.com/truiteseche">Truite Séchée</a>];
     const [firstLeadDeveloppersDisplayedIdx, setFirstLeadDevelopperDisplayedIdx] = useState(Math.floor(Math.random() * 2));
 
     const legalNotice = <ul id="legal-notice">
@@ -64,12 +64,14 @@ export default function Policy({ onCloseNavigateURL }) {
             - {leadDeveloppers[leadDeveloppers.length - firstLeadDeveloppersDisplayedIdx - 1]}<br /><br />
 
             Autres contributeurs :<br />
-            - Akash Banchhor<br />
-            - Oeildelynx<br />
-            - xav35000<br />
-            - Matrism<br />
-            - Fefe_du_973<br /><br />
-
+            - <a href="https://github.com/akash02ab">akash02ab</a><br />
+            - <a href="https://github.com/OeildeLynx31">OeildeLynx31</a><br />
+            - <a href="https://github.com/Fefedu973">Fefedu973</a><br />
+            - <a href="https://github.com/Beta-Way">Beta-Way</a><br />
+            - <a href="https://github.com/xav35000">xav35000</a><br />
+            - <a href="https://github.com/Vooxify">Vooxify</a><br />
+            - <a href="https://github.com/Fefedu973">Fefedu973</a><br />
+            <br />
             APIs et services tiers :<br />
             - EcoleDirecte<br />
             - ImgBB<br />
@@ -94,7 +96,7 @@ export default function Policy({ onCloseNavigateURL }) {
             - Nickro_01290<br />
             - Cthyllax<br />
             - EcoleDirecte Neptunium<br />
-            - Internet<br />
+            - <b>Internet</b><br />
         </li>
         <li className="legal-content">Curieux et motivé ? Rejoignez nous et participez au développement d'Ecole Directe Plus à travers le <a className="external-link" href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="blank">dépôt Github</a>.</li>
         <li className="legal-content">Rencontrez la communauté d'Ecole Directe Plus en rejoignant le <a className="external-link" href="https://discord.gg/AKAqXfTgvE" target="blank">serveur Discord</a>.</li>
@@ -105,7 +107,7 @@ export default function Policy({ onCloseNavigateURL }) {
             The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
             The Software is provided “as is”, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders X be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the Software.</li>
-        <li className="legal-content" style={{ listStyle: "none", marginBlock: "20px 2px" }}>Dernière révision le 24 avril 2024</li>
+        <li className="legal-content" style={{ listStyle: "none", marginBlock: "20px 2px" }}>Dernière révision le 1 Septembre 2024</li>
         <li className="legal-content" style={{ listStyle: "none", marginBlock: "2px 20px" }}>Nous contacter : <a href="mailto:contact@ecole-directe.plus" style={{ color: "rgb(var(--text-color-alt))" }} >contact@ecole-directe.plus</a></li>
         <li id="copyleft-container">Copyleft <Copyleft id="copyleft" alt="Copyleft" width="13" height="13" /> {new Date().getFullYear()} Ecole Directe Plus</li>
     </ul>

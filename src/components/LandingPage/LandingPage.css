@@ -120,7 +120,6 @@ a[href="/edp-unblock"]:hover .edpu-logo > path {
 .go-to-top:is(:hover, :focus-visible) {
     /* Style the hovered go-to-top button */
     transform: scale(1.1);
-    background-color: rgb(var(--text-color-alt));
     border-color: rgb(var(--text-color-alt));
 }
 

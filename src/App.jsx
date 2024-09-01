@@ -71,7 +71,7 @@ function consoleLogEDPLogo() {
 
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.3.0";
+const currentEDPVersion = "0.3.1";
 const apiVersion = "4.53.4";
 
 // secret webhooks
