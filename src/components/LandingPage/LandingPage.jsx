@@ -189,14 +189,14 @@ export default function LandingPage({ token, accountsList }) {
                                 <h4>Thème de couleur</h4>
                                 <p>Choisissez votre camp : clair comme le jour ou sombre comme votre âme. Passez du mode Clair au mode Sombre en un clic et offrez à vos yeux le repos qu'ils méritent. Parce que même votre interface se doit d'avoir du style.</p>
                             </div>
-                            <div className="theme-buttons">
+                            {/* <div className="theme-buttons">
                                 <button onClick={() => theme.set("light")} className={theme.get() == "light" ? "activated" : ""}>
                                     <SunIcon />
                                 </button>
                                 <button onClick={() => theme.set("dark")} className={theme.get() == "dark" ? "activated" : ""}>
                                     <MoonIcon />
                                 </button>
-                            </div>
+                            </div> */}
                         </OutlineEffectDiv>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div4">
