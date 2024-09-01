@@ -2,7 +2,6 @@ import { useRef, useEffect, useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
-import { applyZoom } from "../../utils/zoom";
 import { AppContext } from "../../App"
 
 // graphics
@@ -15,33 +14,10 @@ import DiscordFullLogo from "../graphics/DiscordFullLogo";
 import GitHubFullLogo from "../graphics/GitHubFullLogo";
 import SunIcon from "../graphics/SunIcon";
 import MoonIcon from "../graphics/MoonIcon";
+import HoverFollowDiv from "../generic/CustomDivs/HoverFollowDiv";
 
 import "./LandingPage.css";
 import "./LandingPage2.css";
-
-function cumulativeDistributionFunction(x, mu = 1, sigma = 1) { // This requires maths skills that I definitely don't have but it returns a number between 0 and one and is smoothly increasing. See: https://en.wikipedia.org/wiki/Normal_distribution
-    // Fonction d'erreur approximée
-    function erf(x) {
-        // Constants
-        var a1 = 0.254829592;
-        var a2 = -0.284496736;
-        var a3 = 1.421413741;
-        var a4 = -1.453152027;
-        var a5 = 1.061405429;
-        var p = 0.3275911;
-
-        // This is a simplified version of the function because we know that x will always be positive 
-
-        // A&S formula 7.1.26
-        var t = 1.0 / (1.0 + p * x);
-        var y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-
-        return y;
-    }
-
-    // Calcul de la CDF pour une distribution normale
-    return 0.5 * (1 + erf((x - mu) / (sigma * Math.sqrt(2))));
-}
 
 export default function LandingPage({ token, accountsList }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -58,7 +34,7 @@ export default function LandingPage({ token, accountsList }) {
     const navigate = useNavigate()
 
     const theme = useUserSettings("displayTheme")
-    const displayMode = useUserSettings("displayMode");
+    const displayMode = useUserSettings("displayMode").get();
 
     const changeTheme = () => {
         theme.set(actualDisplayTheme === "light" ? "dark" : "light");
@@ -141,49 +117,6 @@ export default function LandingPage({ token, accountsList }) {
 
     }, [])
 
-    function bentoHoverEffect(event) {
-        if (displayMode.get() !== "quality") {
-            return;
-        }
-        let bentoBox = event.target;
-        while (!bentoBox.classList || !bentoBox.classList.contains("bento-card")) {
-            bentoBox = bentoBox.parentElement;
-        }
-        const bentoBoxRect = bentoBox.getBoundingClientRect();
-        const deltaMouse = { // distance of the mouse from the center
-            x: applyZoom(event.clientX ?? event.touches[0].clientX) - (bentoBoxRect.x + bentoBoxRect.width / 2),
-            y: applyZoom(event.clientY ?? event.touches[0].clientY) - (bentoBoxRect.y + bentoBoxRect.height / 2),
-        }
-        /**Little course about Cumulative Distribution Function (CDF)
-         * The CDF returns an int between 0 and 1 given by a the cumulative probability for a given x value
-         * (go to highschool and/or search for images of CDF it's easier to understand)
-         * this functions takes in parameter 3 variables:
-         * - x :         classic x as for every function.
-         *                  We will use the distance of the mouse from the center of the box.
-         *                  => Math.abs(deltaMouse.x)
-         * - μ (mu) :    the average of the function (basically the middle and where is positionned the function), 
-         *               you can understand this as the position where CDF(x) == 0.5.
-         *                  We will use the dimension of the box divided by 4 to get the middle between the box 
-         *                  and an edge as the middle of the CDF.
-         *                  => bentoBoxRect.width / 4
-         * - σ (sigma) : the standard deviation of the function. It will control the width of the function. 
-         *               (the lowest it is, the fastest the CDF will grow).
-         *                  We will use the width divided by 5,1516 this value allow us to contains 99% of the values 
-         *                  between 0 and the width of the box(I have no idea why but trust me 👍)
-         */
-        const translationX = cumulativeDistributionFunction(Math.abs(deltaMouse.x), bentoBoxRect.width / 4, bentoBoxRect.width / 5.1516);
-        const translationY = cumulativeDistributionFunction(Math.abs(deltaMouse.y), bentoBoxRect.height / 4, bentoBoxRect.height / 5.1516);
-        bentoBox.style.transform = `translate(${(translationX * 15) * (deltaMouse.x > 0 ? 1 : -1)}px,${(translationY * 15) * (deltaMouse.y > 0 ? 1 : -1)}px)`
-    }
-
-    function handleBentoMouseLeave(event) {
-        let bentoBox = event.target
-        while (!bentoBox.attributes.class || !bentoBox.attributes.class.value.includes("bento-card")) {
-            bentoBox = bentoBox.parentElement
-        }
-        bentoBox.style.transform = "translate(0, 0)";
-    }
-
     return (<div className="landing-page">
         {!isMobileLayout && <header id="nav-bar" className="top-section">
             <span className="nav-logo">
@@ -213,7 +146,7 @@ export default function LandingPage({ token, accountsList }) {
             </div>
         </section>
         <section id="features">
-            {(displayMode.get() !== "performance") && <>
+            {(displayMode !== "performance") && <>
                 {/* <div className="parallax-item blob1" data-speed="-0.5">
                     <svg className="blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <path d="M40.6,-32.9C51.8,-18.3,59.7,-1.4,56.8,13.7C53.9,28.9,40.4,42.3,25.3,47.7C10.3,53,-6.3,50.2,-24.2,44C-42.1,37.8,-61.4,28.1,-65.9,13.6C-70.4,-0.9,-60,-20.3,-46.6,-35.4C-33.1,-50.6,-16.5,-61.6,-0.9,-60.9C14.7,-60.1,29.3,-47.6,40.6,-32.9Z" transform="translate(100 100)" />
@@ -238,19 +171,19 @@ export default function LandingPage({ token, accountsList }) {
             <div id="bento" className="text-center">
                 <h2 className="section-title">Une multitude de <br /><strong className="heading-emphasis">fonctionnalités inédites</strong></h2>
                 <div className="bento-grid">
-                    <div className="bento-card div1" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div1">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Points forts</h4>
                             <p>Découvrez vos talents cachés grâce à un aperçu rapide de vos points forts. Parce que vous méritez de savoir à quel point vous êtes incroyable, nous mettons en lumière les matières dans lesquelles vous excellez.</p>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div2" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div2">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Calcul automatique et instantané des moyennes</h4>
                             <p>Fini les calculs laborieux à la main. EDP fait tout le boulot pour vous. Parce que votre temps est précieux et doit être consacré à des choses plus importantes, comme procrastiner efficacement.</p>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div3" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div3">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <div>
                                 <h4>Thème de couleur</h4>
@@ -265,31 +198,31 @@ export default function LandingPage({ token, accountsList }) {
                                 </button>
                             </div>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div4" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div4">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Dernières notes</h4>
                             <p>Un coup d'œil et vous saurez tout. Avec l'aperçu rapide des dernières notes, regarder vos résultats en vif pendant l'intercours sera plus rapide que la formule 1 de Max Verstappen.</p>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div5" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div5">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Score de Streak</h4>
                             <p>Atteignez le nirvana académique avec le Score de streak. Surpassez vous, cumulez les bonnes notes et débloquez des badges ! N'hésitez pas à flex quand vous avez une meilleure streak que vos amis.</p>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div6" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div6">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Contrôles à venir</h4>
                             <p>Restez aux aguets avec l'aperçu des prochains contrôles. Anticipez les futurs contrôles et organisez vos révisions comme un pro. Enfin, en théorie… on ne peut pas vous garantir que vous ne procrastinerez pas quand même.</p>
                         </OutlineEffectDiv>
-                    </div>
-                    <div className="bento-card div7" onMouseMove={bentoHoverEffect} onMouseLeave={handleBentoMouseLeave}>
+                    </HoverFollowDiv>
+                    <HoverFollowDiv displayMode={displayMode} className="bento-card div7">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Sécurité et confidentialité</h4>
                             <p>Votre sécurité, notre priorité, parce qu’il n’y a que vous et votre conscience qui devez connaître vos petits secrets académiques. EDP ne collecte AUCUNE information personnelle ou personnellement identifiable sur les utilisateurs du service. En tant que service non-affilié à Aplim, nous utilisons l'API d'EcoleDirecte pour que vous ayez accès à vos informations.</p>
                         </OutlineEffectDiv>
-                    </div>
+                    </HoverFollowDiv>
                 </div>
             </div>
         </section>

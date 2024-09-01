@@ -198,7 +198,6 @@ html:has(.landing-page) {
     border: 2px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
     box-shadow: rgb(var(--background-color-0)) 0px 0px 0px 0px, rgb(var(--background-color-0), .1) 0px 0px 0px 1px, rgb(var(--text-color-alt), .1) 0px 1px 3px 0px, rgb(var(--text-color-alt), .1) 0px 1px 2px -1px;
-    transition: .25s ease-out !important;
 }
 
 #bento .bento-outline-effect {
