@@ -70,7 +70,6 @@ export default function Policy({ onCloseNavigateURL }) {
             - <a href="https://github.com/Beta-Way">Beta-Way</a><br />
             - <a href="https://github.com/xav35000">xav35000</a><br />
             - <a href="https://github.com/Vooxify">Vooxify</a><br />
-            - <a href="https://github.com/Fefedu973">Fefedu973</a><br />
             <br />
             APIs et services tiers :<br />
             - EcoleDirecte<br />
