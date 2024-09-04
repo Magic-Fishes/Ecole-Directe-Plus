@@ -1,7 +1,7 @@
 .calendar .month {
     display: flex;
     justify-content: space-between;
-    background-color: #323257;
+    background: rgb(var(--background-color-3));
     border-radius: 15px;
     padding: 7px;
     margin: 15px 15px 10px 15px;
