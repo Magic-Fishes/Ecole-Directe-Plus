@@ -13,6 +13,10 @@
     height: 100%;
 }
 
+.session-content {
+    margin-bottom: 15px;
+}
+
 .task-file-pop-up>div {
     padding: 15px;
     padding-bottom: 0;

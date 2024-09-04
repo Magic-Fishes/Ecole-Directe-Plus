@@ -114,7 +114,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             </WindowsContainer>
         </div>
         {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && (!supposedNoSessionContent.includes(selectedTask.sessionContent) ? <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
-            <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv><div className="task-footer"><Link to={`#${selectedDate};${selectedTask.id};s;f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link></div>
+            <EncodedHTMLDiv className="session-content">{selectedTask.sessionContent}</EncodedHTMLDiv><div className="task-footer"><Link to={`#${selectedDate};${selectedTask.id};s;f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link></div>
         </BottomSheet> : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`}/>)}
         {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && (selectedTask.files.length ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
             <h2 className="file-title">Fichiers</h2>
