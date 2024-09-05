@@ -72,7 +72,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.3.1";
-const apiVersion = "4.53.4";
+const apiVersion = "4.60.4";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -1141,6 +1141,12 @@ export default function App() {
         return sortedHomeworks
     }
 
+
+    function sortMessages(sortMessages) {
+        console.log("messages", sortMessages);
+    }
+
+
     function sortSchoolLife(schoolLife, activeAccount) {
         const sortedSchoolLife = {
             delays: [],
@@ -1284,6 +1290,7 @@ export default function App() {
                 })
             })
             .then((response) => {
+                console.log(".then ~ response:", response)
                 // GESTION DATA
                 let statusCode = response.code;
                 if (statusCode === 200) {
@@ -1318,6 +1325,7 @@ export default function App() {
                                 accountType: "P",
                                 lastConnection: accounts.lastConnexion,
                                 id: account.id,
+                                familyId: accounts.id,
                                 firstName: account.prenom,
                                 lastName: account.nom,
                                 email: email,
@@ -1364,9 +1372,6 @@ export default function App() {
                 if (error.name !== 'AbortError') {
                     messages.submitButtonText = "Échec de la connexion";
                     messages.submitErrorMessage = "Error: " + error.message;
-                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                        setProxyError(true);
-                    }
                 }
             })
             .finally(() => {
@@ -1420,11 +1425,6 @@ export default function App() {
                 }
                 setTokenState((old) => (response?.token || old));
             })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
-            })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             })
@@ -1472,11 +1472,6 @@ export default function App() {
                     })
                 }
                 setTokenState((old) => (response?.token || old));
-            })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
@@ -1536,11 +1531,6 @@ export default function App() {
                         requireLogin();
                     }
                     setTokenState((old) => (response?.token || old));
-                })
-                .catch((error) => {
-                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                        setProxyError(true);
-                    }
                 })
                 .finally(() => {
                     abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
@@ -1603,10 +1593,6 @@ export default function App() {
                     requireLogin();
                 }
                 setTokenState(old => responseData?.token || old);
-            } catch (error) {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
             } finally {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             }
@@ -1651,15 +1637,58 @@ export default function App() {
                 }
                 setTokenState((old) => (response?.token || old));
             })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
+
+    async function fetchMessages(controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {
+            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+        }
+        // TODO: handle student accounts
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/familles/${accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                console.log(".then ~ response:", response)
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
                 }
+                if (code === 200) {
+                    changeUserData("sortedMessages", sortMessages(response.data));
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    requireLogin();
+                } else if (code === 49969) {
+                    // TODO: add data/messages.json for guest user
+                    // import("./data/messages.json").then((module) => {
+                    //     changeUserData("sortedMessages", sortMessages(module.data));;
+                    // })
+                }
+                setTokenState((old) => (response?.token || old));
             })
             .finally(() => {
                 abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
             })
     }
+
 
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
@@ -2063,7 +2092,7 @@ export default function App() {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} />,
                             path: ":userId/messaging"
                         },
                     ],
