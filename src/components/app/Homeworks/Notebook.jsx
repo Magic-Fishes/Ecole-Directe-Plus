@@ -299,35 +299,38 @@ export default function Notebook({ hideDateController = false }) {
             : null
         }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
-            {homeworks ? Object.keys(homeworks).length > 0 && Object.values(homeworks).some(arr => arr.some(task => task.content)) ? Object.keys(homeworks).sort().map((el, index) => {
-                console.log(homeworks)    
-                const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
-                    const elDate = new Date(el)
-                    return homeworks[el].length ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
-                        <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
-                            <span className="notebook-day-date">
-                                <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
-                            </span>
-                        </div>
-                        {/* <hr style={{ width: `${progression * 100}%`}} /> */}
-                        <hr />
-                        <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
-                            {
-                                homeworks[el].map((task, taskIndex) => {
-                                    const result = [
-                                        selectedDate === el
-                                            ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
-                                            : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
-                                    if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
-                                        result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+            {homeworks
+                ? Object.keys(homeworks).length > 0/* && Object.values(homeworks).some(arr => arr.some(task => task.content))*/
+                    ? Object.keys(homeworks).sort().map((el, index) => {
+                        const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
+                        const elDate = new Date(el)
+                        return (homeworks[el].length
+                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                                <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
+                                    <span className="notebook-day-date">
+                                        <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
+                                    </span>
+                                </div>
+                                {/* <hr style={{ width: `${progression * 100}%`}} /> */}
+                                <hr />
+                                <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
+                                    {
+                                        homeworks[el].map((task, taskIndex) => {
+                                            const result = [
+                                                selectedDate === el
+                                                    ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
+                                                    : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                            if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
+                                                result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+                                            }
+                                            return result.flat()
+                                        })
                                     }
-                                    return result.flat()
-                                })
-                            }
-                        </div>
-                    </div>
-                        : null
-                }).filter(e => e) : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
+                                </div>
+                            </div>
+                            : null)
+                    }).filter(e => e) 
+                    : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
                         <div className="notebook-day-header">

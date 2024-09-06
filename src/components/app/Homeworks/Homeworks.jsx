@@ -35,13 +35,13 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     // States
 
     const { useUserData } = useContext(AppContext);
-    const homeworks = useUserData("sortedHomeworks");
+    const homeworks = useUserData("sortedHomeworks").get();
     const navigate = useNavigate();
     const location = useLocation();
 
     const hashParameters = location.hash.split(";")
     const selectedDate = hashParameters.length ? hashParameters[0].slice(1) : getISODate(new Date())
-    const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[selectedDate]?.find(e => e.id == hashParameters[1])
+    const selectedTask = hashParameters.length > 1 && homeworks && homeworks[selectedDate]?.find(e => e.id == hashParameters[1])
 
     // behavior
     useEffect(() => {
@@ -51,10 +51,10 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
-            if (homeworks.get() === undefined) {
+            if (homeworks === undefined) {
                 fetchHomeworks(controller);
             }
-            if (homeworks.get() === undefined || !homeworks.get().hasOwnProperty(selectedDate)) {
+            if (homeworks === undefined || !homeworks.hasOwnProperty(selectedDate)) {
                 fetchHomeworks(controller, new Date(selectedDate));
             }
         }
@@ -62,7 +62,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
         return () => {
             controller.abort();
         }
-    }, [isLoggedIn, activeAccount, homeworks.get(), location.hash]);
+    }, [isLoggedIn, activeAccount, homeworks, location.hash]);
 
     useEffect(() => {
         if (hashParameters.length > 2) {
