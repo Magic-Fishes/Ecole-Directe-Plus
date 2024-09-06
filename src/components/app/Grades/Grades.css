@@ -115,11 +115,6 @@
     letter-spacing: 2px;
 }
 
-#subject-head {
-    /* max-width: 250px; */
-    /* width: 30%; */
-}
-
 @media only screen and (max-width: 869px) {
     .grades-table thead th  {
         letter-spacing: 0;
