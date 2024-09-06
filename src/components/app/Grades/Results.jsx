@@ -1,6 +1,7 @@
 import { useEffect, useRef, useContext, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { Link, useLocation } from "react-router-dom";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
 import { AppContext } from "../../../App";
 import {
     MoveableContainer,
@@ -107,35 +108,52 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         </div>
                         <div className="general-average">
                             <span>Moyenne Générale</span>
-                            {sortedGrades && sortedGrades[selectedPeriod]
-                                ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
-                                : <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
-                                    speed={1}
-                                    backgroundColor={'#4b48d9'}
-                                    foregroundColor={'#6354ff'}
-                                    viewBox="0 0 80 32"
-                                    height="32"
-                                >
-                                    <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
-                                </ContentLoader>
+                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classAverage !== undefined && sortedGrades[selectedPeriod].classAverage !== null && sortedGrades[selectedPeriod].classAverage !== ""
+                                ? <Tooltip >
+                                    <TooltipTrigger>
+                                        <span>
+                                            {sortedGrades && sortedGrades[selectedPeriod]
+                                                ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
+                                                : <ContentLoader
+                                                    animate={settings.get("displayMode") === "quality"}
+                                                    speed={1}
+                                                    backgroundColor={'#4b48d9'}
+                                                    foregroundColor={'#6354ff'}
+                                                    viewBox="0 0 80 32"
+                                                    height="32"
+                                                >
+                                                    <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
+                                                </ContentLoader>}
+                                        </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <span>
+                                            Moyenne de classe :{" "}
+                                            <Grade
+                                                grade={{
+                                                    value:
+                                                        sortedGrades[selectedPeriod].classAverage ?? "N/A",
+                                                    scale: 20,
+                                                    coef: 1,
+                                                    isSignificant: true,
+                                                }}
+                                            />
+                                        </span>
+                                    </TooltipContent>
+                                </Tooltip>
+                                : sortedGrades && sortedGrades[selectedPeriod]
+                                    ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
+                                    : <ContentLoader
+                                        animate={settings.get("displayMode") === "quality"}
+                                        speed={1}
+                                        backgroundColor={'#4b48d9'}
+                                        foregroundColor={'#6354ff'}
+                                        viewBox="0 0 80 32"
+                                        height="32"
+                                    >
+                                        <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
+                                    </ContentLoader>
                             }
-                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classAverage !== undefined && sortedGrades[selectedPeriod].classAverage !== null && sortedGrades[selectedPeriod].classAverage !== "" ? (
-                                <InfoButton className="results-legend">
-                                    <span>
-                                        Moyenne de classe :{" "}
-                                        <Grade
-                                            grade={{
-                                                value:
-                                                    sortedGrades[selectedPeriod].classAverage ?? "N/A",
-                                                scale: 20,
-                                                coef: 1,
-                                                isSignificant: true,
-                                            }}
-                                        />
-                                    </span>
-                                </InfoButton>
-                            ) : null}
                         </div>
                     </WindowHeader>
                     <WindowContent className="results">
