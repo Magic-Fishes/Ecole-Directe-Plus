@@ -166,7 +166,11 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
 
                                                         }
                                                     </th>
-                                                    <td className="moyenne-cell"><Grade grade={{ value: el.average }} /></td>
+                                                    <td className="moyenne-cell">
+                                                        {el.isCategory ? <Grade grade={{ value: el.average }} />
+                                                            : <Grade grade={{ value: el.average, subject: el }} />}
+                                                    
+                                                    </td>
                                                     <td className="grades-cell">
                                                         {el.isCategory ? <div className="category-info">
                                                             <span>Classe : <Grade grade={{ value: el.classAverage }} /></span><span>Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} /></span><span>Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} /></span>
