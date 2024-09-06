@@ -75,11 +75,11 @@
 }
 
 .dark .detailed-task .task-content {
-    background-color: rgba(var(--text-color-opposite), 0.15);
+    background-color: rgba(var(--text-color-main-reverse), 0.15);
 }
 
 .light .detailed-task .task-content {
-    background-color: rgba(var(--text-color-opposite), 0.3);
+    background-color: rgba(var(--text-color-main-reverse), 0.3);
 }
 
 .detailed-task .task-content .copy-button {
