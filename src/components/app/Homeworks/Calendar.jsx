@@ -46,7 +46,7 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
         // if newSelectedDate is empty then retrun
         if (!newSelectedDate) return;
         if (newSelectedDate !== format(selectedDate, 'yyyy-MM-dd')) {
-            if (format(newSelectedDate, 'MM') !== format(selectedDate, 'MM')) {
+            if ((new Date(newSelectedDate)).getMonth() !== (new Date(selectedDate)).getMonth()) {
                 setCurrentDate(newSelectedDate);
             }
             setSelectedDate(new Date(newSelectedDate));

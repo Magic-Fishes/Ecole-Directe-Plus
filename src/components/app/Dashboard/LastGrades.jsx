@@ -30,8 +30,9 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
         </WindowHeader>
         <WindowContent>
             <ol className="last-grades-container">
-                {lastGrades !== undefined && lastGrades.length > 0
-                    ? lastGrades.map((el) => <li key={el.id} className="last-grade-container">
+                {lastGrades !== undefined
+                    ? lastGrades.length > 0
+                        ? lastGrades.map((el) => <li key={el.id} className="last-grade-container">
                         <Link to={`/app/${activeAccount}/grades#` + el.id} className="last-grade-wrapper">
                             <span className="last-grade-value"><Grade grade={{ value: el.value ?? "N/A", scale: el.scale }} /></span>
                             <span className="last-grade-name">{el.subjectName}</span>
@@ -45,7 +46,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                             </span>
                             <span className="last-grade-date">{formatDateRelative(el.date, window.matchMedia("(max-width: 1850px)").matches)}</span>
                         </Link>
-                    </li>)
+                    </li>) : <p className="no-grade-placeholder">Vous n'avez pour l'instant aucune note. Profitez-en le temps que ça dure</p>
                     : Array.from({ length: 3 }, (_, i) => <li key={i} className="last-grade-container">
                         <div className="last-grade-wrapper">
                             <ContentLoader

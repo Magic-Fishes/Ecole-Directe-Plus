@@ -91,6 +91,13 @@
     color: rgb(var(--text-color-alt));
 }
 
+.last-grades .no-grade-placeholder {
+    width: min(90%, 350px);
+    margin: 0 auto;
+    color: rgb(var(--text-color-alt));
+    text-align: center;
+}
+
 @container (max-height: 175px) {
     .last-grades .last-grades-container {
         height: auto;        
