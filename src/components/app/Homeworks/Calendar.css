@@ -1,33 +1,30 @@
 .calendar .month {
+    height: 45px;
     display: flex;
     justify-content: space-between;
     background: rgb(var(--background-color-3));
     border-radius: 15px;
-    padding: 7px;
+    padding: 4px;
     margin: 15px 15px 10px 15px;
     font-weight: bolder;
-}
-
-.calendar .arrow {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    height: 24px;
-    aspect-ratio: 1 / 1;
-    border-radius: 8px;
-    transition: .15s;
-    background-color: rgba(var(--text-color-alt), 0);
-    cursor: pointer;
-    outline: 4px solid rgba(var(--text-color-alt), 0);
 }
 
-.calendar .arrow svg path {
+.calendar svg.arrow {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    transition: .15s;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.calendar svg.arrow path {
     stroke: white;
 }
 
 .calendar .arrow:hover {
-    background-color: rgba(var(--text-color-alt), 0.1);
-    outline: 4px solid rgba(var(--text-color-alt), 0.1);
+    background-color: rgba(var(--text-color-alt), .25);
 }
 
 .calendar .arrowleft {
@@ -40,6 +37,15 @@
 
 .calendar .month-name {
     font-size: 1.2em;
+    padding-inline : 17px;
+    padding-block: 7px;
+    border-radius: 12px;
+    transition: .15s;
+    cursor: pointer;
+}
+
+.calendar .month-name:hover {
+    background-color: rgba(var(--text-color-alt), .25);
 }
 
 .calendar .weekdays {
@@ -72,6 +78,7 @@
     transition: background-color 0.15s;
     margin: auto;
     line-height: 1.5;
+    user-select: none;
 }
 
 .calendar .day:hover {
@@ -109,11 +116,11 @@
     gap: 10px;
 }
 
-.calendar .buttonReturn {
+.calendar .button-return {
     min-width: 130px;
 }
 
-.calendar .progressContainer {
+.calendar .progress-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,7 +128,7 @@
     padding: 0 15px;
 }
 
-.calendar .progressBar {
+.calendar .progress-bar {
     /* display: none; */
     width: 100%;
     border-radius: 10px;

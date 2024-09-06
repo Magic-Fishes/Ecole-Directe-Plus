@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useContext } from "react";
 import { AppContext } from "../../../App";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addMonths, addDays } from 'date-fns';
 import { useLocation, useNavigate } from "react-router-dom";
 import { fr } from 'date-fns/locale';
-import './Calendar.css';
 import DropDownArrow from "../../graphics/DropDownArrow";
-import Button from "../../generic/UserInputs/Button";
 
-const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
+import './Calendar.css';
+
+export default function Calendar({ onDateClick, defaultSelectedDate }) {
     const { useUserData, fetchHomeworksSequentially, } = useContext(AppContext);
     const location = useLocation();
     const initialDate = defaultSelectedDate || new Date();
     const [currentDate, setCurrentDate] = useState(initialDate);
     const [selectedDate, setSelectedDate] = useState(initialDate);
     const [calendarDays, setCalendarDays] = useState([]);
+    
+    const isShifted = useRef(false);
+    const progressBarRef = useRef(null);
 
     const navigate = useNavigate();
     const hashParameters = location.hash.split(";");
@@ -25,7 +28,7 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
     //console.log(homeworks)
 
     // For each homework, check the date and add it to the events array if it is a test set redf
-    events = [];
+    const events = [];
 
     for (const date in homeworks) {
         for (const task of homeworks[date]) {
@@ -38,6 +41,21 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
             }
         }
     }
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (!isShifted.current) isShifted.current = event.key === "Shift";
+        }
+        const handleKeyUp = (event) => {
+            if (isShifted.current) isShifted.current = !(event.key === "Shift");
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("keyup", handleKeyUp);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("keyUP", handleKeyUp);
+        }
+    }, [])
 
     // Detect URL changes and update the selected date if needed
     useEffect(() => {
@@ -85,10 +103,11 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
         }
         setSelectedDate(day);
         if (onDateClick) onDateClick(day); // Call the callback with the selected date
+        if (isShifted.current) fetchAllHomeworks(day);
     };
 
     const getDayClass = (day) => {
-        const dayStr = format(day, 'yyyy-MM-dd');
+        // const dayStr = format(day, 'yyyy-MM-dd');
         const isDifferentMonth = format(day, 'MM') !== format(currentDate, 'MM');
         const isSelected = format(day, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
         const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
@@ -139,26 +158,26 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
         navigate(`#${newDate};${(cleanup && hashParameters[1]) || ""}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true });
     }
 
-    async function fetchAllHomeworks() {
+    async function fetchAllHomeworks(day) {
         // Set the button to loading by changing the class
         // Set display to block for the progress bar
-        document.getElementById("progress").style.display = "block";
+        day = new Date(day)
+        progressBarRef.current.style.display = "block";
         var progressPercentage = 0.0;
-        document.getElementById("fetchHomework").classList.add("submitting");
         const controller = new AbortController();
-        let currentDate = new Date(selectedDate);
+        let currentDate = new Date(day);
 
         while (currentDate <= new Date()) {
             await fetchHomeworksSequentially(controller, currentDate);
             // Set the progress bar to the percentage of completion (a value between 0.0 and 1.0)
             // the date should be all taken at midnight
             const midnightCurrentDate = new Date(currentDate.setHours(0, 0, 0, 0));
-            const midnightSelectedDate = new Date(selectedDate.setHours(0, 0, 0, 0));
+            console.log(day)
+            const midnightDate = new Date(day).setHours(0, 0, 0, 0);
             const midnightToday = new Date().setHours(0, 0, 0, 0);
 
-            progressPercentage = (midnightCurrentDate - midnightSelectedDate) / (midnightToday - midnightSelectedDate);
-            console.log(progressPercentage);
-            document.getElementById("progress").value = progressPercentage;
+            progressPercentage = (midnightCurrentDate - midnightDate) ? 0 : (midnightCurrentDate - midnightDate) / (midnightToday - midnightDate);
+            progressBarRef.current.value = progressPercentage;
             // Go to the date on the clendar
             setCurrentDate(currentDate);
             setSelectedDate(currentDate);
@@ -166,26 +185,24 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
 
             currentDate = addDays(currentDate, 1);
         }
-
         // When all the homeworks are fetched, remove the loading class
-        document.getElementById("fetchHomework").classList.remove("submitting");
-        document.getElementById("fetchHomework").classList.add("submitted");
 
         setTimeout(() => {
-            document.getElementById("fetchHomework").classList.remove("submitted");
             // Hide the progress bar
-            document.getElementById("progress").style.display = "none";
+            progressBarRef.current.style.display = "none";
         }, 2000);
     }
-
-
 
     return (
         <div className="calendar">
             <div className="month">
-                <span className="arrow arrowleft" onClick={() => changeMonth(-1)}><DropDownArrow /></span>
-                <span className="month-name">{format(currentDate, 'MMMM yyyy', { locale: fr })}</span>
-                <span className="arrow arrowright" onClick={() => changeMonth(1)}><DropDownArrow /></span>
+                <DropDownArrow className="arrow arrowleft" onClick={() => changeMonth(-1)} />
+                <span className="month-name" onClick={() => {
+                    setCurrentDate(new Date());
+                    setSelectedDate(new Date());
+                    navigateToDate(format(new Date(), 'yyyy-MM-dd'), true);
+                }}>{format(currentDate, 'MMMM yyyy', { locale: fr })}</span>
+                <DropDownArrow className="arrow arrowright" onClick={() => changeMonth(1)} />
             </div>
             <div className="weekdays">
                 <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
@@ -202,21 +219,7 @@ const Calendar = ({ onDateClick, events = [], defaultSelectedDate }) => {
                     </span>
                 ))}
             </div>
-            <div className='buttons'>
-                <Button onClick={() => {
-                    setCurrentDate(new Date());
-                    setSelectedDate(new Date());
-                    navigateToDate(format(new Date(), 'yyyy-MM-dd'), true);
-                }
-
-            } className='buttonReturn'>Retourner à Aujourd'hui</Button>
-                <Button id="fetchHomework" onClick={() => fetchAllHomeworks()} state='' buttonType="submit">Récupérer tous les devoirs à partir de la date sélectionnée</Button>
-            </div>
-            <div className='progressContainer'>
-                <progress className="progressBar" id="progress" value={0} />
-            </div>
+            <progress ref={progressBarRef} className="progress-bar" value={0} />
         </div>
     );
 };
-
-export default Calendar;
