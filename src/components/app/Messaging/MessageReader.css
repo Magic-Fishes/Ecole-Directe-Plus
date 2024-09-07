@@ -44,7 +44,7 @@
     /* border-radius: 15px; */
     height: 100%;
     border-radius: 15px;
-    overflow: scroll;
+    overflow: auto;
 }
 #message-reader .message-content-container > div {
     max-width: 800px;
@@ -52,6 +52,6 @@
 }
 
 #message-reader .email-footer {
-    height: 50px;
+    height: 100px;
     overflow: hidden;
 }

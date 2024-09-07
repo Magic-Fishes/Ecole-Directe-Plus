@@ -5,6 +5,7 @@ import { AppContext } from "../../../App";
 import "./MessageReader.css";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 import FileComponent from "../../generic/FileComponent";
+import { capitalizeFirstLetter } from "../../../utils/utils";
 
 
 export default function MessageReader({ selectedMessage }) {
@@ -23,7 +24,7 @@ export default function MessageReader({ selectedMessage }) {
                 ? <div className="message-container">
                     <div className="email-header">
                         <p className="author">{message && message?.from?.name}</p>
-                        <h3>{message && message?.subject}</h3>
+                        <h3>{message && capitalizeFirstLetter(message?.subject)}</h3>
                         <p className="send-date">{message && message?.date && (new Date(message.date).toLocaleDateString("fr-FR", {
                             month: "long",
                             day: "numeric",
