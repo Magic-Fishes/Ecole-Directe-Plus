@@ -1,0 +1,57 @@
+
+.message-reader-window-header {
+    padding-inline: 15px;
+}
+
+#message-reader {
+    height: 100%;
+}
+
+#message-reader hr {
+    border: none;
+    height: 2px;
+    background-color: rgb(var(--text-color-alt), .5);
+}
+
+#message-reader .email-header {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 10px;
+}
+
+#message-reader .email-header .author {
+    color: rgb(var(--text-color-alt));
+}
+
+#message-reader .email-header h3 {
+    text-align: center;
+}
+
+#message-reader .email-header .send-date {
+    text-align: right;
+    color: rgb(var(--text-color-alt))
+}
+
+#message-reader .message-container {
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: rgba(var(--background-color-2), 1);
+    height: 100%;
+}
+
+#message-reader .message-content-container {
+    padding: 20px;
+    /* border-radius: 15px; */
+    height: 100%;
+    border-radius: 15px;
+    overflow: scroll;
+}
+#message-reader .message-content-container > div {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#message-reader .email-footer {
+    height: 50px;
+    overflow: hidden;
+}

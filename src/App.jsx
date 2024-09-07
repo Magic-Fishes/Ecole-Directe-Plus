@@ -22,7 +22,6 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
-import { add } from "date-fns";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -1142,10 +1141,39 @@ export default function App() {
     }
 
 
-    function sortMessages(sortMessages) {
-        console.log("messages", sortMessages);
-    }
+    function sortMessages(messages) {
+        console.log("messages", messages);
+        const sortedMessages = messages.messages.received.map((message) => { return {
+            date: message.date,
+            files: messages.files,
+            from: message.from,
+            id: message.id,
+            read: message.read,
+            subject: message.subject,
+            content: null,
+            // ...
+        }});
 
+        return sortedMessages;
+    }
+    
+    function sortMessageContent(messageContent) {
+        if (!messageContent) {
+            return;
+        }
+        const oldSortedMessages = useUserData("sortedMessages").get();
+        const targetMessageIdx = oldSortedMessages.findIndex((item) => item.id === messageContent.id);
+        oldSortedMessages[targetMessageIdx].read = true;
+        oldSortedMessages[targetMessageIdx].files = messageContent.files.map((file) => new File(file.id, file.type, file.libelle));
+        oldSortedMessages[targetMessageIdx].content = {
+            id: messageContent.id,
+            subject: messageContent.subject,
+            date: messageContent.subject,
+            content: messageContent.content
+            // ...
+        };
+        useUserData("sortedMessages").set(oldSortedMessages);
+    }
 
     function sortSchoolLife(schoolLife, activeAccount) {
         const sortedSchoolLife = {
@@ -1689,6 +1717,58 @@ export default function App() {
             })
     }
 
+    async function fetchMessageContent(id, controller) {
+        const oldSortedMessages = useUserData("sortedMessages").get();
+        if (oldSortedMessages) {
+            const targetMessageIdx = oldSortedMessages.findIndex((item) => item.id === id);
+            if (oldSortedMessages[targetMessageIdx].content !== null) {
+                return;
+            }
+        }
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {
+            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+        }
+        // TODO: handle student accounts
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/familles/${accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                if (code === 200) {
+                    sortMessageContent(response.data)
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    requireLogin();
+                } else if (code === 49969) {
+                    // TODO: add data/messages.json for guest user
+                    // import("./data/messages.json").then((module) => {
+                    //      sortMessageContent(module.data)
+                    // })
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
 
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
@@ -2092,7 +2172,7 @@ export default function App() {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} />,
                             path: ":userId/messaging"
                         },
                     ],

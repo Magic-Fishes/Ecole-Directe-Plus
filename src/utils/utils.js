@@ -183,3 +183,7 @@ export function textToHSL(str, initialS = 42, initialL = 73, variationS = 10, va
     const s = Math.round((int % (10 ** 12)) / (10 ** 8));
     return [360 * (h / 9999), initialS + variationS * (s / 9999), initialL + variationL * (l / 9999)]; // [{0-360}, {70-100}, {40-70}]
 }
+
+export function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}

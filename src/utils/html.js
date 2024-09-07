@@ -144,6 +144,10 @@ export function clearHTML(html, backgroundColor, asString=true) {
                 let red = parseInt(match[1]);
                 let green = parseInt(match[2]);
                 let blue = parseInt(match[3]);
+                if ((red + green + blue) === 0) {
+                    el.style.color = "";
+                    return
+                }
 
                 let hexColor = rgbToHex(red, green, blue);
 
