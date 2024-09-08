@@ -24,4 +24,5 @@
 
 svg.floating-arrow {
     fill: rgba(var(--background-color-2), 0.6);
+    background-color: transparent !important; 
 }

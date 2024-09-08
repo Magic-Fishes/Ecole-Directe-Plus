@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import CloseButton from "../../graphics/CloseButton";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
+import Arrow from "../../graphics/Arrow";
 import { AppContext } from "../../../App";
 import "./Grade.css";
 
@@ -12,8 +13,8 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     const sortedGrades = userData.get("sortedGrades");
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
 
-    const MOYENNE = sortedGrades[selectedPeriod].generalAverage;
-    const SOMMECOEFMATIERES = getSummedCoef(sortedGrades[selectedPeriod].subjects);
+    const generalAverage = sortedGrades[selectedPeriod].generalAverage;
+    const subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -25,6 +26,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
 
     // Use subject coef if subject is provided, otherwise use grade's coef
     const gradeCoef = subject ? subject.coef : grade.coef ?? 1;
+    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / (subjectsSummedCoefs - gradeCoef);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
@@ -123,56 +125,23 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                     <Tooltip placement="left">
                         <TooltipTrigger>
                             <span
-                                style={{
-                                    color:
-                                        (grade.subject.coef * (grade.value - MOYENNE)) /
-                                            (SOMMECOEFMATIERES - grade.subject.coef) <
-                                            -0.2
-                                            ? "#e25e5e"
-                                            : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                -0.07
-                                                ? "orange"
-                                                : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                    (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                    0.07
-                                                    ? "lightgrey"
-                                                    : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                        (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                        0.2
-                                                        ? "lightgreen"
-                                                        : "lime",
-                                    backgroundColor:
-                                        (grade.subject.coef * (grade.value - MOYENNE)) /
-                                            (SOMMECOEFMATIERES - grade.subject.coef) <
-                                            -0.2
-                                            ? "rgba(255, 0, 0, 0.1)"
-                                            : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                -0.07
-                                                ? "rgba(255, 165, 0, 0.1)"
-                                                : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                    (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                    0.07
-                                                    ? "rgba(128, 128, 128, 0.2)"
-                                                    : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                        (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                        0.2
-                                                        ? "rgba(0, 255, 0, 0.1)"
-                                                        : "rgba(0, 255, 0, 0.15)",
-                                    padding: "0.4em 0.6em",
-                                    borderRadius: "0.5em",
-                                }}
-                                data-weight={
-                                    (gradeCoef * (grade.value - MOYENNE)) /
-                                    (SOMMECOEFMATIERES - gradeCoef)
+                                className={
+                                    gradeScore < -0.2
+                                        ? "very-bad"
+                                        : gradeScore < -0.07
+                                            ? "bad"
+                                            : gradeScore < 0.07
+                                                ? "average"
+                                                : gradeScore < 0.2
+                                                    ? "good"
+                                                    : "very-good"
                                 }
                             >
                                 {(
                                     isGradeScaleEnabled.get() && !isNaN(grade.value)
                                         ? Math.round(
-                                            (grade.value * gradeScale.get()) /
-                                            (grade.scale ?? 20) *
+                                            (grade.value * gradeScale.get()) / 
+                                            (grade.scale ?? 20) * 
                                             100
                                         ) / 100
                                         : grade.value
@@ -188,53 +157,36 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 )}
                             </span>
                         </TooltipTrigger>
-                            <TooltipContent>
-                                <span style={{
-                                    // Color the tooltip background based on the grade's weight
-                                    backgroundColor:
-                                        (grade.subject.coef * (grade.value - MOYENNE)) /
-                                            (SOMMECOEFMATIERES - grade.subject.coef) <
-                                            -0.2
-                                            ? "rgba(255, 0, 0, 0.1)"
-                                            : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                -0.07
-                                                ? "rgba(255, 165, 0, 0.1)"
-                                                : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                    (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                    0.07
-                                                    ? "rgba(128, 128, 128, 0.2)"
-                                                    : (grade.subject.coef * (grade.value - MOYENNE)) /
-                                                        (SOMMECOEFMATIERES - grade.subject.coef) <
-                                                        0.2
-                                                        ? "rgba(0, 255, 0, 0.1)"
-                                                        : "rgba(0, 255, 0, 0.15)",
-                                    padding: "0.8em 1.5em",
-                                    margin: "-0.7em",
-                                    borderRadius: "10px",
-                                    fontWeight: "bold",
-                                    display: "flex",
-                                    // gap between the text and the arrow
-                                    gap: "5px",
-                                }}>
-                                    {(
-                                        (gradeCoef * (grade.value - MOYENNE)) /
-                                        (SOMMECOEFMATIERES - gradeCoef)
-                                    ).toFixed(2) > 0 ? "+" : ""}
-                                    {(
-                                        (gradeCoef * (grade.value - MOYENNE)) /
-                                        (SOMMECOEFMATIERES - gradeCoef)
-                                    ).toFixed(2)}
-                                    {(
-                                        (gradeCoef * (grade.value - MOYENNE)) /
-                                        (SOMMECOEFMATIERES - gradeCoef)
-                                    ).toFixed(2) > 0 ? (
-                                    <svg fill="#ffffff" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-62.7 -62.7 455.40 455.40" xml:space="preserve" stroke="#ffffff" stroke-width="33" transform="rotate(180)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_337_" d="M253.858,234.26c-2.322-5.605-7.792-9.26-13.858-9.26h-60V15c0-8.284-6.716-15-15-15 c-8.284,0-15,6.716-15,15v210H90c-6.067,0-11.537,3.655-13.858,9.26c-2.321,5.605-1.038,12.057,3.252,16.347l75,75 C157.322,328.536,161.161,330,165,330s7.678-1.464,10.607-4.394l75-75C254.896,246.316,256.18,239.865,253.858,234.26z M165,293.787 L126.213,255h77.573L165,293.787z"></path> </g></svg>
+                        <TooltipContent className={
+                            gradeScore < -0.2
+                                ? "very-bad-tooltip"
+                                : gradeScore < -0.07
+                                    ? "bad-tooltip"
+                                    : gradeScore < 0.07
+                                        ? "average-tooltip"
+                                        : gradeScore < 0.2
+                                            ? "good-tooltip"
+                                            : "very-good-tooltip"
+                        }>
+                            <span className="grade-tooltip">
+                                {(
+                                    gradeScore
+                                ).toFixed(2) > 0 ? "+" : ""}
+                                {(
+                                    gradeScore
+                                ).toFixed(2)}
+                                {gradeScore > 0.2 ? (
+                                    <Arrow className="grade-arrow grade-arrow-vertical-up" />
+                                ) : gradeScore > 0.07 ? (
+                                    <Arrow className="grade-arrow grade-arrow-up" />
+                                ) : gradeScore > -0.07 ? (
+                                    <Arrow className="grade-arrow grade-arrow-horizontal" />
+                                ) : gradeScore > -0.2 ? (
+                                    <Arrow className="grade-arrow grade-arrow-down" />
                                 ) : (
-                                    <svg fill="#ffffff" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-62.7 -62.7 455.40 455.40" xml:space="preserve" stroke="#ffffff" stroke-width="33"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="XMLID_337_" d="M253.858,234.26c-2.322-5.605-7.792-9.26-13.858-9.26h-60V15c0-8.284-6.716-15-15-15 c-8.284,0-15,6.716-15,15v210H90c-6.067,0-11.537,3.655-13.858,9.26c-2.321,5.605-1.038,12.057,3.252,16.347l75,75 C157.322,328.536,161.161,330,165,330s7.678-1.464,10.607-4.394l75-75C254.896,246.316,256.18,239.865,253.858,234.26z M165,293.787 L126.213,255h77.573L165,293.787z"></path> </g></svg>
+                                    <Arrow className="grade-arrow grade-arrow-vertical-down" />
                                 )}
-                                    </span>
-                                
+                            </span>
                         </TooltipContent>
                     </Tooltip>
                 ) : (

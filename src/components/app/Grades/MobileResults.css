@@ -95,15 +95,10 @@
 .mobile-subject-row .subject-average {
     font-size: var(--font-size-18);
     width: 68px;
-    padding-block: 5px;
     border-radius: 10px;
-    background-color: rgba(var(--border-color-1), .5);
+    background-color: transparent;
     transition: 0.1s;
     cursor: default;
-}
-
-.mobile-subject-row .subject-average:hover, .mobile-subject-row .subject-average:active {
-    background-color: rgb(var(--border-color-0));
 }
 
 .subject-row .mobile-head-name:is(:hover, :focus-visible) {
@@ -146,4 +141,40 @@
         scale: 1;
         opacity: 1;
     }
+}
+
+
+.mobile-results .very-good {
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-results .good {
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-results .average {
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-results .bad {
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-results .very-bad {
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

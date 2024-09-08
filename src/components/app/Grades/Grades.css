@@ -238,3 +238,98 @@
 #results .grades-values .grade {
     margin-right: 10px;
 }
+
+.grade-arrow {
+    stroke: rgb(var(--text-color-main));
+}
+
+.grade-arrow-vertical-up {
+    transform: rotate(180deg);
+}
+
+.grade-arrow-up {
+    transform: rotate(225deg);
+}
+
+.grade-arrow-horizontal {
+    transform: rotate(-90deg);
+}
+
+.grade-arrow-down {
+    transform: rotate(-45deg);
+}
+
+.grade-arrow-vertical-down {
+    transform: rotate(0deg);
+}
+
+.very-good {
+    color: rgb(var(--color-very-good));
+    background-color: rgb(var(--color-very-good-background)) !important;
+    padding: 0.4em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+}
+
+.good {
+    color: rgb(var(--color-good));
+    background-color: rgb(var(--color-good-background)) !important;
+    padding: 0.4em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+}
+
+.average {
+    color: rgb(var(--color-average));
+    background-color: rgb(var(--color-average-background)) !important;
+    padding: 0.4em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+}
+
+.bad {
+    color: rgb(var(--color-bad));
+    background-color: rgb(var(--color-bad-background)) !important;
+    padding: 0.4em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+}
+
+.very-bad {
+    color: rgb(var(--color-very-bad));
+    background-color: rgb(var(--color-very-bad-background)) !important;
+    padding: 0.4em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+}
+
+.very-good-tooltip {
+    fill: rgb(var(--color-very-good-background)) !important;
+    background-color: rgb(var(--color-very-good-background)) !important;
+}
+
+.good-tooltip {
+    fill: rgb(var(--color-good-background)) !important;
+    background-color: rgb(var(--color-good-background)) !important;
+}
+
+.average-tooltip {
+    fill: rgb(var(--color-average-background)) !important;
+    background-color: rgb(var(--color-average-background)) !important;
+}
+
+.bad-tooltip {
+    fill: rgb(var(--color-bad-background)) !important;
+    background-color: rgb(var(--color-bad-background)) !important;
+}
+
+.very-bad-tooltip {
+    fill: rgb(var(--color-very-bad-background)) !important;
+    background-color: rgb(var(--color-very-bad-background)) !important;
+}
+
+.grade-tooltip {
+    font-weight: bold;
+    display: flex;
+    gap: 5px;
+}

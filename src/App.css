@@ -183,6 +183,17 @@
     --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
     
     --alpha-shadow-color-scroll-shaded-div: 0.5;
+
+    --color-very-good: 0, 255, 0;
+    --color-very-good-background: 0, 255, 0, 0.1;
+    --color-good: 200, 255, 0;
+    --color-good-background: 220, 255, 90, 0.1;
+    --color-average: 255, 255, 52;
+    --color-average-background: 204, 180, 41, 0.1;
+    --color-bad: 255, 165, 0;
+    --color-bad-background: 255, 165, 0, 0.1;
+    --color-very-bad: 244, 103, 103;
+    --color-very-bad-background: 153, 1, 1, 0.1;
 }
 
 :root.light {
@@ -243,6 +254,17 @@
     --box-shadow-color-scrollbar-thumb-on-hover: 116, 116, 164;
     
     --alpha-shadow-color-scroll-shaded-div: 0.3;
+
+    --color-very-good: 21, 87, 37;
+        --color-very-good-background: 0, 255, 0, 0.2;
+        --color-good: 66, 77, 30;
+        --color-good-background: 201, 255, 0, 0.2;
+        --color-average: 89, 89, 25;
+        --color-average-background: 255, 217, 0, 0.2;
+        --color-bad: 104, 80, 35;
+        --color-bad-background: 255, 165, 0, 0.2;
+        --color-very-bad: 117, 45, 45;
+        --color-very-bad-background: 153, 1, 1, 0.2;
 }
 
 :root.balanced *,
