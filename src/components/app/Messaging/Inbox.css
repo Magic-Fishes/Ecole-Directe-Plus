@@ -64,9 +64,19 @@
     background-color: rgba(var(--background-color-focus));
 }
 
-
 #inbox .message-container :is(.message-author, .message-date) {
     color: rgb(var(--text-color-alt))
+}
+
+#inbox .message-container .message-subject {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+}
+#inbox .message-container .attachment-icon {
+    height: 16px;
+    transform: scale(1.3);
 }
 
 :fullscreen #inbox ul {

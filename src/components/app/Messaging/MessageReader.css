@@ -54,5 +54,43 @@
 
 #message-reader .email-footer {
     height: 100px;
-    overflow: hidden;
+    overflow: auto;
+}
+
+#message-reader .attachments-container {
+    list-style-type: none;
+    height: 100%;
+    width: max-content;
+    padding: 15px;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 15px;
+}
+
+#message-reader .attachments-container .attachment {
+    height: 100%;
+    padding-inline: 15px;
+    background-color: transparent;
+    font-size: var(--font-size-16);
+    border: 1px solid rgba(var(--text-color-alt), .5);
+    border-radius: 8px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 15px;
+    outline: none;
+    cursor: pointer;
+    transition: .1s;
+}
+
+#message-reader .attachments-container .attachment:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-alt), .1);
+}
+#message-reader .attachments-container .attachment:active {
+    background-color: rgba(var(--text-color-alt), .2);
+}
+
+#message-reader .attachments-container .attachment .download-icon {
+    height: 20px;
 }

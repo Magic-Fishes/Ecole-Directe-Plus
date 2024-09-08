@@ -6,6 +6,7 @@ import "./Inbox.css";
 import ScrollShadedDiv from "../../generic/CustomDivs/ScrollShadedDiv";
 import TextInput from "../../generic/UserInputs/TextInput";
 import { removeAccents } from "../../../utils/utils";
+import AttachmentIcon from "../../graphics/AttachmentIcon";
 
 
 export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setSelectedMessage }) {
@@ -16,8 +17,8 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
     console.log("Inbox ~ messages:", messages)
 
     // behavior
+    // TODO: handle keyboard navigation
     const handleClick = (message) => {
-        console.log("new selected msg:", message.id)
         setSelectedMessage(message.id);
     }
 
@@ -30,7 +31,8 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
         try {
             regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch {return -1}
-        const filterBy = [message.subject, message.from.name?.toLowerCase(), message.content?.content?.toLowerCase()];
+        const filterBy = [message.subject, message.from.name, message.content?.content, message.files?.map((file) => file.name)].flat();
+        console.log("filterResearch ~ filterBy:", filterBy)
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());
@@ -42,10 +44,6 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
         return false;
     }
 
-    useEffect(() => {
-        console.log("search:", search);
-    }, [search]);
-
     // JSX
     return (
         <div id="inbox">
@@ -55,7 +53,7 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
                         <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
                         <ul>
                             {messages.filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} key={message.id} role="button" tabIndex={0}>
-                                <h4 className="message-subject">{message.from.name}</h4>
+                                <h4 className="message-subject">{message.from.name} {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
                                     month: "long",
@@ -63,7 +61,6 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
                                     hour: "2-digit",
                                     minute: "2-digit"
                                 })}</p>
-                                {console.log("testits:", message.files?.length) > 0 && <p>FichierS</p>}
                             </li>)}
                         </ul>
                     </ScrollShadedDiv>

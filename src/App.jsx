@@ -1142,10 +1142,9 @@ export default function App() {
 
 
     function sortMessages(messages) {
-        console.log("messages", messages);
-        const sortedMessages = messages.messages.received.map((message) => { return {
+        const sortedMessages = messages.messages.received.map((message) => { console.log("files:", message.files); return {
             date: message.date,
-            files: messages.files,
+            files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
             from: message.from,
             id: message.id,
             read: message.read,
