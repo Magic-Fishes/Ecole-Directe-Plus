@@ -29,7 +29,7 @@ export default function SessionContent({ day, sessionContent, sessionContentInde
                     <h4>
                         {sessionContent.subject.replace(". ", ".").replace(".", ". ")}
                     </h4>
-                    {sessionContent.addDate && <span className="add-date">Écrit le {(new Date(sessionContent.addDate)).toLocaleDateString()}</span>}
+                    {sessionContent.addDate && <span className="add-date">Écrit le {(new Date(sessionContent.addDate)).toLocaleDateString("fr-FR")}</span>}
                 </div>
             </div>
             : <ContentLoader

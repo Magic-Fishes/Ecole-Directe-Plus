@@ -184,7 +184,7 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             {(selectedElement.type && <p>Type d'évaluation : {selectedElement.type}</p>)}
                             <p>Date : {(() => {
                                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                                return <time dateTime={selectedElement.date.toISOString()}>{selectedElement.date.toLocaleDateString(navigator.language || "fr-FR", options)}</time>;
+                                return <time dateTime={selectedElement.date.toISOString()}>{selectedElement.date.toLocaleDateString("fr-FR", options)}</time>;
                             })()}</p>
                             {selectedElement.badges.length > 0 ? <div className="badges-zone">
                                 <span>Badges :</span>

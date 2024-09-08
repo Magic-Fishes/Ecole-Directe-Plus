@@ -86,7 +86,7 @@ export default function Charts({ selectedPeriod }) {
                     },
                 };
                 chartData.current = {
-                    labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString(navigator.language || "fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
+                    labels: Array.from({ length: generalAverageHistory[selectedPeriod].dates.length }, (_, i) => generalAverageHistory[selectedPeriod].dates[i].toLocaleDateString("fr-FR", { year: 'numeric', month: 'long', day: 'numeric' })),
                     datasets: [
                         {
                             type: "line",
