@@ -1,0 +1,96 @@
+
+.message-reader-window-header {
+    padding-inline: 15px;
+}
+
+#message-reader {
+    height: 100%;
+}
+
+#message-reader hr {
+    border: none;
+    height: 2px;
+    background-color: rgb(var(--text-color-alt), .5);
+}
+
+#message-reader .email-header {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 10px;
+}
+
+#message-reader .email-header .author {
+    color: rgb(var(--text-color-alt));
+}
+
+#message-reader .email-header h3 {
+    text-align: center;
+}
+
+#message-reader .email-header .send-date {
+    text-align: right;
+    color: rgb(var(--text-color-alt))
+}
+
+#message-reader .message-container {
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: rgba(var(--background-color-2), 1);
+    height: 100%;
+}
+
+#message-reader .message-content-container {
+    height: 100%;
+}
+
+#message-reader .message-content {
+    padding: 20px;
+    overflow: auto;
+}
+#message-reader .message-content > div {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#message-reader .email-footer {
+    height: 100px;
+    overflow: auto;
+}
+
+#message-reader .attachments-container {
+    list-style-type: none;
+    height: 100%;
+    width: max-content;
+    padding: 15px;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 15px;
+}
+
+#message-reader .attachments-container .attachment {
+    height: 100%;
+    padding-inline: 15px;
+    background-color: transparent;
+    font-size: var(--font-size-16);
+    border: 1px solid rgba(var(--text-color-alt), .5);
+    border-radius: 8px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 15px;
+    outline: none;
+    cursor: pointer;
+    transition: .1s;
+}
+
+#message-reader .attachments-container .attachment:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-alt), .1);
+}
+#message-reader .attachments-container .attachment:active {
+    background-color: rgba(var(--text-color-alt), .2);
+}
+
+#message-reader .attachments-container .attachment .download-icon {
+    height: 20px;
+}
