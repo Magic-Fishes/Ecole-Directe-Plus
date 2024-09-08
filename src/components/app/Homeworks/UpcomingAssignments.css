@@ -3,6 +3,7 @@
     flex-direction: column;
     padding: 15px;
     gap: 10px;
+    overflow: scroll !important;
 }
 
 .upcoming-assignments {
@@ -11,6 +12,7 @@
     border-radius: 15px;
     padding-inline: 15px;
     justify-content: space-between;
+    min-height: 50px;
     gap: 10px;
     flex: 1;
     cursor: pointer;
