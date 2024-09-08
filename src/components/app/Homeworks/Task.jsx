@@ -73,7 +73,6 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
                 <div className="task-title">
                     <h4>
                         {task.subject.replace(". ", ".").replace(".", ". ")}
-                        <hr className="check-line" />
                     </h4>
                     {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString()}</span>}
                     {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}

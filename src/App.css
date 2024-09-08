@@ -168,13 +168,13 @@
     --background-color-warning-2: 255, 51, 0;
     
     /* success */
-
+    
     --background-color-success: 0, 255, 56;
     --border-color-success: 98, 207, 122;
-
+    
     /* - Others - */
     --background-color-selection: 4, 98, 210;
-
+    
     --background-color-streak-0: 255, 15, 0;
     --background-color-streak-1: 255, 150, 0;
     
@@ -190,7 +190,7 @@
     --box-shadow-element: 0 0 15px rgba(0, 0, 0, 0.25);
     --color-shadow-window: rgba(0, 0, 0, 0.4);
     --color-shadow-element: rgba(0, 0, 0, 0.25);
-
+    
     --text-color-main: 0, 0, 0;
     --text-color-main-reverse: 255, 255, 255;
     --text-color-alt: 76, 76, 184;
@@ -202,14 +202,15 @@
     /* --background-color-3: 94, 94, 136; */
     --background-color-focus: 75, 72, 217, 0.1;
     --background-color-header: 187, 187, 255;
-
+    
     --background-color-strength-li-1: 36, 186, 22;
     --background-color-strength-li-2: 27, 155, 22;
     --background-color-strength-li-3: 17, 123, 21;
     
     --border-color-0: 109, 106, 251;
     --border-color-1: 75, 72, 217;
-
+    --border-color-contrast: 100, 100, 180; 
+    
     /* error */
     
     --text-color-error: 255, 66, 66;

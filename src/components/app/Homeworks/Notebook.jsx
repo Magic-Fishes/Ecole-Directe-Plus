@@ -5,9 +5,11 @@ import { capitalizeFirstLetter, getISODate } from "../../../utils/utils";
 
 import { AppContext } from "../../../App";
 import Task from "./Task";
+import SessionContent from "./SessionContent";
 import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
+import DetailedSessionContent from "./DetailedSessionContent";
 import { canScroll } from "../../../utils/DOM";
 
 import "./Notebook.css";
@@ -302,8 +304,11 @@ export default function Notebook({ hideDateController = false }) {
             {homeworks
                 ? Object.keys(homeworks).length > 0/* && Object.values(homeworks).some(arr => arr.some(task => task.content))*/
                     ? Object.keys(homeworks).sort().map((el, index) => {
-                        const progression = homeworks[el].filter((task) => task.isDone).length / homeworks[el].length
-                        const elDate = new Date(el)
+                        const tasks = homeworks[el].filter(element => element.type === "task");
+                        const sessionContents = homeworks[el].filter(element => element.type === "sessionContent");
+
+                        const progression = tasks.filter((task) => task.isDone).length / tasks.length;
+                        const elDate = new Date(el);
                         return (homeworks[el].length
                             ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                                 <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
@@ -311,25 +316,37 @@ export default function Notebook({ hideDateController = false }) {
                                         <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString(navigator.language || "fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
                                     </span>
                                 </div>
-                                {/* <hr style={{ width: `${progression * 100}%`}} /> */}
                                 <hr />
+                                {/* <hr style={{ width: `${progression * 100}%`}} /> */}
                                 <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
-                                    {
-                                        homeworks[el].map((task, taskIndex) => {
-                                            const result = [
-                                                selectedDate === el
-                                                    ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
-                                                    : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
-                                            if (selectedDate === el && taskIndex < homeworks[el].length - 1) {
-                                                result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
-                                            }
-                                            return result.flat()
-                                        })
+                                    {tasks.map((task, taskIndex) => {
+                                        const result = [
+                                            selectedDate === el
+                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
+                                                : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                        if (selectedDate === el && taskIndex < tasks.length - 1) {
+                                            result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
+                                        }
+                                        return result.flat()
+                                    })}
+                                    {sessionContents.length !== 0 && (selectedDate === el
+                                        ? <div className="detailed-section-separator"><hr /><span>Contenus de Séances</span><hr /></div>
+                                        : <hr className="section-separator"/>)
                                     }
+                                    {sessionContents.map((sessionContent, sessionContentIndex) => {
+                                        const result = [
+                                            selectedDate === el
+                                                ? <DetailedSessionContent key={"detailed-" + sessionContent.id} sessionContent={sessionContent} userHomeworks={userHomeworks} sessionContentIndex={sessionContentIndex} day={el} />
+                                                : <SessionContent key={sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} userHomeworks={userHomeworks} />]
+                                        if (selectedDate === el && sessionContentIndex < sessionContents.length - 1) {
+                                            result.push(<hr key={toString(sessionContent.id) + "-hr"} className="detailed-task-separator" />)
+                                        }
+                                        return result.flat()
+                                    })}
                                 </div>
                             </div>
                             : null)
-                    }).filter(e => e) 
+                    }).filter(e => e)
                     : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
                     return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>

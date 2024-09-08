@@ -26,21 +26,6 @@
     text-align: end; /* When a title wrap */
 }
 
-.task .task-title hr {
-    display: none;
-}
-
-.task .task-title h4::before {
-    /* text-decoration: line-through;
-    text-decoration-thickness: 2px; */
-    position: relative;
-    top: 50%;
-    left: 0;
-    height: 2px; 
-    width: 0;
-}
-
-
 .task .check-box {
     display: flex;
     width: 45px;

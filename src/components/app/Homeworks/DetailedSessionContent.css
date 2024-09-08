@@ -1,0 +1,149 @@
+.detailed-session-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.session-content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.session-content-header h4 {
+    font-size: var(--font-size-16);
+}
+
+.session-content-subtitle {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detailed-session-content .add-date {
+    display: inline-block;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14);
+}
+
+.detailed-session-content .session-content-content {
+    margin-block: 5px;
+    padding: 15px;
+    padding-right: 45px;
+    border-radius: 10px;
+    position: relative;
+    max-height: 120px;
+    transition: .2s;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.detailed-session-content .session-content-content:is(:hover, :focus-visible) {
+    max-height: 150px;
+}
+
+.detailed-session-content .session-content-content::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dark .detailed-session-content .session-content-content {
+    background-color: rgba(var(--text-color-main-reverse), 0.15);
+}
+
+.dark .detailed-session-content .session-content-content::after{
+    background-image: linear-gradient(0deg, #333350, transparent 60px);
+}
+
+.light .detailed-session-content .session-content-content {
+    background-color: rgba(var(--text-color-main-reverse), 0.3);
+}
+
+.light .detailed-session-content .session-content-content::after{
+    background-image: linear-gradient(0deg, #b0b0e1, transparent 60px);
+}
+
+.detailed-session-content .session-content-content .copy-button {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    opacity: 0;
+    transition: .1s;
+}
+
+.detailed-session-content .session-content-content:is(:hover, :focus-within) .copy-button {
+    opacity: 1;
+}
+
+/* change session-content content items appearance */
+.detailed-session-content .session-content-content a {
+    word-break: break-all;
+}
+
+.detailed-session-content .session-content-content a:is(:hover, :focus-visible) {
+    opacity: .8;
+}
+
+.detailed-session-content .session-content-content a:active {
+    opacity: .6;
+}
+
+.session-content-footer {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.session-content-footer .session-content-footer-button {
+    padding: 8px;
+    border-radius: 10px;
+    flex: 1;
+    background-color: rgba(var(--background-color-3), .5);
+    color: rgb(var(--text-color-alt));
+    
+    display: flex;
+    align-items: center;
+    transition: .1s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.session-content-footer .session-content-footer-button.disabled {
+    pointer-events: none;
+    filter: brightness(0.6);
+}
+
+.light .session-content-footer .session-content-footer-button.disabled {
+    pointer-events: none;
+    filter: opacity(0.4);
+}
+
+.session-content-footer .session-content-footer-button:is(:hover, :focus-visible) {
+    background-color: rgb(var(--background-color-3));
+}
+
+.session-content-footer .session-content-footer-button:active {
+    background-color: rgb(var(--background-color-3), .7);
+}
+
+.session-content-footer .session-content-footer-button .download-icon {
+    height: 20px;
+    margin-right: 10px;
+}
+.session-content-footer .session-content-footer-button .session-content-icon {
+    height: 20px;
+    scale: 1.5;
+    margin-right: 7px;
+}
+.session-content-footer .session-content-footer-button svg * {
+    stroke: rgb(var(--text-color-alt));
+}
+

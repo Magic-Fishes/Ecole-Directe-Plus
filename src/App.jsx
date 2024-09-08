@@ -1052,9 +1052,10 @@ export default function App() {
         const upcomingAssignments = []
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework, i) => {
-                const { codeMatiere, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
+                const { codeMatiere, aFaire, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
                 const task = {
                     id: idDevoir,
+                    type: aFaire ? "task" : "sessionContent",
                     subjectCode: codeMatiere,
                     subject: matiere,
                     addDate: donneLe,
@@ -1108,6 +1109,7 @@ export default function App() {
 
                     return {
                         id: id,
+                        type: "task",
                         subjectCode: codeMatiere,
                         subject: matiere,
                         addDate: donneLe,
@@ -1124,14 +1126,11 @@ export default function App() {
                     // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
                     return {
                         id: id,
+                        type: "sessionContent",
                         subjectCode: codeMatiere,
                         subject: matiere,
                         addDate: day[0],
-                        isInterrogation: false,
-                        isDone: false,
                         teacher: nomProf,
-                        content: "Ti9B",
-                        files: [],
                         sessionContent: contenuDeSeance.contenu,
                         sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
                     }

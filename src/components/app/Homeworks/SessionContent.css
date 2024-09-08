@@ -1,0 +1,26 @@
+.session-content {
+    cursor: pointer;
+    background-color: rgb(var(--background-color-2));
+    border: 3px solid rgb(var(--background-color-3));
+    border-radius: 10px;
+    transition: .1s;
+    text-decoration: none;
+    flex-shrink: 0;
+    outline: none;
+    overflow: hidden;
+}
+
+.session-content .session-content-title {
+    padding: 0.75em;
+    text-align: end; /* When a title wrap */
+}
+
+.session-content:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-3), .4);
+}
+
+.session-content .add-date {
+    display: inline-block;
+    color: rgb(var(--text-color-alt));
+    font-size: var(--font-size-14);
+}
