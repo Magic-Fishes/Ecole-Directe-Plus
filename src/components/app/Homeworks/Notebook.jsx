@@ -280,14 +280,18 @@ export default function Notebook({ hideDateController = false }) {
 
     useEffect(() => {
         const controller = new AbortController();
-        if ((homeworks && homeworks[selectedDate] && homeworks[selectedDate].length && !homeworks[selectedDate][0].content) && isLoggedIn) {
+        if ((homeworks // SI l'objet des devoirs existe MAIS
+            && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
+                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
+                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
+            && isLoggedIn) {
             fetchHomeworks(controller, selectedDate)
         }
 
         return () => {
             controller.abort();
         }
-    }, [selectedDate, homeworks, isLoggedIn]);
+    }, [location.hash, homeworks, isLoggedIn]);
 
     return <>
         {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
@@ -331,7 +335,7 @@ export default function Notebook({ hideDateController = false }) {
                                     })}
                                     {sessionContents.length !== 0 && (selectedDate === el
                                         ? <div className="detailed-section-separator"><hr /><span>Contenus de Séances</span><hr /></div>
-                                        : <hr className="section-separator"/>)
+                                        : <hr className="section-separator" />)
                                     }
                                     {sessionContents.map((sessionContent, sessionContentIndex) => {
                                         const result = [

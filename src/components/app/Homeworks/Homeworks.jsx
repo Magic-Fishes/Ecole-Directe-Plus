@@ -54,9 +54,6 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             if (homeworks === undefined) {
                 fetchHomeworks(controller);
             }
-            if (homeworks === undefined || !homeworks.hasOwnProperty(selectedDate)) {
-                fetchHomeworks(controller, new Date(selectedDate));
-            }
         }
 
         return () => {
