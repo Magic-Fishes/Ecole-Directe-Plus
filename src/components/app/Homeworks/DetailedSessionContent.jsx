@@ -67,7 +67,7 @@ export default function DetailedSessionContent({ sessionContent, userHomeworks, 
             </h4>
         </div>
         <div className="session-content-subtitle">
-            {sessionContent.addDate && <span className="add-date">Donné le {(new Date(sessionContent.addDate)).toLocaleDateString()} par {settings.get("isStreamerModeEnabled") ? "M. -------" : sessionContent.teacher}</span>}
+            {sessionContent.addDate && <span className="add-date">Donné le {(new Date(sessionContent.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? "M. -------" : sessionContent.teacher}</span>}
             {sessionContent.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
         <Link to={`#${day};${sessionContent.id};s`} onClick={(e) => e.stopPropagation()} replace={true} >

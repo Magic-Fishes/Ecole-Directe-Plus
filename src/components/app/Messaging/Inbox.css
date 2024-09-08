@@ -1,0 +1,91 @@
+
+
+#messaging .inbox-window-header {
+    height: 50px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(var(--text-color-alt), .5);
+    position: relative;
+}
+
+#inbox {
+    height: 100%;
+}
+
+#inbox .inbox-search-input {
+    background-color: rgb(var(--background-color-0), .5);
+    border: none;
+    background-color: none;
+    border-radius: 0;
+}
+#inbox .inbox-search-input .text-input-container {
+    border-radius: 0;
+    border: none;
+    background-color: none;
+}
+#inbox .inbox-search-input .text-input-container:is(:hover, :focus-within) {
+    background-color: rgb(var(--background-color-0), rgb(var(--text-color-alt), .5));
+}
+
+#inbox .messages-container {
+    height: 100%;
+}
+
+#inbox .messages-container ul {
+    list-style-type: none;
+}
+
+#inbox .message-container {
+    position: relative;
+    text-align: left;
+    padding: 10px;    
+    border-left: 4px solid rgb(var(--text-color-alt), .5);
+    border-bottom: 1px solid rgb(var(--text-color-alt), .5);
+    opacity: .6;
+    outline: none;
+    cursor: pointer;
+}
+
+#inbox .message-container:last-child {
+    border-bottom: none;
+}
+
+#inbox .message-container[data-read=false] {
+    border-left: 4px solid rgb(var(--text-color-alt));
+    padding-left: 6px;
+    opacity: 1;
+}
+
+#inbox .message-container:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-0), .2);
+}
+#inbox .message-container.selected {
+    opacity: .8;
+    background-color: rgba(var(--background-color-focus));
+}
+
+#inbox .message-container :is(.message-author, .message-date) {
+    color: rgb(var(--text-color-alt))
+}
+
+#inbox .message-container .message-subject {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+}
+#inbox .message-container .attachment-icon {
+    height: 16px;
+    transform: scale(1.3);
+}
+
+:fullscreen #inbox ul {
+    display: flex;
+    flex-flow: row wrap;
+}
+:fullscreen .message-container {
+    flex-basis: 25%;
+}
+:fullscreen #inbox .message-container:last-child {
+    border-bottom: none;
+}

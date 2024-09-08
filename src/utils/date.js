@@ -25,7 +25,7 @@ export function formatDateRelative(date, short=true) {
     } else if (comparedDate.getTime() - now.getTime() > -14 * dayMs ) {
         return `${short ? "" : "Il y a "} 1 semaine`;
     } else {
-        return date.toLocaleDateString();
+        return date.toLocaleDateString("fr-FR");
     }
 }
 
