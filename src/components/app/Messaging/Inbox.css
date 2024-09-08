@@ -60,6 +60,7 @@
     background-color: rgba(var(--background-color-0), .2);
 }
 #inbox .message-container.selected {
+    opacity: .8;
     background-color: rgba(var(--background-color-focus));
 }
 

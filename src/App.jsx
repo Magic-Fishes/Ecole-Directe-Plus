@@ -1677,9 +1677,8 @@ export default function App() {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        // TODO: handle student accounts
         fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/familles/${accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1730,9 +1729,8 @@ export default function App() {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        // TODO: handle student accounts
         fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/familles/${accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {

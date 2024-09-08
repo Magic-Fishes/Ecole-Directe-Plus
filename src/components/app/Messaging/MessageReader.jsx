@@ -6,6 +6,7 @@ import "./MessageReader.css";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
 import FileComponent from "../../generic/FileComponent";
 import { capitalizeFirstLetter } from "../../../utils/utils";
+import ScrollShadedDiv from "../../generic/CustomDivs/ScrollShadedDiv";
 
 
 export default function MessageReader({ selectedMessage }) {
@@ -33,7 +34,10 @@ export default function MessageReader({ selectedMessage }) {
                         }))}</p>
                     </div>
                     <hr />
-                    <EncodedHTMLDiv className="message-content-container" backgroundColor={actualDisplayTheme === "dark" ? "#303047" : "#d6d6f8"}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
+                    <ScrollShadedDiv className="message-content-container" key={selectedMessage}>
+
+                        <EncodedHTMLDiv className="message-content" backgroundColor={actualDisplayTheme === "dark" ? "#303047" : "#d6d6f8"}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
+                    </ScrollShadedDiv>
                     <hr />
                     <div className="email-footer">
                         {message && (message?.files?.length > 0

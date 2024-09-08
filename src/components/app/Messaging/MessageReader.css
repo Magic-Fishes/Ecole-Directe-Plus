@@ -40,13 +40,14 @@
 }
 
 #message-reader .message-content-container {
-    padding: 20px;
-    /* border-radius: 15px; */
     height: 100%;
-    border-radius: 15px;
+}
+
+#message-reader .message-content {
+    padding: 20px;
     overflow: auto;
 }
-#message-reader .message-content-container > div {
+#message-reader .message-content > div {
     max-width: 800px;
     margin: 0 auto;
 }
