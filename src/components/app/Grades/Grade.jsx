@@ -1,22 +1,37 @@
-
 import { useState, useEffect, useRef, useContext, createElement } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 import CloseButton from "../../graphics/CloseButton";
-
+import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
+import Arrow from "../../graphics/Arrow";
 import { AppContext } from "../../../App";
-
 import "./Grade.css";
 
-export default function Grade({ grade, className = "", ...props }) {
-    const { useUserSettings, useUserData, deleteFakeGrade } = useContext(AppContext); // de même pour ça
+export default function Grade({ grade, subject, className = "", ...props }) {
+    const { useUserSettings, useUserData, deleteFakeGrade } = useContext(AppContext);
+    const userData = useUserData();
+    const sortedGrades = userData.get("sortedGrades");
+    const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
+
+    const generalAverage = sortedGrades[selectedPeriod].generalAverage;
+    const subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
+
+    function getSummedCoef(subjects) {
+        let sum = 0;
+        for (let key in subjects) {
+            sum += subjects[key].coef;
+        }
+        return sum;
+    }
+
+    // Use subject coef if subject is provided, otherwise use grade's coef
+    const gradeCoef = subject ? subject.coef : grade.coef ?? 1;
+    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / (subjectsSummedCoefs - gradeCoef);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
     const gradeScale = useUserSettings("gradeScale");
     const [classList, setClassList] = useState([]);
-
-
     const gradeRef = useRef(null);
 
     function hasStreakGradeAfter(siblingsLimit = 0) {
@@ -29,7 +44,6 @@ export default function Grade({ grade, className = "", ...props }) {
             }
             i++;
         }
-
         return false;
     }
 
@@ -43,30 +57,7 @@ export default function Grade({ grade, className = "", ...props }) {
             }
             i++;
         }
-
         return false;
-    }
-
-    function checkLineBreak(dir = 1) {
-        const sibling = (dir === 1 ? gradeRef.current.nextElementSibling : gradeRef.current.previousElementSibling);
-        if (sibling === null) {
-            return 0;
-        }
-        const siblingBounds = sibling.getBoundingClientRect();
-        const selfBounds = gradeRef.current.getBoundingClientRect();
-        if (dir * Math.round(siblingBounds.left) <= dir * Math.round(selfBounds.left)) {
-            setClassList((oldClassList) => {
-                const newClassList = structuredClone(oldClassList);
-                for (let className of ["before-line-break", "after-line-break"]) {
-                    const index = newClassList.indexOf(className);
-                    if (index > -1) {
-                        newClassList.splice(index, 1);
-                    }
-                }
-                newClassList.push(dir === 1 ? "before-line-break" : "after-line-break");
-                return newClassList;
-            })
-        }
     }
 
     function updateClassList() {
@@ -81,24 +72,14 @@ export default function Grade({ grade, className = "", ...props }) {
                 }
                 if (hasStreakGradeAfter(1) && hasStreakGradeBefore(1)) {
                     newClassList.push("mid-row");
-                    // checkLineBreak(1);
-                    // checkLineBreak(-1);
                 } else {
                     if (!hasStreakGradeBefore(1)) {
                         newClassList.push("start-row");
-                        // if (hasStreakGradeAfter(1)) {
-                        //     checkLineBreak(1);
-                        // }
                     }
-
                     if (!hasStreakGradeAfter(1)) {
                         newClassList.push("end-row");
-                        // if (hasStreakGradeBefore(1)) {
-                        //     checkLineBreak(-1);
-                        // }
                     }
                 }
-
                 return newClassList;
             });
         }
@@ -108,50 +89,138 @@ export default function Grade({ grade, className = "", ...props }) {
         if (grade.entryDate ?? grade.date) {
             setClassList((oldClassList) => {
                 const newClassList = [...oldClassList];
-                const MAX_TIME_DIFFERENCE = 3 * 1000 * 60 * 60 * 24; // 3 jours en ms
+                const MAX_TIME_DIFFERENCE = 3 * 1000 * 60 * 60 * 24;
                 let isNewGrade = (Date.now() - (grade.entryDate ?? grade.date)) <= MAX_TIME_DIFFERENCE;
                 if (isNewGrade && (grade.isReal ?? true)) {
                     newClassList.push("new-grade");
                 }
-
                 return newClassList;
             });
         }
     }
-
-    // TODO: handle when resize
-    // useEffect(() => {
-    //     window.addEventListener("resize", updateClassList);
-
-    //     return () => {
-    //         window.removeEventListener("resize", updateClassList);
-    //     }
-    // }, [])
 
     useEffect(() => {
         updateClassList();
         handleNewGrade();
     }, [grade]);
 
-    return (
-        createElement(
-            grade.id === undefined ? "span" : Link,
-            {
-                to: "#" + (grade.id ?? ""),
-                replace: grade.id === undefined ? "" : true,
-                id: grade.id ?? "",
-                ref: gradeRef,
-                className: `grade${((grade.isSignificant ?? true) && (grade.isReal ?? true)) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""}${(grade.isReal ?? true) ? "" : " sim-grade"} ${className} ${classList.join(" ")}`,
-                ...props
-            },
-            <span className="grade-container">
-                {["Abs", "Disp", "NE", "EA", "Comp"].includes(grade.value) ? grade.value : <span>
-                    {(isGradeScaleEnabled.get() && !isNaN(grade.value) ? Math.round((grade.value * gradeScale.get() / (grade.scale ?? 20)) * 100) / 100 : grade.value)?.toString().replace(".", ",")}
-                    {isGradeScaleEnabled.get() || ((grade.scale ?? 20) != 20 && <sub>/{grade.scale}</sub>)}
-                    {coefficientEnabled && (grade.coef ?? 1) !== 1 && <sup>({grade.coef ?? 1})</sup>}
-                </span>}
-                {(grade.isReal ?? true) === false && <CloseButton className="delete-grade-button" onClick={() => {deleteFakeGrade(grade.id, grade.subjectKey, grade.periodKey)}}/>}
-            </span>
-        )
-    )
+    
+
+    return createElement(
+        grade.id === undefined ? "span" : Link,
+        {
+            to: "#" + (grade.id ?? ""),
+            replace: grade.id === undefined ? "" : true,
+            id: grade.id ?? "",
+            ref: gradeRef,
+            className: `grade${((grade.isSignificant ?? true) && (grade.isReal ?? true)) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""}${(grade.isReal ?? true) ? "" : " sim-grade"} ${className} ${classList.join(" ")}`,
+            ...props,
+        },
+        <span className="grade-container">
+            {["Abs", "Disp", "NE", "EA", "Comp"].includes(grade.value) ? (
+                grade.value
+            ) : (
+                grade.subject && !isNaN(grade.value) ? (
+                    // Only render Tooltip when the grade has a subject and a numeric value
+                    <Tooltip placement="left">
+                        <TooltipTrigger>
+                            <span
+                                className={
+                                    gradeScore < -0.2
+                                        ? "very-bad"
+                                        : gradeScore < -0.07
+                                            ? "bad"
+                                            : gradeScore < 0.07
+                                                ? "average"
+                                                : gradeScore < 0.2
+                                                    ? "good"
+                                                    : "very-good"
+                                }
+                            >
+                                {(
+                                    isGradeScaleEnabled.get() && !isNaN(grade.value)
+                                        ? Math.round(
+                                            (grade.value * gradeScale.get()) / 
+                                            (grade.scale ?? 20) * 
+                                            100
+                                        ) / 100
+                                        : grade.value
+                                )
+                                    ?.toString()
+                                    .replace(".", ",")}
+                                {isGradeScaleEnabled.get() ||
+                                    ((grade.scale ?? 20) !== 20 && (
+                                        <sub>/{grade.scale}</sub>
+                                    ))}
+                                {coefficientEnabled && gradeCoef !== 1 && (
+                                    <sup>({gradeCoef})</sup>
+                                )}
+                            </span>
+                        </TooltipTrigger>
+                        <TooltipContent className={
+                            gradeScore < -0.2
+                                ? "very-bad-tooltip"
+                                : gradeScore < -0.07
+                                    ? "bad-tooltip"
+                                    : gradeScore < 0.07
+                                        ? "average-tooltip"
+                                        : gradeScore < 0.2
+                                            ? "good-tooltip"
+                                            : "very-good-tooltip"
+                        }>
+                            <span className="grade-tooltip">
+                                {(
+                                    gradeScore
+                                ).toFixed(2) > 0 ? "+" : ""}
+                                {(
+                                    gradeScore
+                                ).toFixed(2)}
+                                {gradeScore > 0.2 ? (
+                                    <Arrow className="grade-arrow grade-arrow-vertical-up" />
+                                ) : gradeScore > 0.07 ? (
+                                    <Arrow className="grade-arrow grade-arrow-up" />
+                                ) : gradeScore > -0.07 ? (
+                                    <Arrow className="grade-arrow grade-arrow-horizontal" />
+                                ) : gradeScore > -0.2 ? (
+                                    <Arrow className="grade-arrow grade-arrow-down" />
+                                ) : (
+                                    <Arrow className="grade-arrow grade-arrow-vertical-down" />
+                                )}
+                            </span>
+                        </TooltipContent>
+                    </Tooltip>
+                ) : (
+                    // Render the span without tooltip if not a subject grade
+                    <span>
+                        {(
+                            isGradeScaleEnabled.get() && !isNaN(grade.value)
+                                ? Math.round(
+                                    (grade.value * gradeScale.get()) /
+                                    (grade.scale ?? 20) *
+                                    100
+                                ) / 100
+                                : grade.value
+                        )
+                            ?.toString()
+                            .replace(".", ",")}
+                        {isGradeScaleEnabled.get() ||
+                            ((grade.scale ?? 20) !== 20 && <sub>/{grade.scale}</sub>)}
+                        {coefficientEnabled && gradeCoef !== 1 && <sup>({gradeCoef})</sup>}
+                    </span>
+                )
+            )}
+            {(grade.isReal ?? true) === false && (
+                <CloseButton
+                    className="delete-grade-button"
+                    onClick={() => {
+                        deleteFakeGrade(
+                            grade.id,
+                            grade.subjectKey,
+                            grade.periodKey
+                        );
+                    }}
+                />
+            )}
+        </span>
+    );
 }

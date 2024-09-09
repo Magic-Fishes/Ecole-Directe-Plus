@@ -116,6 +116,22 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
                                 </ContentLoader>
                             }
+                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classAverage !== undefined && sortedGrades[selectedPeriod].classAverage !== null && sortedGrades[selectedPeriod].classAverage !== "" ? (
+                                <InfoButton className="results-legend">
+                                    <span>
+                                        Moyenne de classe :{" "}
+                                        <Grade
+                                            grade={{
+                                                value:
+                                                    sortedGrades[selectedPeriod].classAverage ?? "N/A",
+                                                scale: 20,
+                                                coef: 1,
+                                                isSignificant: true,
+                                            }}
+                                        />
+                                    </span>
+                                </InfoButton>
+                            ) : null}
                         </div>
                     </WindowHeader>
                     <WindowContent className="mobile-results">
@@ -143,7 +159,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     } else {
                                         return (el && el.grades ? <><div key={"subject-" + el.id} className="mobile-subject-row mobile-row">
                                             <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`mobile-head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}> {el.name} </Link>
-                                            <div className="subject-average"><Grade grade={{ value: el.average }} /></div>
+                                            <div className="subject-average"><Grade grade={{ value: el.average, subject: el }} /></div>
                                         </div>
                                             <div key={"grade-" + el.id} className="mobile-grade-row mobile-row">
                                                 {el.grades.filter(el => el.isReal).map((grade) => {

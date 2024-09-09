@@ -210,7 +210,7 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
                 }}
                 {...context.getFloatingProps(props)}
             >
-                <FloatingArrow className="floating-arrow" ref={context.arrowRef} context={context} tipRadius={2} width={ARROW_WIDTH} height={ARROW_HEIGHT} />
+                <FloatingArrow className={`floating-arrow ${className}`} ref={context.arrowRef} context={context} tipRadius={2} width={ARROW_WIDTH} height={ARROW_HEIGHT} />
                 {children}
             </div>
         </FloatingPortal>
