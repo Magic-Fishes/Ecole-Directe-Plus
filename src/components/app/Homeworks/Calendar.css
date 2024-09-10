@@ -38,10 +38,13 @@
 .calendar .month-name {
     font-size: 1.2em;
     padding-inline : 17px;
-    padding-block: 7px;
+    height: 40px;
     border-radius: 12px;
     transition: .15s;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: center;
 }
 
 .calendar .month-name:hover {
