@@ -3,7 +3,6 @@
     flex-direction: column;
     padding: 15px;
     gap: 10px;
-    overflow: scroll !important;
 }
 
 .upcoming-assignments {
