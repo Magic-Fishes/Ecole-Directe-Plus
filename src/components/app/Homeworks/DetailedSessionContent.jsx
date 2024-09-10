@@ -70,7 +70,7 @@ export default function DetailedSessionContent({ sessionContent, userHomeworks, 
             {sessionContent.addDate && <span className="add-date">Donné le {(new Date(sessionContent.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? "M. -------" : sessionContent.teacher}</span>}
             {sessionContent.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
-        <Link to={`#${day};${sessionContent.id};s`} onClick={(e) => e.stopPropagation()} replace={true} >
+        <Link to={`#${day};${sessionContent.id};s`} className="session-content-link" onClick={(e) => e.stopPropagation()} replace={true} >
             <EncodedHTMLDiv className="session-content-content" backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{sessionContent.sessionContent}</EncodedHTMLDiv>
         </Link>
         <div className="session-content-footer">

@@ -29,6 +29,10 @@
     font-size: var(--font-size-14);
 }
 
+.detailed-session-content .session-content-link {
+    text-decoration: none;
+}
+
 .detailed-session-content .session-content-content {
     margin-block: 5px;
     padding: 15px;
