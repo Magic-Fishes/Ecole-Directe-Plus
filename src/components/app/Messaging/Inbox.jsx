@@ -14,8 +14,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessag
     // States
     const { useUserData } = useContext(AppContext);
     const [search, setSearch] = useState("");
-    const messages = useUserData("sortedMessages").get();
-    const messages2 = useUserData("sortedMessages");
+    const messages = useUserData("sortedMessages");
 
     // behavior
     const handleClick = (message) => {
@@ -31,17 +30,20 @@ export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessag
     const handleMarkAsUnread = (event, msg) => {
         event.preventDefault();
         event.stopPropagation();
-        const oldMsg = messages2.get();
         const controller = new AbortController();
         fetchMessageMarkAsUnread([msg.id], controller);
-        const msgIdx = oldMsg.findIndex((item) => item.id === msg.id);
-        oldMsg[msgIdx].read = false;
-        oldMsg[msgIdx].content = null;
-        messages2.set(oldMsg);
-
+        
         if (msg.id === selectedMessage) {
             setSelectedMessage(null);
         }
+        
+        // mark as unread locally and kick the content so as to trigger a refetch the next reading (as the "mark as read" feature is trigger when fetching the message)
+        const oldMsg = messages.get();
+        const msgIdx = oldMsg.findIndex((item) => item.id === msg.id);
+        oldMsg[msgIdx].read = false;
+        oldMsg[msgIdx].content = null;
+        messages.set(oldMsg);
+
     }
 
     const handleChange = (event) => {
@@ -69,11 +71,11 @@ export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessag
     return (
         <div id="inbox">
             <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
-            {messages !== undefined
-                ? (messages.length > 0
+            {messages.get() !== undefined
+                ? (messages.get().length > 0
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
-                            {messages.filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
+                            {messages.get().filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
                                 <h4 className="message-subject"><span className="author-name">{message.from.name}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon"/></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
