@@ -15,7 +15,6 @@ export default function MessageReader({ selectedMessage }) {
     const { useUserData, actualDisplayTheme } = useContext(AppContext);
     const messages = useUserData("sortedMessages").get();
     const message = messages ? messages.find((item) => item.id === selectedMessage) : null;
-    console.log("MessageReader ~ message:", message)
 
     // behavior
 

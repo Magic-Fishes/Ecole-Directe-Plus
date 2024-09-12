@@ -7,23 +7,40 @@ import ScrollShadedDiv from "../../generic/CustomDivs/ScrollShadedDiv";
 import TextInput from "../../generic/UserInputs/TextInput";
 import { removeAccents } from "../../../utils/utils";
 import AttachmentIcon from "../../graphics/AttachmentIcon";
+import MarkAsUnread from "../../graphics/MarkAsUnread";
 
 
-export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setSelectedMessage }) {
+export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessageMarkAsUnread }) {
     // States
     const { useUserData } = useContext(AppContext);
     const [search, setSearch] = useState("");
     const messages = useUserData("sortedMessages").get();
-    console.log("Inbox ~ messages:", messages)
+    const messages2 = useUserData("sortedMessages");
 
     // behavior
     const handleClick = (message) => {
         setSelectedMessage(message.id);
     }
-
+    
     const handleKeyDown = (event, msg) => {
         if (event.key === "Enter" || event.key === " ") {
             handleClick(msg);
+        }
+    }
+    
+    const handleMarkAsUnread = (event, msg) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const oldMsg = messages2.get();
+        const controller = new AbortController();
+        fetchMessageMarkAsUnread([msg.id], controller);
+        const msgIdx = oldMsg.findIndex((item) => item.id === msg.id);
+        oldMsg[msgIdx].read = false;
+        oldMsg[msgIdx].content = null;
+        messages2.set(oldMsg);
+
+        if (msg.id === selectedMessage) {
+            setSelectedMessage(null);
         }
     }
 
@@ -37,7 +54,6 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
             regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch {return -1}
         const filterBy = [message.subject, message.from.name, message.content?.content, message.files?.map((file) => file.name)].flat();
-        console.log("filterResearch ~ filterBy:", filterBy)
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());
@@ -58,7 +74,7 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
                             {messages.filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
-                                <h4 className="message-subject">{message.from.name} {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</h4>
+                                <h4 className="message-subject"><span className="author-name">{message.from.name}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon"/></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
                                     month: "long",
