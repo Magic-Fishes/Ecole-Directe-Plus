@@ -1,4 +1,4 @@
-.html-encoded-div > div > p {
+.html-encoded-div > div p {
     margin-bottom: var(--font-size-16);
 }
 
