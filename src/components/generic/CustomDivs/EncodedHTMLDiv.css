@@ -2,9 +2,9 @@
     margin-bottom: var(--font-size-16);
 }
 
-.html-encoded-div > div  ul {
+.html-encoded-div > div ul {
     padding-left: 10px;
 }
-.html-encoded-div > div  li {
+.html-encoded-div > div li {
     margin-bottom: 10px;
 }

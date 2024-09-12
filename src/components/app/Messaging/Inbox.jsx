@@ -17,9 +17,14 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
     console.log("Inbox ~ messages:", messages)
 
     // behavior
-    // TODO: handle keyboard navigation
     const handleClick = (message) => {
         setSelectedMessage(message.id);
+    }
+
+    const handleKeyDown = (event, msg) => {
+        if (event.key === "Enter" || event.key === " ") {
+            handleClick(msg);
+        }
     }
 
     const handleChange = (event) => {
@@ -47,12 +52,12 @@ export default function Inbox({ isLoggedIn, activeAccount, selectedMessage, setS
     // JSX
     return (
         <div id="inbox">
+            <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
             {messages !== undefined
                 ? (messages.length > 0
                     ? <ScrollShadedDiv className="messages-container">
-                        <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
                         <ul>
-                            {messages.filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} key={message.id} role="button" tabIndex={0}>
+                            {messages.filter(filterResearch).map((message) => <li className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
                                 <h4 className="message-subject">{message.from.name} {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
