@@ -75,6 +75,7 @@
     flex-flow: row nowrap;
     justify-content: space-between;
     width: 100%;
+    gap: 5px;
 }
 
 #inbox .message-container .message-subject .author-name {

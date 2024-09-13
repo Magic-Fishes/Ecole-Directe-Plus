@@ -44,7 +44,7 @@ export default function MessageReader({ selectedMessage }) {
                                 <hr />
                                 <div className="email-footer">
                                     <ul className="attachments-container">
-                                        {message.files.map((file) => <li><button className="attachment"  onClick={() => file.download()}><DownloadIcon className="download-icon" />{file.name + "." + file.extension}</button></li>)}
+                                        {message.files.map((file) => <li key={file.id}><button className="attachment" onClick={() => file.download()}><DownloadIcon className="download-icon" />{file.name + "." + file.extension}</button></li>)}
                                     </ul>
                                 </div>
                             </>
