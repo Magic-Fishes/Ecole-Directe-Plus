@@ -54,9 +54,8 @@
     margin: 0 auto;
 }
 
-#message-reader .message-content > div img {
-    display: block;
-    margin: 0 auto;
+#message-reader .message-content > div > p:has(> img) {
+    text-align: center;
 }
 /* end */
 

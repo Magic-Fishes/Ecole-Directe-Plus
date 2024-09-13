@@ -100,6 +100,7 @@
     background-color: transparent;
     transition: .1s;
     cursor: pointer;
+    outline: none;
 }
 #inbox .message-container .mark-as-unread:is(:hover, :focus-visible) .mark-as-unread-icon path {
     stroke: rgb(var(--text-color-alt));
