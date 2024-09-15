@@ -2,53 +2,69 @@
     height: 45px;
     display: flex;
     justify-content: space-between;
-    background: rgb(var(--background-color-3));
+    background: rgba(var(--background-color-3), .75);
     border-radius: 15px;
     padding: 4px;
     margin: 15px 15px 10px 15px;
     font-weight: bolder;
     align-items: center;
+    transition: .2s;
 }
 
-.calendar svg.arrow {
+.calendar .month:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-3), 1);
+}
+
+.calendar .arrow {
     height: 100%;
-    aspect-ratio: 1 / 1;
     border-radius: 12px;
+    aspect-ratio: 1 / 1;
+    padding: 7px;
     transition: .15s;
-    padding: 8px;
     cursor: pointer;
 }
 
-.calendar svg.arrow path {
-    stroke: white;
-}
-
-.calendar .arrow:hover {
+.calendar .arrow:is(:hover, :focus-visible) {
+    outline: none;
     background-color: rgba(var(--text-color-alt), .25);
 }
 
-.calendar .arrowleft {
+.calendar .arrow svg {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.calendar .arrow svg path {
+    transform: translateY(1px);
+    stroke: rgb(var(--text-color-alt));
+    transition: .2s;
+}
+
+.calendar .arrow:active svg path {
+    transform: translateY(3px);
+}
+
+.calendar .month:is(:hover, :focus-visible) .arrow svg path {
+    stroke: rgb(var(--text-color-main));
+}
+
+.calendar .arrow-left svg {
     transform: rotate(90deg);
 }
 
-.calendar .arrowright {
+.calendar .arrow-right svg {
     transform: rotate(-90deg);
 }
 
-.calendar .month-name {
-    font-size: 1.2em;
-    padding-inline : 17px;
-    height: 40px;
-    border-radius: 12px;
-    transition: .15s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    text-align: center;
+.calendar .month-label {
+    font-size: var(--font-size-20);
+    color: rgb(var(--text-color-alt));
+    transition: .2s;
+    cursor: default;
 }
 
-.calendar .month-name:hover {
-    background-color: rgba(var(--text-color-alt), .25);
+.calendar .month:is(:hover, :focus-visible) .month-label {
+    color: rgb(var(--text-color-main));
 }
 
 .calendar .weekdays {
@@ -71,21 +87,24 @@
 
 .calendar .day {
     text-align: center;
-    padding: 3px;
+    padding: 9px;
     border-radius: 100%;
     cursor: pointer;
-    color: #ffffff;
+    color: rgb(var(--text-color-main));
     font-weight: bold;
     width: 30px;
     height: 30px;
     transition: background-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: auto;
     line-height: 1.5;
     user-select: none;
 }
 
-.calendar .day:hover {
-    background-color: rgba(var(--text-color-alt), 0.1);
+.calendar .day:is(:hover, :focus-visible) {
+    background-color: rgba(var(--text-color-alt), 0.2);
 }
 
 .calendar .blue {
@@ -101,11 +120,11 @@
 }
 
 .calendar .grey {
-    color: #9191a3;
+    color: rgb(var(--text-color-alt), .5);
 }
 
 .calendar .selected {
-    outline: 2px solid #cde1e5;
+    outline: 2px solid rgb(var(--text-color-main));
 }
 
 .calendar .today {
