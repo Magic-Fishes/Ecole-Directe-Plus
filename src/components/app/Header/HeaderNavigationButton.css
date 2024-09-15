@@ -69,16 +69,12 @@
 }
 
 .header-button .notifications.new {
-    background-color: black;
-    color: gold;
+    background-color: rgb(var(--background-color-1));
+    color: rgb(var(--text-color-main));
     width: 52px;
     /* animation: new-feature-notification-animation .8s ease alternate forwards;
     animation-iteration-count: 20; */
     left: 40px;
-}
-.light .header-button .notifications.new {
-    background-color: gold;
-    color: black;
 }
 
 .light .header-button .notifications.new {
