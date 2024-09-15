@@ -47,10 +47,17 @@
     padding: 20px;
     overflow: auto;
 }
+
+/* We take some liberties to make the emails more readable overall */
 #message-reader .message-content > div {
     max-width: 800px;
     margin: 0 auto;
 }
+
+#message-reader .message-content > div > p:has(> img) {
+    text-align: center;
+}
+/* end */
 
 #message-reader .email-footer {
     height: 100px;

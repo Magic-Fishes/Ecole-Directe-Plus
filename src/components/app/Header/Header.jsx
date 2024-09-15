@@ -169,7 +169,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             link: `/app/${activeAccount}/homeworks`,
             icon: <HomeworksIconOfficial />,
             notifications: notifications?.homeworks || 0,
-            isNew: true
+            isNew: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "EDT").map((item) => item.enable).includes(true) ?? true,
@@ -189,7 +189,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
             notifications: notifications?.messaging || 0,
-            isNew: false
+            isNew: true
         }
     ]
     // Behavior

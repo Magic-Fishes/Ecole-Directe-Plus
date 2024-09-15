@@ -71,7 +71,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.3.1";
-const apiVersion = "4.60.4";
+const apiVersion = "4.60.5";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -1772,6 +1772,50 @@ export default function App() {
             })
     }
 
+    async function fetchMessageMarkAsUnread(ids=[], controller) {
+        if (ids.length < 1) {
+            return;
+        }
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        const data = {
+            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+            action: "marquerCommeNonLu",
+            ids: ids
+        }
+        fetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify(data)}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+        )
+            .then((response) => response.json())
+            .then((response) => {
+                let code;
+                if (accountsListState[activeAccount].firstName === "Guest") {
+                    code = 49969;
+                } else {
+                    code = response.code;
+                }
+                if (code === 200) {
+                    // message successfully marked as unread
+                } else if (code === 520 || code === 525) {
+                    // token invalide
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            })
+    }
+
 
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
@@ -2175,7 +2219,7 @@ export default function App() {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />,
                             path: ":userId/messaging"
                         },
                     ],

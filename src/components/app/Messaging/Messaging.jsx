@@ -1,5 +1,7 @@
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
+
 import {
     WindowsContainer,
     WindowsLayout,
@@ -15,11 +17,16 @@ import Inbox from "./Inbox";
 import MessageReader from "./MessageReader";
 
 
-export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent }) {
+export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread }) {
     // States
+    const navigate = useNavigate();
+    const location = useLocation();
+    
     const { useUserData } = useContext(AppContext);
-    const [selectedMessage, setSelectedMessage] = useState(null);
+    const [selectedMessage, setSelectedMessage] = useState(isNaN(parseInt(location.hash.slice(1))) ? null : parseInt(location.hash.slice(1)));
+    const oldSelectedMessage = useRef(selectedMessage);
     const messages = useUserData("sortedMessages");
+    
 
     // behavior
     useEffect(() => {
@@ -30,7 +37,6 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         const controller = new AbortController();
         if (isLoggedIn) {
             if (messages.get() === undefined) {
-                console.log("fetching messages");
                 fetchMessages(controller);
                 setSelectedMessage(null);
             }
@@ -43,14 +49,43 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
 
     useEffect(() => {
         const controller = new AbortController();
-        console.log("useEffect ~ selectedMessage:", selectedMessage)
         if (selectedMessage !== null) {
             fetchMessageContent(selectedMessage, controller);
+            const parsedHash = parseInt(location.hash.slice(1));
+            if (parsedHash !== selectedMessage) {
+                const newHash = "#" + selectedMessage;
+                navigate(newHash);
+            }
+        } else {
+            if (location.hash) {
+                navigate("#");
+            }
         }
 
         return () => {
             controller.abort();
         }
+    }, [location, selectedMessage]);
+
+    useEffect(() => {
+        if (oldSelectedMessage.current !== selectedMessage) {
+            return;
+        }
+        const parsedHash = parseInt(location.hash.slice(1));
+        if (!isNaN(parsedHash) && parsedHash !== selectedMessage) {
+            if (messages.get()) {
+                const doesMessageExist = messages.get()?.findIndex((item) => item.id === parsedHash) !== -1;
+                if (doesMessageExist) {
+                    setSelectedMessage(parsedHash);
+                } else {
+                    navigate("#");
+                }
+            }
+        }
+    }, [location, messages.get(), oldSelectedMessage.current, selectedMessage]);
+
+    useEffect(() => {
+        oldSelectedMessage.current = selectedMessage;
     }, [selectedMessage]);
 
     // JSX
@@ -63,7 +98,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                             <h2>Boîte de réception</h2>
                         </WindowHeader>
                         <WindowContent>
-                            <Inbox isLoggedIn={isLoggedIn} activeAccount={activeAccount} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} />
+                            <Inbox isLoggedIn={isLoggedIn} activeAccount={activeAccount} selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />
                         </WindowContent>
                     </Window>
                     <Window growthFactor={3} className="message-content" allowFullscreen={true}>
