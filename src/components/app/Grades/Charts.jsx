@@ -20,7 +20,8 @@ export default function Charts({ selectedPeriod }) {
 
     // States
     const [chartType, setChartType] = useState(0);
-
+    const [selectedChart, setselectedChart] = useState(0)
+    
     const chartContainerRef = useRef(null);
     const canvasContainerRef = useRef(null);
     const chart = useRef(null);
@@ -47,6 +48,12 @@ export default function Charts({ selectedPeriod }) {
             window.removeEventListener("resize", resizeChart);
         }
     }, [])
+
+    useEffect(() => {
+        if (selectedChart !== 0) {
+          setChartType(selectedChart);
+        }
+      }, [selectedChart]);
 
 
     function getChartData() {
@@ -314,7 +321,7 @@ export default function Charts({ selectedPeriod }) {
     return (
         <div id="charts">
             <div className="top-container">
-                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={selectedChart} onChange={(value) => setselectedChart(parseInt(value))} />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
