@@ -101,3 +101,14 @@
 #message-reader .attachments-container .attachment .download-icon {
     height: 20px;
 }
+
+#message-reader .no-selected-message-placeholder {
+    color: rgb(var(--text-color-alt));
+    width: 100%;
+    padding: 75px 20px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
