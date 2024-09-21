@@ -18,7 +18,7 @@ const supposedNoSessionContent = [
     "",
 ]
 
-export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...props }) {
+export default function DetailedTask({ task, userHomeworks, day, ...props }) {
     const navigate = useNavigate()
 
     const isMouseInCheckBoxRef = useRef(false);
@@ -87,7 +87,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
         });
     }
 
-    function checkTask(date, task, taskIndex) {
+    function checkTask(date, task) {
         const tasksToUpdate = (task.isDone ? {
             tasksNotDone: [task.id],
         } : {
@@ -99,14 +99,14 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                 completedTaskAnimation();
             }
         }
-        homeworks[date][taskIndex].isDone = !task.isDone;
+        homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
 
     return <>{(task?.content
         ? <div ref={detailedTaskRef} onClick={(e) => {navigate(`#${day};${task.id}`); e.stopPropagation()}} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
             <div className="task-header">
-                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
+                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
                     {task.subject.replace(". ", ".").replace(".", ". ")}
                 </h4>

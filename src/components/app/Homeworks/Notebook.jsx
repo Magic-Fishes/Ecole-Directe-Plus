@@ -324,7 +324,7 @@ export default function Notebook({ hideDateController = false }) {
                         const progression = tasks.filter((task) => task.isDone).length / tasks.length;
                         const elDate = new Date(el);
                         return (homeworks[el].length
-                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el].find((item) => item.type === "task")?.id ?? homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                                 <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
                                     <span className="notebook-day-date">
                                         <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
@@ -336,8 +336,8 @@ export default function Notebook({ hideDateController = false }) {
                                     {tasks.map((task, taskIndex) => {
                                         const result = [
                                             selectedDate === el
-                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
-                                                : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} day={el} />
+                                                : <Task key={task.id} day={el} task={task} userHomeworks={userHomeworks} />]
                                         if (selectedDate === el && taskIndex < tasks.length - 1) {
                                             result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
                                         }
@@ -381,8 +381,8 @@ export default function Notebook({ hideDateController = false }) {
                         <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 index === 0
-                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} />)
-                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} day={el} />)
+                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} userHomeworks={userHomeworks} />)
                             }
                         </div>
                     </div>
