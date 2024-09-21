@@ -157,23 +157,25 @@
     justify-content: center;
     align-items: center;
     margin: 20px 0;
-    padding: 0 15px;
+    padding: 15px;
 }
 
 .calendar .progress-bar {
     /* display: none; */
-    width: 100%;
+    width: calc(100%-30px);
+    border: 1px solid rgba(var(--text-color-alt), 1);
     border-radius: 10px;
-    background-color: #b4b4f0;
+    margin: 15px;
+    background-color: rgba(var(--text-color-alt), .3);
     height: 15px;
-    color: #6867b3;
+    color: rgba(var(--text-color-alt), .5);
     display: none;
 }
 
 .calendar progress {
-    color: #6867b3;
+    color: rgba(var(--text-color-alt), .5);
 }
 
 .calendar progress::-moz-progress-bar {
-    background: #6867b3;
+    background: rgba(var(--text-color-alt), .5);
 }

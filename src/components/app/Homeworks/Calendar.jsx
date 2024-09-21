@@ -30,6 +30,8 @@ export default function Calendar({ onDateClick }) {
 
     for (const date in homeworks) {
         for (const task of homeworks[date]) {
+            // console.log("task.type:", task.type);
+            if (task.type === "sessionContent") continue;
             if (task.isDone) {
                 events.push({ date, color: '#fbb400' });
             } else if (task.isInterrogation) {
@@ -131,7 +133,8 @@ export default function Calendar({ onDateClick }) {
             const midnightDate = new Date(day).setHours(0, 0, 0, 0);
             const midnightToday = new Date().setHours(0, 0, 0, 0);
 
-            progressPercentage = (midnightCurrentDate - midnightDate) ? 0 : (midnightCurrentDate - midnightDate) / (midnightToday - midnightDate);
+            progressPercentage = (midnightDate - midnightCurrentDate) > 0 ? 0 : (midnightCurrentDate - midnightDate) / (midnightToday - midnightDate);
+            console.log("fetchAllHomeworks ~ progressPercentage:", progressPercentage)
             progressBarRef.current.value = progressPercentage;
             // Go to the date on the clendar
             currentDate = addDays(currentDate, 1);
@@ -141,7 +144,7 @@ export default function Calendar({ onDateClick }) {
         setTimeout(() => {
             // Hide the progress bar
             progressBarRef.current.style.display = "none";
-        }, 2000);
+        }, 500);
     }
 
     return (
