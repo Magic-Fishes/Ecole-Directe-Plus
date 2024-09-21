@@ -82,7 +82,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: .5s;
+    transition: width .5s;
 }
 
 .upcoming-assignments.done .interrogation-label::after {
