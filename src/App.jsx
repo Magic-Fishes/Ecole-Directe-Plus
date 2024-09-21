@@ -113,7 +113,7 @@ const defaultSettings = {
     negativeBadges: false,
     allowAnonymousReports: true,
     isDevChannel: false, 
-    selectedChart: "line"
+    selectedChart: 0
 }
 
 const browserExtensionDownloadLink = {
@@ -171,7 +171,7 @@ function initSettings(accountList) {
             },
             selectedChart: {
                 value: getSetting("selectedChart", i),
-                values: ["line", "bar", "radar"]
+                values: [0, 1, 2]
             },
             isSepiaEnabled: {
                 value: getSetting("isSepiaEnabled", i),
