@@ -18,8 +18,8 @@ export default function Charts({ selectedPeriod }) {
 
   const { useUserSettings } = useContext(AppContext);
 
-  const settings = useUserSettings()
-  const selectedChart = settings.get("selectedChart");
+  settings = useUserSettings()
+  selectedChart = settings.get("selectedChart");
 
   const [chartType, setChartType] = useState(selectedChart);
 
@@ -320,8 +320,8 @@ export default function Charts({ selectedPeriod }) {
           displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
           selected={chartType}
           onChange={(value) => {
-            setChartType(parseInt(value));
-            useUserSettings("selectedChart").set(parseInt(value));
+            setChartType(value);
+            settings.set("selectedChart", value)
           }}
         />
         <h3>Graphiques</h3>
