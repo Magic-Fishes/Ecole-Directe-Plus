@@ -14,11 +14,14 @@ export default function Charts({ selectedPeriod }) {
    * 2: Subjects average | radar
    */
 
-  // States
-  const [chartType, setChartType] = useState(() => {
-    const storedChartType = localStorage.getItem("chartType");
-    return storedChartType ? parseInt(storedChartType) : 0;
-  });
+  // States 
+
+  const { useUserSettings } = useContext(AppContext);
+
+  const settings = useUserSettings()
+  const selectedChart = settings.get("selectedChart");
+
+  const [chartType, setChartType] = useState(selectedChart);
 
   const chartContainerRef = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -38,7 +41,6 @@ export default function Charts({ selectedPeriod }) {
   }
 
   useEffect(() => {
-
     window.addEventListener("resize", resizeChart);
     resizeChart();
 
@@ -308,15 +310,20 @@ export default function Charts({ selectedPeriod }) {
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("chartType", chartType);
-  }, [chartType]);
-
   // JSX
   return (
     <div id="charts">
       <div className="top-container">
-        <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+        <DropDownMenu
+          name="chart-type"
+          options={[0, 1, 2]}
+          displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
+          selected={chartType}
+          onChange={(value) => {
+            setChartType(parseInt(value));
+            useUserSettings("selectedChart").set(parseInt(value));
+          }}
+        />
         <h3>Graphiques</h3>
         <div className="artificial-horizontal-center"></div>
       </div>

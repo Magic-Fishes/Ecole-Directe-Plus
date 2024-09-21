@@ -112,7 +112,8 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false
+    isDevChannel: false, 
+    selectedChart: "line"
 }
 
 const browserExtensionDownloadLink = {
@@ -167,6 +168,10 @@ function initSettings(accountList) {
             displayMode: {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
+            },
+            selectedChart: {
+                value: getSetting("selectedChart", i),
+                values: ["line", "bar", "radar"]
             },
             isSepiaEnabled: {
                 value: getSetting("isSepiaEnabled", i),
@@ -390,7 +395,7 @@ export default function App() {
             > Value of displayTheme of current user
 
 
-            You can pass the setting you wan in arguments of useUserSettings
+            You can pass the setting you want in arguments of useUserSettings
 
             EX : 
             userDisplayTheme = useUserSettings("displayTheme")
