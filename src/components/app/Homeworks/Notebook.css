@@ -139,9 +139,16 @@
     scroll-snap-align: center;
     cursor: grab;
     transition: .2s;
-
+    
     display: flex;
     flex-flow: column nowrap;
+}
+.light .notebook-day {
+    filter: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+.light .notebook-day .notebook-day-header {
+    background-color: rgba(var(--text-color-main-reverse), 0.3) ;
 }
 
 .performance .notebook-day {
