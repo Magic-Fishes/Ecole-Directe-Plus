@@ -942,7 +942,6 @@ export default function App() {
                 periods[periodCode].generalAverage = generalAverage;
 
                 // création des badges
-                // les noms sont marqués dans le figma stv mieux t'y retrouver
                 const gradeBadges = [];
                 if (!isNaN(newGrade.value)) {
                     if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)

@@ -19,14 +19,17 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     function getSummedCoef(subjects) {
         let sum = 0;
         for (let key in subjects) {
-            sum += subjects[key].coef;
+            console.log("testits:", subjects[key]);
+            if (subjects[key].grades.length > 0) {
+                sum += subjects[key].coef;
+            }
         }
         return sum;
     }
 
     // Use subject coef if subject is provided, otherwise use grade's coef
     const gradeCoef = subject ? subject.coef : grade.coef ?? 1;
-    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / (subjectsSummedCoefs - gradeCoef);
+    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - gradeCoef) || 1);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
