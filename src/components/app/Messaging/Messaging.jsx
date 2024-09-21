@@ -38,7 +38,6 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         if (isLoggedIn) {
             if (messages.get() === undefined) {
                 fetchMessages(controller);
-                setSelectedMessage(null);
             }
         }
 
@@ -48,6 +47,9 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
     }, [isLoggedIn, activeAccount, messages.get()]);
 
     useEffect(() => {
+        if (messages.get() === undefined) {
+            return;
+        }
         const controller = new AbortController();
         if (selectedMessage !== null) {
             fetchMessageContent(selectedMessage, controller);
@@ -65,7 +67,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         return () => {
             controller.abort();
         }
-    }, [location, selectedMessage]);
+    }, [location, selectedMessage, messages.get()]);
 
     useEffect(() => {
         if (oldSelectedMessage.current !== selectedMessage) {

@@ -874,9 +874,6 @@ export default function App({ edpFetch }) {
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
-                if (grade.id == 6291688) {
-                    console.log(grade)
-                }
                 newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.isReal = true;
@@ -1141,18 +1138,16 @@ export default function App({ edpFetch }) {
 
 
     function sortMessages(messages) {
-        const sortedMessages = messages.messages.received.map((message) => {
-            console.log("files:", message.files); return {
-                date: message.date,
-                files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
-                from: message.from,
-                id: message.id,
-                read: message.read,
-                subject: message.subject,
-                content: null,
-                // ...
-            }
-        });
+        const sortedMessages = messages.messages.received.map((message) => { return {
+            date: message.date,
+            files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+            from: message.from,
+            id: message.id,
+            read: message.read,
+            subject: message.subject,
+            content: null,
+            // ...
+        }});
 
         return sortedMessages;
     }
@@ -1695,7 +1690,6 @@ export default function App({ edpFetch }) {
             "json"
         )
             .then((response) => {
-                console.log(".then ~ response:", response)
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
                     code = 49969;
@@ -1722,7 +1716,7 @@ export default function App({ edpFetch }) {
 
     async function fetchMessageContent(id, controller) {
         const oldSortedMessages = useUserData("sortedMessages").get();
-        if (oldSortedMessages) {
+        if (oldSortedMessages && oldSortedMessages?.length > 0) {
             const targetMessageIdx = oldSortedMessages.findIndex((item) => item.id === id);
             if (oldSortedMessages[targetMessageIdx].content !== null) {
                 return;

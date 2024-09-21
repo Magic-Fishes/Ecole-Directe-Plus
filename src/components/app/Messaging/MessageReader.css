@@ -43,6 +43,45 @@
     height: 100%;
 }
 
+#message-reader .reveal-spoiler-container {
+    z-index: 1;
+    background-color: rgba(var(--text-color-main-reverse), .5);
+    border: 1px solid rgb(var(--text-color-main), .5);
+    padding: 20px;
+    border-radius: 10px;
+    width: min(800px, 90%);
+    text-align: center;
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+}
+#message-reader .reveal-spoiler {
+    display: block;
+    background-color: transparent;
+    border: 2px solid rgb(var(--text-color-main));
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: .1s;
+}
+#message-reader .reveal-spoiler:is(:hover, :focus-visible) {
+    background-color: rgb(var(--text-color-main));
+    color: rgb(var(--text-color-main-reverse));
+}
+#message-reader .reveal-spoiler:active {
+    background-color: rgb(var(--text-color-main), .2);
+}
+#message-reader .message-content.spoiler {
+    filter: blur(4px);
+    user-select: none;
+    -webkit-user-drag: none;
+}
 #message-reader .message-content {
     padding: 20px;
     overflow: auto;
@@ -100,4 +139,15 @@
 
 #message-reader .attachments-container .attachment .download-icon {
     height: 20px;
+}
+
+#message-reader .no-selected-message-placeholder {
+    color: rgb(var(--text-color-alt));
+    width: 100%;
+    padding: 75px 20px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
