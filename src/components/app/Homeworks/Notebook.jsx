@@ -302,7 +302,7 @@ export default function Notebook({ hideDateController = false }) {
                 <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
                     <DropDownArrow />
                 </span>
-                <span className="selected-date" onClick={() => {navigate(`#${getISODate(new Date())}`, { replace: true })}}>
+                <span className="selected-date" onClick={() => {navigate(`#${nearestHomeworkDate(1, getISODate(new Date()))}`, { replace: true })}}>
                     <div>
                         <time dateTime={selectedDate || null}>{(new Date(selectedDate)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString("fr-FR")}</time>
                         <time dateTime={getISODate(new Date())}>Aujourd'hui</time>
