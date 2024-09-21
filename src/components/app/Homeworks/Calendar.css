@@ -1,3 +1,9 @@
+.calendar {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
 .calendar .month {
     height: 45px;
     display: flex;
@@ -8,7 +14,7 @@
     margin: 15px 15px 10px 15px;
     font-weight: bolder;
     align-items: center;
-    transition: .2s;
+    transition: .1s;
 }
 
 .calendar .month:is(:hover, :focus-visible) {
@@ -18,9 +24,9 @@
 .calendar .arrow {
     height: 100%;
     border-radius: 12px;
-    aspect-ratio: 1 / 1;
+    /* aspect-ratio: 1 / 1; */
     padding: 7px;
-    transition: .15s;
+    transition: .1s;
     cursor: pointer;
 }
 
@@ -37,7 +43,7 @@
 .calendar .arrow svg path {
     transform: translateY(1px);
     stroke: rgb(var(--text-color-alt));
-    transition: .2s;
+    transition: .1s;
 }
 
 .calendar .arrow:active svg path {
@@ -59,7 +65,10 @@
 .calendar .month-label {
     font-size: var(--font-size-20);
     color: rgb(var(--text-color-alt));
-    transition: .2s;
+    transition: .1s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: default;
 }
 
@@ -82,6 +91,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px 0px;
+    height: 100%;
     margin-bottom: 10px;
 }
 
@@ -94,7 +104,7 @@
     font-weight: bold;
     width: 30px;
     height: 30px;
-    transition: background-color 0.15s;
+    transition: background-color 0.1s;
     display: flex;
     align-items: center;
     justify-content: center;

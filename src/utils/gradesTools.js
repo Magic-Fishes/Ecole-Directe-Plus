@@ -92,7 +92,6 @@ export function calcCategoryAverage(period, category) {
 }
 
 export function calcGeneralAverage(period) {
-    console.log("period:", period)
     const list = []
     for (let subject in period.subjects) {
         const currentSubject = period.subjects[subject];

@@ -1096,7 +1096,7 @@ export default function App() {
                 }
 
                 if (!contenuDeSeance) {
-                    contenuDeSeance = aFaire
+                    contenuDeSeance = aFaire.contenuDeSeance;
                 }
 
                 if (aFaire) {

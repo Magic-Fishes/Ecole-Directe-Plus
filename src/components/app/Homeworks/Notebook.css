@@ -120,6 +120,7 @@
 
 .selected-date time {
     flex: 1;
+    color: rgb(var(--text-color-alt));
     padding: 7px 10px;
     display: flex;
     align-items: center;
