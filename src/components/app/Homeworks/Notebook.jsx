@@ -115,7 +115,6 @@ export default function Notebook({ hideDateController = false }) {
         const containerBounds = notebookContainerRef.current.getBoundingClientRect();
         const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
-
     }
 
     useEffect(() => {
@@ -130,7 +129,8 @@ export default function Notebook({ hideDateController = false }) {
             }
         } else {
             if (homeworks) {
-                navigateToDate(getISODate(new Date()));
+                // navigateToDate(getISODate(new Date()));
+                navigateToDate(nearestHomeworkDate(1, getISODate(new Date())))
             }
         }
     }, [location, homeworks, anchorElement.current]);
