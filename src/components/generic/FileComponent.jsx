@@ -8,7 +8,6 @@ export default function FileComponent({ file, ...props }) {
     const timeOutCooldownRef = useRef([0, new Date().getTime()]);
 
     function updateTimeoutCooldown(delta) {
-
         timeOutCooldownRef.current = [Math.max(0, Math.min(timeOutCooldownRef.current[0] + (new Date().getTime() - timeOutCooldownRef.current[1]) * delta, 1000)), new Date().getTime()]
     }
 
