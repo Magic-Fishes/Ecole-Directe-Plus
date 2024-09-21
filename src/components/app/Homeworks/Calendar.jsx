@@ -31,7 +31,7 @@ export default function Calendar({ onDateClick }) {
     for (const date in homeworks) {
         for (const task of homeworks[date]) {
             if (task.isDone) {
-                events.push({ date, color: 'green' });
+                events.push({ date, color: '#fbb400' });
             } else if (task.isInterrogation) {
                 events.push({ date, color: '#d94848' });
             } else {
@@ -91,8 +91,8 @@ export default function Calendar({ onDateClick }) {
 
         if (eventsfiltered.length > 0) {
             //if all the events in the day have the color green, we want to set the color to green
-            if (eventsfiltered.every(events => events.color === 'green')) {
-                return { backgroundColor: 'green' };
+            if (eventsfiltered.every(events => events.color === '#fbb400')) {
+                return { backgroundColor: '#fbb400' };
             }
             //if one event in the day has the color d94848, we want to set the color to red and ignore the other color
             else if (eventsfiltered.find(events => events.color === '#d94848')) {
