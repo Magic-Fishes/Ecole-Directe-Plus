@@ -59,7 +59,12 @@
     transition: .1s;
 }
 
-#edp-unblock-ad {
+#edp-unblock-ad .edpu-explanation {
+    color: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+
+#edp-unblock-ad span {
     color: rgb(var(--text-color-alt));
     transition: .1s;
 }
@@ -192,6 +197,9 @@ p.policy {
 
 @media only screen and (max-width: 869px) {
     p.not-affiliated-mention {
+        display: none;
+    }
+    #edp-unblock-ad {
         display: none;
     }
 }
