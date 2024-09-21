@@ -136,24 +136,27 @@ export default function Notebook({ hideDateController = false }) {
     }, [location, homeworks, anchorElement.current]);
 
     useEffect(() => {
-        const horizontalToVerticalScrolling = (event) => {
+        const verticalToHorizontalScrolling = (event) => {
             if (!isMouseIntoScrollableContainer.current.vertical) {
                 if (event.deltaY !== 0 && !event.shiftKey) {
                     event.preventDefault();
                     if (event.deltaY !== 0) {
-                        const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
-                        if (!!newDate) {
-                            navigateToDate(newDate)
-                        }
+                        notebookContainerRef.current.style.scrollBehavior = "revert";
+                        notebookContainerRef.current.scrollLeft += event.deltaY;
+                        notebookContainerRef.current.style.scrollBehavior = "";
+                        // const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
+                        // if (!!newDate) {
+                        //     navigateToDate(newDate)
+                        // }
                     }
                 }
             }
         }
-        notebookContainerRef.current.addEventListener("wheel", horizontalToVerticalScrolling);
+        notebookContainerRef.current.addEventListener("wheel", verticalToHorizontalScrolling);
 
         return () => {
             if (notebookContainerRef.current) {
-                notebookContainerRef.current.removeEventListener("wheel", horizontalToVerticalScrolling);
+                notebookContainerRef.current.removeEventListener("wheel", verticalToHorizontalScrolling);
             }
         }
     }, [selectedDate, homeworks, isMouseIntoScrollableContainer]);
@@ -276,7 +279,7 @@ export default function Notebook({ hideDateController = false }) {
             }
         }
 
-    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current])
+    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current, selectedDate])
 
     useEffect(() => {
         const controller = new AbortController();
