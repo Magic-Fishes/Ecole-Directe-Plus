@@ -18,10 +18,8 @@ export default function Charts({ selectedPeriod }) {
 
   const { useUserSettings } = useContext(AppContext);
 
-  settings = useUserSettings()
-  selectedChart = settings.get("selectedChart");
-
-  const [chartType, setChartType] = useState(selectedChart);
+  const settings = useUserSettings()
+  const selectedChart = settings.get("selectedChart");
 
   const chartContainerRef = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -51,10 +49,10 @@ export default function Charts({ selectedPeriod }) {
 
   function getChartData() {
     /**
-     * return the appropriate dataset according to the chartType
+     * return the appropriate dataset according to the selectedChart
      */
 
-    switch (chartType) {
+    switch (selectedChart) {
       case 0:
         // General average + streak history | line
         chartOptions.current = {
@@ -292,9 +290,9 @@ export default function Charts({ selectedPeriod }) {
   }
 
   useEffect(() => {
-    console.log(chartType);
+    console.log(selectedChart);
     refreshChart();
-  }, [chartType, activeAccount, selectedPeriod]);
+  }, [selectedChart, activeAccount, selectedPeriod]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -314,15 +312,15 @@ export default function Charts({ selectedPeriod }) {
   return (
     <div id="charts">
       <div className="top-container">
-        <DropDownMenu
-          name="chart-type"
-          options={[0, 1, 2]}
-          displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
-          selected={chartType}
-          onChange={(value) => {
-            setChartType(value);
-            settings.set("selectedChart", value)
-          }}
+       <DropDownMenu
+        name="chart-type"
+        options={[0, 1, 2]}
+        displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
+        selected={settings.get("selectedChart")}
+        onChange={(value) => {
+          settings.set("selectedChart", value);
+        }}
+      />
         />
         <h3>Graphiques</h3>
         <div className="artificial-horizontal-center"></div>
