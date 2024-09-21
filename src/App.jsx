@@ -124,7 +124,7 @@ const browserExtensionDownloadLink = {
     Safari: "/edp-unblock"
 }
 
-const userBrowser = getBrowser()
+const userBrowser = getBrowser();
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -243,7 +243,7 @@ let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
-export default function App() {
+export default function App({ edpFetch }) {
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
@@ -1141,20 +1141,22 @@ export default function App() {
 
 
     function sortMessages(messages) {
-        const sortedMessages = messages.messages.received.map((message) => { console.log("files:", message.files); return {
-            date: message.date,
-            files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
-            from: message.from,
-            id: message.id,
-            read: message.read,
-            subject: message.subject,
-            content: null,
-            // ...
-        }});
+        const sortedMessages = messages.messages.received.map((message) => {
+            console.log("files:", message.files); return {
+                date: message.date,
+                files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                from: message.from,
+                id: message.id,
+                read: message.read,
+                subject: message.subject,
+                content: null,
+                // ...
+            }
+        });
 
         return sortedMessages;
     }
-    
+
     function sortMessageContent(messageContent) {
         if (!messageContent) {
             return;
@@ -1305,18 +1307,15 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options, "text")
             .then((response) => {
-                return response.text().then((data) => {
-                    if (!data) {
-                        setIsEDPUnblockInstalled(false);
-                    } else {
-                        return JSON.parse(data)
-                    }
-                })
+                if (!response) {
+                    setIsEDPUnblockInstalled(false);
+                } else {
+                    return JSON.parse(response);
+                }
             })
             .then((response) => {
-                console.log(".then ~ response:", response)
                 // GESTION DATA
                 let statusCode = response.code;
                 if (statusCode === 200) {
@@ -1396,6 +1395,7 @@ export default function App() {
             })
             .catch((error) => {
                 if (error.name !== 'AbortError') {
+                    console.error(error);
                     messages.submitButtonText = "Échec de la connexion";
                     messages.submitErrorMessage = "Error: " + error.message;
                 }
@@ -1412,7 +1412,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1422,16 +1422,14 @@ export default function App() {
                 body: `data=${JSON.stringify(data)}`,
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
-            })
+            },
+            "text")
             .then((response) => {
-                return response.text().then((data) => {
-                    if (!data) {
-                        setIsEDPUnblockInstalled(false);
-
-                    } else {
-                        return JSON.parse(data)
-                    }
-                })
+                if (!response) {
+                    setIsEDPUnblockInstalled(false);
+                } else {
+                    return JSON.parse(response);
+                }
             })
             .then((response) => {
                 let code;
@@ -1462,7 +1460,7 @@ export default function App() {
         const data = {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
         }
-        fetch(
+        edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1473,8 +1471,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1531,7 +1529,7 @@ export default function App() {
             }
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
-            fetch(
+            edpFetch(
                 getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
                 {
                     method: "POST",
@@ -1541,8 +1539,8 @@ export default function App() {
                     body: "data={}",
                     signal: controller.signal
                 },
+                "json"
             )
-                .then((response) => response.json())
                 .then((response) => {
                     const code = response.code;
                     if (code === 200) {
@@ -1596,7 +1594,7 @@ export default function App() {
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
             try {
-                const response = await fetch(
+                const response = await edpFetch(
                     getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
                     {
                         method: "POST",
@@ -1605,9 +1603,10 @@ export default function App() {
                         },
                         body: "data={}",
                         signal: controller.signal
-                    }
+                    },
+                    "json"
                 );
-                const responseData = await response.json();
+                const responseData = await response;
                 const code = responseData.code;
                 if (code === 200) {
                     if (date === "incoming") {
@@ -1644,7 +1643,7 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
 
-        return fetch(
+        return edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1654,8 +1653,8 @@ export default function App() {
                 body: "data=" + JSON.stringify({ idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone }),
                 signal: controller.signal
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1682,8 +1681,8 @@ export default function App() {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1693,8 +1692,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 console.log(".then ~ response:", response)
                 let code;
@@ -1734,8 +1733,8 @@ export default function App() {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1745,8 +1744,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1772,7 +1771,7 @@ export default function App() {
             })
     }
 
-    async function fetchMessageMarkAsUnread(ids=[], controller) {
+    async function fetchMessageMarkAsUnread(ids = [], controller) {
         if (ids.length < 1) {
             return;
         }
@@ -1783,8 +1782,8 @@ export default function App() {
             action: "marquerCommeNonLu",
             ids: ids
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1794,8 +1793,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1823,7 +1822,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1833,8 +1832,8 @@ export default function App() {
                 body: `data=${JSON.stringify(data)}`,
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
-            })
-            .then((response) => response.json())
+            },
+            "json")
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1867,7 +1866,7 @@ export default function App() {
 
     function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
         abortControllers.current.push(controller);
-        fetch(
+        edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1878,8 +1877,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code = response.code;
                 if (code === 200) {
@@ -1905,7 +1904,7 @@ export default function App() {
         const data = {
             libelle: name,
         }
-        fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
+        edpFetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
             {
                 method: "POST",
                 headers: {
@@ -1919,7 +1918,7 @@ export default function App() {
 
     async function fetchFile(id, type, specialParams) {
         const { idDevoir } = specialParams
-        return await fetch(
+        return await edpFetch(
             `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${id}&leTypeDeFichier=${type}${idDevoir ? `&idDevoir=${idDevoir}` : ""}`,
             {
                 method: "POST",
@@ -1930,8 +1929,8 @@ export default function App() {
                 body: `data=${JSON.stringify({ forceDownload: 0 })}`,
                 referrerPolicy: "no-referrer"
             },
+            "blob"
         )
-            .then(response => response.blob())
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
