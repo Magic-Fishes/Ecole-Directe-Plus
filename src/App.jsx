@@ -17,7 +17,7 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat, calcClassGeneralAverage, calcClassAverage } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
@@ -730,6 +730,7 @@ export default function App({ edpFetch }) {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
         const generalAverageHistory = {}; // used for charts
+        const classGeneralAverageHistory = {}; // used for charts
         const streakScoreHistory = {}; // used for charts
         const subjectsComparativeInformation = {};
         const totalBadges = {
@@ -756,7 +757,7 @@ export default function App({ edpFetch }) {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
-                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
+                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
@@ -808,6 +809,7 @@ export default function App({ edpFetch }) {
                     }
                     periods[period.codePeriode] = newPeriod;
                     generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
+                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
                     streakScoreHistory[period.codePeriode] = [];
                 }
             }
@@ -899,11 +901,13 @@ export default function App({ edpFetch }) {
                 if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
                     subjectDatas[periodCode][subjectCode] = [];
                 }
-                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant });
+                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
                 const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
                 const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
+                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
+                console.log("sortGrades ~ classAverage:", classAverage)
 
                 // streak management
                 newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
@@ -930,6 +934,7 @@ export default function App({ edpFetch }) {
                 streakScoreHistory[periodCode].push(periods[periodCode].streak);
 
                 periods[periodCode].subjects[subjectCode].average = average;
+                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
 
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
@@ -937,9 +942,16 @@ export default function App({ edpFetch }) {
                     periods[periodCode].subjects[category.code].average = categoryAverage;
                 }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
+                console.log("sortGrades ~ generalAverage:", generalAverage)
                 generalAverageHistory[periodCode].generalAverages.push(generalAverage);
                 generalAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].generalAverage = generalAverage;
+                
+                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
+                console.log("sortGrades ~ classGeneralAverage:", classGeneralAverage)
+                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
+                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
+                periods[periodCode].classGeneralAverage = classGeneralAverage;
 
                 // création des badges
                 const gradeBadges = [];
@@ -1036,6 +1048,7 @@ export default function App({ edpFetch }) {
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
+        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);

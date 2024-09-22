@@ -31,6 +31,7 @@ export default function Charts({ selectedPeriod }) {
     const userData = useUserData();
 
     const generalAverageHistory = userData.get("generalAverageHistory");
+    const classGeneralAverageHistory = userData.get("classGeneralAverageHistory");
     const streakScoreHistory = userData.get("streakScoreHistory");
     const subjectsComparativeInformation = userData.get("subjectsComparativeInformation");
 
@@ -94,6 +95,15 @@ export default function Charts({ selectedPeriod }) {
                             data: generalAverageHistory[selectedPeriod].generalAverages,
                             borderColor: 'rgb(53, 162, 235)',
                             backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                            tension: 0.2,
+                            // yAxisID: "y"
+                        },
+                        {
+                            type: "line",
+                            label: "Moyenne générale de classe",
+                            data: classGeneralAverageHistory[selectedPeriod].classGeneralAverages,
+                            borderColor: 'rgb(53, 180, 162)',
+                            backgroundColor: 'rgba(53, 180, 162, 0.5)',
                             tension: 0.2,
                             // yAxisID: "y"
                         },

@@ -47,7 +47,35 @@ export function calcAverage(list) {
     }
 
     if (coef > 0 && list.length > 0) {
-        return Math.round(average / coef * 100) / 100;
+        return Math.ceil(average / coef * 100) / 100;
+    } else {
+        return "N/A"
+    }
+}
+export function calcClassAverage(list) {
+    let average = 0;
+    let coef = 0;
+    for (let i of list) {
+        if ((i.isSignificant ?? true) && !isNaN(i.classAverage)) {
+            coef += i.coef;
+        }
+    }
+
+    const noCoef = !coef;
+
+    for (let i of list) {
+        if ((i.isSignificant ?? true) && !isNaN(i.classAverage)) {
+            if (noCoef) {
+                average += (i.classAverage * 20 / i.scale);
+                coef += 1;
+            } else {
+                average += (i.classAverage * 20 / i.scale) * i.coef;
+            }
+        }
+    }
+
+    if (coef > 0 && list.length > 0) {
+        return Math.ceil(average / coef * 100) / 100;
     } else {
         return "N/A"
     }
@@ -114,6 +142,34 @@ export function calcGeneralAverage(period) {
         }
     }
 
+    console.log("calcGeneralAverage ~ list:", list)
+    return calcAverage(list);
+}
+
+export function calcClassGeneralAverage(period) {
+    const list = []
+    for (let subject in period.subjects) {
+        const currentSubject = period.subjects[subject];
+        if (!currentSubject.isCategory) {
+            let coefMultiplicator = 1;
+            if (currentSubject.isSubSubject) {
+                const subjectCode = currentSubject.name.split(" - ")[0];
+                const validKeys = Object.keys(period.subjects).filter((key) => (key !== subjectCode && key.includes(subjectCode))); // selects other subsubjects (and exclude the parent subject)
+                let sum = 0;
+                for (let validKey of validKeys) {
+                    sum += period.subjects[validKey].coef;
+                }
+                coefMultiplicator = period.subjects[subjectCode].coef / sum;
+            }
+            list.push({
+                value: currentSubject.classAverage ?? 0,
+                scale: 20,
+                coef: currentSubject.classAverage === undefined ? 0 : (currentSubject.coef * coefMultiplicator)
+            })
+        }
+    }
+
+    console.log("calcClassAverage ~ list:", list)
     return calcAverage(list);
 }
 
