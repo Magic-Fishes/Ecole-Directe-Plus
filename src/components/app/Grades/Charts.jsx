@@ -316,9 +316,9 @@ export default function Charts({ selectedPeriod }) {
         name="chart-type"
         options={[0, 1, 2]}
         displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
-        selected={settings.get("selectedChart")}
+        selected={parseInt(settings.get("selectedChart"), 10)}
         onChange={(value) => {
-          settings.set("selectedChart", value);
+          settings.set("selectedChart", parseInt(value), 10);
         }}
       />
         />
