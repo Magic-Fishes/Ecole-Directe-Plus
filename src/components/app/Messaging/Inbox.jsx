@@ -90,7 +90,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessag
                             </li>)}
                         </ul>
                     </ScrollShadedDiv>
-                    : <p className="no-message-received">Vous n'avez reçu aucun message. Profitez bien de votre isolement social ^^</p>
+                    : <p className="no-message-received">Vous n'avez reçu aucun message. Tendez l'oreille et profitez de cet instant de silence</p>
                 )
                 : <ScrollShadedDiv className="messages-container">
                     <ul>

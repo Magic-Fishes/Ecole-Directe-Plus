@@ -71,7 +71,7 @@ export default function Notebook({ hideDateController = false }) {
          * @param dir Direction in time to check : 1 to move forward ; -1 to move backwards
          */
         if (!homeworks) {
-            return;
+            return getISODate(new Date());
         }
 
         const dates = Object.keys(homeworks).filter(e => homeworks[e].length);
