@@ -19,7 +19,6 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     function getSummedCoef(subjects) {
         let sum = 0;
         for (let key in subjects) {
-            console.log("testits:", subjects[key]);
             if (subjects[key].grades.length > 0) {
                 sum += subjects[key].coef;
             }
@@ -28,8 +27,9 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     }
 
     // Use subject coef if subject is provided, otherwise use grade's coef
-    const gradeCoef = subject ? subject.coef : grade.coef ?? 1;
-    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - gradeCoef) || 1);
+    const gradeCoef = grade.coef ?? 1;
+    const subjectCoef = grade?.subject?.coef ?? gradeCoef;
+    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
@@ -177,7 +177,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 ).toFixed(2) > 0 ? "+" : ""}
                                 {(
                                     gradeScore
-                                ).toFixed(2)}
+                                ).toFixed(2).replace(".", ",")}
                                 {gradeScore > 0.2 ? (
                                     <Arrow className="grade-arrow grade-arrow-vertical-up" />
                                 ) : gradeScore > 0.07 ? (
