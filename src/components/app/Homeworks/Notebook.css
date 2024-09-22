@@ -245,7 +245,8 @@
     margin-inline: 20px;
     color: transparent;
     background-color: rgb(var(--border-color-contrast));
-    height: 2px;
+    height: 3px;
+    border-radius: 50px;
 }
 
 .detailed-task-separator {
