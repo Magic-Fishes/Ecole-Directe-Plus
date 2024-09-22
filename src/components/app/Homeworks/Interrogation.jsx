@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 export default function Interrogation({ task }) { // This component only exists to give a ref for each interrogation
-    const { useUserData, fetchHomeworksDone } = useContext(AppContext)
+    const { useUserData, fetchHomeworksDone, actualDisplayTheme } = useContext(AppContext)
     const sortedHomeworks = useUserData("sortedHomeworks");
     const currentSortedHomeworks = sortedHomeworks.get();
     const isMouseInCheckBoxRef = useRef(false)
@@ -64,8 +64,8 @@ export default function Interrogation({ task }) { // This component only exists 
     return typeof task.id === "number"
         ? <div tabIndex="0" role="a" onKeyDown={(e) => handleKeyDown(e, task.date, task.id)} onClick={() => handleClick(task.date, task.id)} className={`upcoming-assignments ${currentSortedHomeworks[task.date][task.index].isDone ? "done" : ""}`}
             style={{
-                "--subject-main-color": `hsl(${taskColor[0]}, ${taskColor[1]}%, ${taskColor[2]}%)`,
-                "--subject-bg-color": `hsla(${taskColor[0]}, ${taskColor[1]}%, ${taskColor[2]}%, .2)`,
+                "--subject-main-color": actualDisplayTheme === "dark" ? `hsl(${taskColor[0]}, ${taskColor[1]}%, ${taskColor[2]}%)` : `hsl(${taskColor[0]}, ${taskColor[1] - 20}%, ${taskColor[2] - 30}%)`,
+                "--subject-bg-color": actualDisplayTheme === "dark" ? `hsla(${taskColor[0]}, ${taskColor[1]}%, ${taskColor[2]}%, .2)` : `hsla(${taskColor[0]}, ${taskColor[1] - 20}%, ${taskColor[2] - 30}%, .2)`,
                 // "--text-color-task": `hsl(${taskColor[0]}, ${taskColor[1] - 20}%, ${taskColor[2] - 20}%)`,
                 // "--background-color-task": `hsl(${taskColor[0]}, ${taskColor[1] - 5}%, ${taskColor[2] - 5}%)`,
             }}>
