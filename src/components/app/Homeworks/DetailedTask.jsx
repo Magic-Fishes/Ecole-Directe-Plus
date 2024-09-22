@@ -28,7 +28,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
     const settings = useUserSettings();
     const homeworks = userHomeworks.get()
 
-    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
+    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 150) + 100, contentHeight: Math.floor(Math.random() * 200) + 50 })
 
 
     const location = useLocation();
@@ -130,7 +130,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
                         speed={1}
                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                         foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                        style={{ width: contentLoadersRandomValues.current.labelWidth + "px", maxHeight: "35px" }}
+                        style={{ width: contentLoadersRandomValues.current.labelWidth + "px", maxHeight: "30px" }}
                     >
                         <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                     </ContentLoader>

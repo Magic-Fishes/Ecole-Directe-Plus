@@ -14,7 +14,7 @@ import { canScroll } from "../../../utils/DOM";
 
 import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
-    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks } = useContext(AppContext);
+    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks, isTabletLayout } = useContext(AppContext);
     const settings = useUserSettings();
     const userHomeworks = useUserData("sortedHomeworks");
     const location = useLocation();
@@ -94,7 +94,7 @@ export default function Notebook({ hideDateController = false }) {
     }
 
     function customScrollIntoView(element) {
-        const container = notebookContainerRef.current
+        const container = notebookContainerRef.current;
 
         const elements = container.querySelectorAll(".notebook-day");
 
@@ -115,7 +115,6 @@ export default function Notebook({ hideDateController = false }) {
         const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
         const containerBounds = getZoomedBoudingClientRect(notebookContainerRef.current.getBoundingClientRect());
         const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
-        console.log("customScrollIntoView ~ TASK_MAX_WIDTH:", TASK_MAX_WIDTH)
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
     }
 
@@ -170,13 +169,15 @@ export default function Notebook({ hideDateController = false }) {
         document.body.style.userSelect = "none";
         document.body.style.webkitUserSelect = "none";
         document.body.style.overscrollBehavior = "contain";
+        notebookContainerRef.current.style.scrollSnapType = "none";
     }
-
+    
     function unpreventDraggingIssues() {
         document.body.style.overflow = "";
         document.body.style.userSelect = "";
         document.body.style.webkitUserSelect = "";
         document.body.style.overscrollBehavior = "";
+        notebookContainerRef.current.style.scrollSnapType = "";
         if (window.getSelection) {
             var selection = window.getSelection();
             selection.removeAllRanges();

@@ -18,7 +18,7 @@ import PopUp from "../../generic/PopUps/PopUp";
 
 import "./Dashboard.css";
 
-export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades }) {
+export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
     const navigate = useNavigate();
     const userData = useUserData();
     const location = useLocation()
@@ -95,17 +95,17 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
                             </Window>
                         </WindowsLayout>
 
-                        <Window growthFactor={1.7}>
+                        <Window growthFactor={1.7} className="notebook-window">
                             <WindowHeader onClick={() => navigate("../homeworks")}>
                                 <h2>Cahier de texte</h2>
                             </WindowHeader>
                             <WindowContent id="notebook">
-                                <Notebook hideDateController={true} />
+                                <Notebook hideDateController={!isTabletLayout} />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
                     <WindowsLayout>
-                        <Window WIP={true} className="notebook-window">
+                        <Window WIP={true}>
                             <WindowHeader onClick={() => navigate("../timetable")}>
                                 <h2>Emploi du temps</h2>
                             </WindowHeader>

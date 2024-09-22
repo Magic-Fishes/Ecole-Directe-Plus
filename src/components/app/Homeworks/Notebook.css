@@ -286,5 +286,9 @@
     .notebook-container {
         padding-inline: 0;
         height: min(700px, 70vh);
+        scroll-snap-type: x mandatory;
+    }
+    .notebook-container .notebook-day {
+        scroll-snap-align: center;
     }
 }
