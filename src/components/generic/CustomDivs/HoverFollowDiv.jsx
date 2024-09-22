@@ -1,5 +1,5 @@
 
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { cumulativeDistributionFunction } from "../../../utils/math"
 
 import "./HoverFollowDiv.css";
@@ -13,7 +13,7 @@ export default function HoverFollowDiv({ children, displayMode, borderRadius=10,
         while (!bentoBox.classList || !bentoBox.classList.contains("bento-card")) {
             bentoBox = bentoBox.parentElement;
         }
-        const bentoBoxRect = bentoBox.getBoundingClientRect();
+        const bentoBoxRect = getZoomedBoudingClientRect(bentoBox.getBoundingClientRect());
         const deltaMouse = { // distance of the mouse from the center
             x: applyZoom(event.clientX ?? event.touches[0].clientX) - (bentoBoxRect.x + bentoBoxRect.width / 2),
             y: applyZoom(event.clientY ?? event.touches[0].clientY) - (bentoBoxRect.y + bentoBoxRect.height / 2),

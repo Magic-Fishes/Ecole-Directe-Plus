@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import "./HolographicDiv.css";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 export default function HolographicDiv({ children, borderRadius=48, intensity=1, className = "", ...props }) {
     const holographicDivRef = useRef(null);
@@ -47,7 +47,7 @@ export default function HolographicDiv({ children, borderRadius=48, intensity=1,
     }
 
     const handleMouseMove = (event) => {
-        const bounds = holographicDivRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(holographicDivRef.current.getBoundingClientRect());
         const normalizedTargetCoords = {
             x: (applyZoom(event.clientX ?? event.touches[0].clientX) - bounds.x)/bounds.width,
             y: (applyZoom(event.clientY ?? event.touches[0].clientY) - bounds.y)/bounds.height

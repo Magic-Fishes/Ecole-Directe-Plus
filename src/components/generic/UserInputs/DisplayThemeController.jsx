@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 import "./DisplayThemeController.css";
 
@@ -32,7 +32,7 @@ export default function DisplayThemeController({ selected, fieldsetName, onChang
         if (!element) {
             return;
         }
-        const bounds = element.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
         sliderRef.current.style.top = element.offsetTop + "px ";
         sliderRef.current.style.left = element.offsetLeft + "px ";
         sliderRef.current.style.width = bounds.width + "px ";
@@ -52,7 +52,7 @@ export default function DisplayThemeController({ selected, fieldsetName, onChang
         let closestOption2 = {dist: undefined, el: undefined};
         for (let i = 0; i < optionsRef.current.length; i++) {
             const option = optionsRef.current[i];
-            const optionBounds = option.getBoundingClientRect();
+            const optionBounds = getZoomedBoudingClientRect(option.getBoundingClientRect());
             let newDist = mouse.x - (optionBounds.left + optionBounds.width/2);
             // if (i === 0 || i === optionsRef.current.length-1 && newDist < 0 )
             if ((i === 0 && newDist < 0) || (i === optionsRef.current.length-1 && newDist > 0)) {
@@ -93,9 +93,9 @@ export default function DisplayThemeController({ selected, fieldsetName, onChang
     
     function moveSlider(sliderOrigin, mouseOrigin, mouse) {
         let newXPos = sliderOrigin.x + (mouse.x - mouseOrigin.x);
-        const containerBounds = containerRef.current.getBoundingClientRect();
+        const containerBounds = getZoomedBoudingClientRect(containerRef.current.getBoundingClientRect());
         const containerPadding = parseFloat(getComputedStyle(containerRef.current).padding);
-        const sliderBounds = sliderRef.current.getBoundingClientRect();
+        const sliderBounds = getZoomedBoudingClientRect(sliderRef.current.getBoundingClientRect());
         if (newXPos < 5) {
             newXPos = 5;
         } else if (newXPos + sliderBounds.width > containerBounds.width - containerPadding) {

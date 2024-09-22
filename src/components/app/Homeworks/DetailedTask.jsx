@@ -3,7 +3,7 @@ import ContentLoader from "react-content-loader"
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
@@ -36,8 +36,8 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
-        const parentBounds = parent.getBoundingClientRect();
-        const bounds = element.getBoundingClientRect();
+        const parentBounds = getZoomedBoudingClientRect(parent.getBoundingClientRect());
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
         
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
@@ -72,7 +72,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
     }, [location, detailedTaskRef.current, homeworks])
 
     function completedTaskAnimation() {
-        const bounds = taskCheckboxRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
         const origin = {
             x: bounds.left + 15 / 2,
             y: bounds.top + 15 / 2

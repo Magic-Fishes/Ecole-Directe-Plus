@@ -906,8 +906,7 @@ export default function App({ edpFetch }) {
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
                 const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
-                console.log("sortGrades ~ classAverage:", classAverage)
+                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);   
 
                 // streak management
                 newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
@@ -942,13 +941,11 @@ export default function App({ edpFetch }) {
                     periods[periodCode].subjects[category.code].average = categoryAverage;
                 }
                 const generalAverage = calcGeneralAverage(periods[periodCode]);
-                console.log("sortGrades ~ generalAverage:", generalAverage)
                 generalAverageHistory[periodCode].generalAverages.push(generalAverage);
                 generalAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].generalAverage = generalAverage;
                 
                 const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
-                console.log("sortGrades ~ classGeneralAverage:", classGeneralAverage)
                 classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
                 classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].classGeneralAverage = classGeneralAverage;

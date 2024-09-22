@@ -7,7 +7,7 @@ import { AppContext } from "../../../App";
 import Task from "./Task";
 import SessionContent from "./SessionContent";
 import DropDownArrow from "../../graphics/DropDownArrow";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import DetailedSessionContent from "./DetailedSessionContent";
 import { canScroll } from "../../../utils/DOM";
@@ -100,7 +100,7 @@ export default function Notebook({ hideDateController = false }) {
         // get the old selected element (because the behavior changes according to its position with the new selected element)
         let oldSelectedElementBounds;
         for (let element of elements) {
-            const elementBounds = element.getBoundingClientRect();
+            const elementBounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
 
             if (elementBounds.width > (document.fullscreenElement?.classList.contains("notebook-window") ? 400 : 300)) {
                 oldSelectedElementBounds = elementBounds;
@@ -111,9 +111,10 @@ export default function Notebook({ hideDateController = false }) {
             return;
         }
 
-        const bounds = element.getBoundingClientRect();
-        const containerBounds = notebookContainerRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
+        const containerBounds = getZoomedBoudingClientRect(notebookContainerRef.current.getBoundingClientRect());
         const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
+        console.log("customScrollIntoView ~ TASK_MAX_WIDTH:", TASK_MAX_WIDTH)
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
     }
 

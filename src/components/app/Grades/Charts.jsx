@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, useContext } from "react";
 // import { Chart } from 'chart.js';
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 
 import "./Charts.css";
@@ -36,7 +36,7 @@ export default function Charts({ selectedPeriod }) {
     const subjectsComparativeInformation = userData.get("subjectsComparativeInformation");
 
     const resizeChart = () => {
-        chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+        chartContainerRef.current.height = getZoomedBoudingClientRect(document.getElementById("charts")?.getBoundingClientRect()).height - getZoomedBoudingClientRect(document.querySelector("#charts > .top-container")?.getBoundingClientRect()).height;
     }
 
     useEffect(() => {

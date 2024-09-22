@@ -91,8 +91,8 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                                 <InfoButton className="calendar-info">
-                                    <p>Cliquer sur une date pour sélectionner les devoirs associés.</p><br />
-                                    <p>SHIFT + CLIC pour sélectionner plusieurs dates.</p><br />
+                                    <p>Cliquez sur une date pour accéder aux devoirs associés.</p><br />
+                                    <p>SHIFT + CLIC pour charger tous les devoirs à partir de la date sélectionnée jusqu'à aujourd'hui.</p><br />
                                     <center>Légende</center>
                                     <p>GRIS : aujourd'hui</p>
                                     <p>BLEU : devoirs</p>

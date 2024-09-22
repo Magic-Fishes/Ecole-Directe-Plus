@@ -3,7 +3,7 @@ import ContentLoader from "react-content-loader"
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import DownloadIcon from "../../graphics/DownloadIcon"
 
@@ -25,8 +25,8 @@ export default function DetailedSessionContent({ sessionContent, userHomeworks, 
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
-        const parentBounds = parent.getBoundingClientRect();
-        const bounds = element.getBoundingClientRect();
+        const parentBounds = getZoomedBoudingClientRect(parent.getBoundingClientRect());
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
 
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }

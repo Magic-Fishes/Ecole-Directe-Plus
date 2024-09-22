@@ -4,7 +4,7 @@ import { formatDateRelative } from "../../../utils/date"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App";
 import { useNavigate } from "react-router-dom";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 export default function Interrogation({ task }) { // This component only exists to give a ref for each interrogation
     const { useUserData, fetchHomeworksDone } = useContext(AppContext)
@@ -16,7 +16,7 @@ export default function Interrogation({ task }) { // This component only exists 
     const navigate = useNavigate()
 
     function completedTaskAnimation() {
-        const bounds = taskCheckboxRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
         const origin = {
             x: bounds.left + bounds.width / 2,
             y: bounds.top + bounds.height / 2

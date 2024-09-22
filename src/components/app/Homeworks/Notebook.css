@@ -273,3 +273,17 @@
         left: 100%;
     }
 }
+
+@media only screen and (max-width: 869px) {
+    .notebook-window {
+        background-color: transparent;
+        box-shadow: none;
+    }
+    .notebook-window .window-header {
+        display: none;
+    }
+    .notebook-container {
+        padding-inline: 0;
+        height: min(700px, 70vh);
+    }
+}

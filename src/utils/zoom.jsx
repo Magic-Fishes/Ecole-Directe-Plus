@@ -7,3 +7,7 @@ export function applyZoom(value) {
         return value;
     }
 }
+
+export function getZoomedBoudingClientRect(bounds) {
+    return new DOMRect(applyZoom(bounds.x), applyZoom(bounds.y), applyZoom(bounds.width), applyZoom(bounds.height));
+}

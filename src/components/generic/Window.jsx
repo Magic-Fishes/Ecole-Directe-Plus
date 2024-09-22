@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext } from "../../App";
-import { applyZoom } from "../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
 
 import "./Window.css";
 
@@ -297,8 +297,8 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             const siblingElements = item[1];
             siblingElements.map((element, index) => {
                 const direction = parseInt(movingElement.style.order) - parseInt(element.style.order);
-                const rect = element.getBoundingClientRect();
-                const movingRect = movingElement.getBoundingClientRect()
+                const rect = getZoomedBoudingClientRect(element.getBoundingClientRect());
+                const movingRect = getZoomedBoudingClientRect(movingElement.getBoundingClientRect());
                 let conditionX = false, conditionY = false;
                 if (direction > 0) {
                     // movingElement after element
@@ -351,7 +351,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         scrollableParentElement.style.scrollBehavior = "auto";
 
-        const bounds = scrollableParentElement.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(scrollableParentElement.getBoundingClientRect());
 
         const SCROLLING_EDGE_SHIFT = 100; // px
         const SCROLLING_SPEED = 3; // px/frame
@@ -397,7 +397,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
 
     const unfloatWindow = (floatingWindow, targetWindow) => {
-        const boundingClientRect = targetWindow.getBoundingClientRect();
+        const boundingClientRect = getZoomedBoudingClientRect(targetWindow.getBoundingClientRect());
         const computedStyle = getComputedStyle(targetWindow);
         const scale = computedStyle.getPropertyValue("scale") === "none" ? 1 : computedStyle.getPropertyValue("scale");
 
@@ -494,7 +494,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         function constantDeltaScale(element, delta, reference = "height") {
             // console.log("constantDeltaScale ~ reference:", reference)
             const scale = parseFloat(getComputedStyle(element).getPropertyValue("scale") === "none" ? 1 : getComputedStyle(element).getPropertyValue("scale"));
-            const bounds = element.getBoundingClientRect();
+            const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
             const scaledReference = bounds[reference] / scale;
             let scaleFactor = (scaledReference + delta) / scaledReference;
             const MIN_SCALE = .9;
@@ -599,7 +599,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }), 0);
 
             // mirror the bounds of targetWindow on floatingWindow
-            const boundingClientRect = targetWindow.getBoundingClientRect();
+            const boundingClientRect = getZoomedBoudingClientRect(targetWindow.getBoundingClientRect());
             // const computedStyle = getComputedStyle(targetWindow);
             // const scale = computedStyle.scale === "none" ? 1 : computedStyle.scale;
             const scale = parseFloat(targetWindow.style.scale) || 1;
@@ -618,7 +618,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             floatingWindow.style.top = target.y + "px";
             floatingWindow.style.scale = scale;
             const FLOATING_SCALE_DELTA = 30;
-            const floatingWindowBounds = targetWindow.getBoundingClientRect();
+            const floatingWindowBounds = getZoomedBoudingClientRect(targetWindow.getBoundingClientRect());
             setTimeout(() => (constantDeltaScale(floatingWindow, FLOATING_SCALE_DELTA, floatingWindowBounds.width > floatingWindowBounds.height ? "width" : "height")), 0);
 
             windowOrigin.x = target.x;
@@ -656,7 +656,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         /* targetWindow.classList.add("grabbing"); */
         const GRABBING_SCALE_DELTA = -30;
-        const targetWindowBounds = targetWindow.getBoundingClientRect();
+        const targetWindowBounds = getZoomedBoudingClientRect(targetWindow.getBoundingClientRect());
         constantDeltaScale(targetWindow, GRABBING_SCALE_DELTA, targetWindowBounds.width > targetWindowBounds.height ? "width" : "height");
 
         const mouseOrigin = {
