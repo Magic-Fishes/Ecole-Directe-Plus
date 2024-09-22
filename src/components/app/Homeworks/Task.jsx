@@ -2,12 +2,12 @@ import { useRef, useContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
 import { AppContext } from "../../../App";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 import "./Task.css";
 import ContentLoader from "react-content-loader";
 
-export default function Task({ day, task, taskIndex, userHomeworks, ...props }) {
+export default function Task({ day, task, userHomeworks, ...props }) {
     const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
     const settings = useUserSettings();
     const isMouseInCheckBoxRef = useRef(false);
@@ -18,7 +18,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     const location = useLocation();
 
     function completedTaskAnimation() {
-        const bounds = taskCheckboxRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
         const origin = {
             x: bounds.left + bounds.width / 2,
             y: bounds.top + bounds.height / 2
@@ -34,7 +34,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     }
 
 
-    function checkTask(date, task, taskIndex) {
+    function checkTask(date, task) {
         const tasksToUpdate = (task.isDone ? {
             tasksNotDone: [task.id],
         } : {
@@ -46,7 +46,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
                 completedTaskAnimation();
             }
         }
-        homeworks[date][taskIndex].isDone = !task.isDone;
+        homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
 
@@ -69,7 +69,7 @@ export default function Task({ day, task, taskIndex, userHomeworks, ...props }) 
     return (
         task?.id
             ? <div className={`task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} onClick={handleTaskClick} onKeyDown={handleKeyDown} tabIndex={0} {...props} >
-                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
+                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} onChange={() => { checkTask(day, task) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <div className="task-title">
                     <h4>
                         {task.subject.replace(". ", ".").replace(".", ". ")}

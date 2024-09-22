@@ -5,10 +5,24 @@
     gap: 10px;
 }
 
+.upcoming-assignments::before {
+    content: "";
+    width: 4px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--subject-main-color);
+    border-radius: 8px 0 0 8px;
+    position: absolute;
+}
 .upcoming-assignments {
+    position: relative;
+    border: 1px solid var(--subject-bg-color);
+    /* border-left: 4px solid var(--subject-main-color); */
+    border-radius: 5px 8px 8px 5px;
+    background-color: var(--subject-bg-color);
     display: flex;
     align-items: center;
-    border-radius: 15px;
     padding-inline: 15px;
     justify-content: space-between;
     min-height: 50px;
@@ -20,11 +34,11 @@
 }
 
 .upcoming-assignments.done {
-    opacity: .7;
+    opacity: .5;
 }
 
 .upcoming-assignments:is(:hover, :focus-visible) {
-    filter: brightness(1.1);
+    filter: brightness(1.15);
     outline: none;
 }
 .upcoming-assignments:active {
@@ -40,23 +54,28 @@
 .upcoming-assignments input[type="checkbox"] {
     height: 100%;
     width: 100%;
-    border-color: var(--text-color-task);
-    background-color: var(--background-color-task);
-    border-width: 4px;
+    border-color: var(--subject-main-color);
+    /* background-color: var(--background-color-task); */
+    border-width: 3px;
+    transition: .1s;
 }
 
 .upcoming-assignments input[type="checkbox"]:is(:hover, :focus-visible):not(:checked) {
-    border-color: rgba(0, 0, 0, 0.3);
+    border-color: var(--subject-main-color);
+    background-color: var(--subject-bg-color);
+}
+.upcoming-assignments input[type="checkbox"]:is(:hover, :focus-visible):checked {
+    filter: brightness(.8);
 }
 
 .upcoming-assignments input[type="checkbox"]:checked {
-    border-color: var(--text-color-task);
-    background-color: var(--background-color-task);
+    border-color: var(--subject-main-color);
+    background-color: var(--subject-bg-color);
 }
 
 .upcoming-assignments span {
-    font-weight: var(--font-weight-extra-bold);
-    color: var(--text-color-task);
+    font-weight: var(--font-weight-semi-bold);
+    color: var(--subject-main-color);
     flex: 1;
     text-align: center;
     white-space: nowrap;
@@ -64,7 +83,8 @@
     text-overflow: ellipsis;
 }
 
-.upcoming-assignments span:last-child {
+.upcoming-assignments > span:last-child {
+    font-weight: var(--font-weight-regular);
     text-align: end;
     flex: unset;
 }
@@ -76,7 +96,7 @@
 .upcoming-assignments .interrogation-label::after {
     content: "";
     width: 0;
-    background-color: var(--text-color-task);
+    background-color: var(--subject-main-color);
     height: 2.2px;
     position: absolute;
     top: 50%;

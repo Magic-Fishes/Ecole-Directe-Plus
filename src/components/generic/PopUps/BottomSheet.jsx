@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 import ScrollShadedDiv from "../CustomDivs/ScrollShadedDiv";
 
@@ -233,7 +233,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
             return 0;
         }
         disableBodyScroll(bottomSheetRef.current);
-        const topPosition = bottomSheetRef.current?.getBoundingClientRect().top;
+        const topPosition = getZoomedBoudingClientRect(bottomSheetRef.current?.getBoundingClientRect()).top;
         grabPosition.current = (event.touches ? (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.touches[0].clientY))) : (applyZoom(window.innerHeight) - topPosition - (applyZoom(window.innerHeight) - applyZoom(event.clientY))));
         firstYPosition.current = applyZoom(event.touches ? event.touches[0].clientY : event.clientY);
         maxDistanceFromPointer.current = 0;
@@ -285,7 +285,7 @@ export default function BottomSheet({ heading, children, onClose, resizingBreakp
     const handleTouchMove = (event) => {
         const scrollHeight = contentRef.current.scrollHeight; // hauteur du contenu réel
         const bottomSheetMaxHeight = resizingBreakpoints[resizingBreakpoints.length - 1] * applyZoom(window.innerHeight) * 0.01;
-        const contentMaxHeight = bottomSheetMaxHeight - resizeHandlerRef.current.getBoundingClientRect().height; // hauteur de la div de contenu
+        const contentMaxHeight = bottomSheetMaxHeight - getZoomedBoudingClientRect(resizeHandlerRef.current.getBoundingClientRect()).height; // hauteur de la div de contenu
 
         const divHeight = contentRef.current.offsetHeight;
         const scrollTop = contentRef.current.scrollTop;

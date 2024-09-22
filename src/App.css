@@ -192,7 +192,7 @@
     --color-average-background: 204, 180, 41, 0.1;
     --color-bad: 255, 165, 0;
     --color-bad-background: 255, 165, 0, 0.1;
-    --color-very-bad: 244, 103, 103;
+    --color-very-bad: 255, 153, 153;
     --color-very-bad-background: 153, 1, 1, 0.1;
 }
 

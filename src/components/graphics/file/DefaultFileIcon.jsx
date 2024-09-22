@@ -1,4 +1,5 @@
 
+import { getZoomedBoudingClientRect } from "../../../utils/zoom"
 import "../graphics.css"
 import "./file.css"
 import { useRef, useState, useEffect } from "react"
@@ -9,7 +10,7 @@ export default function DefaultFileIcon({ className = "", id = "", extension = "
     const svgRef = useRef(null)
     const extensionNameRef = useRef(null)
     useEffect(() => {
-        setExtensionNameX(50 - (extensionNameRef.current ? ((extensionNameRef.current.getBoundingClientRect().width / svgRef.current.getBoundingClientRect().width) * 50) : 0))
+        setExtensionNameX(50 - (extensionNameRef.current ? ((getZoomedBoudingClientRect(extensionNameRef.current.getBoundingClientRect()).width / getZoomedBoudingClientRect(svgRef.current.getBoundingClientRect()).width) * 50) : 0))
         if (needRerender) {
             setNeedRerender(false)
         }

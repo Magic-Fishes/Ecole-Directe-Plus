@@ -7,7 +7,7 @@ import { AppContext } from "../../../App";
 import Task from "./Task";
 import SessionContent from "./SessionContent";
 import DropDownArrow from "../../graphics/DropDownArrow";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import DetailedSessionContent from "./DetailedSessionContent";
 import { canScroll } from "../../../utils/DOM";
@@ -101,7 +101,7 @@ export default function Notebook({ hideDateController = false }) {
         // get the old selected element (because the behavior changes according to its position with the new selected element)
         let oldSelectedElementBounds;
         for (let element of elements) {
-            const elementBounds = element.getBoundingClientRect();
+            const elementBounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
 
             if (elementBounds.width > (document.fullscreenElement?.classList.contains("notebook-window") ? 400 : 300)) {
                 oldSelectedElementBounds = elementBounds;
@@ -112,11 +112,11 @@ export default function Notebook({ hideDateController = false }) {
             return;
         }
 
-        const bounds = element.getBoundingClientRect();
-        const containerBounds = notebookContainerRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
+        const containerBounds = getZoomedBoudingClientRect(notebookContainerRef.current.getBoundingClientRect());
         const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
+        console.log("customScrollIntoView ~ TASK_MAX_WIDTH:", TASK_MAX_WIDTH)
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
-
     }
 
     useEffect(() => {
@@ -131,7 +131,8 @@ export default function Notebook({ hideDateController = false }) {
             }
         } else {
             if (homeworks) {
-                navigateToDate(getISODate(new Date()));
+                // navigateToDate(getISODate(new Date()));
+                navigateToDate(nearestHomeworkDate(1, getISODate(new Date())))
             }
         }
     }, [location, homeworks, anchorElement.current]);
@@ -304,7 +305,7 @@ export default function Notebook({ hideDateController = false }) {
                 <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
                     <DropDownArrow />
                 </span>
-                <span className="selected-date" onClick={() => { navigate(`#${getISODate(new Date())}`, { replace: true }) }}>
+                <span className="selected-date" onClick={() => {navigate(`#${nearestHomeworkDate(1, getISODate(new Date()))}`, { replace: true })}}>
                     <div>
                         <time dateTime={selectedDate || null}>{(new Date(selectedDate)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString("fr-FR")}</time>
                         <time dateTime={getISODate(new Date())}>Aujourd'hui</time>
@@ -326,7 +327,7 @@ export default function Notebook({ hideDateController = false }) {
                         const progression = tasks.filter((task) => task.isDone).length / tasks.length;
                         const elDate = new Date(el);
                         return (homeworks[el].length
-                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el].find((item) => item.type === "task")?.id ?? homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
                                 <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
                                     <span className="notebook-day-date">
                                         <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
@@ -338,8 +339,8 @@ export default function Notebook({ hideDateController = false }) {
                                     {tasks.map((task, taskIndex) => {
                                         const result = [
                                             selectedDate === el
-                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} taskIndex={taskIndex} day={el} />
-                                                : <Task key={task.id} day={el} task={task} taskIndex={taskIndex} userHomeworks={userHomeworks} />]
+                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} day={el} />
+                                                : <Task key={task.id} day={el} task={task} userHomeworks={userHomeworks} />]
                                         if (selectedDate === el && taskIndex < tasks.length - 1) {
                                             result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
                                         }
@@ -383,8 +384,8 @@ export default function Notebook({ hideDateController = false }) {
                         <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 index === 0
-                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} taskIndex={index} day={el} />)
-                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} taskIndex={index} userHomeworks={userHomeworks} />)
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} day={el} />)
+                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} userHomeworks={userHomeworks} />)
                             }
                         </div>
                     </div>

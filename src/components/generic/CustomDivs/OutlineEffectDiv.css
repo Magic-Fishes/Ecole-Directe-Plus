@@ -1,6 +1,7 @@
 
 .outline-effect-div {
     position: relative;
+    --gradient-color: rgb(var(--text-color-alt));
 }
 
 :is(.balanced, .quality) .outline-effect-div::before {
@@ -11,7 +12,7 @@
     inset: -2px;
     z-index: -1;
     content: "";
-    background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgb(var(--text-color-alt)) 0, transparent 100%);
+    background: radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), var(--gradient-color) 0, transparent 100%);
     will-change: background;
 }
 

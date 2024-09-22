@@ -2,3 +2,10 @@
 #messaging {
     height: 100%;
 }
+
+@media only screen and (max-width: 869px) {
+    .window.inbox-window {
+        /* min-height: 160px; */
+        max-height: 500px;
+    }
+}

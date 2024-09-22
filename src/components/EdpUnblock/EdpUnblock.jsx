@@ -13,6 +13,7 @@ import DownloadIcon from "../graphics/DownloadIcon";
 import AboutArrow from "../graphics/AboutArrow";
 
 import "./EdpUnblock.css";
+import { getZoomedBoudingClientRect } from "../../utils/zoom";
 
 
 const browserLogosInfos = {
@@ -72,9 +73,9 @@ export default function EdpUnblock() {
 
     useEffect(() => {
         function handleKeyDown(event) {
-            const heroRect = heroBannerRef.current.getBoundingClientRect();
-            const aboutButtonRect = aboutButtonRef.current.getBoundingClientRect();
-            const aboutRect = aboutRef.current.getBoundingClientRect();
+            const heroRect = getZoomedBoudingClientRect(heroBannerRef.current.getBoundingClientRect());
+            const aboutButtonRect = getZoomedBoudingClientRect(aboutButtonRef.current.getBoundingClientRect());
+            const aboutRect = getZoomedBoudingClientRect(aboutRef.current.getBoundingClientRect());
 
             if (event.key == "ArrowDown" && aboutRect.top > 60) { // 60 is the height that scrolls when I scroll with the arrows
                 event.preventDefault();

@@ -95,7 +95,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         <div id="messaging">
             <WindowsContainer name="timetable">
                 <WindowsLayout direction="row" ultimateContainer={true}>
-                    <Window allowFullscreen={true}>
+                    <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
                             <h2>Boîte de réception</h2>
                         </WindowHeader>

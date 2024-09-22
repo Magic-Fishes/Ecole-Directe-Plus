@@ -120,6 +120,7 @@
 
 .selected-date time {
     flex: 1;
+    color: rgb(var(--text-color-alt));
     padding: 7px 10px;
     display: flex;
     align-items: center;
@@ -138,9 +139,16 @@
     scroll-snap-align: center;
     cursor: grab;
     transition: .2s;
-
+    
     display: flex;
     flex-flow: column nowrap;
+}
+.light .notebook-day {
+    filter: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+.light .notebook-day .notebook-day-header {
+    background-color: rgba(var(--text-color-main-reverse), 0.3) ;
 }
 
 .performance .notebook-day {
@@ -237,7 +245,8 @@
     margin-inline: 20px;
     color: transparent;
     background-color: rgb(var(--border-color-contrast));
-    height: 2px;
+    height: 3px;
+    border-radius: 50px;
 }
 
 .detailed-task-separator {
@@ -263,5 +272,19 @@
     }
     100% {
         left: 100%;
+    }
+}
+
+@media only screen and (max-width: 869px) {
+    .notebook-window {
+        background-color: transparent;
+        box-shadow: none;
+    }
+    .notebook-window .window-header {
+        display: none;
+    }
+    .notebook-container {
+        padding-inline: 0;
+        height: min(700px, 70vh);
     }
 }

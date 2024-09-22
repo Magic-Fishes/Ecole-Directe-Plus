@@ -91,8 +91,13 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                             <WindowHeader>
                                 <h2>Calendrier</h2>
                                 <InfoButton className="calendar-info">
-                                    <p>Calendrier</p>
-                                    <p>Permet de sélectionner une date.</p>
+                                    <p>Cliquez sur une date pour accéder aux devoirs associés.</p><br />
+                                    <p>SHIFT + CLIC pour charger tous les devoirs à partir de la date sélectionnée jusqu'à aujourd'hui.</p><br />
+                                    <center>Légende</center>
+                                    <p>GRIS : aujourd'hui</p>
+                                    <p>BLEU : devoirs</p>
+                                    <p>DORÉ : devoirs effectués</p>
+                                    <p>ROUGE : contrôle</p>
                                 </InfoButton>
                             </WindowHeader>
                             <WindowContent>
@@ -118,10 +123,13 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
         {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && ((selectedTask.type === "task" ? selectedTask.files.length : selectedTask.sessionContentFiles.length)
             ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
-                <h2 className="file-title">Fichiers</h2>
-                <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+                <div className="header-container">
+                    <h2 className="file-title">Fichiers joints</h2>
+                    <p className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</p>
+                </div>
                 <div className="file-scroller">
                     <div className="file-wrapper">
+                        <p className="file-subject">Note : maintenir pour télécharger</p>
                         {selectedTask.type === "task"
                             ? selectedTask.files.map((file) => <FileComponent key={file.id} file={file} />)
                             : selectedTask.sessionContentFiles.map((file) => <FileComponent key={file.id} file={file} />)}
@@ -131,10 +139,13 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
             : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
         {(hashParameters.length > 3 && hashParameters[2] === "s" && hashParameters[3] === "f" && selectedTask) && (selectedTask.sessionContentFiles.length
             ? <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]};s`, { replace: true }) }}>
-                <h2 className="file-title">Fichiers</h2>
-                <h3 className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</h3>
+                <div className="header-container">
+                    <h2 className="file-title">Fichiers joints</h2>
+                    <p className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</p>
+                </div>
                 <div className="file-scroller">
                     <div className="file-wrapper">
+                        <p className="file-subject">Note : maintenir pour télécharger</p>
                         {selectedTask.sessionContentFiles.map((file) => <FileComponent key={file.id} file={file} />)}
                     </div>
                 </div>

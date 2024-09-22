@@ -17,14 +17,22 @@
     margin-bottom: 15px;
 }
 
-.task-file-pop-up>div {
-    padding: 15px;
+.task-file-pop-up > div {
+    /* padding: 15px; */
     padding-bottom: 0;
     max-width: 550px !important;
 }
 
+.task-file-pop-up .header-container {
+    padding: 15px;
+    padding-bottom: 15px;
+    border-radius: 20px 20px 0 0 ;
+    background-color: rgba(var(--background-color-0), .4);
+    z-index: 0;
+}
+
 .task-file-pop-up .file-subject {
-    margin-bottom: 20px;
+    color: rgb(var(--text-color-alt));
 }
 
 .task-file-pop-up .file-scroller {
@@ -32,11 +40,12 @@
     overflow-y: auto;
 }
 
+
 .task-file-pop-up .file-wrapper {
+    padding: 15px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding-bottom: 15px;
 }
 
 .calendar-info {
