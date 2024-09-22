@@ -26,6 +26,7 @@ export default function Notebook({ hideDateController = false }) {
     const isMouseIntoScrollableContainer = useRef(false);
     const anchorElement = useRef(null);
     const contentLoadersRandomValues = useRef({ days: Array.from({ length: Math.floor(Math.random() * 5) + 5 }, (_, i) => i), tasks: Array.from({ length: 10 }, (_, i) => Math.floor(Math.random() * 3) + 1) })
+    const isNotebookGrab = useRef(false);
     // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
@@ -165,37 +166,30 @@ export default function Notebook({ hideDateController = false }) {
 
     function preventDraggingIssues() {
         document.body.style.overflow = "hidden";
-        const allElements = document.querySelectorAll('*');
-        allElements.forEach(element => {
-            element.style.userSelect = "none";
-            element.style.webkitUserSelect = "none";
-            element.style.overscrollBehavior = "contain";
-        });
+        document.body.style.userSelect = "none";
+        document.body.style.webkitUserSelect = "none";
+        document.body.style.overscrollBehavior = "contain";
     }
 
     function unpreventDraggingIssues() {
         document.body.style.overflow = "";
+        document.body.style.userSelect = "";
+        document.body.style.webkitUserSelect = "";
+        document.body.style.overscrollBehavior = "";
         if (window.getSelection) {
             var selection = window.getSelection();
             selection.removeAllRanges();
         }
-        const allElements = document.querySelectorAll('*');
-        allElements.forEach(element => {
-            element.style.userSelect = "";
-            element.style.webkitUserSelect = "";
-            element.style.overscrollBehavior = "";
-        });
     }
 
     useEffect(() => {
         let timeoutId;
-        const handleMouseDown = (event) => {
+        const handleMouseDown = () => {
+            isNotebookGrab.current = true;
             preventDraggingIssues();
-            const mouseOrigin = {
-                x: applyZoom(event.clientX ?? event.touches[0].clientX),
-                y: applyZoom(event.clientY ?? event.touches[0].clientY)
-            }
             let movedDistance = 0;
+
+            const mouseSpeed = {};
 
             const handleMouseMove = (event) => {
                 const TRIGGER_SHIFT = 13;
@@ -205,25 +199,33 @@ export default function Notebook({ hideDateController = false }) {
                         clearTimeout(timeoutId);
                     }
                 }
-                const mouse = {
-                    x: applyZoom(event.clientX ?? event.touches[0].clientX),
-                    y: applyZoom(event.clientY ?? event.touches[0].clientY)
-                }
-                notebookContainerRef.current.scrollBy({ left: mouseOrigin.x - mouse.x, top: mouseOrigin.y - mouse.y, behavior: "instant" });
-                movedDistance += Math.sqrt((mouseOrigin.x - mouse.x) ** 2 + (mouseOrigin.y - mouse.y) ** 2);
-                mouseOrigin.x = mouse.x;
-                mouseOrigin.y = mouse.y;
+                mouseSpeed.x = -event.movementX;
+                mouseSpeed.y = -event.movementY;
+                notebookContainerRef.current.scrollBy({ left: mouseSpeed.x, top: mouseSpeed.y, behavior: "instant" });
+                movedDistance += Math.sqrt((-event.movementX) ** 2 + (-event.movementY) ** 2);
             }
 
             document.addEventListener("mousemove", handleMouseMove);
 
             const handleMouseUp = () => {
-                unpreventDraggingIssues();
                 document.removeEventListener("mousemove", handleMouseMove);
-                document.removeEventListener("mouseup", handleMouseUp);
-                timeoutId = setTimeout(() => {
-                    setHasMouseMoved(false);
-                }, 0);
+                    isNotebookGrab.current = false;
+                    const SCROLL_FRICTION = 0.95;
+                    const SCROLL_COEF = 1.05;
+                    function applyInertia() {
+                        if (!isNotebookGrab.current && settings.get("displayMode") === "quality" && (mouseSpeed.x < -0.1 || mouseSpeed.x > 0.1) || (mouseSpeed.y < -0.1 && mouseSpeed.y > 0.1)) {
+                            notebookContainerRef.current.scrollBy({ left: mouseSpeed.x * SCROLL_COEF, top: mouseSpeed.y * SCROLL_COEF, behavior: "instant" });
+                            mouseSpeed.x *= SCROLL_FRICTION;
+                            mouseSpeed.y *= SCROLL_FRICTION;
+                            requestAnimationFrame(applyInertia);
+                        }
+                    }
+                    requestAnimationFrame(applyInertia);
+                    unpreventDraggingIssues();
+                    document.removeEventListener("mouseup", handleMouseUp);
+                    timeoutId = setTimeout(() => {
+                        setHasMouseMoved(false);
+                    }, 0);
             }
 
             document.addEventListener("mouseup", handleMouseUp);
@@ -302,7 +304,7 @@ export default function Notebook({ hideDateController = false }) {
                 <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
                     <DropDownArrow />
                 </span>
-                <span className="selected-date" onClick={() => {navigate(`#${getISODate(new Date())}`, { replace: true })}}>
+                <span className="selected-date" onClick={() => { navigate(`#${getISODate(new Date())}`, { replace: true }) }}>
                     <div>
                         <time dateTime={selectedDate || null}>{(new Date(selectedDate)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString("fr-FR")}</time>
                         <time dateTime={getISODate(new Date())}>Aujourd'hui</time>
