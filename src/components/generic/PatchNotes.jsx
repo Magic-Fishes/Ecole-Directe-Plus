@@ -6,15 +6,81 @@ const contributors = [
     "Vooxify",
     "OeildeLynx31",
     "Fefedu973",
-    "Beta-Way"
+    "FU0X0",
+    "saumon-brule",
+    "TruiteSeche",
 ]
 
 export default function PatchNotes({ currentEDPVersion, onClose }) {
 
     return (
         <div id="patch-notes">
-            <InfoPopUp type="info" header={"Enfin la rentrée ! 🎉🤡 v" + currentEDPVersion} subHeader={"2 Septembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
+            <InfoPopUp type="info" header={"Nouvelle mise à jour EDP ! 🎊 v" + currentEDPVersion} subHeader={"23 Septembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
                 <div>
+                    <hr />
+                    <p className="first-paragraph">
+                        La messagerie fait son arrivée ! Vous pouvez dès à présent consulter les messages passionnants de vos profs et éducateurs sans aucune distraction.
+                    </p>
+                    <h3 className="sub-header">Nouveautés</h3>
+                    <ul>
+                        <li>L'onglet Messagerie est désormais disponible (lecture seule)</li>
+                        <li>Vous pourrez désormais voir l'influence de chaque matières sur votre moyenne générale pour que vous puissiez identifier où vous devez vous améliorer</li>
+                        <li>La moyenne générale de la classe est désormais calculée par EDP, prenant certains paramètres en compte afin de représenter votre niveau par rapport à votre classe avec plus de précision. Elle sera désormais affichée au survol de la moyenne générale</li>
+                        <li>Dans le cahier de textes, l'affichage des tâches ayant uniquement un contenu de séance a été entièrement revu afin de se différencier nettement des devoirs</li>
+                        <li>Scroller dans les devoirs en maintenant la souris conserve désormais l'inertie, comme sur mobile</li>
+                        <li>Lorsque vous n'avez pas de note récente, la fenêtre "Dernières notes" affichera un placeholder</li>
+                    </ul>
+                    <h3 className="sub-header">Améliorations</h3>
+                    <ul>
+                        <li>Amélioration du rendu et de l'interface pour les utilisateurs mobiles</li>
+                        <li>Amélioration du style des prochains contrôles</li>
+                        <li>Amélioration du style des boutons de fichiers</li>
+                        <li>Amélioration de style du cahier de texte en light mode</li>
+                        <li>Le scroll dans le cahier de texte fera défiler les jours à l'horizontal au lieu de passer au prochain</li>
+                        <li>Déplacement des boutons du calendrier. Shift + clic pour charger tous les devoirs depuis le jours cliqué et cliquer sur la date du cahier de texte pour revenir au prochains jour avc des dvoirs le plus proche</li>
+                        <li>Affichage de toutes les dates en français peu importe votre localisation</li>
+                        <li>Scroll dans la liste des prochains devoirs au lieu de modifier la taille quand la fenêtre est trop petite</li>
+                    </ul>
+                    <h3 className="sub-header">Correction de bugs</h3>
+                    <ul>
+                        <li>Les prochains devoirs seront chargés peu importe la date initialement séléctionnée</li>
+                        <li>Supression d'un lien dans un lien causant un log d'erreur sur le login</li>
+                        <li>Gestion du nouveau comportement de zoom avec les coordonées de la méthode getBoudingClientRect</li>
+                        <li>Le rayement des prochains devoirs ne s'affichera plus après qu'une fenêtre ait été grab</li>
+                    </ul>
+                    <h3 className="sub-header">EDP sur mobile ? Sans extension ?</h3>
+                    <p>
+                        EDP revient en force sur mobile, un nouveau système rend possible l'accès aux données de EcoleDirecte sans utiliser l'extension ce qui permet une utilisation sans restriction sur mobile. Cette solution est toutefois expérimentale et pourrait être bloquée c'est pourquoi l'extension est toujours nécessaire sur PC pour le moment (Cette dernière a d'ailleurs reçu une récente mise-à-jour comprenant quelques correctif). 
+                    </p>
+                    {contributors && <>
+                        <h3 className="sub-header">Contributeurs</h3>
+                        {contributors.length > 1
+                            ? contributors.reduce((acc, element, index) => {
+                                if (index == 1) {
+                                    return [
+                                        <a className="contributor" href={`https://github.com/${acc}`} target="_blank">{acc}</a>,
+                                        ", ",
+                                        <a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>
+                                    ]
+                                } else {
+                                    acc.push(", ");
+                                    acc.push(<a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>);
+                                    return acc;
+                                }
+                            })
+                            : <a href={`https://github.com/${contributors[0]}`}>{contributors[0]}</a>
+                        }
+                    </>}
+                    <h3 className="sub-header">Divers</h3>
+                    <ul>
+                        <li>Veuillez noter qu'Ecole Directe Plus est un service non-affilié à Aplim ou EcoleDirecte et est encore en cours de développement. Bénévolement, nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
+                        <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la nouvelle page de feedback</li>
+                        <li>Ecole Directe Plus a son propre <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord</a> ! Rejoignez le maintenant pour discuter avec les développeurs et tout le Canardman-Gang !</li>
+                        <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
+                        <iframe style={{ display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" }} src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullscreen></iframe>
+                    </ul>
+                    {/* ---Enfin la rentrée ! 🎉🤡 --- v0.3.1
+                    
                     <hr />
                     <p className="first-paragraph">
                         Les vacances laissent subitement place aux heures de Maths et de Français, mais pas de panique, Ecole Directe Plus reste avec vous cette année !
@@ -64,7 +130,7 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                         <li>Ecole Directe Plus a son propre <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord</a> ! Rejoignez le maintenant pour discuter avec les développeurs et tout le Canardman-Gang !</li>
                         <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
                         <iframe style={ { display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" } } src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullscreen></iframe>
-                    </ul>
+                    </ul> */}
 
                     {/* <hr />
                     <p className="first-paragraph">
