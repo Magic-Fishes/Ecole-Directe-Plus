@@ -324,16 +324,14 @@ html:has(.landing-page) {
 /* -------------------------------------------------------------------------- */
 
 .parallax-item {
-    position: absolute;
+    position: relative;
 }
 .parallax-item.blob1 {
     left: -80px;
-    top: min(130vh, 1500px);
     width: 200px;
 }
 .parallax-item.blob2 {
-    right: -70px;
-    top: min(130vh, 1500px);
+    right: -300px;
     width: 250px;
 }
 

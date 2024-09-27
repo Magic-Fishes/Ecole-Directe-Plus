@@ -104,7 +104,7 @@ export default function LandingPage({ token, accountsList }) {
 
             parallaxItems.forEach(item => {
                 let speed = item.getAttribute("data-speed");
-                let yPos = -(scrollPosition * speed);
+                let yPos = -(scrollPosition * speed) - 100;
                 item.style.transform = `translateY(${yPos}px)`;
             });
         }
@@ -152,6 +152,11 @@ export default function LandingPage({ token, accountsList }) {
                         <path d="M40.6,-32.9C51.8,-18.3,59.7,-1.4,56.8,13.7C53.9,28.9,40.4,42.3,25.3,47.7C10.3,53,-6.3,50.2,-24.2,44C-42.1,37.8,-61.4,28.1,-65.9,13.6C-70.4,-0.9,-60,-20.3,-46.6,-35.4C-33.1,-50.6,-16.5,-61.6,-0.9,-60.9C14.7,-60.1,29.3,-47.6,40.6,-32.9Z" transform="translate(100 100)" />
                     </svg>
                 </div> */}
+                <div style={
+                    {
+                        marginTop: "-500px"
+                    }
+                }>
                 <div className="parallax-item blob1" data-speed="-0.5">
                     <svg className="blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <path d="M39.1,-74.1C47.7,-62.7,49.8,-46.3,53.5,-33.2C57.1,-20,62.3,-10,68.1,3.3C73.8,16.6,80.1,33.3,76.6,46.7C73.1,60.1,59.8,70.4,45.4,76.5C31,82.7,15.5,84.9,0,84.9C-15.5,84.9,-31.1,82.8,-37.3,71.9C-43.4,60.9,-40.3,41.2,-40.2,27.7C-40.2,14.3,-43.2,7.1,-47.5,-2.5C-51.7,-12.1,-57.2,-24.1,-55.1,-33.9C-53,-43.7,-43.5,-51.1,-33,-61.5C-22.6,-71.9,-11.3,-85.2,2,-88.6C15.2,-92,30.4,-85.5,39.1,-74.1Z" transform="translate(100 100)" />
@@ -161,7 +166,7 @@ export default function LandingPage({ token, accountsList }) {
                     <svg className="blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <path d="M29.7,-50.1C43.4,-43.6,62.8,-45.5,68.6,-38.6C74.3,-31.6,66.4,-15.8,65.5,-0.5C64.6,14.8,70.6,29.5,64.4,35.7C58.3,41.9,39.8,39.5,27.1,38.5C14.3,37.5,7.1,38,-3.7,44.4C-14.5,50.8,-29.1,63.2,-35.3,60.4C-41.4,57.5,-39.2,39.4,-45.3,26.8C-51.5,14.2,-66.1,7.1,-68,-1.1C-69.8,-9.2,-58.8,-18.4,-47.8,-22.7C-36.8,-26.9,-25.7,-26.1,-17.7,-35.8C-9.7,-45.6,-4.9,-66,1.6,-68.7C8,-71.4,16,-56.5,29.7,-50.1Z" transform="translate(100 100)" />
                     </svg>
-                </div>
+                    </div></div>
                 {/* <div className="parallax-item blob2" data-speed="-0.2">
                     <svg className="blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                         <path d="M60.2,-52.7C69.5,-36.4,62.7,-11.8,55.3,9.4C47.9,30.7,40,48.7,26.4,55.5C12.7,62.4,-6.6,58.1,-18.9,48.6C-31.2,39.1,-36.5,24.3,-39.2,9.8C-41.8,-4.8,-41.8,-19,-34.8,-34.9C-27.9,-50.7,-13.9,-68.1,5.8,-72.7C25.5,-77.3,50.9,-69.1,60.2,-52.7Z" transform="translate(100 100)" />
