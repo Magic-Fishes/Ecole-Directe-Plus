@@ -1,0 +1,21 @@
+Hi,
+To use Prettier correctly (if you don't know what Prettier is, it's a module that formats your code correctly,
+like this, so everyone has the same formatting style as you), you need to follow these steps:
+
+- Install the Prettier module (on VSCODE, you need to press "CTRL"/"CMD" + "SHIFT" + "X" and search for "Prettier - Code formatter")
+
+- Install the ESLint module (on VSCODE, you need to press "CTRL"/"CMD" + "SHIFT" + "X" and search for "ESLint")
+
+- Configure Prettier. To do this, press "CTRL"/"CMD" + "SHIFT" + "P" and type "Open User Settings JSON". Be careful, choose JSON!
+
+After that, paste these commands into the JSON file:
+
+
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.requireConfig": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always",
+        "source.organizeImports": "always"
+    }
+}
