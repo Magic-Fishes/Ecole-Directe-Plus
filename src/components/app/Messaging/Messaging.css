@@ -3,6 +3,38 @@
     height: 100%;
 }
 
+.folders-container {
+    list-style-type: none;
+    /* padding: 15px; */
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+}
+.folders-container .folder-button-container {
+    /* margin-bottom: 10px; */
+}
+
+h3:has(~ .folders-container)  {
+    margin-bottom: 10px;
+}
+
+.folders-container .folder-button {
+    padding: 15px;
+    background-color: rgba(var(--background-color-0), .4);
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: var(--font-size-16);
+    transition: .1s;
+}
+
+.folders-container .folder-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-0), .6);
+}
+
 @media only screen and (max-width: 869px) {
     .window.inbox-window {
         /* min-height: 160px; */

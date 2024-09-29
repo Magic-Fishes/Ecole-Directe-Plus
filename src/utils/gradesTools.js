@@ -142,7 +142,6 @@ export function calcGeneralAverage(period) {
         }
     }
 
-    console.log("calcGeneralAverage ~ list:", list)
     return calcAverage(list);
 }
 
@@ -169,7 +168,6 @@ export function calcClassGeneralAverage(period) {
         }
     }
 
-    console.log("calcClassAverage ~ list:", list)
     return calcAverage(list);
 }
 

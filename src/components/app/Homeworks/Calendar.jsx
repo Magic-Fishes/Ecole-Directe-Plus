@@ -139,7 +139,7 @@ export default function Calendar({ onDateClick }) {
             // Go to the date on the clendar
             currentDate = addDays(currentDate, 1);
         }
-        // When all the homeworks are fetched, remove the loading class
+        // When all the homeworks are fetchInitiated, remove the loading class
 
         setTimeout(() => {
             // Hide the progress bar

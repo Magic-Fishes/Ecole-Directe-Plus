@@ -1146,12 +1146,37 @@ export default function App({ edpFetch }) {
     }
 
 
+    function sortMessageFolders(messages, origin=0) {
+        const oldMessageFolders = useUserData("messageFolders").get();
+        let sortedMessageFolders = messages.classeurs.filter((folder) => (oldMessageFolders === undefined || !oldMessageFolders.some((oldFolder) => oldFolder.id === folder.id))).map((folder) => { return {
+            id: folder.id,
+            name: folder.libelle,
+            fetchInitiated: false,
+            fetched: origin === folder.id
+        }});
+        if (oldMessageFolders === undefined) {
+            sortedMessageFolders.unshift({
+                id: 0,
+                name: "Boîte de réception",
+                fetchInitiated: true,
+                fetched: origin === 0
+            })
+        } else {
+            sortedMessageFolders.unshift(oldMessageFolders.map((folder) => {folder.id === origin && (folder.fetched = true); return folder}));
+            sortedMessageFolders = sortedMessageFolders.flat();
+        }
+
+        return sortedMessageFolders;
+    }
+
+
     function sortMessages(messages) {
         const sortedMessages = messages.messages.received.map((message) => { return {
             date: message.date,
             files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
             from: message.from,
             id: message.id,
+            folderId: message.idClasseur,
             read: message.read,
             subject: message.subject,
             content: null,
@@ -1679,14 +1704,24 @@ export default function App({ edpFetch }) {
     }
 
 
-    async function fetchMessages(controller = (new AbortController())) {
+    async function fetchMessages(folderId=0, controller = (new AbortController())) {
+        const oldMessageFolders = useUserData("messageFolders").get();
+        if (oldMessageFolders && oldMessageFolders?.length > 0) {
+            if (oldMessageFolders.find((item) => item.id === folderId)?.fetchInitiated) {
+                return;
+            } else {
+                oldMessageFolders.find((item) => item.id === folderId).fetchInitiated = true;
+                useUserData("messageFolders").set(oldMessageFolders)
+            }
+        }
+        
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1706,7 +1741,13 @@ export default function App({ edpFetch }) {
                     code = response.code;
                 }
                 if (code === 200) {
-                    changeUserData("sortedMessages", sortMessages(response.data));
+                    let oldSortedMessages = useUserData("sortedMessages").get();
+                    if (oldSortedMessages === undefined) {
+                        oldSortedMessages = [];
+                    }
+                    oldSortedMessages.push(sortMessages(response.data));
+                    changeUserData("sortedMessages", oldSortedMessages.flat());
+                    changeUserData("messageFolders", sortMessageFolders(response.data, folderId));
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     requireLogin();

@@ -10,12 +10,13 @@ import AttachmentIcon from "../../graphics/AttachmentIcon";
 import MarkAsUnread from "../../graphics/MarkAsUnread";
 
 
-export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessageMarkAsUnread }) {
+export default function Inbox({ selectedMessage, setSelectedMessage, selectedFolder, fetchMessageMarkAsUnread }) {
     // States
     const { useUserData, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
     const [search, setSearch] = useState("");
     const messages = useUserData("sortedMessages");
+    const messageFolders = useUserData("messageFolders");
 
     const contentLoadersRandomValues = useRef({ authorWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), subjectWidth: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 150) + 150), dateWidth: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 50) + 50), containsFiles: Array.from({ length: 13 }, (_) => (Math.random() > .6)) })
 
@@ -74,11 +75,11 @@ export default function Inbox({ selectedMessage, setSelectedMessage, fetchMessag
     return (
         <div id="inbox">
             <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
-            {messages.get() !== undefined
+            {messages.get() !== undefined && (messageFolders.get() !== undefined && messageFolders.get()?.find((folder) => folder.id === selectedFolder)?.fetched)
                 ? (messages.get().length > 0
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
-                            {messages.get().filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
+                            {messages.get().filter((message) => message.folderId === selectedFolder).filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
                                 <h4 className="message-subject"><span className="author-name">{settings.get("isStreamerModeEnabled") ? message.from.name.split(" ")[0] + " " + "-".repeat(message.from.name.length) : message.from.name}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon" /></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {

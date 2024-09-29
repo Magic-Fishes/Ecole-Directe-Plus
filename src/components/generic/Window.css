@@ -164,7 +164,7 @@
     cursor: grabbing;
 }
 .window .window-header * {
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
 .window .window-content {
