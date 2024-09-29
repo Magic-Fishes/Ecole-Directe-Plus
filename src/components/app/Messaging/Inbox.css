@@ -35,6 +35,7 @@
 
 #inbox .messages-container ul {
     list-style-type: none;
+    overflow: hidden;
 }
 
 #inbox .message-container {

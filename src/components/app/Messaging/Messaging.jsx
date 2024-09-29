@@ -108,7 +108,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
-                            {messageFolders.get() !== undefined && messageFolders.get().length > 0
+                            {messageFolders.get() !== undefined && messageFolders.get().length > 1
                                 ? <Tooltip placement="bottom">
                                     <TooltipTrigger>dossiers</TooltipTrigger>
                                     <TooltipContent>
@@ -121,7 +121,6 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                 : null
                             }
                             <h2>{messageFolders.get()?.find((item) => item.id === selectedFolder)?.name ?? "Boîte de réception"}</h2>
-                            <div id="animation-filler"></div>
                         </WindowHeader>
                         <WindowContent>
                             <Inbox selectedMessage={selectedMessage}  setSelectedMessage={setSelectedMessage} selectedFolder={selectedFolder} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />
