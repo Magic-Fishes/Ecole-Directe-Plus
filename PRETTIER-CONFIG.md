@@ -1,5 +1,3 @@
-# PRETTIER GUIDE
-
 To use **Prettier** correctly (if you don't know what Prettier is, it's a module that formats your code, so everyone has the same formatting style as you), you need to follow these steps:
 
 1. **Install the Prettier module**  
@@ -13,15 +11,13 @@ To use **Prettier** correctly (if you don't know what Prettier is, it's a module
 
 4. **Paste the following configuration into the JSON file**:
 
-    ```json
+  ```json
     {
-        "editor.defaultFormatter":
-"esbenp.prettier-vscode",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "prettier.requireConfig": true,
         "editor.codeActionsOnSave": {
             "source.fixAll.eslint": "always",
             "source.organizeImports": "always"
         }
     }
-    ```
 
