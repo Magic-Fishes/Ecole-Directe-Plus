@@ -10,11 +10,11 @@ import "./Grade.css";
 export default function Grade({ grade, subject, className = "", ...props }) {
     const { useUserSettings, useUserData, deleteFakeGrade } = useContext(AppContext);
     const userData = useUserData();
-    const sortedGrades = userData.get("sortedGrades");
+    const grades = userData.get("grades");
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
 
-    const generalAverage = sortedGrades[selectedPeriod].generalAverage;
-    const subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
+    const generalAverage = grades[selectedPeriod].generalAverage;
+    const subjectsSummedCoefs = getSummedCoef(grades[selectedPeriod].subjects);
 
     function getSummedCoef(subjects) {
         let sum = 0;

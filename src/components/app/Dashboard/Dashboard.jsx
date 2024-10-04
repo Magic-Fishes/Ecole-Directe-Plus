@@ -1,6 +1,8 @@
 
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchGrades } from "../../../utils/requests/fetchFunctions";
+import { AppContext } from "../../../App";
 
 import {
     WindowsContainer,
@@ -18,17 +20,21 @@ import PopUp from "../../generic/PopUps/PopUp";
 
 import "./Dashboard.css";
 
-export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
+export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, isTabletLayout }) {
+    const { fetchData, useUserData, useUserSettings } = useContext(AppContext)
+
     const navigate = useNavigate();
-    const userData = useUserData();
     const location = useLocation()
+    const userData = useUserData();
+    const userSettings = useUserSettings();
 
-    const sortedGrades = userData.get("sortedGrades");
+    const grades = userData.get("grades");
+    const fetchSchoolYear = userSettings.get("isSchoolYearEnabled") ? userSettings.get("schoolYear").join("-") : ""
+    
+
     const homeworks = useUserData("sortedHomeworks");
-
     const hashParameters = location.hash.split(";")
     const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
-
     // Behavior
     useEffect(() => {
         document.title = "Accueil • Ecole Directe Plus";
@@ -36,12 +42,8 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (grades.length < 1 || grades[activeAccount] === undefined) {
-                fetchUserGrades(controller);
-            } else if (!sortedGrades) {
-                sortGrades(grades, activeAccount);
-            }
+        if (isLoggedIn && grades === undefined) {
+            fetchGrades(fetchData, fetchSchoolYear, controller).then(console.log);
         }
 
         return () => {

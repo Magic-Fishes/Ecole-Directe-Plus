@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect, useContext, Suspense } from "react";
-import { Link, useLocation, useNavigate, useParams, useMatch, useMatches, Outlet } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, Outlet } from "react-router-dom";
 
 import HeaderNavigationButton from "./HeaderNavigationButton";
 import AccountSelector from "./AccountSelector";
@@ -25,7 +25,7 @@ import { AppContext } from "../../../App";
 import "./Header.css";
 
 
-export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ currentEDPVersion, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -97,7 +97,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         const controller = new AbortController();
         if (isLoggedIn) {
             if (timeline.length < 1 || timeline[activeAccount] === undefined) {
-                fetchUserTimeline(controller);
+                fetchTimeline(controller);
             } else {
                 calculateNotificationsNumber(timeline);
             }

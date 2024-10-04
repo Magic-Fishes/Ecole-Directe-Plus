@@ -1,30 +1,34 @@
-import { useState, useRef, useEffect } from "react";
-
-import StreakScore from "./StreakScore";
-import Information from "./Information";
-import Strengths from "./Strengths";
-import Results from "./Results";
-import MobileResults from "./MobileResults";
+import { useState, useContext, useEffect } from "react";
+import { AppContext } from "../../../App";
+import { fetchGrades } from "../../../utils/requests/fetchFunctions";
 
 import {
     WindowsContainer,
     WindowsLayout,
 } from "../../generic/Window";
-
-import "./Grades.css";
+import MobileResults from "./MobileResults";
+import StreakScore from "./StreakScore";
+import Information from "./Information";
+import Strengths from "./Strengths";
+import Results from "./Results";
 import DOMSimulation from "./GradeSimulation";
+import "./Grades.css";
 
-export default function Grades({ grades, fetchUserGrades, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
+
+export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
+    const { fetchData, useUserData, useUserSettings } = useContext(AppContext)
     const userData = useUserData();
+    const userSettings = useUserSettings();
 
     const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
-
-    const sortedGrades = userData.get("sortedGrades");
+    
+    const grades = userData.get("grades");
+    const fetchSchoolYear = userSettings.get("isSchoolYearEnabled") ? userSettings.get("schoolYear").join("-") : "";
 
     useEffect(() => {
         setSelectedPeriod(userData.get("activePeriod"))
-    }, [sortedGrades]);
+    }, [grades]);
 
     useEffect(() => {
         userData.set("activePeriod", selectedPeriod);
@@ -38,12 +42,8 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (grades.length < 1 || grades[activeAccount] === undefined) {
-                fetchUserGrades(controller);
-            } else if (!sortedGrades) {
-                sortGrades(grades, activeAccount);
-            }
+        if (isLoggedIn && grades === undefined) {
+            fetchGrades(fetchData, fetchSchoolYear, controller).then(console.log);
         }
 
         return () => {
@@ -57,23 +57,23 @@ export default function Grades({ grades, fetchUserGrades, activeAccount, isLogge
             <WindowsContainer name="grades">
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
-                        <StreakScore streakScore={(sortedGrades && sortedGrades[selectedPeriod]?.streak) ?? 0} streakHighScore={(sortedGrades && sortedGrades[selectedPeriod]?.maxStreak) ?? 0} />
-                        <Information sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
-                        <Strengths sortedGrades={sortedGrades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
+                        <StreakScore streakScore={(grades && grades[selectedPeriod]?.streak) ?? 0} streakHighScore={(grades && grades[selectedPeriod]?.maxStreak) ?? 0} />
+                        <Information grades={grades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
+                        <Strengths grades={grades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
                     </WindowsLayout>
                     <WindowsLayout growthFactor={2}>
                         <DOMSimulation>
                             {isTabletLayout
                                 ? <MobileResults
                                     activeAccount={activeAccount}
-                                    sortedGrades={sortedGrades}
+                                    grades={grades}
                                     selectedPeriod={selectedPeriod}
                                     setSelectedPeriod={setSelectedPeriod}
                                     selectedDisplayType={selectedDisplayType}
                                     setSelectedDisplayType={setSelectedDisplayType} />
                                 : <Results
                                     activeAccount={activeAccount}
-                                    sortedGrades={sortedGrades}
+                                    grades={grades}
                                     selectedPeriod={selectedPeriod}
                                     setSelectedPeriod={setSelectedPeriod}
                                     selectedDisplayType={selectedDisplayType}

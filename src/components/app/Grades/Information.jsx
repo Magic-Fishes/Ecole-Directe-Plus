@@ -51,7 +51,7 @@ function findGradesObjectById(list, value) {
     }
 }
 
-export default function Information({ sortedGrades, activeAccount, selectedPeriod, ...props }) {
+export default function Information({ grades, activeAccount, selectedPeriod, ...props }) {
     const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -62,11 +62,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
     const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
 
     const settings = useUserSettings();
-    const grades = useUserData();
+    const userData = useUserData();
 
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
-    if (sortedGrades && sortedGrades[selectedPeriod]) {
-        selectedElement = findGradesObjectById(Object.values(sortedGrades && sortedGrades[selectedPeriod].subjects), location.hash.slice(1));
+    if (grades && grades[selectedPeriod]) {
+        selectedElement = findGradesObjectById(Object.values(grades && grades[selectedPeriod].subjects), location.hash.slice(1));
     }
     
     return (
@@ -166,11 +166,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Moyenne</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div> {/* Pour le bug de Label avec certaines notes ne contenant pas la moyenne min et max */}
+                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div> {/* Pour le bug de Label avec certaines notes ne contenant pas la moyenne min et max */}
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
+                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
@@ -235,11 +235,11 @@ export default function Information({ sortedGrades, activeAccount, selectedPerio
                             <div className="number-name">Classe</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/20</sub>}</div>
                         </div>
-                        {grades.get("gradesEnabledFeatures")?.moyenneMin && <div>
+                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}{isNaN(selectedElement.minAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
-                        {grades.get("gradesEnabledFeatures")?.moyenneMax && <div>
+                        {userData.get("gradesEnabledFeatures")?.moyenneMax && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}

@@ -86,8 +86,8 @@ export default function ErrorPage({ sardineInsolente }) {
                 <div className="data-sender">
                     <h2>Pour nous aider vous pouvez :</h2>
                     <div className="button-wrapper">
-                        <Button onClick={() => handleDataSend("sortedGrades")} disabled={!userData.get("sortedGrades") || userDataSent.includes("sortedGrades")} >
-                            {userDataSent.includes("sortedGrades") ? "Merci pour votre retour !" : "Envoyer vos notes"}
+                        <Button onClick={() => handleDataSend("grades")} disabled={!userData.get("grades") || userDataSent.includes("grades")} >
+                            {userDataSent.includes("grades") ? "Merci pour votre retour !" : "Envoyer vos notes"}
                         </Button>
                         <Button onClick={() => handleDataSend("sortedHomeworks")} disabled={!userData.get("sortedHomeworks") || userDataSent.includes("sortedHomeworks")} >
                             {userDataSent.includes("sortedHomeworks") ? "Merci pour votre retour !" : "Envoyer vos devoirs"}

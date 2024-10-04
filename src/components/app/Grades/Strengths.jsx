@@ -13,7 +13,7 @@ import Grade from "./Grade";
 
 import "./Strengths.css";
 
-export default function Strengths({ activeAccount, sortedGrades, selectedPeriod, className = "", ...props }) {
+export default function Strengths({ activeAccount, grades, selectedPeriod, className = "", ...props }) {
     const [strengths, setStrengths] = useState([]);
     const { useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
@@ -21,9 +21,9 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
 
     useEffect(() => {
         function strengthsCalculation() {
-            if (sortedGrades && sortedGrades[selectedPeriod]) {
+            if (grades && grades[selectedPeriod]) {
                 const STRENGTHS_NUMBER = 3;
-                const period = sortedGrades[selectedPeriod];
+                const period = grades[selectedPeriod];
                 const newStrengths = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
                 
                 for (let subjectKey in period.subjects) {
@@ -51,7 +51,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
         }
         
         strengthsCalculation()
-    }, [sortedGrades, activeAccount, selectedPeriod]);
+    }, [grades, activeAccount, selectedPeriod]);
 
     return (<Window className={`strengths ${className}`} {...props}>
         <WindowHeader>
@@ -59,7 +59,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
             <InfoButton className="strengths-info">Calculés en fonction de la différence entre votre moyenne et celle de la classe</InfoButton>
         </WindowHeader>
         <WindowContent>
-            {sortedGrades && sortedGrades[selectedPeriod]
+            {grades && grades[selectedPeriod]
                 ? <ol className="strengths-container">
                     {
                         strengths.map((strength, idx) => <li key={crypto.randomUUID()} className="strength-container">

@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, createContext, useContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
     createBrowserRouter,
     RouterProvider
 } from "react-router-dom";
 
-import { getISODate, sendToWebhook } from "./utils/utils";
+import { getISODate } from "./utils/utils";
 
 import "./App.css";
 
@@ -17,11 +17,12 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat, calcClassGeneralAverage, calcClassAverage } from "./utils/gradesTools";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
+import useUserSession from "./utils/edpHooks/useUserSession";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -82,14 +83,6 @@ const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
-
-const referencedErrors = {
-    "250": "Authentification à deux facteurs requise",
-    "505": "Identifiant et/ou mot de passe invalide",
-    "522": "Identifiant et/ou mot de passe invalide",
-    "74000": "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
-    "202": "accountCreationError",
-}
 
 const defaultSettings = {
     keepLoggedIn: false,
@@ -238,6 +231,7 @@ function initData(length) {
 
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
+export const LoginContext = createContext(null);
 
 let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
@@ -245,15 +239,28 @@ window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
 export default function App({ edpFetch }) {
     // global account data
-    const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
+    // const userSession = useUserSession(localStorageSession);
+    const userSession = useUserSession();
+    const {
+        username,
+        password,
+        token,
+        A2FInfo,
+        keepLoggedIn: keepLoggedInTemp,
+        isLoggedIn,
+        fetchLogin,
+        fetchA2F,
+    } = userSession;
+    const tokenState = token.value;
+    const setTokenState = token.set;
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
     const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
-    const [bufferUserIds, setBufferUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd) | uniquement pour la gestion de la reconnexion auto après l'A2F
-    const [A2FInfo, setA2FInfo] = useState(A2FInfoFromLS); // informations d'authentification à deux facteurs (cn, cv)
     const [requireA2F, setRequireA2F] = useState(false); // trigger or not the A2F pop-up
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [temp0, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
-    const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
+    // const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
+    const keepLoggedIn = keepLoggedInTemp.value;
+    const setKeepLoggedIn = keepLoggedInTemp.set;
 
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
@@ -261,8 +268,6 @@ export default function App({ edpFetch }) {
     const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", activeAccount, true)); // canal dev: redirige vers l'URL dev.ecole-directe.plus où on déploie beaucoup plus régulièrement les mises à jour, mais qui peut être un peu instable
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
-    const [grades, setGrades] = useState([]);
-    const [homeworks, setHomeworks] = useState([]);
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
     const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
@@ -517,7 +522,10 @@ export default function App({ edpFetch }) {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
+    /////////// USER DATA ///////////
+
     // fonctions de type utils pour modifier le userData
+
     function changeUserData(data, value) {
         setUserData((oldData) => {
             const newData = [...oldData];
@@ -533,12 +541,11 @@ export default function App({ edpFetch }) {
         return (userData ? (userData[activeAccount] ? userData[activeAccount][data] : undefined) : undefined);
     }
 
-    const useUserData = (data = "") => (
-        data
+    function useUserData(data = "") {
+        return data
             ? { set: (value) => changeUserData(data, value), get: () => getUserData(data) } // If the data is choosen, there is no need to get the full
             : { set: changeUserData, get: getUserData }
-    )
-
+    }
 
     // gestion de la désactivation automatique du "rester connecté"
     useEffect(() => {
@@ -660,8 +667,8 @@ export default function App({ edpFetch }) {
          * - name : nom du devoir
          * - type : type de devoir (DS, DM, ...)
          */
-        const sortedGrades = getUserData("sortedGrades")
-        sortedGrades[periodKey].subjects[subjectKey].grades.push({
+        const grades = getUserData("grades")
+        grades[periodKey].subjects[subjectKey].grades.push({
             value: value,
             coef: coef,
             scale: scale,
@@ -678,26 +685,26 @@ export default function App({ edpFetch }) {
             id: crypto.randomUUID(),
             isReal: false,
             skill: [],
-            subjectName: sortedGrades[periodKey].subjects[subjectKey].name,
+            subjectName: grades[periodKey].subjects[subjectKey].name,
             type: type,
             upTheStreak: false,
             subjectKey: subjectKey,
             periodKey: periodKey,
         })
-        changeUserData("sortedGrades", sortedGrades);
+        changeUserData("grades", grades);
         updatePeriodGrades(periodKey)
     }
 
     function deleteFakeGrade(UUID, subjectKey, periodKey) {
-        const newGrades = { ...getUserData("sortedGrades") }
+        const newGrades = { ...getUserData("grades") }
         newGrades[periodKey].subjects[subjectKey].grades = newGrades[periodKey].subjects[subjectKey].grades.filter((el) => el.id !== UUID)
-        changeUserData("sortedGrades", newGrades);
+        changeUserData("grades", newGrades);
         updatePeriodGrades(periodKey)
     }
 
     function updatePeriodGrades(periodKey) {
-        const sortedGrades = getUserData("sortedGrades");
-        const period = sortedGrades[periodKey];
+        const grades = getUserData("grades");
+        const period = grades[periodKey];
 
         for (const subject in period.subjects) {
             if (!subject.includes("category")) {
@@ -707,350 +714,20 @@ export default function App({ edpFetch }) {
             }
         }
         period.generalAverage = calcGeneralAverage(period)
-        sortedGrades[periodKey] = period;
-        changeUserData("sortedGrades", sortedGrades);
+        grades[periodKey] = period;
+        changeUserData("grades", grades);
     }
 
-    function setDefaultPeriod(sortedGrades = getUserData("sortedGrades")) {
+    function setDefaultPeriod(grades = getUserData("grades")) {
         let currentPeriod = 0;
-        for (let periodCode in sortedGrades) {
-            if (Date.now() > sortedGrades[periodCode].endDate) {
-                if (currentPeriod < Object.keys(sortedGrades).length - 1) {
+        for (let periodCode in grades) {
+            if (Date.now() > grades[periodCode].endDate) {
+                if (currentPeriod < Object.keys(grades).length - 1) {
                     currentPeriod++;
                 }
             }
         }
-        changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
-    }
-
-    function sortGrades(grades, activeAccount) {
-        /**
-         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
-         */
-        const periodsFromJson = grades[activeAccount].periodes;
-        const periods = {};
-        const generalAverageHistory = {}; // used for charts
-        const classGeneralAverageHistory = {}; // used for charts
-        const streakScoreHistory = {}; // used for charts
-        const subjectsComparativeInformation = {};
-        const totalBadges = {
-            "star": 0,
-            "bestStudent": 0,
-            "greatStudent": 0,
-            "stonks": 0,
-            "keepOnFire": 0,
-            "meh": 0,
-        };
-        const newLastGrades = []
-        if (periodsFromJson !== undefined) {
-            for (let period of periodsFromJson) {
-                if (period) {
-                    const newPeriod = {};
-                    subjectsComparativeInformation[period.codePeriode] = [];
-
-                    newPeriod.streak = 0;
-                    newPeriod.maxStreak = 0;
-                    newPeriod.name = period.periode;
-                    newPeriod.code = period.codePeriode;
-                    newPeriod.startDate = new Date(period.dateDebut);
-                    newPeriod.endDate = new Date(period.dateFin);
-                    newPeriod.isMockExam = period.examenBlanc;
-                    newPeriod.MTname = period.ensembleMatieres.nomPP;
-                    newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
-                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
-                    newPeriod.subjects = {};
-                    let i = 0;
-                    for (let matiere of period.ensembleMatieres.disciplines) {
-                        // if (matiere.sousMatiere) {
-                        //     continue;
-                        // }
-                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
-                        if (matiere.groupeMatiere) {
-                            subjectCode = "category" + i.toString();
-                            i++;
-                        }
-                        const newSubject = {};
-                        newSubject.code = subjectCode;
-                        newSubject.elementType = "subject";
-                        newSubject.id = matiere.id.toString();
-                        if (matiere.sousMatiere) {
-                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
-                        } else {
-                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
-                        }
-                        newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
-                        newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
-                        newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
-                        newSubject.coef = matiere.coef;
-                        newSubject.size = matiere.effectif;
-                        newSubject.rank = matiere.rang;
-                        newSubject.isCategory = matiere.groupeMatiere;
-                        newSubject.isSubSubject = matiere.sousMatiere;
-                        newSubject.teachers = matiere.professeurs;
-                        newSubject.appreciations = matiere.appreciations;
-                        newSubject.grades = [];
-                        newSubject.average = "N/A";
-                        newSubject.streak = 0;
-                        newSubject.badges = {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                        newPeriod.subjects[subjectCode] = newSubject;
-                        subjectsComparativeInformation[period.codePeriode].push({
-                            subjectFullname: newSubject.name,
-                            classAverage: newSubject.classAverage,
-                            minAverage: newSubject.minAverage,
-                            maxAverage: newSubject.maxAverage
-                        });
-                    }
-                    periods[period.codePeriode] = newPeriod;
-                    generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
-                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
-                    streakScoreHistory[period.codePeriode] = [];
-                }
-            }
-            const gradesFromJson = grades[activeAccount].notes;
-            const subjectDatas = {};
-
-            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
-
-            for (let grade of (gradesFromJson ?? [])) {
-                // handle mock exam periods
-                let tempPeriodCode = grade.codePeriode;
-                let newPeriodCode = tempPeriodCode;
-                if (periods[tempPeriodCode].isMockExam) {
-                    newPeriodCode = tempPeriodCode.slice(0, 4);
-                    if (periods[newPeriodCode] === undefined) {
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                    }
-                }
-
-                const periodCode = newPeriodCode;
-                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
-                // try to rebuild the subject if it doesn't exist (happen when changing school year)
-                if (periods[periodCode].subjects[subjectCode] === undefined) {
-                    periods[periodCode].subjects[subjectCode] = {
-                        code: subjectCode,
-                        elementType: "subject",
-                        name: subjectCode,
-                        classAverage: "N/A",
-                        minAverage: "N/A",
-                        maxAverage: "N/A",
-                        coef: 1,
-                        size: "N/A",
-                        isCategory: false,
-                        teachers: [],
-                        appreciations: [],
-                        grades: [],
-                        average: 20,
-                        streak: 0,
-                        badges: {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                    }
-                }
-
-                const newGrade = {};
-                newGrade.elementType = "grade";
-                newGrade.id = grade.id.toString();
-                newGrade.name = grade.devoir;
-                newGrade.type = grade.typeDevoir;
-                newGrade.date = new Date(grade.date);
-                newGrade.entryDate = new Date(grade.dateSaisie);
-                newGrade.coef = safeParseFloat(grade.coef);
-                newGrade.scale = safeParseFloat(grade.noteSur);
-                newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = safeParseFloat(grade.minClasse);
-                newGrade.classMax = safeParseFloat(grade.maxClasse);
-                newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
-                newGrade.subjectName = grade.libelleMatiere;
-                newGrade.isSignificant = !grade.nonSignificatif;
-                newGrade.examSubjectSRC = grade.uncSujet;
-                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.isReal = true;
-                /* Si newGrade.isReal est faux :
-                    pas de :
-                        - badges
-                        - streak
-                        - moyenne de classe/min/max
-                        - correction ni sujet
-                        - date
-                    différences : 
-                        - id = randomUUID
-                    choisit par l'utilisateur : 
-                        - name
-                        - coef
-                        - scale
-                        - value
-                        - type
-                */
-                if (!subjectDatas.hasOwnProperty(periodCode)) {
-                    subjectDatas[periodCode] = {};
-                }
-                if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
-                    subjectDatas[periodCode][subjectCode] = [];
-                }
-                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
-                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
-                const subjectAverage = periods[periodCode].subjects[subjectCode].average;
-                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
-                const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);   
-
-                // streak management
-                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
-                if (newGrade.upTheStreak) {
-                    periods[periodCode].streak += 1;
-                    if (periods[periodCode].streak > periods[periodCode].maxStreak) {
-                        periods[periodCode].maxStreak = periods[periodCode].streak;
-                    }
-                    periods[periodCode].totalStreak += 1;
-                    periods[periodCode].subjects[subjectCode].streak += 1;
-                } else {
-                    if (newGrade.isSignificant && !["Abs", "Disp", "NE", "EA", "Comp"].includes(newGrade.value)) {
-                        periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
-                        periods[periodCode].subjects[subjectCode].streak = 0;
-
-                        // enlève le "upTheStreak" des notes précédant celle qu'on considère
-                        for (let grade of periods[periodCode].subjects[subjectCode].grades) {
-                            if (grade.upTheStreak) {
-                                grade.upTheStreak = "maybe";
-                            }
-                        }
-                    }
-                }
-                streakScoreHistory[periodCode].push(periods[periodCode].streak);
-
-                periods[periodCode].subjects[subjectCode].average = average;
-                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
-
-                const category = findCategory(periods[periodCode], subjectCode);
-                if (category !== null) {
-                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                    periods[periodCode].subjects[category.code].average = categoryAverage;
-                }
-                const generalAverage = calcGeneralAverage(periods[periodCode]);
-                generalAverageHistory[periodCode].generalAverages.push(generalAverage);
-                generalAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].generalAverage = generalAverage;
-                
-                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
-                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
-                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].classGeneralAverage = classGeneralAverage;
-
-                // création des badges
-                const gradeBadges = [];
-                if (!isNaN(newGrade.value)) {
-                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
-                        gradeBadges.push("star");
-                        periods[periodCode].subjects[subjectCode].badges.star++
-                        totalBadges.star++
-                    }
-                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
-                        gradeBadges.push("bestStudent");
-                        periods[periodCode].subjects[subjectCode].badges.bestStudent++
-                        totalBadges.bestStudent++
-                    }
-                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
-                        gradeBadges.push("greatStudent");
-                        periods[periodCode].subjects[subjectCode].badges.greatStudent++
-                        totalBadges.greatStudent++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
-                        gradeBadges.push("stonks");
-                        periods[periodCode].subjects[subjectCode].badges.stonks++
-                        totalBadges.stonks++
-                    }
-                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
-                        gradeBadges.push("keepOnFire");
-                        periods[periodCode].subjects[subjectCode].badges.keepOnFire++
-                        totalBadges.keepOnFire++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
-                        gradeBadges.push("meh");
-                        periods[periodCode].subjects[subjectCode].badges.meh++
-                        totalBadges.meh++
-                    }
-                }
-                newGrade.badges = gradeBadges;
-                newGrade.skill = formatSkills(grade.elementsProgramme)
-
-                periods[periodCode].subjects[subjectCode].grades.push(newGrade);
-                if (lastGrades.includes(grade)) {
-                    newLastGrades.push(newGrade)
-                }
-            }
-        }
-
-        // supprime les périodes vides et examens blancs
-        let i = 0;
-        let firstPeriod;
-        for (const key in periods) {
-            if (i === 0) {
-                firstPeriod = { key: key, value: periods[key] }
-            }
-            i++;
-            let isEmpty = true;
-            if (periods[key])
-                for (const subject in periods[key].subjects) {
-                    if (periods[key].subjects[subject].grades.length !== 0) {
-                        isEmpty = false;
-                    }
-                }
-            if (isEmpty || periods[key].isMockExam) {
-                delete periods[key];
-            }
-        }
-        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
-        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
-            periods[firstPeriod.key] = firstPeriod.value;
-        }
-
-        const settings = grades[activeAccount].parametrage;
-        const enabledFeatures = {};
-
-        enabledFeatures.moyenneMin = settings.moyenneMin;
-        enabledFeatures.moyenneMax = settings.moyenneMax;
-        enabledFeatures.coefficient = settings.coefficientNote;
-
-        // add the average of all subjects a special type of chart
-        for (const period in periods) {
-            for (const subject in periods[period].subjects) {
-                for (const subjectID in subjectsComparativeInformation[period]) {
-                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
-                        const newAverage = periods[period].subjects[subject].average;
-                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
-                            subjectsComparativeInformation[period].splice(subjectID, 1);
-                            break;
-                        }
-                        subjectsComparativeInformation[period][subjectID].average = newAverage;
-                        break;
-                    }
-                }
-            }
-        }
-
-        changeUserData("totalBadges", totalBadges);
-        changeUserData("sortedGrades", periods);
-        changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
-        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
-        changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
-        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
-        changeUserData("gradesEnabledFeatures", enabledFeatures);
-        changeUserData("lastGrades", newLastGrades.reverse());
-        setDefaultPeriod(periods)
+        changeUserData("activePeriod", Object.keys(grades)[currentPeriod]);
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -1304,138 +981,7 @@ export default function App({ edpFetch }) {
         </>, { customClass: "extension-warning", timer: "infinite" })
     }
 
-    async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
-        if (isLoggedIn) {
-            return
-        }
-
-        loginAbortControllers.current.push(controller);
-        // guest management
-        if (username === "guest" && password === "secret") {
-            fakeLogin();
-            return 0;
-        }
-
-        const payload = {
-            identifiant: encodeURIComponent(username),
-            motdepasse: encodeURIComponent(password),
-            isReLogin: false,
-            uuid: 0,
-            fa: Object.keys(A2FInfo).length > 0 ? [A2FInfo] : []
-        }
-
-        const options = {
-            body: "data=" + JSON.stringify(payload),
-            method: "POST",
-            signal: controller.signal,
-            referrerPolicy: "no-referrer"
-        }
-
-        const messages = {
-            submitButtonText: "",
-            submitErrorMessage: ""
-        };
-
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options, "text")
-            .then((response) => {
-                if (!response) {
-                    setIsEDPUnblockInstalled(false);
-                } else {
-                    return JSON.parse(response);
-                }
-            })
-            .then((response) => {
-                // GESTION DATA
-                let statusCode = response.code;
-                if (statusCode === 200) {
-                    messages.submitButtonText = "Connecté";
-                    setUserIds({ username: username, password: password })
-                    if (keepLoggedIn) {
-                        localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: username, password: password })))
-                    }
-                    let token = response.token // collecte du token
-                    let accountsList = [];
-                    let accounts = response.data.accounts[0];
-                    const accountType = accounts.typeCompte; // collecte du type de compte
-                    if (accountType === "E") {
-                        // compte élève
-                        accountsList.push({
-                            accountType: "E", // type de compte
-                            lastConnection: accounts.lastConnexion,
-                            id: accounts.id, // id du compte
-                            firstName: accounts.prenom, // prénom de l'élève
-                            lastName: accounts.nom, // nom de famille de l'élève
-                            email: accounts.email, // email du compte
-                            picture: accounts.profile.photo, // url de la photo
-                            schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
-                            modules: accounts.modules
-                        });
-                    } else {
-                        // compte parent
-                        const email = accounts.email;
-                        accounts.profile.eleves.map((account) => {
-                            accountsList.push({
-                                accountType: "P",
-                                lastConnection: accounts.lastConnexion,
-                                id: account.id,
-                                familyId: accounts.id,
-                                firstName: account.prenom,
-                                lastName: account.nom,
-                                email: email,
-                                picture: account.photo,
-                                schoolName: account.nomEtablissement,
-                                class: (account.classe ? [account.classe.code, account.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
-                                modules: account.modules.concat(accounts.modules) // merge modules with those of parents
-                            })
-                        });
-                    }
-                    // ! : si une edit dans les 3 lignes en dessous, il est probable qu'il faille changer également dans loginFromOldAuthInfo //
-                    if (accountsListState.length > 0 && (accountsListState.length !== accountsList.length || accountsListState[0].id !== accountsList[0].id)) {
-                        resetUserData();
-                    }
-                    setUserInfo(token, accountsList);
-                    setIsLoggedIn(true);
-                } else {
-                    // si ED renvoie une erreur
-                    messages.submitButtonText = "Invalide";
-                    if (referencedErrors.hasOwnProperty(statusCode)) {
-                        messages.submitErrorMessage = referencedErrors[statusCode];
-                        if (statusCode === 250) {
-                            setBufferUserIds({ username: username, password: password })
-                            console.log("A2F required")
-                            setA2FInfo({});
-                            setRequireA2F(true)
-                        }
-                        let token = response.token
-                        if (token) {
-                            setTokenState(token);
-                        }
-                    } else {
-                        messages.submitErrorMessage = ("Erreur : " + response.message);
-                        const error = {
-                            errorMessage: response,
-                        };
-                        if (getUserSettingValue("allowAnonymousReports")) {
-                            sendToWebhook(sardineInsolente, error);
-                        }
-                    }
-                }
-            })
-            .catch((error) => {
-                if (error.name !== 'AbortError') {
-                    console.error(error);
-                    messages.submitButtonText = "Échec de la connexion";
-                    messages.submitErrorMessage = "Error: " + error.message;
-                }
-            })
-            .finally(() => {
-                loginAbortControllers.current.forEach((e) => { e.abort() })
-                callback(messages);
-            })
-    }
-
-    async function fetchUserTimeline(controller = (new AbortController())) {
+    async function fetchTimeline(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
@@ -1483,54 +1029,6 @@ export default function App({ edpFetch }) {
             })
     }
 
-    async function fetchUserGrades(controller = (new AbortController())) {
-        abortControllers.current.push(controller);
-        const userId = activeAccount;
-        const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
-        }
-        edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
-                },
-                body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer",
-            },
-            "json"
-        )
-            .then((response) => {
-                let code;
-                if (accountsListState[activeAccount].firstName === "Guest") {
-                    code = 49969;
-                } else {
-                    code = response.code;
-                }
-                if (code === 200) {
-                    let usersGrades = structuredClone(grades);
-                    usersGrades[userId] = response.data;
-                    // usersGrades[userId] = testGrades.data;
-                    setGrades(usersGrades);
-                } else if (code === 520 || code === 525) {
-                    // token invalide
-                    requireLogin();
-                } else if (code === 49969) {
-                    let usersGrades = structuredClone(grades);
-                    import("./data/grades.json").then((module) => {
-                        usersGrades[userId] = module.data;
-                        setGrades(usersGrades);
-                    })
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-    }
-
     async function fetchHomeworks(controller = (new AbortController()), date = "incoming") {
         /**
          * Fetch user homeworks
@@ -1548,11 +1046,11 @@ export default function App({ edpFetch }) {
         }
         if (accountsListState[activeAccount].firstName === "Guest") {
             if (date === "incoming") {
-                import("./data/homeworks.json").then((module) => {
+                import("./data/guest/homeworks.json").then((module) => {
                     changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
                 })
             } else {
-                import("./data/detailed_homeworks.json").then((module) => {
+                import("./data/guest/detailed_homeworks.json").then((module) => {
                     changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [module.data.date]: module.data.matieres }) })
                 })
             }
@@ -1611,10 +1109,10 @@ export default function App({ edpFetch }) {
 
         if (accountsListState[activeAccount].firstName === "Guest") {
             if (date === "incoming") {
-                const module = await import("./data/homeworks.json");
+                const module = await import("./data/guest/homeworks.json");
                 changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
             } else {
-                const module = await import("./data/detailed_homeworks.json");
+                const module = await import("./data/guest/detailed_homeworks.json");
                 changeUserData("sortedHomeworks", {
                     ...getUserData("sortedHomeworks"),
                     ...sortDayHomeworks({ [module.data.date]: module.data.matieres })
@@ -1753,7 +1251,7 @@ export default function App({ edpFetch }) {
                     requireLogin();
                 } else if (code === 49969) {
                     // TODO: add data/messages.json for guest user
-                    // import("./data/messages.json").then((module) => {
+                    // import("./data/guest/messages.json").then((module) => {
                     //     changeUserData("sortedMessages", sortMessages(module.data));;
                     // })
                 }
@@ -1804,7 +1302,7 @@ export default function App({ edpFetch }) {
                     requireLogin();
                 } else if (code === 49969) {
                     // TODO: add data/messages.json for guest user
-                    // import("./data/messages.json").then((module) => {
+                    // import("./data/guest/messages.json").then((module) => {
                     //      sortMessageContent(module.data)
                     // })
                 }
@@ -1908,42 +1406,6 @@ export default function App({ edpFetch }) {
             })
     }
 
-    function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
-        abortControllers.current.push(controller);
-        edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
-                },
-                body: `data=${choice ? JSON.stringify({ choix: choice }) : "{}"}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer",
-            },
-            "json"
-        )
-            .then((response) => {
-                let code = response.code;
-                if (code === 200) {
-                    if (method === "post") {
-                        setA2FInfo(response.data);
-                    }
-
-                    callback(response);
-                } else if (code === 520 || code === 525) {
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
-                    requireLogin();
-                } else {
-                    errorCallback(response)
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-    }
-
     async function createFolderStorage(name) {
         const data = {
             libelle: name,
@@ -1991,8 +1453,6 @@ export default function App({ edpFetch }) {
         console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
         setTokenState(token);
         setAccountsListState(accountsList);
-        setGrades(createUserLists(accountsList.length));
-        setHomeworks(createUserLists(accountsList.length));
         setTimeline(createUserLists(accountsList.length));
         setSchoolLife(createUserLists(accountsList.length));
         setUserSettings(initSettings(accountsList));
@@ -2009,8 +1469,6 @@ export default function App({ edpFetch }) {
             localStorage.removeItem("encryptedUserIds");
         }
         setUserData([])
-        setGrades([]);
-        setHomeworks([]);
         setTimeline([]);
         setSchoolLife([]);
         // setKeepLoggedIn(false);
@@ -2164,7 +1622,7 @@ export default function App({ edpFetch }) {
                     path: "quackquack",
                 },
                 {
-                    element: <Lab fetchGrades={fetchUserGrades} />,
+                    element: <Lab />,
                     path: "lab",
                 },
                 {
@@ -2176,7 +1634,7 @@ export default function App({ edpFetch }) {
                     path: "unsubscribe-emails",
                 },
                 {
-                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
+                    element: <Login logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                 },
                 {
@@ -2195,13 +1653,13 @@ export default function App({ edpFetch }) {
                                 activeAccount={activeAccount}
                                 carpeConviviale={carpeConviviale}
                                 isLoggedIn={isLoggedIn}
-                                fetchUserTimeline={fetchUserTimeline}
+                                fetchTimeline={fetchTimeline}
                                 timeline={timeline}
                                 isTabletLayout={isTabletLayout}
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} />)}
+                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} />)}
                         </>),
                     path: "app",
                     children: [
@@ -2230,7 +1688,7 @@ export default function App({ edpFetch }) {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} fetchHomeworks={fetchHomeworks} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
+                            element: <Dashboard fetchHomeworks={fetchHomeworks} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} isTabletLayout={isTabletLayout} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -2238,7 +1696,7 @@ export default function App({ edpFetch }) {
                             path: "grades"
                         },
                         {
-                            element: <Grades fetchUserGrades={fetchUserGrades} grades={grades} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
+                            element: <Grades activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} isTabletLayout={isTabletLayout} />,
                             path: ":userId/grades"
                         },
                         {
@@ -2246,7 +1704,7 @@ export default function App({ edpFetch }) {
                             path: "homeworks"
                         },
                         {
-                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchHomeworks={fetchHomeworks} homeworks={homeworks} setHomeworks={setHomeworks} />,
+                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchHomeworks={fetchHomeworks} />,
                             path: ":userId/homeworks"
                         },
                         {
@@ -2313,11 +1771,21 @@ export default function App({ edpFetch }) {
         currentEDPVersion,
     ]);
 
+    const loginData = {
+        username,
+        password,
+        keepLoggedInTemp,
+        fetchLogin,
+        fetchA2F,
+    }
+
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
-            <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
-                <RouterProvider router={router} />
-            </Suspense>
+            <LoginContext.Provider value={loginData}>
+                <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
+                    <RouterProvider router={router} />
+                </Suspense>
+            </LoginContext.Provider>
         </AppContext.Provider>
     );
 }
