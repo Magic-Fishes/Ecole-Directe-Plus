@@ -27,15 +27,15 @@ export function safeParseFloat(value) {
 export function calcAverage(list) {
     let average = 0;
     let coef = 0;
-    for (let i of list) {
+    list.forEach(i => {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {
             coef += i.coef;
         }
-    }
+    })
 
     const noCoef = !coef;
 
-    for (let i of list) {
+    list.forEach(i => {
         if ((i.isSignificant ?? true) && !isNaN(i.value)) {
             if (noCoef) {
                 average += (i.value * 20 / i.scale);
@@ -44,14 +44,15 @@ export function calcAverage(list) {
                 average += (i.value * 20 / i.scale) * i.coef;
             }
         }
-    }
+    })
 
     if (coef > 0 && list.length > 0) {
-        return Math.ceil(average / coef * 100) / 100;
+        return Math.round(average / coef * 100) / 100;
     } else {
         return "N/A"
     }
 }
+
 export function calcClassAverage(list) {
     let average = 0;
     let coef = 0;
@@ -132,7 +133,7 @@ export function calcGeneralAverage(period) {
                 for (let validKey of validKeys) {
                     sum += period.subjects[validKey].coef;
                 }
-                coefMultiplicator = period.subjects[subjectCode].coef / sum;
+                coefMultiplicator = sum ? (period.subjects[subjectCode].coef / sum) : 0; // Handle the case where the sum of subSubject coef is 0 
             }
             list.push({
                 value: currentSubject.average ?? 0,
