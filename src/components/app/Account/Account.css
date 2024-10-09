@@ -68,6 +68,7 @@ body:has(#account) {
 #documents.frame {
     display: flex;
     flex-flow: column nowrap;
+    overflow: scroll;
 }
 .coming-soon {
     height: 100%;
@@ -170,4 +171,82 @@ body:has(#account) {
     11% {
         transform: translateY(0);
     }
+}
+
+.file-component {
+    z-index: 0 !important;
+    margin: 5px;
+    background-color: transparent;
+    border: none;
+    height: 70px;
+}
+
+.file-component .file-icon {
+    width: 50px
+}
+
+.document-category h3 {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    /* To remove any default margins from the h3 */
+    var(--font-size-20);
+    /* Optional: adjust based on your design */
+}
+
+.document-category h3::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    margin-left: 10px;
+    /* Space between title and the line */
+    background-color: #4a48bd;
+    /* Customize color as needed */
+    border: none;
+}
+
+.year-selector {
+    width: 160px;
+}
+
+.frame-heading-container {
+    display: flex;
+    flex: auto 200px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.frame-heading-documents {
+    margin: 0 auto;
+    padding-left: 160px;
+}
+
+@media only screen and (max-width: 1150px) {
+    .frame-heading-documents {
+        padding-left: 0;
+    }
+}
+
+.file-box {
+    display: flex;
+    align-items: center;
+}
+
+.file-date {
+    margin-left: auto;
+    margin-right: 30px;
+    font-size: var(--font-size-16);
+    font-weight: 500;
+}
+.no-available-documents {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.document-container {
+    height: 100%;
 }

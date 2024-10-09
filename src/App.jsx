@@ -1937,6 +1937,63 @@ export default function App({ edpFetch }) {
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
+    async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch( 
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves": "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'data={}',
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        )
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+
+                    const formatDocument = (documents) =>
+                        documents.map((e) => {
+                            const [year, month, day] = e.date.split('-');
+                            const formattedDate = `${day}-${month}-${year}`;
+                            return new File(e.id, e.type, `${e.libelle}.pdf`, undefined, { date: formattedDate });
+                        });
+
+                    const administrativeDocuments = formatDocument(response.data.administratifs);
+                    const notesDocuments = formatDocument(response.data.notes);
+                    const vieScolaireDocuments = formatDocument(response.data.viescolaire);
+                    const entrepriseDocuments = formatDocument(response.data.entreprises);
+                    const facturesDocuments = formatDocument(response.data.factures);
+                    // const insReinsDocuments = formatDocument(response.data.inscriptionsReinscriptions);
+
+                    
+                    const responseDocuments = {
+                        administratifs: administrativeDocuments,
+                        notes: notesDocuments,
+                        viescolaire: vieScolaireDocuments,
+                        entreprises: entrepriseDocuments,
+                        factures: facturesDocuments,
+                        // inscriptionsReinscriptions: insReinsDocuments
+                    }
+
+                    changeUserData("administrativeDocuments", responseDocuments);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            });
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -2169,7 +2226,7 @@ export default function App({ edpFetch }) {
                             path: "account",
                         },
                         {
-                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
+                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments}  sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
                             path: ":userId/account"
                         },
                         {
