@@ -34,7 +34,7 @@ export default function Calendar({ onDateClick }) {
             // console.log("task.type:", task.type);
             if (task.type === "sessionContent") continue;
             if (task.isDone) {
-                events.push({ date, color: '#fbb400' });
+                events.push({ date, color: '#48d948' });
             } else if (task.isInterrogation) {
                 events.push({ date, color: '#d94848' });
             } else {
@@ -105,8 +105,8 @@ export default function Calendar({ onDateClick }) {
 
         if (eventsfiltered.length > 0) {
             //if all the events in the day have the color green, we want to set the color to green
-            if (eventsfiltered.every(events => events.color === '#fbb400')) {
-                return { backgroundColor: '#fbb400' };
+            if (eventsfiltered.every(events => events.color === '#48d948')) {
+                return { backgroundColor: '#48d948' };
             }
             //if one event in the day has the color d94848, we want to set the color to red and ignore the other color
             else if (eventsfiltered.find(events => events.color === '#d94848')) {
@@ -151,7 +151,7 @@ export default function Calendar({ onDateClick }) {
             // Go to the date on the clendar
             currentDate = addDays(currentDate, 1);
         }
-        // When all the homeworks are fetched, remove the loading class
+        // When all the homeworks are fetchInitiated, remove the loading class
 
         setTimeout(() => {
             // Hide the progress bar
