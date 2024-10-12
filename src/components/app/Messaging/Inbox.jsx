@@ -76,7 +76,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         <div id="inbox">
             <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
             {messages.get() !== undefined && (messageFolders.get() !== undefined && messageFolders.get()?.find((folder) => folder.id === selectedFolder)?.fetched)
-                ? (messages.get().length > 0
+                ? (messages.get().filter((message) => message.folderId === selectedFolder).length > 0
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
                             {messages.get().filter((message) => message.folderId === selectedFolder).filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
@@ -91,7 +91,9 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
                             </li>)}
                         </ul>
                     </ScrollShadedDiv>
-                    : <p className="no-message-received">Vous n'avez reçu aucun message. Tendez l'oreille et profitez de cet instant de silence</p>
+                    : (messages.get().length > 0
+                        ? <p className="no-message-received">Ce dossier est vide. Peut-être qu'il attend juste un miracle... ou un clic</p>
+                        : <p className="no-message-received">Vous n'avez reçu aucun message. Tendez l'oreille et profitez de cet instant de silence</p>)
                 )
                 : <ScrollShadedDiv className="messages-container">
                     <ul>
