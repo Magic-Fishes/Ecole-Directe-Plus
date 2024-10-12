@@ -134,7 +134,6 @@ export default function Calendar({ onDateClick }) {
             const midnightToday = new Date().setHours(0, 0, 0, 0);
 
             progressPercentage = (midnightDate - midnightCurrentDate) > 0 ? 0 : (midnightCurrentDate - midnightDate) / (midnightToday - midnightDate);
-            console.log("fetchAllHomeworks ~ progressPercentage:", progressPercentage)
             progressBarRef.current.value = progressPercentage;
             // Go to the date on the clendar
             currentDate = addDays(currentDate, 1);

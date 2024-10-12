@@ -189,7 +189,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
             notifications: notifications?.messaging || 0,
-            isNew: true
+            isNew: false
         }
     ]
     // Behavior
