@@ -112,7 +112,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
                 </h4>
             </div>
             <div className="task-subtitle">
-                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? "M. -------" : task.teacher}</span>}
+                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? task.teacher.split(" ")[0] + " " + "-".repeat(task.teacher.length) : task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
@@ -143,7 +143,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
                     backgroundColor={'#7e7eab7F'}
                     foregroundColor={'#9a9ad17F'}
                     height="14"
-                    style={{ width: contentLoadersRandomValues.current.labelWidth - 100 + "px" }}
+                    style={{ width: contentLoadersRandomValues.current.labelWidth/1.5 + "px" }}
                 >
                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                 </ContentLoader>
