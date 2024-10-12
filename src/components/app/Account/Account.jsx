@@ -142,9 +142,9 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                 minute: "numeric"
                             }).replace(",", " à")}
                         </time></span>
-                        <span>Email : {accountsListState[activeAccount].email}</span>
+                        <span>Email : {settings.get("isStreamerModeEnabled") ? "contact@ecole-directe.plus" : accountsListState[activeAccount].email}</span>
                         {accountsListState[activeAccount].phoneNumber &&
-                            <span>Num. téléphone : {accountsListState[activeAccount].phoneNumber}</span>}
+                            <span>Num. téléphone : {settings.get("isStreamerModeEnabled") ? "00 00 00 00 00" : accountsListState[activeAccount].phoneNumber}</span>}
                     </address>
                     <Button disabled={true} id="statistics">Statistiques</Button>
                 </div>

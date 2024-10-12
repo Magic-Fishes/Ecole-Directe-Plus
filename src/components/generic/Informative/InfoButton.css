@@ -11,7 +11,7 @@
 }
 
 .info-button .info-icon :is(.fill, .stroke) {
-    transition: 0.2s;
+    transition: 0.1s;
 }
 
 .info-button .info-icon .fill {
