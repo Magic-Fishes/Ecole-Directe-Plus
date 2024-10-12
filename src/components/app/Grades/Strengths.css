@@ -103,12 +103,11 @@ ol.strengths-container {
     border-radius: 50px;
     box-shadow: var(--box-shadow-element);
 
-    /* animation: 0.5s unroll 0s forwards; */
-    transform: rotateX(-90deg);
+
     visibility: hidden;
+    transform: rotateX(-90deg);
     animation: .5s var(--timing-function-spring-effect) 0s unroll forwards;
     animation-delay: calc(var(--order) * 75ms);
-    /* transform: rotateX(-90deg); */
     
     cursor: pointer;
     transition: all 0.1s, outline 0s;

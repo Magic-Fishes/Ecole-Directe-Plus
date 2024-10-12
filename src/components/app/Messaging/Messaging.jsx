@@ -16,6 +16,8 @@ import "./Messaging.css";
 import Inbox from "./Inbox";
 import MessageReader from "./MessageReader";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../generic/PopUps/Tooltip";
+import FolderIcon from "../../graphics/FolderIcon";
+import { capitalizeFirstLetter } from "../../../utils/utils";
 
 
 export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread }) {
@@ -109,18 +111,18 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                     <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
                             {messageFolders.get() !== undefined && messageFolders.get().length > 1
-                                ? <Tooltip placement="bottom">
-                                    <TooltipTrigger>dossiers</TooltipTrigger>
+                                ? <Tooltip className="folder-tooltip" placement="bottom" onClick={(event) => event.stopPropagation()}>
+                                    <TooltipTrigger> <FolderIcon className="folder-icon" /> </TooltipTrigger>
                                     <TooltipContent>
                                         <h3>Dossiers</h3>
                                         <ul className="folders-container">
-                                            {messageFolders.get().map((folder) => <li key={folder.id} className="folder-button-container"><button onClick={() => setSelectedFolder(folder.id)} className="folder-button" >{folder.name}</button></li>)}
+                                            {messageFolders.get().map((folder) => <li key={folder.id} className="folder-button-container"><button onClick={() => setSelectedFolder(folder.id)} className="folder-button" >{capitalizeFirstLetter(folder.name)}</button></li>)}
                                         </ul>
                                     </TooltipContent>
                                 </Tooltip>
                                 : null
                             }
-                            <h2>{messageFolders.get()?.find((item) => item.id === selectedFolder)?.name ?? "Boîte de réception"}</h2>
+                            <h2>{capitalizeFirstLetter(messageFolders.get()?.find((item) => item.id === selectedFolder)?.name ?? "Boîte de réception")}</h2>
                         </WindowHeader>
                         <WindowContent>
                             <Inbox selectedMessage={selectedMessage}  setSelectedMessage={setSelectedMessage} selectedFolder={selectedFolder} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />

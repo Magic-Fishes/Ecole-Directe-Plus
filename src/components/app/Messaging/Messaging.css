@@ -3,6 +3,40 @@
     height: 100%;
 }
 
+.folder-tooltip {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .1s;
+}
+.folder-tooltip div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+.folder-tooltip:has([data-state="open"]) {
+    background-color: rgb(var(--text-color-main), .15);
+}
+
+.folder-tooltip .folder-icon {
+    height: 33px;
+    transition: .1s;
+}
+.folder-tooltip .folder-icon path {
+    stroke: rgba(var(--text-color-alt), .7);
+    transition: .1s;
+}
+.folder-tooltip:has([data-state="open"]) .folder-icon path {
+    stroke: rgb(var(--text-color-main));
+}
+
 .folders-container {
     list-style-type: none;
     /* padding: 15px; */
@@ -10,9 +44,7 @@
     flex-flow: column nowrap;
     gap: 10px;
 }
-.folders-container .folder-button-container {
-    /* margin-bottom: 10px; */
-}
+
 
 h3:has(~ .folders-container)  {
     margin-bottom: 10px;
