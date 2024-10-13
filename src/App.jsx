@@ -1024,6 +1024,7 @@ export default function App({ edpFetch }) {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
         enabledFeatures.coefficient = settings.coefficientNote;
+        enabledFeatures.rank = settings.moyenneRang;
 
         // add the average of all subjects a special type of chart
         for (const period in periods) {
