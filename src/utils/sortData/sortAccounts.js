@@ -19,7 +19,8 @@ export default function sortLogin(data) {
     } else {
         // compte parent
         return accounts.profile.eleves.map((account) => {
-            const { id, prenom, nom, email, photo, nomEtablissement, classe, accountModules } = account;
+            const { id, prenom, nom, email, photo, nomEtablissement, classe, modules } = account;
+            console.log(account)
             return {
                 accountType: "P",
                 lastConnection: accounts.lastConnexion,
@@ -31,7 +32,7 @@ export default function sortLogin(data) {
                 picture: photo,
                 schoolName: nomEtablissement,
                 class: (classe ? [classe.code, classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
-                modules: accountModules.concat(accounts.modules) // merge modules with those of parents
+                modules: modules.concat(accounts.modules) // merge modules with those of parents
             }
         });
     }

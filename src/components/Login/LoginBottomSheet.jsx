@@ -10,7 +10,7 @@ import Button from "../generic/UserInputs/Button";
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 
-export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
+export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
     const [firstFrameKeepLoggedIn, setFirstFrameKeepLoggedIn] = useState(keepLoggedIn);
 
     const handleClose = () => {
@@ -24,7 +24,7 @@ export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, A2FInf
 
     if (backgroundTask) {
         return (
-            <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} className="background-task"/>
+            <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} className="background-task"/>
         )
     } else {
         return (
@@ -32,7 +32,7 @@ export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, A2FInf
                 {firstFrameKeepLoggedIn
                 ? <p className="explanation">Veuillez vous reconnecter pour activer "rester connecté"</p>
                 : <p className="explanation">Votre session a expiré</p>}
-                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} disabledKeepLoggedInCheckBox={firstFrameKeepLoggedIn} />
+                <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} disabledKeepLoggedInCheckBox={firstFrameKeepLoggedIn} />
                 <div id="login-bs-logout" onClick={logout} role="button" tabIndex={0}>Se déconnecter</div>
             </BottomSheet>
         )

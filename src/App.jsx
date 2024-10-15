@@ -242,25 +242,31 @@ export default function App({ edpFetch }) {
     // const userSession = useUserSession(localStorageSession);
     const userSession = useUserSession();
     const {
+        account,
+        userSettings: userSettingsTemp,
+        userData: userDataTemp,
+    } = userSession;
+    const {
         username,
         password,
         token,
         A2FInfo,
-        keepLoggedIn: keepLoggedInTemp,
-        isLoggedIn,
         fetchLogin,
-        fetchA2F,
-    } = userSession;
+        fetchA2FQuestion,
+        fetchA2FAnswer,
+        isLoggedIn,
+        requireA2F,
+    } = account;
+    const { globalSettings } = userSettingsTemp;
+    const { keepLoggedIn } = globalSettings;
     const tokenState = token.value;
     const setTokenState = token.set;
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
     const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
-    const [requireA2F, setRequireA2F] = useState(false); // trigger or not the A2F pop-up
+
     const [temp0, setIsLoggedIn] = useState(false);
     const [activeAccount, setActiveAccount] = useState(oldActiveAccountFromLs); // compte actuellement sélectionné (utile pour les comptes parents)
     // const [keepLoggedIn, setKeepLoggedIn] = useState(getSetting("keepLoggedIn", activeAccount, true)); // fonctionnalité "rester connecté"
-    const keepLoggedIn = keepLoggedInTemp.value;
-    const setKeepLoggedIn = keepLoggedInTemp.set;
 
     // user settings
     const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
@@ -418,20 +424,7 @@ export default function App({ edpFetch }) {
     }
 
 
-    const globalSettings = {
-        keepLoggedIn: {
-            value: keepLoggedIn,
-            set: setKeepLoggedIn,
-        },
-        shareSettings: {
-            value: shareSettings,
-            set: setShareSettings,
-        },
-        isDevChannel: {
-            value: isDevChannel,
-            set: setIsDevChannel
-        },
-    }
+    
 
     useEffect(() => {
         const lsGlobalSettings = {};
@@ -453,7 +446,7 @@ export default function App({ edpFetch }) {
         return (() => {
             window.removeEventListener("storage", handleStorageChange);
         });
-    }, [keepLoggedIn,
+    }, [keepLoggedIn.value,
         shareSettings,
         isDevChannel])
 
@@ -549,14 +542,14 @@ export default function App({ edpFetch }) {
 
     // gestion de la désactivation automatique du "rester connecté"
     useEffect(() => {
-        if (!keepLoggedIn) {
+        if (!keepLoggedIn.value) {
             localStorage.removeItem(lsIdName);
         } else if (userIds.username && userIds.password) {
             localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: userIds.username, password: userIds.password })));
         } else {
             setIsLoggedIn(false);
         }
-    }, [keepLoggedIn]);
+    }, [keepLoggedIn.value]);
 
     // réapplique les informations sauvegardées dans le localStorage (certaines ont déjà été appliquées à l'initialisation des States)
     function applyConfigFromLocalStorage() {
@@ -575,7 +568,7 @@ export default function App({ edpFetch }) {
     useEffect(() => {
         if (!userIds.username || !userIds.password) {
             console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
-            setKeepLoggedIn(false);
+            keepLoggedIn.set(false);
         }
     }, [userIds]);
 
@@ -1486,7 +1479,7 @@ export default function App({ edpFetch }) {
         setTokenState("");
         setAccountsListState([]);
         resetUserData();
-        setKeepLoggedIn(false);
+        keepLoggedIn.set(false);
         setIsLoggedIn(false);
         // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
         for (let controller of abortControllers.current) {
@@ -1596,8 +1589,6 @@ export default function App({ edpFetch }) {
                     isEDPUnblockInstalled={isEDPUnblockInstalled}
                     setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
                     requireA2F={requireA2F}
-                    setRequireA2F={setRequireA2F}
-                    fetchA2F={fetchA2F}
 
                     proxyError={proxyError}
                 />
@@ -1659,7 +1650,7 @@ export default function App({ edpFetch }) {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn && !!userIds.username && !!userIds.password && !requireA2F} />)}
+                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn.value && !!userIds.username && !!userIds.password && !requireA2F} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn.value && !!userIds.username && !!userIds.password && !requireA2F} />)}
                         </>),
                     path: "app",
                     children: [
@@ -1771,17 +1762,19 @@ export default function App({ edpFetch }) {
         currentEDPVersion,
     ]);
 
-    const loginData = {
+    const loginValue = {
         username,
         password,
-        keepLoggedInTemp,
+        keepLoggedIn,
         fetchLogin,
-        fetchA2F,
+        A2FInfo,
+        fetchA2FQuestion,
+        fetchA2FAnswer,
     }
 
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
-            <LoginContext.Provider value={loginData}>
+            <LoginContext.Provider value={loginValue}>
                 <Suspense fallback={<AppLoading currentEDPVersion={currentEDPVersion} />}>
                     <RouterProvider router={router} />
                 </Suspense>

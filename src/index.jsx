@@ -17,7 +17,7 @@ const handleIframeLoad = (event) => {
 }
 
 window.edpFetch = (["Windows", "Linux"].includes(getOS())
-    ? async (url, fetchParams, dataType) => {console.log()
+    ? async (url, fetchParams, dataType) => {
         return fetch(url, fetchParams).then((response) => response[dataType]())
     }
     : iframeRequest.fetch.bind(iframeRequest))

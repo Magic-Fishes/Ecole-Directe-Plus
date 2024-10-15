@@ -18,7 +18,7 @@ if (sessionStorage.getItem('april') === "true"){
     })
 }
 
-export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
+export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, logout, loginFromOldAuthInfo, currentEDPVersion }) {
     const location = useLocation();
 
     if (localStorage.userSettings) {
@@ -48,7 +48,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
-                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
+                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
             <p className="not-affiliated-mention">
                 Service non-affilié à Aplim

@@ -1,46 +1,66 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import ContentLoader from "react-content-loader";
-
-import "./A2FLogin.css";
 import PopUp from "../generic/PopUps/PopUp";
 import RadioButton from "../generic/UserInputs/RadioButton";
 import { decodeBase64 } from "../../utils/utils";
 import Button from "../generic/UserInputs/Button";
 import ScrollShadedDiv from "../generic/CustomDivs/ScrollShadedDiv";
+import { LoginContext } from "../../App";
 
-export default function A2FLogin({ fetchA2F, ...props }) {
+import "./A2FLogin.css";
+
+export default function A2FLogin({ ...props }) {
+
+    const {
+        fetchA2FQuestion,
+        fetchA2FAnswer,
+        fetchLogin
+    } = useContext(LoginContext);
+
     const [A2FForm, setA2FForm] = useState({});
     const [isOpen, setIsOpen] = useState(true);
     const [choice, setChoice] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    function callback(response) {
-        setA2FForm(response.data)
-    }
+    const answerAbortController = useRef(new AbortController());
 
     useEffect(() => {
         const controller = new AbortController();
         if (Object.keys(A2FForm).length < 1) {
-            fetchA2F({ callback: callback, controller: controller });
+            fetchA2FQuestion(controller)
+                .then((response) => {
+                    switch (response.code) {
+                        case 0:
+                            setA2FForm(response.data);
+                            return;
+                        default:
+                            setErrorMessage("Une erreur inattendue s'est produite.");
+                            return;
+                    }
+                })
         }
 
         return () => {
             controller.abort();
+            answerAbortController.current.abort()
         }
     }, []);
 
     const handleA2FSubmit = (event) => {
-        const handleA2FError = (response) => {
-            if (response.message === null || response.code === 550) {
-                setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.")
-            } else {
-                setErrorMessage(response.message)
-            }
-        }
-
         event.preventDefault();
-        fetchA2F({ method: "post", choice: choice, errorCallback: handleA2FError });
+        fetchA2FAnswer(choice).then((response) => {
+            switch (response.code) {
+                case 0:
+                    fetchLogin();
+                    return;
+                case 1:
+                    setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.")
+                case -1:
+                    setErrorMessage("Une erreur ")
+                    return;
+            }
+        })
     }
 
     // JSX
