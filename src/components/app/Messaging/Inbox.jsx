@@ -60,7 +60,6 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         if (query === "") {
             return true;
         }
-        console.log("filterResearch ~ query:", query)
         try {
             // regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch { return -1 }
