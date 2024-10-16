@@ -55,15 +55,21 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
     }
 
     const filterResearch = (message) => {
-        let regexp;
+        // let regexp;
+        let query = removeAccents(search.toLowerCase());
+        if (query === "") {
+            return true;
+        }
+        console.log("filterResearch ~ query:", query)
         try {
-            regexp = new RegExp(removeAccents(search.toLowerCase()));
+            // regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch { return -1 }
         const filterBy = [message.subject, message.from.name, message.content?.content, message.files?.map((file) => file.name)].flat();
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());
-                if (regexp.test(filter)) {
+                // if (regexp.test(filter)) {
+                if (filter.includes(query)) {
                     return true;
                 }
             }
