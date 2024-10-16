@@ -71,7 +71,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.4.0";
-const apiVersion = "4.60.5";
+const apiVersion = "4.64.0";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -1355,7 +1355,12 @@ export default function App({ edpFetch }) {
                     }
                     let token = response.token // collecte du token
                     let accountsList = [];
-                    let accounts = response.data.accounts[0];
+                    let accounts = response.data.accounts.find((account) => account.typeCompte !== "P") ?? response.data.accounts[0];
+                    if (response.data.accounts.some((account) => account.typeCompte === "P")) {
+                        messages.submitButtonText = "Échec de la connexion";
+                        messages.submitErrorMessage = "Les comptes enseignants ne sont pas supportés par Ecole Directe Plus";
+                        return;
+                    }
                     const accountType = accounts.typeCompte; // collecte du type de compte
                     if (accountType === "E") {
                         // compte élève
