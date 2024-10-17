@@ -54,6 +54,10 @@ export default function Charts({ selectedPeriod }) {
         /**
          * return the appropriate dataset according to the chartType
          */
+        const grades = useUserData();
+        const minMaxEnabled = grades.get("gradesEnabledFeatures")?.moyenneMin && grades.get("gradesEnabledFeatures")?.moyenneMax ? true : false;
+        console.log(minMaxEnabled);
+
 
         switch (chartType) {
             case 0:
@@ -140,6 +144,7 @@ export default function Charts({ selectedPeriod }) {
                 chartData.current = {
                     labels: Array.from({ length: subjectsComparativeInformation[selectedPeriod].length }, (_, i) => subjectsComparativeInformation[selectedPeriod][i].subjectFullname),
                     datasets: [
+                    ...(minMaxEnabled ? [
                         {
                             type: "bar",
                             label: "Moyennes min et max de classe",
@@ -151,7 +156,9 @@ export default function Charts({ selectedPeriod }) {
                             // yAxisID: "y"
                             borderSkipped: false,
                             order: 2
-                        },
+                            },
+                        ] : []
+                        ),
                         {
                             type: "line",
                             label: "Moyenne élève",

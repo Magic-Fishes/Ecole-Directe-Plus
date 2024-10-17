@@ -36,11 +36,11 @@
     transition: .2s ease;
 }
 
-#nav-bar .edpu-logo > path {
+#nav-bar .edpu-logo>path {
     fill: rgba(var(--text-color-alt), .7);
 }
 
-a[href="/edp-unblock"]:hover .edpu-logo > path {
+a[href="/edp-unblock"]:hover .edpu-logo>path {
     fill: rgba(var(--text-color-main-reverse), 0.7) !important;
 }
 
@@ -56,23 +56,19 @@ a[href="/edp-unblock"]:hover .edpu-logo > path {
     justify-content: center;
 }
 
-.landing-page :is(
-    .nav-links a.selected,
+.landing-page :is(.nav-links a.selected,
     .nav-links a:hover,
     .nav-login:hover,
-    .change-theme:hover
-) {
+    .change-theme:hover) {
     background-color: rgba(var(--text-color-alt), .8);
     color: rgba(var(--text-color-main-reverse), 0.8);
 }
 
-.landing-page :is(
-    .nav-logo,
+.landing-page :is(.nav-logo,
     .nav-login,
     .change-theme,
     .nav-links,
-    .go-to-top
-) {
+    .go-to-top) {
     background-color: rgb(var(--background-color-2), .7);
     backdrop-filter: blur(4px);
 }
