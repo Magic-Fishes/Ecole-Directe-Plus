@@ -1,5 +1,6 @@
 import { useRef } from "react"
 
+import { getOs } from "../../utils/utils"
 import "./FileComponent.css"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon";
 import DownloadIcon from "../graphics/DownloadIcon"
@@ -31,16 +32,7 @@ export default function FileComponent({ file, ...props }) {
     }
 
     function iOS() {
-        return [
-          'iPad Simulator',
-          'iPhone Simulator',
-          'iPod Simulator',
-          'iPad',
-          'iPhone',
-          'iPod'
-        ].includes(navigator.platform)
-        // iPad on iOS 13 detection
-        || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        return getOs() === "iOS"
       }
 
     const quitActive = (e) => {
@@ -51,12 +43,9 @@ export default function FileComponent({ file, ...props }) {
             timeOutRef.current = null
         }
     }
-return !iOS() ? <div className="file-component" onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} {...props}>
-<DefaultFileIcon extension={file.extension} className="file-icon"/>
-<span className="file-name" >{file.name}.{file.extension}</span>
-</div> : <div className="file-component" onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} {...props}>
+    return <div className="file-component" onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} {...props}>
         <DefaultFileIcon extension={file.extension} className="file-icon"/>
         <span className="file-name" >{file.name}.{file.extension}</span>
-        <DownloadIcon onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} width="20" height="20"/>
+        {iOS() ? <DownloadIcon onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} width="20" height="20"/> : <div></div>}
     </div>
 }
