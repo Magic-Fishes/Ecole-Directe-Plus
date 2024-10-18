@@ -1,7 +1,9 @@
 import { useRef } from "react"
 
+import { getOS } from "../../utils/utils"
 import "./FileComponent.css"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon";
+import DownloadIcon from "../graphics/DownloadIcon"
 
 export default function FileComponent({ file, ...props }) {
     const timeOutRef = useRef(null);
@@ -29,6 +31,10 @@ export default function FileComponent({ file, ...props }) {
         }, 1000 - timeOutCooldownRef.current[0], currentTarget);
     }
 
+    function iOS() {
+        return getOS() === "iOS"
+      }
+
     const quitActive = (e) => {
         if (timeOutRef.current) {
             e.currentTarget.classList.remove("clicked")
@@ -37,10 +43,9 @@ export default function FileComponent({ file, ...props }) {
             timeOutRef.current = null
         }
     }
-
     return <div className="file-component" onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} {...props}>
         <DefaultFileIcon extension={file.extension} className="file-icon"/>
         <span className="file-name" >{file.name}.{file.extension}</span>
-        {/* <span className="button-mort">{file.extension}</span> */}
+        {iOS() ? <DownloadIcon onMouseDown={handleMouseDown} onMouseUp={quitActive} onMouseLeave={quitActive} width="20" height="20"/> : <div></div>}
     </div>
 }
