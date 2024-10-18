@@ -1,6 +1,6 @@
 import { useRef } from "react"
 
-import { getOs } from "../../utils/utils"
+import { getOS } from "../../utils/utils"
 import "./FileComponent.css"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon";
 import DownloadIcon from "../graphics/DownloadIcon"
@@ -32,7 +32,7 @@ export default function FileComponent({ file, ...props }) {
     }
 
     function iOS() {
-        return getOs() === "iOS"
+        return getOS() === "iOS"
       }
 
     const quitActive = (e) => {
