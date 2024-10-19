@@ -14,6 +14,7 @@ import AboutArrow from "../graphics/AboutArrow";
 
 import "./EdpUnblock.css";
 import { getZoomedBoudingClientRect } from "../../utils/zoom";
+import BadgeCheck from "../graphics/BadgeCheck";
 
 
 const browserLogosInfos = {
@@ -59,7 +60,7 @@ console.log("userOS:", userOS, "userBrowser:", userBrowser);
 
 const compatibilityCondition = ((userOS === "iOS" && nonCompatibleIOSBrowsers.includes(userBrowser)) || (userOS === "Android" && nonCompatibleAndroidBrowsers.includes(userBrowser)) || (userOS === "MacOS" && userBrowser === "Safari"));
 
-export default function EdpUnblock() {
+export default function EdpUnblock({ isEDPUnblockActuallyInstalled }) {
     const location = useLocation();
 
     const aboutRef = useRef(null);
@@ -124,8 +125,14 @@ export default function EdpUnblock() {
                     {compatibilityCondition && (userOS !== "iOS" ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un navigateur compatible comme le <a href={userOS === "iOS" ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === "iOS" ? "navigateur Orion" : "navigateur Firefox"}</a>.</p></> : <p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas compatible avec les navigateurs sur iOS et iPadOS. S'il vous plaît, considérez l'usage d'un autre appareil avec un système d'exploitation compatible comme un ordinateur sous Windows ou Linux, ou un appareil mobile sous Android.</p>) }
                     <a href={browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].url} target={userBrowser === "Firefox" ? "_self" : "_blank"} className={`edpu-download-link ${compatibilityCondition ? "disabled" : ""} ${browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].logo}
-                        {compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>}
-                        {compatibilityCondition ? <div className="download-unavailable">✕</div> : <DownloadIcon />}
+                        {isEDPUnblockActuallyInstalled
+                        ? <span>Extension installée</span>
+                        : (compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>)
+                        }
+                        {isEDPUnblockActuallyInstalled
+                        ? <BadgeCheck />
+                        : (compatibilityCondition ? <div className="download-unavailable">✕</div> : <DownloadIcon />)
+                        }
                     </a>
                 </div>
                 <Link ref={aboutButtonRef} to="#about" className="edpu-about-link" replace onClick={() => { location.hash === "#about" && scrollToAbout() }}>

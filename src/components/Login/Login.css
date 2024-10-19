@@ -13,7 +13,9 @@
     border: 2px solid rgb(var(--text-color-alt));
     border-radius: 10px;
     
+    opacity: 0;
     animation: edp-unblock-ad-pop-in .3s var(--timing-function-spring-effect) forwards;
+    animation-delay: .5s;
     transition: border-color .1s, background-color .1s;
     cursor: pointer;
     text-decoration: none;
@@ -75,9 +77,11 @@
 
 @keyframes edp-unblock-ad-pop-in {
     from {
+        opacity: 1;
         transform: translate(-50%, calc(-100% - 15px));
     }
     to {
+        opacity: 1;
         transform: translate(-50%, 0);
     }
 }
