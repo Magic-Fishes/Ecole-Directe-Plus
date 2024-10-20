@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 
@@ -17,22 +16,42 @@ import Inbox from "./Inbox";
 import MessageReader from "./MessageReader";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../generic/PopUps/Tooltip";
 import FolderIcon from "../../graphics/FolderIcon";
+import InboxIcon from "../../graphics/InboxIcon";
+import SendIcon from "../../graphics/SendIcon";
+import ArchiveIcon from "../../graphics/ArchiveIcon";
+import EditIcon from "../../graphics/EditIcon";
+import DeleteIcon from "../../graphics/DeleteIcon";
+import RenameIcon from "../../graphics/RenameIcon";
+import NewFolderIcon from "../../graphics/NewFolderIcon";
+import DraftIcon from "../../graphics/DraftIcon";
 import { capitalizeFirstLetter } from "../../../utils/utils";
+import TextInput from "../../generic/UserInputs/TextInput";
+import { el } from "date-fns/locale";
+import { set } from "date-fns";
 
 
-export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread }) {
+export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread, renameFolder, deleteFolder, createFolder, archiveMessage, unarchiveMessage, moveMessage }) {
     // States
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const { useUserData } = useContext(AppContext);
-    // const [selectedMessage, setSelectedMessage] = useState(isNaN(parseInt(location.hash.slice(1))) ? null : parseInt(location.hash.slice(1)));
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [selectedFolder, setSelectedFolder] = useState(0);
     const oldSelectedMessage = useRef(selectedMessage);
     const messages = useUserData("sortedMessages");
-    const messageFolders = useUserData("messageFolders");
+    const [folders, setFolders] = useState(useUserData("messageFolders").get());
+    useEffect(() => {
+        // Update the local state with the latest data
+        setFolders(useUserData("messageFolders").get());
+    }, [useUserData("messageFolders").get()]);
 
+
+
+
+
+    const [isEditingFolder, setIsEditingFolder] = useState(false);
+    const [newFolderName, setNewFolderName] = useState('');
 
     // behavior
     useEffect(() => {
@@ -42,7 +61,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
-            if (messageFolders.get() === undefined || !messageFolders.get().find((folder) => folder.id === selectedFolder)?.fetchInitiated) {
+            if (folders === undefined || !folders.find((folder) => folder.id === selectedFolder)?.fetchInitiated) {
                 fetchMessages(selectedFolder, controller);
             }
         }
@@ -50,7 +69,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         return () => {
             controller.abort();
         }
-    }, [isLoggedIn, activeAccount, selectedFolder, messages.get(), messageFolders.get()]);
+    }, [isLoggedIn, activeAccount, selectedFolder, messages.get(), folders]);
 
     useEffect(() => {
         if (messages.get() === undefined) {
@@ -62,9 +81,10 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         const controller = new AbortController();
         if (selectedMessage !== null) {
             fetchMessageContent(selectedMessage, controller);
-            const parsedHash = parseInt(location.hash.slice(1));
-            if (parsedHash !== selectedMessage) {
-                const newHash = "#" + selectedMessage;
+            const parsedHashMessage = parseInt(location.hash.slice(location.hash.lastIndexOf('-') + 1));
+            const parsedHashFolder = parseInt(location.hash.slice(1, location.hash.lastIndexOf('-')));
+            if (parsedHashMessage !== selectedMessage || parsedHashFolder !== selectedFolder) {
+                const newHash = "#" +  selectedFolder + '-' + selectedMessage;
                 navigate(newHash);
             }
         } else {
@@ -85,15 +105,27 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
         }
-        const parsedHash = parseInt(location.hash.slice(1));
-        if (!isNaN(parsedHash) && parsedHash !== selectedMessage) {
+        const parsedHashMessage = parseInt(location.hash.slice(location.hash.lastIndexOf('-') + 1));
+        const parsedHashFolder = parseInt(location.hash.slice(1, location.hash.lastIndexOf('-')));
+        console.log("useEffect ~ parsedHashMessage", parsedHashMessage)
+
+        if (!isNaN(parsedHashMessage) && parsedHashMessage !== selectedMessage) {
             if (messages.get()) {
-                const doesMessageExist = messages.get()?.findIndex((item) => item.id === parsedHash) !== -1;
+                const doesMessageExist = messages.get()?.findIndex((item) => item.id === parsedHashMessage) !== -1;
                 console.log("useEffect ~ doesMessageExist:", doesMessageExist)
                 if (doesMessageExist) {
-                    setSelectedMessage(parsedHash);
+                    setSelectedFolder(parsedHashFolder);
+                    setSelectedMessage(parsedHashMessage);
                 } else {
-                    navigate("#");
+                    setSelectedFolder(parsedHashFolder);
+                    // now we need to fetch the message for the selected folder
+                    const controller = new AbortController();
+                    fetchMessages(parsedHashFolder, controller);
+
+                    // now we need to select the message after fetching the messages
+                    setTimeout(() => {
+                        setSelectedMessage(parsedHashMessage);
+                    }, 0);
                 }
             }
         }
@@ -103,29 +135,205 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         oldSelectedMessage.current = selectedMessage;
     }, [selectedMessage]);
 
+    useEffect(() => {
+        if (!isEditingFolder) {
+            const currentFolder = folders?.find((item) => item.id === selectedFolder);
+            if (currentFolder) {
+                console.log("currentFolder", currentFolder);
+                setNewFolderName(currentFolder.name);
+            }
+        }
+    }, [selectedFolder, folders, isEditingFolder]);
+
+
+
+    const handleRenameSave = async () => {
+        if (newFolderName.trim() !== '') {
+            if (selectedFolder === -3) {
+                const controller = new AbortController();
+                let newFolder = await createFolder(newFolderName, controller);
+                setTimeout(() => setSelectedFolder(newFolder), 0);
+                // refresh the folder list and title
+
+            } else {
+                renameFolder(selectedFolder, newFolderName); // Call the rename function with folder ID and new name
+            }
+            setIsEditingFolder(false); // Exit editing mode
+        }
+    };
+
+    const handleRenameCancel = () => {
+        setIsEditingFolder(false);
+        setNewFolderName(folders?.find((item) => item.id === selectedFolder)?.name || '');
+        if (selectedFolder === -3) {
+            setSelectedFolder(0);
+        }
+    };
+
+    // cancel editiing on click outside of the input
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (isEditingFolder && !event.target.closest('.edit-folder-name-container')) {
+                handleRenameCancel();
+            }
+        };
+
+        if (isEditingFolder) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isEditingFolder]);
+
+
+    // cancel editing on escape key
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                handleRenameCancel();
+            }
+        };
+
+        if (isEditingFolder) {
+            document.addEventListener('keydown', handleKeyDown);
+        } else {
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isEditingFolder]);
+
+    // validate editing on enter key
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                handleRenameSave();
+            }
+        };
+
+        if (isEditingFolder) {
+            document.addEventListener('keydown', handleKeyDown);
+        } else {
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isEditingFolder, newFolderName]);
+
+    // changing folder should exit editing mode
+    useEffect(() => {
+        setIsEditingFolder(false);
+    }, [selectedFolder]);
+
     // JSX
     return (
         <div id="messaging">
-            <WindowsContainer name="timetable">
+            <WindowsContainer name="timetable" allowWindowsManagement={!isEditingFolder}>
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
-                            {messageFolders.get() !== undefined && messageFolders.get().length > 1
+                            {folders !== undefined && folders.length > 1
                                 ? <Tooltip className="folder-tooltip" placement="bottom" onClick={(event) => event.stopPropagation()}>
                                     <TooltipTrigger> <FolderIcon className="folder-icon" /> </TooltipTrigger>
-                                    <TooltipContent>
+                                    <TooltipContent className="no-questionmark">
                                         <h3>Dossiers</h3>
                                         <ul className="folders-container">
-                                            {messageFolders.get().map((folder) => <li key={folder.id} className="folder-button-container"><button onClick={() => setSelectedFolder(folder.id)} className="folder-button" >{capitalizeFirstLetter(folder.name)}</button></li>)}
+                                            {folders
+                                                .sort((a, b) => {
+                                                    const order = [0, -1, -2, -4];
+                                                    const indexA = order.indexOf(a.id);
+                                                    const indexB = order.indexOf(b.id);
+                                                    if (indexA === -1 && indexB === -1) return 0;
+                                                    if (indexA === -1) return 1;
+                                                    if (indexB === -1) return -1;
+                                                    return indexA - indexB;
+                                                })
+                                                .filter((folder) => folder.id !== -3)
+                                                .map((folder) => (
+                                                    <li key={folder.id} className="folder-button-container">
+                                                        <button 
+                                                            onClick={() => {
+                                                                setSelectedFolder(folder.id)
+                                                                setSelectedMessage(null);
+                                                             }} 
+                                                            className={`folder-button ${folder.id === selectedFolder ? 'selected-folder' : ''}`}
+                                                        >
+                                                            {folder.id === 0 ? <InboxIcon className="folder-icon-tooltip" /> : folder.id === -1 ? <SendIcon className="folder-icon-tooltip" /> : folder.id === -2 ? <ArchiveIcon className="folder-icon-tooltip" /> : folder.id === -4 ? <DraftIcon className="folder-icon-tooltip" /> : <FolderIcon className="folder-icon-tooltip" />}
+                                                            {capitalizeFirstLetter(folder.name)}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            <li className="folder-button-container">
+                                                <button onClick={
+                                                    () => {
+                                                        if (!isEditingFolder) {
+                                                            setSelectedFolder(-3);
+                                                            setNewFolderName('Créer un dossier');
+                                                            setTimeout(() => setIsEditingFolder(true), 0);
+                                                            setSelectedMessage(null);
+                                                        }
+                                                    }
+                                                } className="folder-button create-folder"><NewFolderIcon className="folder-icon-tooltip" /> Créer un dossier</button>
+                                            </li>
                                         </ul>
                                     </TooltipContent>
                                 </Tooltip>
                                 : null
                             }
-                            <h2>{capitalizeFirstLetter(messageFolders.get()?.find((item) => item.id === selectedFolder)?.name ?? "Boîte de réception")}</h2>
+
+                            {selectedFolder !== 0 && selectedFolder !== -1 && selectedFolder !== -2 && selectedFolder !== -4
+                                ? <Tooltip className="edit-folder-tooltip" placement="bottom" onClick={(event) => event.stopPropagation()}>
+                                    <TooltipTrigger> <EditIcon className="edit-folder-icon" /> </TooltipTrigger>
+                                    <TooltipContent>
+                                        <h3>Modifier le dossier</h3>
+                                        <ul className="edit-folder-container">
+                                            <li className="edit-folder-button-container">
+                                                <button className="edit-folder-button" onClick={() => setIsEditingFolder(true)}><RenameIcon className="edit-folder-icon-tooltip" />Renommer</button>
+                                            </li>
+                                            <li className="edit-folder-button-container">
+                                                <button className="edit-folder-button delete" onClick={async () => {
+                                                    const controller = new AbortController();
+                                                    await deleteFolder(selectedFolder, controller);
+                                                    setSelectedFolder(0);
+                                                }}><DeleteIcon className="edit-folder-icon-tooltip delete testeee" />Supprimer</button>
+                                            </li>
+                                        </ul>
+                                    </TooltipContent>
+                                </Tooltip>
+                                : null
+                            }
+                            
+                            {isEditingFolder ? (
+                                <div className="edit-folder-name-container">
+                                    <TextInput
+                                        value={capitalizeFirstLetter(newFolderName)}
+                                        onChange={(e) => setNewFolderName(e.target.value)}
+                                        className="edit-folder-name-input"
+                                        autoFocus
+                                        onFocus={(e) => e.target.select()}
+                                    />
+                                </div>
+                            ) : (
+                                    <div className="MessagesTitle-container">
+                                        <h2 id="MessagesTitle" onClick={() => { if (selectedFolder !== 0 && selectedFolder !== -1 && selectedFolder !== -2 && selectedFolder !== -4) { setIsEditingFolder(true) } }} className={selectedFolder === 0 || selectedFolder === -1 || selectedFolder === -2 || selectedFolder === -4 ? "prevent-highlight" : ""}>
+                                            {selectedFolder !== -3
+                                                ? capitalizeFirstLetter(folders?.find((item) => item.id === selectedFolder)?.name ?? "Boîte de réception")
+                                                : "Créer un dossier"
+                                            }
+                                        </h2>
+                                    </div>
+                            )}
                         </WindowHeader>
                         <WindowContent>
-                            <Inbox selectedMessage={selectedMessage}  setSelectedMessage={setSelectedMessage} selectedFolder={selectedFolder} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />
+                            <Inbox selectedMessage={selectedMessage} setSelectedMessage={setSelectedMessage} selectedFolder={selectedFolder} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />
                         </WindowContent>
                     </Window>
                     <Window growthFactor={3} className="message-content" allowFullscreen={true}>
@@ -133,11 +341,11 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                             <h2>Message</h2>
                         </WindowHeader>
                         <WindowContent>
-                            <MessageReader selectedMessage={selectedMessage} />
+                            <MessageReader selectedMessage={selectedMessage} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} setSelectedMessage={setSelectedMessage} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>
             </WindowsContainer>
         </div>
-    )
+    );
 }
