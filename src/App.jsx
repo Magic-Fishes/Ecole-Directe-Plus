@@ -1254,7 +1254,7 @@ export default function App({ edpFetch }) {
                 }
             });
         }
-        else if (type === "drafts") {
+        else if (type === "draft") {
             sortedMessages = messages.messages.draft.map((message) => {
                 return {
                     date: message.date,
@@ -1818,7 +1818,7 @@ export default function App({ edpFetch }) {
             specialFolderType = "archived";
             folderId = 0;
         } else if (folderId === -4) {
-            specialFolderType = "drafts";
+            specialFolderType = "draft";
             folderId = 0;
         }
         edpFetch(
@@ -1854,7 +1854,7 @@ export default function App({ edpFetch }) {
                         folderId = -1;
                     } else if (specialFolderType === "archived") {
                         folderId = -2;
-                    } else if (specialFolderType === "drafts") {
+                    } else if (specialFolderType === "draft") {
                         folderId = -4;
                     }
                     changeUserData("sortedMessages", oldSortedMessages.flat());
@@ -1888,8 +1888,11 @@ export default function App({ edpFetch }) {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
+
+        const mode = oldSortedMessages.find((item) => item.id === id).folderId === -1 || -4 ? "expediteur" : "destinataire";
+
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -2360,6 +2363,46 @@ export default function App({ edpFetch }) {
         });
     }
 
+    async function deleteMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        // the data is:
+        // data = {
+        //     "action": "supprimer",
+        //     "ids": [
+        //         16199
+        //     ],
+        //     "anneeMessages": "2024-2025",
+        //     "idDossier": -5
+        // }
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}/${accountsListState[userId].familyId}/messages.awp?verbe=delete&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "supprimer", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"), idDossier: -5 })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // delete the message from the list of messages
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.filter(message => message.id !== id);
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message supprimé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -2644,7 +2687,7 @@ export default function App({ edpFetch }) {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />,
                             path: ":userId/messaging"
                         },
                     ],

@@ -30,7 +30,7 @@ import { el } from "date-fns/locale";
 import { set } from "date-fns";
 
 
-export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread, renameFolder, deleteFolder, createFolder, archiveMessage, unarchiveMessage, moveMessage }) {
+export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread, renameFolder, deleteFolder, createFolder, archiveMessage, unarchiveMessage, moveMessage, deleteMessage }) {
     // States
     const navigate = useNavigate();
     const location = useLocation();
@@ -341,7 +341,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                             <h2>Message</h2>
                         </WindowHeader>
                         <WindowContent>
-                            <MessageReader selectedMessage={selectedMessage} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} setSelectedMessage={setSelectedMessage} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} />
+                            <MessageReader selectedMessage={selectedMessage} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} setSelectedMessage={setSelectedMessage} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />
                         </WindowContent>
                     </Window>
                 </WindowsLayout>

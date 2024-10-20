@@ -17,9 +17,10 @@ import MarkAsUnread from "../../graphics/MarkAsUnread";
 import SendIcon from "../../graphics/SendIcon";
 import DraftIcon from "../../graphics/DraftIcon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../generic/PopUps/Tooltip";
+import DeleteIcon from "../../graphics/DeleteIcon";
 
 
-export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnread, setSelectedMessage, archiveMessage, unarchiveMessage, moveMessage }) {
+export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnread, setSelectedMessage, archiveMessage, unarchiveMessage, moveMessage, deleteMessage }) {
     
     // States
     const location = useLocation(); 
@@ -137,6 +138,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                     printWindow.print();
                                 }
                             }><PrintIcon /></button></TooltipTrigger><TooltipContent>Imprimer</TooltipContent></Tooltip>
+                            {parsedHashFolder != -2 && parsedHashFolder != -1 && parsedHashFolder != -4  ? (
                             <Tooltip><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
                                 <TooltipContent className="no-questionmark">
                                     <h3>Changer De Dossier</h3>
@@ -168,7 +170,10 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                             ))}
                                     </ul>
                                 </TooltipContent>
-                            </TooltipContent></Tooltip>
+                                </TooltipContent></Tooltip>
+                            ) : (
+                                    null
+                            )}
                             {parsedHashFolder === -2 ? (
                                 <Tooltip><TooltipTrigger><button className="action-button" onClick={
                                     () => {
@@ -176,13 +181,25 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         setSelectedMessage(null);
                                     }
                                 }><InboxIcon /></button></TooltipTrigger><TooltipContent>Désarchiver</TooltipContent></Tooltip>
-                            ) : (
+                            ) : parsedHashFolder != -1 && parsedHashFolder != -4 ? (
                                     <Tooltip><TooltipTrigger><button className="action-button" onClick={
                                         () => {
                                             archiveMessage(message.id);
                                             setSelectedMessage(null);
                                         }
                                 }><ArchiveIcon /></button></TooltipTrigger><TooltipContent>Archiver</TooltipContent></Tooltip>
+                            ) : (
+                                null
+                            )}
+                            { parsedHashFolder === -4 ? (
+                            <Tooltip><TooltipTrigger><button className="action-button" onClick={
+                                    () => {
+                                    deleteMessage(message.id);
+                                    setSelectedMessage(null);
+                                }
+                            }><DeleteIcon /></button></TooltipTrigger><TooltipContent>Supprimer</TooltipContent></Tooltip>
+                            ) : (
+                                    null
                             )}
                             <Tooltip><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
                         </div>
