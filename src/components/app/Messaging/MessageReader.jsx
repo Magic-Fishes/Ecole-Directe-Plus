@@ -127,7 +127,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                         </ScrollShadedDiv>
 
                         <div className="actions-container">
-                            <Tooltip><TooltipTrigger><button className="action-button" onClick={
+                            <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                 () => {
                                     // only print the content of the rendered message
                                     const printWindow = window.open("", "_blank");
@@ -139,7 +139,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                 }
                             }><PrintIcon /></button></TooltipTrigger><TooltipContent>Imprimer</TooltipContent></Tooltip>
                             {parsedHashFolder != -2 && parsedHashFolder != -1 && parsedHashFolder != -4  ? (
-                            <Tooltip><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
+                                <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
                                 <TooltipContent className="no-questionmark">
                                     <h3>Changer De Dossier</h3>
                                     <ul className="folders-container">
@@ -175,14 +175,14 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                     null
                             )}
                             {parsedHashFolder === -2 ? (
-                                <Tooltip><TooltipTrigger><button className="action-button" onClick={
+                                <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
                                         unarchiveMessage(message.id);
                                         setSelectedMessage(null);
                                     }
                                 }><InboxIcon /></button></TooltipTrigger><TooltipContent>Désarchiver</TooltipContent></Tooltip>
                             ) : parsedHashFolder != -1 && parsedHashFolder != -4 ? (
-                                    <Tooltip><TooltipTrigger><button className="action-button" onClick={
+                                    <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                         () => {
                                             archiveMessage(message.id);
                                             setSelectedMessage(null);
@@ -192,7 +192,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                 null
                             )}
                             { parsedHashFolder === -4 ? (
-                            <Tooltip><TooltipTrigger><button className="action-button" onClick={
+                                <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
                                     deleteMessage(message.id);
                                     setSelectedMessage(null);
@@ -201,7 +201,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                             ) : (
                                     null
                             )}
-                            <Tooltip><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
+                            <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
                         </div>
                     </div>
                 </div>

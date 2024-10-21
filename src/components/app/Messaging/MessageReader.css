@@ -170,16 +170,12 @@
 }
 
 .actions-container {
-    width: 240px;
-    /* Fixed width for the action buttons */
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding-right: 10px;
     padding-left: 10px;
-    gap: 5px;
-    /* Stack buttons vertically */
 }
 
 .action-button {
@@ -223,4 +219,11 @@
 
 .not-allowed {
     cursor: not-allowed !important;
+}
+
+.action-button-main {
+    margin: 5px;
+    width: 40px;
+    height: 40px;
+    min-width:auto;
 }
