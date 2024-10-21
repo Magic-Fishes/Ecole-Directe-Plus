@@ -192,7 +192,6 @@ h3:has(~ .edit-folder-container) {
 
 .MessagesTitle-container {
     transition: .3s;
-    width: calc(100% - 100px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

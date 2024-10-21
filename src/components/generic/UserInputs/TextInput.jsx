@@ -4,7 +4,7 @@ import WarningMessage from "../Informative/WarningMessage";
 import EyeVisible from "../../graphics/EyeVisible";
 import EyeHidden from "../../graphics/EyeHidden";
 
-export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon="", onWarning, className="", id="", ...props }) {
+export default function TextInput({ textType, placeholder, value, onChange, disabled, isRequired, warningMessage, icon="", onWarning, className="", id="", keyHint, ...props }) {
     const [warningMessageState, setWarningMessageState] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const allowedTextTypes = ["text", "password", "email", "search", "url"];
@@ -51,6 +51,7 @@ export default function TextInput({ textType, placeholder, value, onChange, disa
                     disabled={disabled}
                     required={isRequired}
                     onInvalid={handleInvalid}
+                    enterKeyHint={keyHint}
                     {...props}
                 />
                 {showPasswordIcon && value !== "" ? PasswordIcon : icon}

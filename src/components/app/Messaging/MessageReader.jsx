@@ -133,6 +133,8 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                     const printWindow = window.open("", "_blank");
                                     printWindow.document.write("<html><head><title>Impression</title></head><body>");
                                     printWindow.document.write(document.querySelector(".message-content").innerHTML);
+                                    //remove the email footer
+                                    printWindow.document.querySelector(".email-footer").remove();
                                     printWindow.document.write("</body></html>");
                                     printWindow.document.close();
                                     printWindow.print();

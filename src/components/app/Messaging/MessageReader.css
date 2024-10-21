@@ -37,6 +37,7 @@
     flex-flow: column nowrap;
     background-color: rgba(var(--background-color-2), 1);
     height: 100%;
+    border-radius: 15px;
 }
 
 #message-reader .message-content-container {
@@ -101,6 +102,13 @@
 #message-reader .email-footer {
     height: 100px;
     overflow: auto;
+}
+
+
+@media (max-width: 869px) {
+    #message-reader .email-footer {
+        height: 130px;
+    }
 }
 
 #message-reader .attachments-container {
