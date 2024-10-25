@@ -13,6 +13,10 @@ dist-ssr
 # package-lock.json
 # package.json
 
+# Cache ESLint et Prettier
+.eslintcache
+.prettiercache
+
 # useless dependencies
 replit.nix
 .replit

@@ -11,13 +11,14 @@ To use **Prettier** correctly (if you don't know what Prettier is, it's a module
 
 4. **Paste the following configuration into the JSON file**:
 
-  ```json
-    {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "prettier.requireConfig": true,
-        "editor.codeActionsOnSave": {
-            "source.fixAll.eslint": "always",
-            "source.organizeImports": "always"
-        }
+```json
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.requireConfig": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always",
+        "source.organizeImports": "always"
     }
-
+}
+```
