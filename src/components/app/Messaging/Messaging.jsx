@@ -228,6 +228,26 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         };
     }, [isEditingFolder, newFolderName]);
 
+    // validate editing on enterkeyhint mobile keyboard press event (code 13)
+    useEffect(() => {
+        // use code 13 for enter key hint
+        const handleKeyDown = (event) => {
+            if (event.keyCode === 13) {
+                handleRenameSave();
+            }
+        };
+
+        if (isEditingFolder) {
+            document.addEventListener('keypress', handleKeyDown);
+        } else {
+            document.removeEventListener('keypress', handleKeyDown);
+        }
+
+        return () => {
+            document.removeEventListener('keypress', handleKeyDown);
+        };
+    }, [isEditingFolder, newFolderName]);
+            
     // changing folder should exit editing mode
     useEffect(() => {
         setIsEditingFolder(false);
@@ -319,6 +339,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                         className="edit-folder-name-input"
                                         autoFocus
                                         onFocus={(e) => e.target.select()}
+                                        enterKeyHint = "done"
                                     />
                                 </div>
                             ) : (
