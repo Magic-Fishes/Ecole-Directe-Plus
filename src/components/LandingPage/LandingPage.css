@@ -683,6 +683,7 @@ html:has(.landing-page) {
 }
 
 .floating-section p {
+    min-width: 250px;
     flex: 1;
     font-size: var(--font-size-20);
     color: rgb(var(--text-color-alt));
@@ -809,13 +810,46 @@ html:has(.landing-page) {
     .landing-page .footer-logo {
         flex: auto;
     }
+
+    .landing-page .floating-section p {
+        text-align: center !important;
+    }
+    
+    .landing-page .last-call-to-action {
+        width: 90%;
+    }
+
+    .landing-page ul.sitemap {
+        text-align: center;
+        justify-content: center;
+    }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 470px) {
+    .landing-page .change-theme {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 415px) {
     .landing-page .nav-logo svg {
         display: none;
     }
 }
+
+@media only screen and (max-width: 365px) {
+    .landing-page .nav-logo {
+        display: none;
+    }
+
+    .nav-buttons {
+        width: 100%;
+    }
+    .nav-login {
+        width: 100%;
+    }
+}
+
 
 @media only screen and (max-width: 737px) {
     #bento .bento-grid {

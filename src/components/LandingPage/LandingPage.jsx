@@ -113,7 +113,7 @@ export default function LandingPage({ token, accountsList }) {
     }, [])
 
     return (<div className="landing-page">
-        {!isMobileLayout && <header id="nav-bar" className="top-section">
+        {<header id="nav-bar" className="top-section">
             <span className="nav-logo">
                 <EDPLogo className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />Ecole Directe Plus
             </span>
@@ -222,7 +222,7 @@ export default function LandingPage({ token, accountsList }) {
             </div>
         </section>
         <section id="community" className="floating-section" ref={communitySectionRef}>
-            <h2 className="section-title">Un communauté <strong className="heading-emphasis">passionnée</strong> et <strong className="heading-emphasis">bienveillante</strong></h2>
+            <h2 className="section-title">Une communauté <strong className="heading-emphasis">passionnée</strong> et <strong className="heading-emphasis">bienveillante</strong></h2>
             <div>
                 <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><DiscordFullLogo /></a>
                 <p>Rejoignez notre <a href="https://discord.gg/AKAqXfTgvE" target="_blank"><strong>serveur Discord</strong></a> !<br />Vous pourrez y rencontrer les développeurs et discuter avec les membres les plus investis d'Ecole Directe Plus !</p>
