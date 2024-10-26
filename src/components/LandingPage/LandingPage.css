@@ -590,39 +590,42 @@ html:has(.landing-page) {
 /*                      PARALAX ITEMS (in mobile first)                     */
 /* ------------------------------------------------------------------------ */
 
-.parallax {
+.parallax-item {
     position: absolute;
-    width: 100%;
-    margin-top: -25%;
 }
-
-.parallax-items {
-    position: relative;
-    width: 100%;
-}
-
-.b-right {
-    position: absolute;
-    right: 0;
+.parallax-item.blob1 {
+    left: -80px;
+    top: min(130vh, 1500px);
     width: 200px;
 }
-
-.b-left {
+.parallax-item.blob2 {
+    right: -70px;
+    top: min(130vh, 1500px);
     width: 250px;
 }
+
 .blob {
-    opacity: 0.5;
+    width: 100%;
+    opacity: .5;
     filter: blur(50px);
-    will-change: transform;
+    animation: blob-rotate linear 10s infinite;
 }
 .blob path {
-    fill: rgb(var(--text-color-alt));
+    fill: rgb(var(--text-color-alt))
 }
 
-@media only screen and (min-width: 869px) {
-    /* This for desktop media */
-    .parallax {
-        margin-top: 0;
+@keyframes blob-rotate {
+    from {
+        rotate: 0deg;
+    }
+    to {
+        rotate: 359deg;
+    }
+}
+
+@media only screen and (max-width: 869px) {
+    .parallax-item {
+        display: none;
     }
 }
 
