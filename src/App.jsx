@@ -1849,6 +1849,10 @@ export default function App({ edpFetch }) {
 
                     // we've added the specialFolderType to the function to handle the special folders (to handle different data path for special folders and special folderId)
                     oldSortedMessages.push(sortMessages(response.data, specialFolderType));
+                    // if in oldSortedMessages there is multiple times the same message, we remove the duplicates
+                    console.log(oldSortedMessages)
+                    oldSortedMessages = oldSortedMessages.flat().filter((item, index, self) => self.findIndex((item2) => item2.id === item.id) === index);
+                    console.log(oldSortedMessages)
                     if (specialFolderType === "sent") {
                         // set the folderId back to -1 to than handle the special folders
                         folderId = -1;

@@ -209,30 +209,10 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         };
     }, [isEditingFolder]);
 
-    // validate editing on enter key
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'Enter') {
-                handleRenameSave();
-            }
-        };
-
-        if (isEditingFolder) {
-            document.addEventListener('keydown', handleKeyDown);
-        } else {
-            document.removeEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isEditingFolder, newFolderName]);
-
-    // validate editing on enterkeyhint mobile keyboard press event (code 13)
     useEffect(() => {
         // use code 13 for enter key hint
         const handleKeyDown = (event) => {
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 || event.key === 'Enter') {
                 handleRenameSave();
             }
         };
@@ -309,7 +289,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                 : null
                             }
 
-                            {selectedFolder !== 0 && selectedFolder !== -1 && selectedFolder !== -2 && selectedFolder !== -4
+                            {selectedFolder !== 0 && selectedFolder !== -1 && selectedFolder !== -2 && selectedFolder !== -4 && selectedFolder !== -3
                                 ? <Tooltip className="edit-folder-tooltip" placement="bottom" onClick={(event) => event.stopPropagation()}>
                                     <TooltipTrigger> <EditIcon className="edit-folder-icon" /> </TooltipTrigger>
                                     <TooltipContent>
