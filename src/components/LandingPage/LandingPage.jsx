@@ -1,23 +1,20 @@
-import { useRef, useEffect, useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+import { AppContext } from "../../App";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
-import { AppContext } from "../../App"
 
 // graphics
-import EdpuLogo from "../graphics/EdpuLogo";
-import InfoTypoIcon from "../graphics/InfoTypoIcon";
-import UpArrow from "../graphics/UpArrow";
+import HoverFollowDiv from "../generic/CustomDivs/HoverFollowDiv";
+import DiscordFullLogo from "../graphics/DiscordFullLogo";
 import EDPLogo from "../graphics/EDPLogo";
 import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
-import DiscordFullLogo from "../graphics/DiscordFullLogo";
+import EdpuLogo from "../graphics/EdpuLogo";
 import GitHubFullLogo from "../graphics/GitHubFullLogo";
-import SunIcon from "../graphics/SunIcon";
-import MoonIcon from "../graphics/MoonIcon";
-import HoverFollowDiv from "../generic/CustomDivs/HoverFollowDiv";
+import InfoTypoIcon from "../graphics/InfoTypoIcon";
+import UpArrow from "../graphics/UpArrow";
 
 import "./LandingPage.css";
-import "./LandingPage2.css";
 
 export default function LandingPage({ token, accountsList }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -25,15 +22,14 @@ export default function LandingPage({ token, accountsList }) {
     const [isLoggedIn, setIsLoggedIn] = useState(token && accountsList.length > 0); // this one is different from the one in App.jsx
 
     const [isTop, setIsTop] = useState(true);
-    const [isScrollNAvigation, setIsScrollNavigation] = useState(false);
-    const homeSectionRef = useRef(null)
-    const communitySectionRef = useRef(null)
-    const openSourceSectionRef = useRef(null)
+    const homeSectionRef = useRef(null);
+    const communitySectionRef = useRef(null);
+    const openSourceSectionRef = useRef(null);
 
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const theme = useUserSettings("displayTheme")
+    const theme = useUserSettings("displayTheme");
     const displayMode = useUserSettings("displayMode").get();
 
     const changeTheme = () => {
@@ -42,7 +38,7 @@ export default function LandingPage({ token, accountsList }) {
 
     useEffect(() => {
         setIsLoggedIn(token && accountsList.length > 0);
-    }, [token, accountsList])
+    }, [token, accountsList]);
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
@@ -66,8 +62,8 @@ export default function LandingPage({ token, accountsList }) {
         })
         
         if (communitySectionRef.current && openSourceSectionRef.current) {
-            observer.observe(communitySectionRef.current)
-            observer.observe(openSourceSectionRef.current)
+            observer.observe(communitySectionRef.current);
+            observer.observe(openSourceSectionRef.current);
             return () => {
                 if (communitySectionRef.current) observer.unobserve(communitySectionRef.current)
                 if (openSourceSectionRef.current) observer.unobserve(openSourceSectionRef.current)
@@ -90,24 +86,23 @@ export default function LandingPage({ token, accountsList }) {
         if (!location.hash) {
             navigate("#home", { replace: true });
         }
-        const section = document.getElementById(location.hash.slice(1))
+        const section = document.getElementById(location.hash.slice(1));
         if (section) {
             section.scrollIntoView({ block: (location.hash === "#home" ? "start" : "center") })
         }
     }, [location.hash]);
-
 
     useEffect(() => {
         const handleScroll = () => {
             const parallaxItems = document.querySelectorAll(".parallax-item");
             let scrollPosition = window.scrollY;
 
-            parallaxItems.forEach(item => {
+            parallaxItems.forEach((item) => {
                 let speed = item.getAttribute("data-speed");
                 let yPos = -(scrollPosition * speed);
                 item.style.transform = `translateY(${yPos}px)`;
             });
-        }
+        };
 
         document.addEventListener("scroll", handleScroll);
 
