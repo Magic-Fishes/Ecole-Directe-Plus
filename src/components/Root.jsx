@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
@@ -10,10 +10,13 @@ import { useCreateNotification } from "./generic/PopUps/Notification";
 import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 
 import { EDPVersion } from "../EcoleDirecteHandlerCore/constants/edpConfig";
+import { LoginContext } from "../App";
 
-export default function Root({ isLoggedIn, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireDoubleAuth, setRequireDoubleAuth }) {
+export default function Root({ isLoggedIn, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth }) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { requireDoubleAuth } = useContext(LoginContext)
 
     const settings = useUserSettings();
 
