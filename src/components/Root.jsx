@@ -1,15 +1,17 @@
 
 import { useState, useEffect, useRef } from "react";
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
-import A2FLogin from "./Login/A2FLogin";
+import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireA2F, setRequireA2F }) {
+import { EDPVersion } from "../EcoleDirecteHandlerCore/constants/edpConfig";
+
+export default function Root({ isLoggedIn, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireDoubleAuth, setRequireDoubleAuth }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -97,12 +99,12 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
 
         // localStorage.clear();
-        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
+        if (localStorage.getItem("EDPVersion") !== EDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
                 if (location.pathname !== "/") {
                     setIsNewUser(true);
                 } else {
-                    localStorage.setItem("EDPVersion", currentEDPVersion);
+                    localStorage.setItem("EDPVersion", EDPVersion);
                     setIsNewEDPVersion(true);
                     necessaryResets(localStorage.getItem("EDPVersion"));
                 }
@@ -122,16 +124,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             setPopUp(false);
         }
     }, [isNewUser, isNewEDPVersion]);
-
-
-    // re-login
-
-    useEffect(() => {
-        if ((location.pathname === "/login") && (location.hash !== "#policy") && (token && accountsList.length > 0)) {
-            redirectToApp();
-            console.log("redirected to app")
-        }
-    }, [location, token, accountsList])
 
     // redirect to /edp-unblock
     useEffect(() => {
@@ -452,11 +444,14 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>
-            {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
-            {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
+            {/* {isLoggedIn && location.pathname.endsWith("/login") && <Navigate to="/dashboard"/>}
+            {isLoggedIn ? "true" : "false"}
+            {location.pathname.endsWith("/login") ? "true" : "false"} */}
+            {popUp === "newUser" && <WelcomePopUp EDPVersion={EDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", EDPVersion); }} />}
+            {popUp === "newEDPVersion" && <PatchNotes EDPVersion={EDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", EDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}
             <Outlet />
-            {requireA2F && <A2FLogin onClose={() => setRequireA2F(false)} />}
+            {requireDoubleAuth && <DoubleAuthLogin onClose={() => setRequireDoubleAuth(false)} />}
         </>
     );
 }

@@ -11,7 +11,6 @@ import HomeworksIconOfficial from "../../graphics/HomeworksIconOfficial";
 import GradesIcon from "../../graphics/GradesIcon";
 import TimetableIcon from "../../graphics/TimetableIcon";
 import MessagingIcon from "../../graphics/MessagingIcon";
-import Button from "../../generic/UserInputs/Button";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import FeedbackForm from "../../Feedback/FeedbackForm";
 import PatchNotes from "../../generic/PatchNotes";
@@ -19,13 +18,14 @@ import Policy from "../../generic/Policy";
 // import HomeworksIcon from "../../graphics/HomeworksIcon";
 // import PlanningIcon from "../../graphics/PlanningIcon"
 
+import { EDPVersion } from "../../../EcoleDirecteHandlerCore/constants/edpConfig";
 
 import { AppContext } from "../../../App";
 
 import "./Header.css";
 
 
-export default function Header({ currentEDPVersion, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -207,7 +207,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
-                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : currentEDPVersion}</div>
+                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : EDPVersion}</div>
                         </Link>
                     </div>
 
@@ -240,7 +240,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
                 </Suspense>
             </main>
             {location.hash === "#feedback" && <BottomSheet className="feedback-bottom-sheet" heading="Faire un retour" onClose={handleCloseAnchorLinks} close={closeFeedbackBottomSheet} ><FeedbackForm activeUser={accountsList[activeAccount]} onSubmit={() => setCloseFeedbackBottomSheet(true)} carpeConviviale={carpeConviviale} /></BottomSheet>}
-            {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
+            {location.hash === "#patch-notes" && <PatchNotes version={EDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", EDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
         </div>
     )

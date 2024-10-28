@@ -1,7 +1,6 @@
 
 import { useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { fetchGrades } from "../../../utils/requests/fetchFunctions";
 import { AppContext } from "../../../App";
 
 import {
@@ -21,7 +20,7 @@ import PopUp from "../../generic/PopUps/PopUp";
 import "./Dashboard.css";
 
 export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, isTabletLayout }) {
-    const { fetchData, useUserData, useUserSettings } = useContext(AppContext)
+    const { getGrades, fetchData, useUserData, useUserSettings } = useContext(AppContext)
 
     const navigate = useNavigate();
     const location = useLocation()

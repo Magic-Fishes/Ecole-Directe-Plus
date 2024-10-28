@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { AppContext } from "../../../App";
-import { fetchGrades } from "../../../utils/requests/fetchFunctions";
 
 import {
     WindowsContainer,
@@ -16,7 +15,7 @@ import "./Grades.css";
 
 
 export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
-    const { fetchData, useUserData, useUserSettings } = useContext(AppContext)
+    const { fetchGrades, fetchData, useUserData, useUserSettings } = useContext(AppContext)
     const userData = useUserData();
     const userSettings = useUserSettings();
 

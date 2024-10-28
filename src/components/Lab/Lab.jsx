@@ -41,6 +41,7 @@ import EncodedHTMLDiv from "../generic/CustomDivs/EncodedHTMLDiv";
 import { textToHSL } from "../../utils/utils"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon"
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
+import useInitializer from "../../EcoleDirecteHandlerCore/hooks/utils/useInitializer";
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
     // States
@@ -49,6 +50,7 @@ export default function Lab({ fetchGrades }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [testState, setTestState] = useState(false);
+    const [initializer, setInitializer] = useInitializer("StartValue", "defaultValue", (old, newValue) => { console.log("state has been initialized to", newValue); return newValue });
 
     const [isInputPopUpOpen, setIsInputPopUpOpen] = useState(false);
     const [number1, setNumber1] = useState(0)
@@ -213,7 +215,7 @@ export default function Lab({ fetchGrades }) {
             <br />
             <KeyboardKey keyName="AltGraph">Alt gr</KeyboardKey>
             <h3 id="lab-app-loading">AppLoading</h3>
-            <AppLoading currentEDPVersion={"0.6.9"} />
+            <AppLoading EDPVersion={"0.6.9"} />
             <h3>ShiningDiv</h3>
             {/* Juste prcq le border radius de l'écran de mon tel m'empêche de tout voir bien*/}
             <div id="shining-test">
@@ -321,6 +323,14 @@ export default function Lab({ fetchGrades }) {
             <OutlineEffectDiv className="outline-effect-div-test">
             ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed
             </OutlineEffectDiv>
+
+            <h4>InitializerHook</h4>
+            <Button onClick={() => {
+                const newValue = ["test0", "test1", "test2", "defaultValue"][Math.floor(Math.random() * 4)];
+                setInitializer(() => newValue);
+                console.log(newValue);
+            }}>Change initializer value</Button>
+            {initializer}
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>

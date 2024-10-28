@@ -1,9 +1,10 @@
 
 import { useState } from "react";
 import PatchNotes from "../PatchNotes";
-import "./EDPVersion.css"
+import { EDPVersion } from "../../../EcoleDirecteHandlerCore/constants/edpConfig";
+import "./EDPVersionButton.css"
 
-export default function EDPVersion({ currentEDPVersion }) {
+export default function EDPVersionButton({ version = EDPVersion }) {
     const [isPatchNotesOpened, setIsPatchNotesOpened] = useState(false);
 
     const handleClick = () => {
@@ -19,15 +20,10 @@ export default function EDPVersion({ currentEDPVersion }) {
         }
     }
 
-    if (isPatchNotesOpened) {
-        return (
-            <PatchNotes currentEDPVersion={currentEDPVersion} onClose={handleClick} />
-        )
-    } else {
-        return (
-            <div id="edp-version" onClick={handleClick} tabIndex="0" role="button" onKeyDown={handleKeyDown}>
-                v{currentEDPVersion}
-            </div>
-        )
-    }
+    return <>
+        {isPatchNotesOpened && <PatchNotes version={version} onClose={handleClick} />}
+        <button id="edp-version" onClick={handleClick}>
+            v{version}
+        </button>
+    </>
 }

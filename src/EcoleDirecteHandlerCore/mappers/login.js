@@ -1,5 +1,5 @@
 // This function will always reurn a list of accounts, if it's a student account, it will alway be 1 user but if it's a parent account, it may be more.
-export default function sortLogin(data) {
+export default function mapLogin(data) {
     let accounts = data.accounts[0];
     const accountType = accounts.typeCompte; // collecte du type de compte
     if (accountType === "E") {

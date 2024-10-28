@@ -1,0 +1,25 @@
+{
+    "code": 200,
+    "token": "FAKE_TOKEN",
+    "data": {
+        "accounts": [
+            {
+                "id": -1,
+                "typeCompte": "E",
+                "lastConnexion": "smthg",
+                "prenom": "Canardman",
+                "nom": "",
+                "email": "contact@ecole-directe.plus",
+                "profile": {
+                    "photo": "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
+                    "nomEtablissement": "Magic-Fishes",
+                    "class": {
+                        "code": "49969",
+                        "libelle": "Rouge"
+                    }
+                },
+                "modules": []
+            }
+        ]
+    }
+}

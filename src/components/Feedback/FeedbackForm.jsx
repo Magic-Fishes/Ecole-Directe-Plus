@@ -72,7 +72,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
     const [allowSharing, setAllowSharing] = useState(true);
 
-    const { isDevChannel, currentEDPVersion, useUserSettings } = useContext(AppContext);
+    const { isDevChannel, EDPVersion, useUserSettings } = useContext(AppContext);
 
     const settings = useUserSettings();
 
@@ -309,7 +309,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
                                 url: (data && data.display_url)
                             },
                             footer: {
-                                text: readableDate + " - v" + currentEDPVersion + (isDevChannel ? " - DEV CHANNEL" : ""),
+                                text: readableDate + " - v" + EDPVersion + (isDevChannel ? " - DEV CHANNEL" : ""),
                             },
                         }
                     ]

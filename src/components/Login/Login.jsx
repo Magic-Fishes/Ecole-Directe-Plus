@@ -1,5 +1,5 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import EDPVersion from "../generic/buttons/EDPVersion";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import EDPVersionButton from "../generic/buttons/EDPVersionButton";
 import Policy from "../generic/Policy";
 import LoginForm from "./LoginForm";
 import InfoButton from "../generic/Informative/InfoButton";
@@ -18,7 +18,7 @@ if (sessionStorage.getItem('april') === "true"){
     })
 }
 
-export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, logout, loginFromOldAuthInfo, currentEDPVersion }) {
+export default function Login({ logout, loginFromOldAuthInfo }) {
     const location = useLocation();
 
     if (localStorage.userSettings) {
@@ -48,7 +48,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
-                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
+                <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
             </div>
             <p className="not-affiliated-mention">
                 Service non-affilié à Aplim
@@ -57,7 +57,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
-            <EDPVersion currentEDPVersion={currentEDPVersion} />
+            <EDPVersionButton />
             <Outlet />
         </div>
     );

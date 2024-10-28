@@ -10,7 +10,7 @@ import Button from "../generic/UserInputs/Button";
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 
-export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
+export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, bufferUserIds, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
     const [firstFrameKeepLoggedIn, setFirstFrameKeepLoggedIn] = useState(keepLoggedIn);
 
     const handleClose = () => {
