@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import mapLogin from "../mappers/login";
 import { guestDataPath, guestCredentials } from "../constants/edpConfig";
 import useInitializer from "./utils/useInitializer";
@@ -45,6 +45,10 @@ export default function useUserAccount(localStorageSession = {}) {
     const requireNewToken = loginState === loginStates.REQUIRE_NEW_TOKEN;
     const requireDoubleAuth = loginState === loginStates.REQUIRE_DOUBLE_AUTH;
     const doubleAuthAcquired = loginState === loginStates.DOUBLE_AUTH_ACQUIRED;
+
+    useEffect(() => {
+        console.log(loginState);
+    }, [loginState])
 
     async function requestLogin(controller = new AbortController()) {
 
