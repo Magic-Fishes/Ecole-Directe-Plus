@@ -18,7 +18,7 @@ export default function fetchLogin(username, password, A2FKey, controller) {
     const options = {
         body,
         method: "POST",
-        signal: controller.signal,
+        signal: controller?.signal,
         referrerPolicy: "no-referrer",
     };
 

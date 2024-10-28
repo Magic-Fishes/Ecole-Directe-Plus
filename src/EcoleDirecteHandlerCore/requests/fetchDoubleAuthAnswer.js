@@ -1,4 +1,6 @@
 import { apiVersion } from "../constants/edpConfig";
+import { FetchErrorBuilders } from "../constants/codes";
+import EdpError from "../utils/edpError";
 
 export default function fetchDoubleAuthAnswer(token, choice, controller = new AbortController()) {
     const headers = new Headers();
@@ -11,7 +13,7 @@ export default function fetchDoubleAuthAnswer(token, choice, controller = new Ab
         method: "POST",
         headers,
         body,
-        signal: controller.signal,
+        signal: controller?.signal,
         referrerPolicy: "no-referrer",
     };
 

@@ -1,7 +1,8 @@
-import { FetchErrorBuilders } from "../constants/codes";
 import { apiVersion } from "../constants/edpConfig";
+import { FetchErrorBuilders } from "../constants/codes";
+import EdpError from "../utils/edpError";
 
-export default function fetchDoubleAuthQuestions() {
+export default function fetchDoubleAuthQuestions(token, controller) {
     const headers = new Headers();
     headers.append("x-token", token);
 
@@ -12,7 +13,7 @@ export default function fetchDoubleAuthQuestions() {
         method: "POST",
         headers,
         body,
-        signal: controller.signal,
+        signal: controller?.signal,
         referrerPolicy: "no-referrer",
     };
 
