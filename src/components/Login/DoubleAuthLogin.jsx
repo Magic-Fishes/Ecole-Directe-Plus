@@ -50,6 +50,7 @@ export default function DoubleAuthLogin({ ...props }) {
     const handleDoubleAuthSubmit = (event) => {
         event.preventDefault();
         sendDoubleAuthAnswer(choice).then((response) => {
+            console.log("<3 :", response)
             switch (response.code) {
                 case 0:
                     requestLogin();
