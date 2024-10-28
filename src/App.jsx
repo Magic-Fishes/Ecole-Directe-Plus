@@ -1774,6 +1774,7 @@ export default function App({ edpFetch }) {
         doubleAuthInfo,
         doubleAuthAcquired,
         requestLogin,
+        requireDoubleAuth,
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,
     }
