@@ -38,7 +38,7 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
 
     // States
     const [submitState, setSubmitState] = useState("");
-    const [submitButtonText, setSubmitButtonText] = useState("Se Connecter");
+    const [submitButtonText, setSubmitButtonText] = useState("Se connecter");
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior

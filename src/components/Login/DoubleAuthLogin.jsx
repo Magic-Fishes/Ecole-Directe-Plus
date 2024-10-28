@@ -30,6 +30,7 @@ export default function DoubleAuthLogin({ ...props }) {
         if (Object.keys(doubleAuthForm).length < 1) {
             getDoubleAuthQuestions(controller)
                 .then((response) => {
+                    console.log("kk <3 :", response)
                     switch (response.code) {
                         case 0:
                             setDoubleAuthForm(response.data);
@@ -57,6 +58,7 @@ export default function DoubleAuthLogin({ ...props }) {
                     return;
                 case 1:
                     setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.")
+                    return;
                 case -1:
                     setErrorMessage("Une erreur ")
                     return;
