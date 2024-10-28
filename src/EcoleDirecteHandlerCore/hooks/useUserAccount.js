@@ -47,7 +47,7 @@ export default function useUserAccount(localStorageSession = {}) {
     const doubleAuthAcquired = loginState === loginStates.DOUBLE_AUTH_ACQUIRED;
 
     useEffect(() => {
-        console.log(loginState);
+        console.log("ICI : ", loginState);
     }, [loginState])
 
     async function requestLogin(controller = new AbortController()) {
