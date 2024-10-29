@@ -19,8 +19,8 @@ export const LoginCodes = {
 
 export const DoubleAuthCodes = {
     SUCCESS:        { code: 0, message: "Double authentification keys have been successfuly acquired" },
-    INVALID_ANSWER: { code: 1, message: "Invalid answer to double authentification questions. /!\\ this may lock your EcoleDIrecte account, check your emails if it is the case" },
-    INVALID_TOKEN:  { code: 2, message: "Invalid token" },
+    INVALID_TOKEN:  { code: 1, message: "Invalid token" },
+    INVALID_ANSWER: { code: 2, message: "Invalid answer to double authentification questions. /!\\ this may lock your EcoleDIrecte account, check your emails if it is the case" },
 }
 
 export const GradesCodes = {

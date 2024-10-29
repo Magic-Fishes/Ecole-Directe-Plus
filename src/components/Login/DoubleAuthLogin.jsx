@@ -30,14 +30,18 @@ export default function DoubleAuthLogin({ ...props }) {
         if (Object.keys(doubleAuthForm).length < 1) {
             getDoubleAuthQuestions(controller)
                 .then((response) => {
-                    console.log("kk <3 :", response)
-                    switch (response.code) {
-                        case 0:
-                            setDoubleAuthForm(response.data);
-                            return;
-                        default:
-                            setErrorMessage("Une erreur inattendue s'est produite.");
-                            return;
+                    if (!controller.signal.aborted) {
+                        switch (response.code) {
+                            case 0:
+                                setDoubleAuthForm(response.data);
+                                return;
+                            case 1:
+                                setErrorMessage("Le formulaire a mis trop de temps à être demandé.");
+                                return;
+                            case -1:
+                                setErrorMessage("Une erreur inattendue s'est produite.");
+                                return;
+                        }
                     }
                 })
         }
@@ -51,16 +55,18 @@ export default function DoubleAuthLogin({ ...props }) {
     const handleDoubleAuthSubmit = (event) => {
         event.preventDefault();
         sendDoubleAuthAnswer(choice).then((response) => {
-            console.log("<3 :", response)
             switch (response.code) {
                 case 0:
                     requestLogin();
                     return;
                 case 1:
-                    setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.")
+                    setErrorMessage("Vous avez mis trop de temps à répondre au formulaire.")
+                    return;
+                case 2:
+                    setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.");
                     return;
                 case -1:
-                    setErrorMessage("Une erreur ")
+                    setErrorMessage("Une erreur inattendue s'est produite.");
                     return;
             }
         })

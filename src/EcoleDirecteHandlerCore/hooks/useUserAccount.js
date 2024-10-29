@@ -46,10 +46,6 @@ export default function useUserAccount(localStorageSession = {}) {
     const requireDoubleAuth = loginState === loginStates.REQUIRE_DOUBLE_AUTH;
     const doubleAuthAcquired = loginState === loginStates.DOUBLE_AUTH_ACQUIRED;
 
-    useEffect(() => {
-        console.log("ICI : ", loginState);
-    }, [loginState])
-
     async function requestLogin(controller = new AbortController()) {
 
         let response;
@@ -125,8 +121,8 @@ export default function useUserAccount(localStorageSession = {}) {
                 }
             })
             .catch((error) => {
-                setLoginState(loginStates.REQUIRE_LOGIN);
                 if (error.type === "ED_ERROR") {
+                    setLoginState(loginStates.REQUIRE_LOGIN);
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
@@ -135,6 +131,7 @@ export default function useUserAccount(localStorageSession = {}) {
                     }
                 }
                 if (error.name !== "AbortError") {
+                    setLoginState(loginStates.REQUIRE_LOGIN);
                     console.error(error);
                     return { code: -1, message: error.message };
                 }
@@ -160,8 +157,8 @@ export default function useUserAccount(localStorageSession = {}) {
                 }
             })
             .catch((error) => {
-                setLoginState(loginStates.REQUIRE_LOGIN);
                 if (error.type === "ED_ERROR") {
+                    setLoginState(loginStates.REQUIRE_LOGIN);
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
@@ -170,6 +167,7 @@ export default function useUserAccount(localStorageSession = {}) {
                     }
                 }
                 if (error.name !== "AbortError") {
+                    setLoginState(loginStates.REQUIRE_LOGIN);
                     console.error(error);
                     return { code: -1, message: error.message };
                 }
