@@ -250,3 +250,7 @@ body:has(#account) {
 .document-container {
     height: 100%;
 }
+
+.single-year {
+    padding-left: 0 !important;
+}

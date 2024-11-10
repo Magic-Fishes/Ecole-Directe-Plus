@@ -19,7 +19,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
     const moduletype = accountsListState[activeAccount].accountType === "E" ? "DOCUMENTS_ELEVE" : "DOCUMENTS";
     const module = accountsListState[activeAccount].modules.find(module => module.code === moduletype);
     const availableYearsArray = module.params.AnneeArchive ? module.params.AnneeArchive.split(",") : [];
-    const lastYear = availableYearsArray[availableYearsArray.length - 1];
+    const lastYear = availableYearsArray.length > 0 ? availableYearsArray[availableYearsArray.length - 1] : `${new Date().getFullYear() - 1}-${new Date().getFullYear()}`;
     const [startYear, endYear] = lastYear.split('-').map(Number);
     const nextYear = `${endYear}-${endYear + 1}`;
     availableYearsArray.push(nextYear);
@@ -156,7 +156,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                 {module.enable ? (
                     <>
                         <div className="frame-heading-container">
-                            <h2 className="frame-heading frame-heading-documents">Documents</h2>
+                            <h2 className={`frame-heading frame-heading-documents ${availableYearsArray.length < 2 ? 'single-year' : ''}`}>Documents</h2>
                             { availableYearsArray.length > 1 ? (
                                 <DropDownMenu
                                 name="year-selector"
@@ -164,8 +164,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                 displayedOptions={availableYearsArray.map(year => year)}
                                 selected={selectedYear}
                                 onChange={handleYearChange}
-                                className=
-                                "year-selector"
+                                className="year-selector"
                                 />
                             ) : null
                             }
