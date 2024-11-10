@@ -68,7 +68,7 @@ body:has(#account) {
 #documents.frame {
     display: flex;
     flex-flow: column nowrap;
-    overflow: scroll;
+    overflow: auto;
 }
 .coming-soon {
     height: 100%;
@@ -190,7 +190,6 @@ body:has(#account) {
     align-items: center;
     margin: 0;
     /* To remove any default margins from the h3 */
-    var(--font-size-20);
     /* Optional: adjust based on your design */
 }
 

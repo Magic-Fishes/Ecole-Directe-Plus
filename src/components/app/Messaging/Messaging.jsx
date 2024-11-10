@@ -307,9 +307,11 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                                             moveMessage(message.id, 0, controller);
                                                         }
                                                     }
-                                                    const controller = new AbortController();
-                                                    await deleteFolder(selectedFolder, controller);
-                                                    setSelectedFolder(0);
+                                                    setTimeout(async () => {
+                                                        const controller = new AbortController();
+                                                        await deleteFolder(selectedFolder, controller);
+                                                        setSelectedFolder(0);
+                                                    }, 100);                          
                                                 }}><DeleteIcon className="edit-folder-icon-tooltip delete testeee" />Supprimer</button>
                                             </li>
                                         </ul>
