@@ -64,7 +64,7 @@ export default function LandingPage({ token, accountsList }) {
             rootMargin: "0px 0px -250px 0px",
             threshold: 0.1,
         })
-
+        
         if (communitySectionRef.current && openSourceSectionRef.current) {
             observer.observe(communitySectionRef.current)
             observer.observe(openSourceSectionRef.current)

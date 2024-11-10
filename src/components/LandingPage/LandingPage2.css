@@ -1,3 +1,5 @@
+
+
 html:has(.landing-page) {
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -64,12 +66,10 @@ html:has(.landing-page) {
     flex-flow: row nowrap;
     gap: 8px;
 }
-
 .landing-page .affiliation-disclaimer svg {
     height: 12px;
     transform: scale(1.6);
 }
-
 .landing-page .affiliation-disclaimer svg path {
     stroke: rgb(var(--text-color-alt));
 }
@@ -91,11 +91,9 @@ html:has(.landing-page) {
 .landing-page h1 {
     font-size: var(--font-size-36);
 }
-
 .landing-page .heading-emphasis {
     color: rgb(var(--text-color-alt));
 }
-
 #home p {
     color: rgb(var(--text-color-alt));
     margin: 0 auto;
@@ -114,7 +112,6 @@ html:has(.landing-page) {
     outline: none;
     overflow: hidden;
 }
-
 .landing-page .login-call-to-action::after {
     content: "-->";
     display: inline-block;
@@ -131,7 +128,6 @@ html:has(.landing-page) {
     color: rgb(var(--text-color-main-reverse));
     box-shadow: 0 0 20px rgb(var(--text-color-main), .3);
 }
-
 .landing-page .login-call-to-action:is(:hover, :focus-visible)::after {
     content: "-->";
     opacity: 1;
@@ -152,22 +148,18 @@ html:has(.landing-page) {
     position: relative;
     transition: transform .3s ease;
 }
-
 .landing-page .fade-out-image:has(.mobile) {
     width: min(350px, calc(100% - 40px));
 }
-
 .landing-page .fade-out-image:has(.tablet) {
     width: min(450px, calc(100% - 40px));
 }
-
 .landing-page .fade-out-image img {
     width: 100%;
     display: block;
     border: 1px solid rgba(var(--text-color-alt), .2);
     border-radius: 10px;
 }
-
 .landing-page .fade-out-image::after {
     content: "";
     background: linear-gradient(180deg, transparent, rgb(var(--background-color-0)) 90%, rgb(var(--background-color-0)));
@@ -225,11 +217,9 @@ html:has(.landing-page) {
 #bento .bento-card h4 {
     margin-bottom: 10px;
 }
-
 #bento .bento-card p {
     color: rgb(var(--text-color-alt));
 }
-
 #bento .bento-card:hover p {
     color: rgba(var(--text-color-main), .9);
 }
@@ -238,33 +228,13 @@ html:has(.landing-page) {
     background-color: rgba(var(--background-color-0), .95);
 }
 
-.div1 {
-    grid-area: 1 / 1 / 2 / 2;
-}
-
-.div2 {
-    grid-area: 1 / 2 / 3 / 3;
-}
-
-.div3 {
-    grid-area: 2 / 1 / 4 / 2;
-}
-
-.div4 {
-    grid-area: 3 / 2 / 4 / 3;
-}
-
-.div5 {
-    grid-area: 4 / 1 / 5 / 2;
-}
-
-.div6 {
-    grid-area: 5 / 1 / 6 / 2;
-}
-
-.div7 {
-    grid-area: 4 / 2 / 6 / 3;
-}
+.div1 { grid-area: 1 / 1 / 2 / 2; }
+.div2 { grid-area: 1 / 2 / 3 / 3; }
+.div3 { grid-area: 2 / 1 / 4 / 2; }
+.div4 { grid-area: 3 / 2 / 4 / 3; }
+.div5 { grid-area: 4 / 1 / 5 / 2; }
+.div6 { grid-area: 5 / 1 / 6 / 2; }
+.div7 { grid-area: 4 / 2 / 6 / 3; }
 
 #bento .div3 .inner-container {
     height: 100%;
@@ -341,11 +311,11 @@ html:has(.landing-page) {
     scale: -1 1;
 }
 
-#bento .div3 .theme-buttons button:first-child svg path {
+#bento .div3 .theme-buttons button:first-child svg path{
     stroke: black;
 }
 
-#bento .div3 .theme-buttons button:last-child svg path {
+#bento .div3 .theme-buttons button:last-child svg path{
     stroke: white;
 }
 
@@ -356,13 +326,11 @@ html:has(.landing-page) {
 .parallax-item {
     position: absolute;
 }
-
 .parallax-item.blob1 {
     left: -80px;
     top: min(130vh, 1500px);
     width: 200px;
 }
-
 .parallax-item.blob2 {
     right: -70px;
     top: min(130vh, 1500px);
@@ -375,7 +343,6 @@ html:has(.landing-page) {
     filter: blur(50px);
     animation: blob-rotate linear 10s infinite;
 }
-
 .blob path {
     fill: rgb(var(--text-color-alt))
 }
@@ -384,7 +351,6 @@ html:has(.landing-page) {
     from {
         rotate: 0deg;
     }
-
     to {
         rotate: 359deg;
     }
@@ -418,7 +384,7 @@ html:has(.landing-page) {
     text-decoration-color: rgba(var(--text-color-main), 1);
 }
 
-.floating-section>h2 {
+.floating-section > h2 {
     padding-inline: 10%;
     text-align: center;
     opacity: 0;
@@ -426,7 +392,7 @@ html:has(.landing-page) {
     transition: opacity 2s, transform 1s;
 }
 
-.floating-section>div {
+.floating-section > div {
     width: 50%;
     display: flex;
     flex-flow: row wrap;
@@ -435,7 +401,7 @@ html:has(.landing-page) {
     gap: 50px;
 }
 
-.floating-section>div> :is(p, a) {
+.floating-section > div > :is(p, a) {
     opacity: 0;
     transform: translateY(-50px);
     transition: opacity 2s, transform 1s;
@@ -447,18 +413,16 @@ html:has(.landing-page) {
     color: rgb(var(--text-color-alt));
 }
 
-.floating-section>div>a {
+.floating-section > div > a {
     width: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 2s, transform 2s, filter .2s;
 }
-
-.floating-section>div>a:is(:hover, :focus-visible) {
+.floating-section > div > a:is(:hover, :focus-visible) {
     filter: drop-shadow(0 0 15px rgba(var(--text-color-main), .3))
 }
-
 .floating-section .github-logo {
     width: 180px;
 }
@@ -486,15 +450,12 @@ html:has(.landing-page) {
     display: flex;
     flex-flow: column nowrap;
 }
-
 .last-call-to-action h3 {
     font-size: var(--font-size-24);
 }
-
 .last-call-to-action p {
     color: rgb(var(--text-color-alt));
 }
-
 .last-call-to-action a {
     width: max-content;
     margin: 0 auto;
@@ -549,15 +510,12 @@ html:has(.landing-page) {
     color: rgb(var(--text-color-alt));
     transition: .1s;
 }
-
 .landing-page ul.sitemap a:is(:hover, :focus-visible) {
     color: rgb(var(--text-color-main));
 }
-
 .landing-page ul.sitemap a:active {
     opacity: .8;
 }
-
 .landing-page ul.sitemap a.disabled {
     pointer-events: none;
     opacity: .5;
@@ -567,7 +525,6 @@ html:has(.landing-page) {
     .landing-page footer {
         flex-flow: column nowrap;
     }
-
     .landing-page .footer-logo {
         flex: auto;
     }
@@ -586,8 +543,8 @@ html:has(.landing-page) {
         flex-direction: column;
         align-items: center;
     }
-
-    #bento .bento-grid>div {
+    
+    #bento .bento-grid > div {
         max-width: 400px;
     }
 }

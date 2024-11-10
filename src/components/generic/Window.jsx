@@ -812,11 +812,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
             setWindowArrangement(windowArrangement);
         } else {
-            if (windowsContainer.current.allowWindowsManagement) {
+            if (allowWindowsManagement) {
                 console.error("windowsContainer has no \"name\" attribute but you have allowed window management: window rearrangements will not be saved");
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout, allowWindowsManagement]);
 
 
     useEffect(() => {

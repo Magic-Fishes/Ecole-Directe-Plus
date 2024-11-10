@@ -75,7 +75,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
     useEffect(() => {
         const newMessages = useUserData("sortedMessages").get();
         setMessages(newMessages);
-    }, [useUserData("sortedMessages")]);
+    }, [useUserData("sortedMessages").get()]);
 
 
     // JSX

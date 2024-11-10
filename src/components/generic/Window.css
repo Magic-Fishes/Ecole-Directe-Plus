@@ -36,9 +36,9 @@
     flex-direction: column;
 }
 
-/* .windows-layout *, .windows-layout {
+.windows-layout *, .windows-layout {
     min-width: 0;
-} */
+}
 
 .window {
     background-color: rgb(var(--background-color-2));

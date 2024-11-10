@@ -101,7 +101,7 @@
 
 #message-reader .email-footer {
     height: 100px;
-    overflow: auto;
+    overflow: hidden;
 }
 
 
@@ -206,8 +206,7 @@
 }
 
 .scroll-footer-div {
-    width: -moz-available;
-    /* Add for other brothers */
+    flex: 1;
 }
 
 .no-attatchemnts-messages p {

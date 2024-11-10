@@ -46,7 +46,7 @@
     flex-grow: 0.2; */
     flex-grow: 0.25;
     width: 100px;
-
+    
     /* background-color: red; */
 }
 
@@ -68,7 +68,6 @@
     border-radius: 7px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     pointer-events: none;
-
 }
 
 .header-logo-container #header-logo {
@@ -108,25 +107,11 @@
     height: inherit;
 }
 
-li#dashboard.header-button-container {
-    order: 1;
-}
-
-li#grades.header-button-container {
-    order: 2;
-}
-
-li#homeworks.header-button-container {
-    order: 3;
-}
-
-li#timetable.header-button-container {
-    order: 4;
-}
-
-li#messaging.header-button-container {
-    order: 5;
-}
+li#dashboard.header-button-container { order: 1; }
+li#grades.header-button-container { order: 2; }
+li#homeworks.header-button-container { order: 3; }
+li#timetable.header-button-container { order: 4; }
+li#messaging.header-button-container { order: 5; }
 
 
 /* - - - account-selection - - - */
@@ -149,7 +134,7 @@ li#messaging.header-button-container {
 
 main.content {
     height: 100%;
-    overflow: visible;
+    overflow: auto;
     scroll-behavior: smooth;
     /* overscroll-behavior: contain; */
     width: 100%;
@@ -208,7 +193,6 @@ main.content {
 }
 
 @media only screen and (max-width: 450px) {
-
     .standalone .header-menu {
         padding-bottom: 25px;
     }
@@ -217,7 +201,6 @@ main.content {
     .header-container:not(.standalone) {
         max-height: 75px;
     }
-
 
     .header-button .icon-container svg {
         height: 45px
@@ -232,24 +215,4 @@ main.content {
     .header-menu {
         border-radius: 0 0 20px 20px;
     }
-}
-
-.content:has(#account) {
-    overflow: scroll;
-}
-
-.content:has(#messaging) {
-    overflow: scroll;
-}
-
-.content:has(#homeworks) {
-    overflow: scroll;
-}
-
-.content:has(#dashboard) {
-    overflow: scroll;
-}
-
-.content:has(#grades) {
-    overflow: scroll;
 }
