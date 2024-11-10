@@ -300,6 +300,13 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                             </li>
                                             <li className="edit-folder-button-container">
                                                 <button className="edit-folder-button delete" onClick={async () => {
+                                                    // if the folder dosn't contain any message, we can delete it directly but if it contains messages, we need to move them to the inbox
+                                                    if (messages.get().filter((message) => message.folderId === selectedFolder).length > 0) {
+                                                        const controller = new AbortController();
+                                                        for (let message of messages.get().filter((message) => message.folderId === selectedFolder)) {
+                                                            moveMessage(message.id, 0, controller);
+                                                        }
+                                                    }
                                                     const controller = new AbortController();
                                                     await deleteFolder(selectedFolder, controller);
                                                     setSelectedFolder(0);
