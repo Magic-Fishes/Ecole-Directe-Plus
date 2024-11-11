@@ -71,7 +71,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.4.0";
-const apiVersion = "4.60.5";
+const apiVersion = "4.64.0";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -273,6 +273,7 @@ export default function App({ edpFetch }) {
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isEDPUnblockInstalled, setIsEDPUnblockInstalled] = useState(true);
+    const [isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
@@ -516,6 +517,20 @@ export default function App({ edpFetch }) {
     useEffect(() => {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
+
+    useEffect(() => {
+        const handleMessage = (event) => {
+            if (event.data.type === "EDP_UNBLOCK") {
+                console.log("EDP Unblock v" + event.data.payload.version + " installed");
+                setIsEDPUnblockActuallyInstalled(true);
+            }
+        };
+
+        window.addEventListener("message", handleMessage, false);
+        return () => {
+            window.removeEventListener("message", handleMessage, false);
+        }
+    }, [])
 
     // fonctions de type utils pour modifier le userData
     function changeUserData(data, value) {
@@ -1442,7 +1457,12 @@ export default function App({ edpFetch }) {
                     }
                     let token = response.token // collecte du token
                     let accountsList = [];
-                    let accounts = response.data.accounts[0];
+                    let accounts = response.data.accounts.find((account) => account.typeCompte !== "P") ?? response.data.accounts[0];
+                    if (response.data.accounts.some((account) => account.typeCompte === "P")) {
+                        messages.submitButtonText = "Échec de la connexion";
+                        messages.submitErrorMessage = "Les comptes enseignants ne sont pas supportés par Ecole Directe Plus";
+                        return;
+                    }
                     const accountType = accounts.typeCompte; // collecte du type de compte
                     if (accountType === "E") {
                         // compte élève
@@ -2549,6 +2569,8 @@ export default function App({ edpFetch }) {
                     handleEdBan={handleEdBan}
                     isEDPUnblockInstalled={isEDPUnblockInstalled}
                     setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
+                    isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled}
+                    setIsEDPUnblockActuallyInstalled={setIsEDPUnblockActuallyInstalled}
                     requireA2F={requireA2F}
                     setRequireA2F={setRequireA2F}
                     fetchA2F={fetchA2F}
@@ -2568,7 +2590,7 @@ export default function App({ edpFetch }) {
                     path: "feedback",
                 },
                 {
-                    element: <EdpUnblock />,
+                    element: <EdpUnblock isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled} />,
                     path: "edp-unblock",
                 },
                 {
@@ -2588,7 +2610,7 @@ export default function App({ edpFetch }) {
                     path: "unsubscribe-emails",
                 },
                 {
-                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
+                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                 },
                 {

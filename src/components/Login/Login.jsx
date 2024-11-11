@@ -12,20 +12,20 @@ import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import "./Login.css";
 import ExtensionIcon from "../graphics/ExtensionIcon";
 
-if (sessionStorage.getItem('april') === "true"){
+if (sessionStorage.getItem('april') === "true") {
     import("./april.css").then((something) => {
         console.log("April fools styles loaded");
     })
 }
 
-export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, currentEDPVersion }) {
+export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, isEDPUnblockInstalledActuallyInstalled, currentEDPVersion }) {
     const location = useLocation();
 
     if (localStorage.userSettings) {
         if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
             document.body.style.backgroundColor = "white";
         } else {
-            document.body.style.backgroundColor = "" ;
+            document.body.style.backgroundColor = "";
         }
     }
 
@@ -35,11 +35,14 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
             <Link to="/">
                 <EDPLogoFullWidth className="login-logo" id="outside-container" alt="Logo Ecole Directe Plus" />
             </Link>
-            <Link to="/edp-unblock" id="edp-unblock-ad">
-                <ExtensionIcon className="extension-icon" />
-                <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>
-                <span to="/edp-unblock#about">En savoir plus</span>
-            </Link>
+            {!isEDPUnblockInstalledActuallyInstalled
+                ? <Link to="/edp-unblock" id="edp-unblock-ad">
+                    <ExtensionIcon className="extension-icon" />
+                    <span>Installez l'extension EDP Unblock pour accéder en continu à Ecole Directe Plus ! <span className="edpu-explanation">Ecole Directe Plus a besoin de son extension pour accéder au contenu fourni par l’API d’EcoleDirecte.</span></span>
+                    <span to="/edp-unblock#about">En savoir plus</span>
+                </Link>
+                : null
+            }
             <span className="login-social">
                 <DiscordLink />
                 <GithubLink />
