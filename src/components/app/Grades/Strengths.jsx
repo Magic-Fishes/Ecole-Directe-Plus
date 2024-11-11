@@ -13,7 +13,6 @@ import Grade from "./Grade";
 import ReverseIcon from "../../graphics/ReverseIcon";
 
 import "./Strengths.css";
-import ReverseIcon from "../../graphics/ReverseIcon";
 
 export default function Strengths({ activeAccount, grades, selectedPeriod, className = "", ...props }) {
     const settings = useContext(SettingsContext);
@@ -22,8 +21,6 @@ export default function Strengths({ activeAccount, grades, selectedPeriod, class
     const [strengths, setStrengths] = useState([]);
     const [weaknesses, setWeaknesses] = useState([]);
     const [displayType, setDisplayType] = useState(0); // 0: strengths; 1: weaknesses
-    const { useUserSettings } = useContext(AppContext);
-    const settings = useUserSettings();
 
     useEffect(() => {
         function strengthsCalculation() {
