@@ -65,42 +65,43 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
         }
     }, [schoolLife, isLoggedIn, activeAccount]);
 
+    const [oldCurrentYear, setOldCurrentYear] = useState('');
+
     const [selectedYear, setSelectedYear] = useState(settings.get("isSchoolYearEnabled") ? settings.get("schoolYear").join("-") : availableYearsArray[availableYearsArray.length - 1]);
     const [documents, setDocuments] = useState({ factures: [], notes: [], viescolaire: [], administratifs: [], entreprises: [] });
 
     // handle year change of dropdown
     function handleYearChange(year) {
+        setOldCurrentYear(selectedYear);
         setSelectedYear(year);
         console.log("Selected year:", year);
     }
 
     // fetch documents on page load and year change
     useEffect(() => {
-        setIsLoadingDocuments(true);
         if (isLoggedIn && selectedYear) {
             let data = userData.get("administrativeDocuments");
-            if (data === undefined) {
-                const controller = new AbortController();
+            if (data === undefined || oldCurrentYear !== selectedYear) {
+                setOldCurrentYear(selectedYear);
                 const fetchDocuments = async () => {
                     try {
                         setIsLoadingDocuments(true);
                         let selectedYearFetch = selectedYear === availableYearsArray[availableYearsArray.length - 1] ? '' : selectedYear;
-                        await fetchAdministrativeDocuments(selectedYearFetch, controller);
+                        await fetchAdministrativeDocuments(selectedYearFetch);
                     } catch (error) {
                         console.error("Error fetching documents:", error);
+                    } finally {
+                        setTimeout(() => {
+                            setIsLoadingDocuments(false);
+                        } , 0);
                     }
                 };
                 fetchDocuments();
-                
-                return () => {
-                    controller.abort();
-                };
+            } else {
+                setDocuments(data);
             }
-
-            setDocuments(data);
-            setIsLoadingDocuments(false);
         }
-    }, [selectedYear, isLoggedIn, userData.get("administrativeDocuments")]);
+    }, [oldCurrentYear, selectedYear, isLoggedIn, userData.get("administrativeDocuments")]);
 
     return (
         <div id="account">
