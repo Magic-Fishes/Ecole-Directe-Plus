@@ -18,6 +18,8 @@ import UpcomingAssignments from "../Homeworks/UpcomingAssignments";
 import PopUp from "../../generic/PopUps/PopUp";
 
 import "./Dashboard.css";
+import { formatDateRelative } from "../../../utils/date";
+import FileComponent from "../../generic/FileComponent";
 
 export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, isTabletLayout }) {
     const userData = useContext(UserDataContext);
@@ -120,8 +122,18 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
                 <EncodedHTMLDiv>{selectedTask.sessionContent}</EncodedHTMLDiv>
             </BottomSheet>}
             {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && <PopUp className="task-file-pop-up" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
-                <h2>Fichiers</h2>
-                <div>{selectedTask.file}</div>
+            <div className="header-container">
+                    <h2 className="file-title">Fichiers joints</h2>
+                    <p className="file-subject">{selectedTask.subject} • {formatDateRelative(new Date(selectedTask.addDate))}</p>
+                </div>
+                <div className="file-scroller">
+                    <div className="file-wrapper">
+                        <p className="file-subject">Note : maintenir pour télécharger</p>
+                        {selectedTask.type === "task"
+                            ? selectedTask.files.map((file) => <FileComponent key={file.id} file={file} />)
+                            : selectedTask.sessionContentFiles.map((file) => <FileComponent key={file.id} file={file} />)}
+                    </div>
+                </div>
             </PopUp>}
         </div>
     )

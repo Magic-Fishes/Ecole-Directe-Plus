@@ -169,7 +169,8 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         <div className="links">
                             <Link to={`/app/${activeAccount}/settings`} id="settings-page" onClick={handleClose}><SettingsIcon /> <span className="link-text">Paramètres</span></Link>
                             <Link to={`/app/${activeAccount}/account`} id="account-page" onClick={handleClose}><AccountIcon /> <span className="link-text">Compte</span></Link>
-                            <Link to="#feedback" replace={true} id="feedback" onClick={handleClose}><FeedbackIcon /> <span className="link-text">Faire un retour</span></Link>
+                            {/* TODO: REMOVE THAT SHIT ↓ */}
+                            <Link to={(location.pathname.endsWith("dashboard") || location.pathname.endsWith("homeworks")) ? "/feedback" : "#feedback"} replace={true} id="feedback" onClick={handleClose}><FeedbackIcon /> <span className="link-text">Faire un retour</span></Link>
                             <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
                         </div>
                         <div className="change-display-theme-shortcut">

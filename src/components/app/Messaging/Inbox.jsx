@@ -15,9 +15,10 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
     const { useUserData, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
     const [search, setSearch] = useState("");
-    const messages = useUserData("sortedMessages");
-    const messageFolders = useUserData("messageFolders");
 
+    const [messages, setMessages] = useState([]);
+
+    const messageFolders = useUserData("messageFolders");
     const contentLoadersRandomValues = useRef({ authorWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), subjectWidth: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 150) + 150), dateWidth: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 50) + 50), containsFiles: Array.from({ length: 13 }, (_) => (Math.random() > .6)) })
 
     // behavior
@@ -42,7 +43,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         }
 
         // mark as unread locally and kick the content so as to trigger a refetch the next reading (as the "mark as read" feature is trigger when fetching the message)
-        const oldMsg = messages.get();
+        const oldMsg = messages;
         const msgIdx = oldMsg.findIndex((item) => item.id === msg.id);
         oldMsg[msgIdx].read = false;
         oldMsg[msgIdx].content = null;
@@ -55,15 +56,20 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
     }
 
     const filterResearch = (message) => {
-        let regexp;
+        // let regexp;
+        let query = removeAccents(search.toLowerCase());
+        if (query === "") {
+            return true;
+        }
         try {
-            regexp = new RegExp(removeAccents(search.toLowerCase()));
+            // regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch { return -1 }
-        const filterBy = [message.subject, message.from.name, message.content?.content, message.files?.map((file) => file.name)].flat();
+        const filterBy = [message.subject, message.from.nom, message.content?.content, message.files?.map((file) => file.name)].flat();
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());
-                if (regexp.test(filter)) {
+                // if (regexp.test(filter)) {
+                if (filter.includes(query)) {
                     return true;
                 }
             }
@@ -71,16 +77,22 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         return false;
     }
 
+    useEffect(() => {
+        const newMessages = useUserData("sortedMessages").get();
+        setMessages(newMessages);
+    }, [useUserData("sortedMessages").get()]);
+
+
     // JSX
     return (
         <div id="inbox">
             <TextInput onChange={handleChange} value={search} textType={"text"} placeholder={"Rechercher"} className="inbox-search-input" />
-            {messages.get() !== undefined && (messageFolders.get() !== undefined && messageFolders.get()?.find((folder) => folder.id === selectedFolder)?.fetched)
-                ? (messages.get().filter((message) => message.folderId === selectedFolder).length > 0
+            {messages !== undefined && (messageFolders.get() !== undefined && messageFolders.get()?.find((folder) => folder.id === selectedFolder)?.fetched)
+                ? (messages.filter((message) => message.folderId === selectedFolder).length > 0
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
-                            {messages.get().filter((message) => message.folderId === selectedFolder).filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
-                                <h4 className="message-subject"><span className="author-name">{settings.get("isStreamerModeEnabled") ? message.from.name.split(" ")[0] + " " + "-".repeat(message.from.name.length) : message.from.name}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon" /></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
+                            {messages.filter((message) => message.folderId === selectedFolder).filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
+                                <h4 className="message-subject"><span className="author-name">{message.from.civilite + " " + (settings.get("isStreamerModeEnabled") ? "-".repeat((message.from.nom).length) : message.from.nom)}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon" /></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
                                     month: "long",
@@ -91,7 +103,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
                             </li>)}
                         </ul>
                     </ScrollShadedDiv>
-                    : (messages.get().length > 0
+                    : (messages.length > 0
                         ? <p className="no-message-received">Ce dossier est vide. Peut-être qu'il attend juste un miracle... ou un clic</p>
                         : <p className="no-message-received">Vous n'avez reçu aucun message. Tendez l'oreille et profitez de cet instant de silence</p>)
                 )

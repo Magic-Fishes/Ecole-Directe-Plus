@@ -75,7 +75,8 @@ function consoleLogEDPLogo() {
 
 consoleLogEDPLogo();
 
-const apiVersion = "4.60.5";
+const currentEDPVersion = "0.4.0";
+const apiVersion = "4.64.0";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -289,6 +290,7 @@ export default function App({ edpFetch }) {
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isEDPUnblockInstalled, setIsEDPUnblockInstalled] = useState(true);
+    const [isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
@@ -421,6 +423,20 @@ export default function App({ edpFetch }) {
         localStorage.setItem("oldActiveAccount", selectedUserIndex.value)
     }, [selectedUserIndex.value]);
 
+    useEffect(() => {
+        const handleMessage = (event) => {
+            if (event.data.type === "EDP_UNBLOCK") {
+                console.log("EDP Unblock v" + event.data.payload.version + " installed");
+                setIsEDPUnblockActuallyInstalled(true);
+            }
+        };
+
+        window.addEventListener("message", handleMessage, false);
+        return () => {
+            window.removeEventListener("message", handleMessage, false);
+        }
+    }, [])
+
     /////////// USER DATA ///////////
 
     useEffect(() => {
@@ -477,6 +493,12 @@ export default function App({ edpFetch }) {
                         } else {
                             document.documentElement.style.fontSize = newFontSize + "em";
                         }
+                    }
+                } else if (window.innerHeight < 900) {
+                    if (window.innerHeight >= 650) {
+                        document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
+                    } else {
+                        document.documentElement.style.zoom = .85;
                     }
                 } else {
                     document.documentElement.style.fontSize = "";
@@ -556,8 +578,350 @@ export default function App({ edpFetch }) {
             }
         }
         period.generalAverage = calcGeneralAverage(period)
-        grades[periodKey] = period;
-        ("grades", grades); // !:! wtf
+        sortedGrades[periodKey] = period;
+        changeUserData("sortedGrades", sortedGrades);
+    }
+
+    function setDefaultPeriod(sortedGrades = getUserData("sortedGrades")) {
+        let currentPeriod = 0;
+        for (let periodCode in sortedGrades) {
+            if (Date.now() > sortedGrades[periodCode].endDate) {
+                if (currentPeriod < Object.keys(sortedGrades).length - 1) {
+                    currentPeriod++;
+                }
+            }
+        }
+        changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
+    }
+
+    function sortGrades(grades, activeAccount) {
+        /**
+         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
+         */
+        const periodsFromJson = grades[activeAccount].periodes;
+        const periods = {};
+        const generalAverageHistory = {}; // used for charts
+        const classGeneralAverageHistory = {}; // used for charts
+        const streakScoreHistory = {}; // used for charts
+        const subjectsComparativeInformation = {};
+        const totalBadges = {
+            "star": 0,
+            "bestStudent": 0,
+            "greatStudent": 0,
+            "stonks": 0,
+            "keepOnFire": 0,
+            "meh": 0,
+        };
+        const newLastGrades = []
+        if (periodsFromJson !== undefined) {
+            for (let period of periodsFromJson) {
+                if (period) {
+                    const newPeriod = {};
+                    subjectsComparativeInformation[period.codePeriode] = [];
+
+                    newPeriod.streak = 0;
+                    newPeriod.maxStreak = 0;
+                    newPeriod.name = period.periode;
+                    newPeriod.code = period.codePeriode;
+                    newPeriod.startDate = new Date(period.dateDebut);
+                    newPeriod.endDate = new Date(period.dateFin);
+                    newPeriod.isMockExam = period.examenBlanc;
+                    newPeriod.MTname = period.ensembleMatieres.nomPP;
+                    newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
+                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
+                    newPeriod.subjects = {};
+                    let i = 0;
+                    for (let matiere of period.ensembleMatieres.disciplines) {
+                        // if (matiere.sousMatiere) {
+                        //     continue;
+                        // }
+                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
+                        if (matiere.groupeMatiere) {
+                            subjectCode = "category" + i.toString();
+                            i++;
+                        }
+                        const newSubject = {};
+                        newSubject.code = subjectCode;
+                        newSubject.elementType = "subject";
+                        newSubject.id = matiere.id.toString();
+                        if (matiere.sousMatiere) {
+                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
+                        } else {
+                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        }
+                        newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
+                        newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
+                        newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
+                        newSubject.coef = matiere.coef;
+                        newSubject.size = matiere.effectif;
+                        newSubject.rank = matiere.rang;
+                        newSubject.isCategory = matiere.groupeMatiere;
+                        newSubject.isSubSubject = matiere.sousMatiere;
+                        newSubject.teachers = matiere.professeurs;
+                        newSubject.appreciations = matiere.appreciations;
+                        newSubject.grades = [];
+                        newSubject.average = "N/A";
+                        newSubject.streak = 0;
+                        newSubject.badges = {
+                            star: 0,
+                            bestStudent: 0,
+                            greatStudent: 0,
+                            stonks: 0,
+                            keepOnFire: 0,
+                            meh: 0,
+                        }
+                        newPeriod.subjects[subjectCode] = newSubject;
+                        subjectsComparativeInformation[period.codePeriode].push({
+                            subjectFullname: newSubject.name,
+                            classAverage: newSubject.classAverage,
+                            minAverage: newSubject.minAverage,
+                            maxAverage: newSubject.maxAverage
+                        });
+                    }
+                    periods[period.codePeriode] = newPeriod;
+                    generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
+                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
+                    streakScoreHistory[period.codePeriode] = [];
+                }
+            }
+            const gradesFromJson = grades[activeAccount].notes;
+            const subjectDatas = {};
+
+            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
+
+            for (let grade of (gradesFromJson ?? [])) {
+                // handle mock exam periods
+                let tempPeriodCode = grade.codePeriode;
+                let newPeriodCode = tempPeriodCode;
+                if (periods[tempPeriodCode].isMockExam) {
+                    newPeriodCode = tempPeriodCode.slice(0, 4);
+                    if (periods[newPeriodCode] === undefined) {
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
+                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
+                    }
+                }
+
+                const periodCode = newPeriodCode;
+                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
+                // try to rebuild the subject if it doesn't exist (happen when changing school year)
+                if (periods[periodCode].subjects[subjectCode] === undefined) {
+                    periods[periodCode].subjects[subjectCode] = {
+                        code: subjectCode,
+                        elementType: "subject",
+                        name: subjectCode,
+                        classAverage: "N/A",
+                        minAverage: "N/A",
+                        maxAverage: "N/A",
+                        coef: 1,
+                        size: "N/A",
+                        isCategory: false,
+                        teachers: [],
+                        appreciations: [],
+                        grades: [],
+                        average: 20,
+                        streak: 0,
+                        badges: {
+                            star: 0,
+                            bestStudent: 0,
+                            greatStudent: 0,
+                            stonks: 0,
+                            keepOnFire: 0,
+                            meh: 0,
+                        }
+                    }
+                }
+
+                const newGrade = {};
+                newGrade.elementType = "grade";
+                newGrade.id = grade.id.toString();
+                newGrade.name = grade.devoir;
+                newGrade.type = grade.typeDevoir;
+                newGrade.date = new Date(grade.date);
+                newGrade.entryDate = new Date(grade.dateSaisie);
+                newGrade.coef = safeParseFloat(grade.coef);
+                newGrade.scale = safeParseFloat(grade.noteSur);
+                newGrade.value = getGradeValue(grade.valeur);
+                newGrade.classMin = safeParseFloat(grade.minClasse);
+                newGrade.classMax = safeParseFloat(grade.maxClasse);
+                newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
+                newGrade.subjectName = grade.libelleMatiere;
+                newGrade.isSignificant = !grade.nonSignificatif;
+                newGrade.examSubjectSRC = grade.uncSujet;
+                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+                newGrade.isReal = true;
+                /* Si newGrade.isReal est faux :
+                    pas de :
+                        - badges
+                        - streak
+                        - moyenne de classe/min/max
+                        - correction ni sujet
+                        - date
+                    différences : 
+                        - id = randomUUID
+                    choisit par l'utilisateur : 
+                        - name
+                        - coef
+                        - scale
+                        - value
+                        - type
+                */
+                if (!subjectDatas.hasOwnProperty(periodCode)) {
+                    subjectDatas[periodCode] = {};
+                }
+                if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
+                    subjectDatas[periodCode][subjectCode] = [];
+                }
+                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
+                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
+                const subjectAverage = periods[periodCode].subjects[subjectCode].average;
+                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
+                const average = calcAverage(subjectDatas[periodCode][subjectCode]);
+                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
+
+                // streak management
+                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
+                if (newGrade.upTheStreak) {
+                    periods[periodCode].streak += 1;
+                    if (periods[periodCode].streak > periods[periodCode].maxStreak) {
+                        periods[periodCode].maxStreak = periods[periodCode].streak;
+                    }
+                    periods[periodCode].totalStreak += 1;
+                    periods[periodCode].subjects[subjectCode].streak += 1;
+                } else {
+                    if (newGrade.isSignificant && !["Abs", "Disp", "NE", "EA", "Comp"].includes(newGrade.value)) {
+                        periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
+                        periods[periodCode].subjects[subjectCode].streak = 0;
+
+                        // enlève le "upTheStreak" des notes précédant celle qu'on considère
+                        for (let grade of periods[periodCode].subjects[subjectCode].grades) {
+                            if (grade.upTheStreak) {
+                                grade.upTheStreak = "maybe";
+                            }
+                        }
+                    }
+                }
+                streakScoreHistory[periodCode].push(periods[periodCode].streak);
+
+                periods[periodCode].subjects[subjectCode].average = average;
+                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
+
+                const category = findCategory(periods[periodCode], subjectCode);
+                if (category !== null) {
+                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
+                    periods[periodCode].subjects[category.code].average = categoryAverage;
+                }
+                const generalAverage = calcGeneralAverage(periods[periodCode]);
+                generalAverageHistory[periodCode].generalAverages.push(generalAverage);
+                generalAverageHistory[periodCode].dates.push(newGrade.date);
+                periods[periodCode].generalAverage = generalAverage;
+
+                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
+                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
+                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
+                periods[periodCode].classGeneralAverage = classGeneralAverage;
+
+                // création des badges
+                const gradeBadges = [];
+                if (!isNaN(newGrade.value)) {
+                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
+                        gradeBadges.push("star");
+                        periods[periodCode].subjects[subjectCode].badges.star++
+                        totalBadges.star++
+                    }
+                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
+                        gradeBadges.push("bestStudent");
+                        periods[periodCode].subjects[subjectCode].badges.bestStudent++
+                        totalBadges.bestStudent++
+                    }
+                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
+                        gradeBadges.push("greatStudent");
+                        periods[periodCode].subjects[subjectCode].badges.greatStudent++
+                        totalBadges.greatStudent++
+                    }
+                    if ((newGrade.value / newGrade.scale * 20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
+                        gradeBadges.push("stonks");
+                        periods[periodCode].subjects[subjectCode].badges.stonks++
+                        totalBadges.stonks++
+                    }
+                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
+                        gradeBadges.push("keepOnFire");
+                        periods[periodCode].subjects[subjectCode].badges.keepOnFire++
+                        totalBadges.keepOnFire++
+                    }
+                    if ((newGrade.value / newGrade.scale * 20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
+                        gradeBadges.push("meh");
+                        periods[periodCode].subjects[subjectCode].badges.meh++
+                        totalBadges.meh++
+                    }
+                }
+                newGrade.badges = gradeBadges;
+                newGrade.skill = formatSkills(grade.elementsProgramme)
+
+                periods[periodCode].subjects[subjectCode].grades.push(newGrade);
+                if (lastGrades.includes(grade)) {
+                    newLastGrades.push(newGrade)
+                }
+            }
+        }
+
+        // supprime les périodes vides et examens blancs
+        let i = 0;
+        let firstPeriod;
+        for (const key in periods) {
+            if (i === 0) {
+                firstPeriod = { key: key, value: periods[key] }
+            }
+            i++;
+            let isEmpty = true;
+            if (periods[key])
+                for (const subject in periods[key].subjects) {
+                    if (periods[key].subjects[subject].grades.length !== 0) {
+                        isEmpty = false;
+                    }
+                }
+            if (isEmpty || periods[key].isMockExam) {
+                delete periods[key];
+            }
+        }
+        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
+        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
+            periods[firstPeriod.key] = firstPeriod.value;
+        }
+
+        const settings = grades[activeAccount].parametrage;
+        const enabledFeatures = {};
+
+        enabledFeatures.moyenneMin = settings.moyenneMin;
+        enabledFeatures.moyenneMax = settings.moyenneMax;
+        enabledFeatures.coefficient = settings.coefficientNote;
+
+        // add the average of all subjects a special type of chart
+        for (const period in periods) {
+            for (const subject in periods[period].subjects) {
+                for (const subjectID in subjectsComparativeInformation[period]) {
+                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
+                        const newAverage = periods[period].subjects[subject].average;
+                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
+                            subjectsComparativeInformation[period].splice(subjectID, 1);
+                            break;
+                        }
+                        subjectsComparativeInformation[period][subjectID].average = newAverage;
+                        break;
+                    }
+                }
+            }
+        }
+
+        changeUserData("totalBadges", totalBadges);
+        changeUserData("sortedGrades", periods);
+        changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
+        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
+        changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
+        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
+        changeUserData("gradesEnabledFeatures", enabledFeatures);
+        changeUserData("lastGrades", newLastGrades.reverse());
+        setDefaultPeriod(periods)
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -602,6 +966,57 @@ export default function App({ edpFetch }) {
         return sortedHomeworks
     }
 
+    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
+            return [day[0], day[1].map((homework) => {
+                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
+                var contenuDeSeance = homework.contenuDeSeance;
+                if (!aFaire && !contenuDeSeance) {
+                    return null;
+                }
+
+                if (!contenuDeSeance) {
+                    contenuDeSeance = aFaire.contenuDeSeance;
+                }
+
+                if (aFaire) {
+
+                    const { donneLe, effectue, contenu, documents } = aFaire;
+
+                    return {
+                        id: id,
+                        type: "task",
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: donneLe,
+                        isInterrogation: interrogation,
+                        isDone: effectue,
+                        teacher: nomProf,
+                        content: contenu,
+                        files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+                else {
+                    // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
+                    return {
+                        id: id,
+                        type: "sessionContent",
+                        subjectCode: codeMatiere,
+                        subject: matiere,
+                        addDate: day[0],
+                        teacher: nomProf,
+                        sessionContent: contenuDeSeance.contenu,
+                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
+                    }
+                }
+            }).filter((item) => item)]
+        }))
+        return sortedHomeworks
+    }
+
+
     function sortMessageFolders(messages, origin = 0) {
         const oldMessageFolders = useUserData("messageFolders").get();
         let sortedMessageFolders = messages.classeurs.filter((folder) => (oldMessageFolders === undefined || !oldMessageFolders.some((oldFolder) => oldFolder.id === folder.id))).map((folder) => {
@@ -622,6 +1037,40 @@ export default function App({ edpFetch }) {
         } else {
             sortedMessageFolders.unshift(oldMessageFolders.map((folder) => { folder.id === origin && (folder.fetched = true); return folder }));
             sortedMessageFolders = sortedMessageFolders.flat();
+        }
+        // Add hardcoded folders
+        if (!sortedMessageFolders.some((folder) => folder.id === -1)) {
+            sortedMessageFolders.push({
+                id: -1,
+                name: "Envoyés",
+                fetchInitiated: false,
+                fetched: origin === -1
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -2)) {
+            sortedMessageFolders.push({
+                id: -2,
+                name: "Archivés",
+                fetchInitiated: false,
+                fetched: origin === -2
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -3)) {
+            sortedMessageFolders.push({
+                id: -3,
+                name: "Nouveau dossier",
+                // This is a virtual folder (it doesn't exist at all, it's just a button to create a new folder so it doesn't need to be fetched)
+                fetchInitiated: true,
+                fetched: true
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -4)) {
+            sortedMessageFolders.push({
+                id: -4,
+                name: "Brouillons",
+                fetchInitiated: false,
+                fetched: origin === -4
+            })
         }
 
         return sortedMessageFolders;
@@ -867,7 +1316,7 @@ export default function App({ edpFetch }) {
 
 
     async function fetchMessages(folderId = 0, controller = (new AbortController())) {
-        const oldMessageFolders = userData.messageFolders;
+        const oldMessageFolders = useUserData("messageFolders").get();
         if (oldMessageFolders && oldMessageFolders?.length > 0) {
             if (oldMessageFolders.find((item) => item.id === folderId)?.fetchInitiated) {
                 return;
@@ -882,8 +1331,21 @@ export default function App({ edpFetch }) {
         const data = {
             anneeMessages: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : getCurrentSchoolYear().join("-"),
         }
+        // handle special folders (this is done that way because special folders are not considered as folders by EcoleDirecte but need to be fetched differently)
+        let specialFolderType = "received";
+        if (folderId === -1) {
+            specialFolderType = "sent";
+            // set the folderId to 0 to avoid errors
+            folderId = 0;
+        } else if (folderId === -2) {
+            specialFolderType = "archived";
+            folderId = 0;
+        } else if (folderId === -4) {
+            specialFolderType = "draft";
+            folderId = 0;
+        }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -907,7 +1369,21 @@ export default function App({ edpFetch }) {
                     if (oldSortedMessages === undefined) {
                         oldSortedMessages = [];
                     }
-                    oldSortedMessages.push(sortMessages(response.data));
+
+                    // we've added the specialFolderType to the function to handle the special folders (to handle different data path for special folders and special folderId)
+                    oldSortedMessages.push(sortMessages(response.data, specialFolderType));
+                    // if in oldSortedMessages there is multiple times the same message, we remove the duplicates
+                    console.log(oldSortedMessages)
+                    oldSortedMessages = oldSortedMessages.flat().filter((item, index, self) => self.findIndex((item2) => item2.id === item.id) === index);
+                    console.log(oldSortedMessages)
+                    if (specialFolderType === "sent") {
+                        // set the folderId back to -1 to than handle the special folders
+                        folderId = -1;
+                    } else if (specialFolderType === "archived") {
+                        folderId = -2;
+                    } else if (specialFolderType === "draft") {
+                        folderId = -4;
+                    }
                     userData.set("sortedMessages", oldSortedMessages.flat());
                     userData.set("messageFolders", sortMessageFolders(response.data, folderId));
                 } else if (code === 520 || code === 525) {
@@ -939,8 +1415,11 @@ export default function App({ edpFetch }) {
         const data = {
             anneeMessages: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : getCurrentSchoolYear().join("-"),
         }
+
+        const mode = (oldSortedMessages.find((item) => item.id === id).folderId === -1 || oldSortedMessages.find((item) => item.id === id).folderId === -4) ? "expediteur" : "destinataire";
+
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1103,6 +1582,300 @@ export default function App({ edpFetch }) {
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
+    async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'data={}',
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        )
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+
+                    const formatDocument = (documents) =>
+                        documents.map((e) => {
+                            const [year, month, day] = e.date.split('-');
+                            const formattedDate = `${day}/${month}/${year}`;
+                            return new File(e.id, e.type, `${e.libelle}.pdf`, undefined, { date: formattedDate });
+                        });
+
+                    const administrativeDocuments = formatDocument(response.data?.administratifs ?? []);
+                    const notesDocuments = formatDocument(response.data?.notes ?? []);
+                    const vieScolaireDocuments = formatDocument(response.data?.viescolaire ?? []);
+                    const entrepriseDocuments = formatDocument(response.data?.entreprises ?? []);
+                    const facturesDocuments = formatDocument(response.data?.factures ?? []);
+                    // const insReinsDocuments = formatDocument(response.data.inscriptionsReinscriptions);
+
+
+                    const responseDocuments = {
+                        administratifs: administrativeDocuments,
+                        notes: notesDocuments,
+                        viescolaire: vieScolaireDocuments,
+                        entreprises: entrepriseDocuments,
+                        factures: facturesDocuments,
+                        // inscriptionsReinscriptions: insReinsDocuments
+                    }
+
+                    changeUserData("administrativeDocuments", responseDocuments);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            });
+    }
+
+    async function renameFolder(id, name, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ id, type: "classeur", icon: "fa-folder", order: 1, libelle: name, expired: Date.now() + 3600000 })}`,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // the updated folder should be edited in order no modify the libelle of the correct folder
+                const updatedFolders = oldMessageFolders.map(folder => {
+                    if (folder.id === id) {
+                        return { ...folder, name };
+                    }
+                    return folder;
+                });
+                useUserData("messageFolders").set(updatedFolders);
+            }
+            // TODO: handle errors
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteFolder(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=delete&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data={}",
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // delete the folder from the list of folders
+                const updatedFolders = oldMessageFolders.filter(folder => folder.id !== id);
+                useUserData("messageFolders").set(updatedFolders);
+                return true;
+            }
+            // TODO: handle errors (ex: "Dossier non vide")
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function createFolder(name, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ libelle: name })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                const newFolder = {
+                    id: response.data.id,
+                    name: response.data.libelle,
+                    fetchInitiated: false,
+                    fetched: false
+                };
+                const updatedFolders = [...oldMessageFolders, newFolder];
+                useUserData("messageFolders").set(updatedFolders);
+                return response.data.id;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function archiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "archiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                //move the message to the -3 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: -2 };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message archivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function unarchiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "desarchiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the 0 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: 0 };
+                    }
+                    return message;
+                });
+                // re-sort the messages by date
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message désarchivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function moveMessage(ids, folderId, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "deplacer", idClasseur: folderId, ids: ids.map((id) => `${id}:-1`) })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the specified folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (ids.includes(message.id)) {
+                        return { ...message, folderId };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message déplacé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        // the data is:
+        // data = {
+        //     "action": "supprimer",
+        //     "ids": [
+        //         16199
+        //     ],
+        //     "anneeMessages": "2024-2025",
+        //     "idDossier": -5
+        // }
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "supprimer", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"), idDossier: -5 })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // delete the message from the list of messages
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.filter(message => message.id !== id);
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message supprimé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -1252,6 +2025,8 @@ export default function App({ edpFetch }) {
                     handleEdBan={handleEdBan}
                     isEDPUnblockInstalled={isEDPUnblockInstalled}
                     setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
+                    isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled}
+                    setIsEDPUnblockActuallyInstalled={setIsEDPUnblockActuallyInstalled}
                     requireDoubleAuth={requireDoubleAuth}
 
                     proxyError={proxyError}
@@ -1269,7 +2044,7 @@ export default function App({ edpFetch }) {
                     path: "feedback",
                 },
                 {
-                    element: <EdpUnblock />,
+                    element: <EdpUnblock isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled} />,
                     path: "edp-unblock",
                 },
                 {
@@ -1291,7 +2066,7 @@ export default function App({ edpFetch }) {
                 {
                     element: (isLoggedIn
                         ? <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} />
-                        : <Login logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />),
+                        : <Login logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
                     path: "login",
                 },
                 {
@@ -1323,7 +2098,7 @@ export default function App({ edpFetch }) {
                             path: "account",
                         },
                         {
-                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} />,
+                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} />,
                             path: ":userId/account"
                         },
                         {
@@ -1375,7 +2150,7 @@ export default function App({ edpFetch }) {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />,
                             path: ":userId/messaging"
                         },
                     ],

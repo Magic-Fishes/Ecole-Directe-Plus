@@ -12,7 +12,7 @@ import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 import { EDPVersion } from "../edpConfig";
 import { AccountContext, SettingsContext } from "../App";
 
-export default function Root({ get, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth }) {
+export default function Root({ get, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth, isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled, }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -442,9 +442,9 @@ export default function Root({ get, accountsList, fakeLogin, resetUserData, sync
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
-                {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
-                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />}
-                {isAdmin && <input type="button" onClick={() => { get.grades() }} value="FETCH DAY HOMEWORKS" />}
+                {isAdmin && <input type="button" onClick={() => setIsEDPUnblockActuallyInstalled(!isEDPUnblockActuallyInstalled)} value={"EDPU INSTALLED: " + isEDPUnblockActuallyInstalled} />}
+                {isAdmin && <input type="button" onClick={handleEdBan} value="EDPU NOTIF" />}
+                {/* {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />} */}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

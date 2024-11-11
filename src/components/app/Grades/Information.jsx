@@ -247,6 +247,10 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
+                        {grades.get("gradesEnabledFeatures")?.rank && <div>
+                            <div className="number-name">Rang</div>
+                            <div className="number-value">{selectedElement.rank}</div>
+                        </div>}
                     </div>
                     <p className="selected-coefficient">coefficient : {selectedElement.coef}</p>
                     <hr />

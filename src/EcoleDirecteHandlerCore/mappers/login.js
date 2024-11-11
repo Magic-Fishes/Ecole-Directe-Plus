@@ -1,6 +1,15 @@
 // This function will always reurn a list of accounts, if it's a student account, it will alway be 1 user but if it's a parent account, it may be more.
 export default function mapLogin(data) {
     let accounts = data.accounts[0];
+    // !:!
+    /** 
+     *  let accounts = response.data.accounts.find((account) => account.typeCompte !== "P") ?? response.data.accounts[0];
+                    if (response.data.accounts.some((account) => account.typeCompte === "P")) {
+                        messages.submitButtonText = "Échec de la connexion";
+                        messages.submitErrorMessage = "Les comptes enseignants ne sont pas supportés par Ecole Directe Plus";
+                        return;
+                    }
+     */
     const accountType = accounts.typeCompte; // collecte du type de compte
     if (accountType === "E") {
         // compte élève

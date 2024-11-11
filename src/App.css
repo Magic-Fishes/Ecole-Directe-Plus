@@ -121,7 +121,7 @@
     --box-shadow-color-scrollbar-thumb: 108, 126, 133;
     --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
     
-    --alpha-shadow-color-scroll-shaded-div: 0.5;
+    --alpha-shadow-color-scroll-shaded-div: 0.3;
 }
 
 :root.dark {
@@ -190,7 +190,7 @@
     --box-shadow-color-scrollbar-thumb: 118, 118, 162;
     --box-shadow-color-scrollbar-thumb-on-hover: 143, 141, 185;
     
-    --alpha-shadow-color-scroll-shaded-div: 0.5;
+    --alpha-shadow-color-scroll-shaded-div: 0.3;
 
     --color-very-good: 0, 255, 0;
     --color-very-good-background: 0, 255, 0, 0.1;
@@ -266,7 +266,7 @@
     --box-shadow-color-scrollbar-thumb: 136, 136, 184;
     --box-shadow-color-scrollbar-thumb-on-hover: 116, 116, 164;
     
-    --alpha-shadow-color-scroll-shaded-div: 0.3;
+    --alpha-shadow-color-scroll-shaded-div: 0.2;
 
     --color-very-good: 21, 87, 37;
     --color-very-good-background: 0, 255, 0, 0.2;

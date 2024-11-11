@@ -31,7 +31,7 @@ export default function fetchHomeworks(date, userId, token, controller = undefin
             }
             response = JSON.parse(response);
             if (response.code < 300) {
-                return response;
+                return response ;
             }
             switch (response.code) {
                 case 520:

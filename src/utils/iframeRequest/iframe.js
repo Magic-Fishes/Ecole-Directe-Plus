@@ -37,8 +37,8 @@
                 handleAbort(values);
                 return;
         }
-
     };
+    
     window.addEventListener("message", handleMessage, false);
 
 })()

@@ -13,6 +13,7 @@ export default function Calendar({ onDateClick }) {
     const { useUserData, fetchHomeworksSequentially } = useContext(AppContext);
     const location = useLocation();
     const [calendarDays, setCalendarDays] = useState([]);
+    const [longPressTimeout, setLongPressTimeout] = useState(null);
 
     const progressBarRef = useRef(null);
     const oldSelectedDate = useRef(null);
@@ -68,6 +69,17 @@ export default function Calendar({ onDateClick }) {
         navigate(`#${format(day, 'yyyy-MM-dd')};${hashParameters.slice(1).join(";")}`, { replace: true });
         if (onDateClick) onDateClick(day); // Call the callback with the selected date
         if (event.shiftKey) fetchAllHomeworks(day);
+    };
+
+    const handleTouchStart = (day) => {
+        const timeout = setTimeout(() => {
+            fetchAllHomeworks(day);
+        }, 800); // 800ms long press threshold
+        setLongPressTimeout(timeout);
+    };
+
+    const handleTouchEnd = () => {
+        clearTimeout(longPressTimeout);
     };
 
     const getDayClass = (day) => {
@@ -167,6 +179,8 @@ export default function Calendar({ onDateClick }) {
                         className={getDayClass(day)}
                         style={getDayStyle(day)}
                         onClick={(event) => handleDayClick(day, event)}
+                        onTouchStart={() => handleTouchStart(day)}
+                        onTouchEnd={handleTouchEnd}
                     >
                         {day.getDate()}
                     </span>

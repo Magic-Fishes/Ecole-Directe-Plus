@@ -16,18 +16,12 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     const settings = useContext(SettingsContext);
     const { isGradeScaleEnabled, gradeScale } = settings.user;
 
-    const generalAverage = grades[activePeriod].generalAverage;
-    const subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
-
     const [classList, setClassList] = useState([]);
 
     const gradeRef = useRef(null);
 
+    const generalAverage = grades[activePeriod].generalAverage;
     const coefficientEnabled = gradesEnabledFeatures?.coefficient;
-    // Use subject coef if subject is provided, otherwise use grade's coef
-    const gradeCoef = grade.coef ?? 1;
-    const subjectCoef = grade?.subject?.coef ?? gradeCoef;
-    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -36,8 +30,21 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                 sum += subjects[key].coef;
             }
         }
+        // if all subjects have 0 as coef, we replace all coef by 1 
+        if (sum === 0) {
+            sum = Object.keys(subjects).length;
+            subjectCoef = 1;
+        }
+
         return sum;
     }
+
+    // Use subject coef if subject is provided, otherwise use grade's coef
+    const gradeCoef = grade.coef ?? 1;
+    let subjectCoef = grade?.subject?.coef ?? gradeCoef;
+    let subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
+    // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
+    let gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     function hasStreakGradeAfter(siblingsLimit = 0) {
         let i = 0;
@@ -109,7 +116,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
         handleNewGrade();
     }, [grade]);
 
-    
+
 
     return createElement(
         grade.id === undefined ? "span" : Link,
@@ -145,8 +152,8 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 {(
                                     isGradeScaleEnabled.value && !isNaN(grade.value)
                                         ? Math.round(
-                                            (grade.value * gradeScale.value) / 
-                                            (grade.scale ?? 20) * 
+                                            (grade.value * gradeScale.value) /
+                                            (grade.scale ?? 20) *
                                             100
                                         ) / 100
                                         : grade.value

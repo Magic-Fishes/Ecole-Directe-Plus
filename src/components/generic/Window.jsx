@@ -49,15 +49,20 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     const { activeAccount, isTabletLayout } = useContext(AppContext);
 
     const settings = useContext(SettingsContext);
-    const { windowArrangement: windowArrangementSetting, displayMode, allowWindowsArrangement } = settings.user;
+    const { windowArrangement: windowArrangementSetting, displayMode } = settings.user;
 
     name = (isTabletLayout ? "tablet-" : "") + name;
-    const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement: allowWindowsArrangement.value && allowWindowsManagement }));
+    const windowsContainer = useRef({
+        animateWindows,
+        windows: [],
+        fullscreenInfo: [],
+        windowsLayouts: [],
+        moveableContainers: []
+    });
 
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
     const latestClick = useRef(null);
-
     const isGrabbing = useRef(false);
 
     function getWindowArrangement() {
@@ -65,15 +70,15 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
          * This function returns the current windowArrangement
          */
         const windowArrangement = [];
-        for (let window of windowsContainer.windows) {
+        for (let window of windowsContainer.current.windows) {
             windowArrangement.push({ name: window.current.name, order: window.current.style.order });
         }
 
-        for (let windowLayout of windowsContainer.windowsLayouts) {
+        for (let windowLayout of windowsContainer.current.windowsLayouts) {
             windowArrangement.push({ name: windowLayout.current.name, order: windowLayout.current.style.order });
         }
 
-        for (let moveableContainer of windowsContainer.moveableContainers) {
+        for (let moveableContainer of windowsContainer.current.moveableContainers) {
             windowArrangement.push({ name: moveableContainer.current.name, order: moveableContainer.current.style.order });
         }
 
@@ -90,21 +95,21 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         if (windowArrangement !== undefined && windowArrangement.length > 0) {
             for (let item of windowArrangement) {
-                for (let window of windowsContainer.windows) {
+                for (let window of windowsContainer.current.windows) {
                     if (item.name === window.current.name) {
                         window.current.style.order = item.order;
                         break;
                     }
                 }
 
-                for (let windowLayout of windowsContainer.windowsLayouts) {
+                for (let windowLayout of windowsContainer.current.windowsLayouts) {
                     if (item.name === windowLayout.current.name) {
                         windowLayout.current.style.order = item.order;
                         break;
                     }
                 }
 
-                for (let moveableContainer of windowsContainer.moveableContainers) {
+                for (let moveableContainer of windowsContainer.current.moveableContainers) {
                     if (item.name === moveableContainer.current.name) {
                         moveableContainer.current.style.order = item.order;
                         break;
@@ -427,19 +432,19 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         }
 
         let idx;
-        for (idx = 0; idx < windowsContainer.windows.length; idx++) {
-            if (windowsContainer.windows[idx].current === targetWindow) {
+        for (idx = 0; idx < windowsContainer.current.windows.length; idx++) {
+            if (windowsContainer.current.windows[idx].current === targetWindow) {
                 break;
             }
         }
-        if (windowsContainer.fullscreenInfo[idx].allowFullscreen) {
+        if (windowsContainer.current.fullscreenInfo[idx].allowFullscreen) {
             let targetElement;
-            if (windowsContainer.fullscreenInfo[idx].fullscreenTargetName === "self") {
+            if (windowsContainer.current.fullscreenInfo[idx].fullscreenTargetName === "self") {
                 targetElement = targetWindow;
             } else {
-                targetElement = document.getElementsByName(windowsContainer.fullscreenInfo[idx].fullscreenTargetName)[0];
+                targetElement = document.getElementsByName(windowsContainer.current.fullscreenInfo[idx].fullscreenTargetName)[0];
             }
-            // console.log("windowsContainer.fullscreenInfo[idx].fullscreenTargetName:", windowsContainer.fullscreenInfo[idx].fullscreenTargetName)
+            // console.log("windowsContainer.current.fullscreenInfo[idx].fullscreenTargetName:", windowsContainer.current.fullscreenInfo[idx].fullscreenTargetName)
             // console.log("targetElements:", targetElement)
             const handleFullscreenChange = () => {
                 // prevent from selecting
@@ -743,6 +748,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
         document.addEventListener("touchend", handleMouseUp);
     }
 
+
     useEffect(() => {
         // windows management
         function getWindowsHeader(windows) {
@@ -755,48 +761,37 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                     }
                 }
             }
-
             return headers;
         }
 
         const stopEventPropagation = (event) => {
-            // console.log("target:", event.target, "| propagation stopped")
             event.stopPropagation();
-        }
+        };
 
-        const headers = getWindowsHeader(windowsContainer.windows);
-        // console.log("headers:", headers);
+        const headers = getWindowsHeader(windowsContainer.current.windows);
 
         function cleanup() {
             for (let header of headers) {
-                header.removeEventListener("mousedown", handleMouseDown);
-                header.removeEventListener("touchstart", handleMouseDown);
+                header.removeEventListener("pointerdown", handleMouseDown);
                 for (let child of header.children) {
-                    child.removeEventListener("mousedown", stopEventPropagation);
-                    child.removeEventListener("touchstart", stopEventPropagation);
+                    child.removeEventListener("pointerdown", stopEventPropagation);
                 }
             }
         }
-        // cleanup()
 
         for (let header of headers) {
-            if (windowsContainer.allowWindowsManagement) {
-                header.addEventListener("mousedown", handleMouseDown);
-                header.addEventListener("touchstart", handleMouseDown);
+            if (allowWindowsManagement) {
+                header.addEventListener("pointerdown", handleMouseDown);
                 for (let child of header.children) {
-                    // will only happen when css property "pointer-events" is not set to "none"
-                    child.addEventListener("mousedown", stopEventPropagation);
-                    child.addEventListener("touchstart", stopEventPropagation);
+                    child.addEventListener("pointerdown", stopEventPropagation);
                 }
             }
         }
 
-
         return () => {
-            cleanup()
-        }
-    }, [isTabletLayout]);
-
+            cleanup();
+        };
+    }, [isTabletLayout, allowWindowsManagement]);
 
     useEffect(() => {
         // load and apply old windowArrangement
@@ -811,11 +806,11 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
             setWindowArrangement(windowArrangement);
         } else {
-            if (windowsContainer.allowWindowsManagement) {
+            if (allowWindowsManagement) {
                 console.error("windowsContainer has no \"name\" attribute but you have allowed window management: window rearrangements will not be saved");
             }
         }
-    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout, allowWindowsManagement]);
 
 
     useEffect(() => {
@@ -921,13 +916,13 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
 
     return (
-        <div ref={windowsContainerRef} name={name} id={`windows-container${(id && " " + id)}`} className={className} {...props}>
-            <WindowsContainerContext.Provider value={windowsContainer}>
+        <div ref={windowsContainerRef} name={name} id={`windows-container${id && " " + id}`} className={className} {...props}>
+            <WindowsContainerContext.Provider value={windowsContainer.current}>
                 {children}
                 <div id="floating-portal" ref={floatingPortalRef}></div>
             </WindowsContainerContext.Provider>
         </div>
-    )
+    );
 }
 
 export function WindowsLayout({ children, direction = "row", growthFactor = 1, ultimateContainer = false, className = "", ...props }) {
