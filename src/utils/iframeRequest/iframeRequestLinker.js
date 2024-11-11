@@ -29,8 +29,10 @@ export default class IframeRequestLinker {
         const fetchId = crypto.randomUUID();
         this.solverList[fetchId] = solver;
         const fetchSignal = fetchParams.signal;
-        fetchSignal.onabort = () => {
-            this.#sendIframeAbort(fetchId);
+        if (fetchSignal) {
+            fetchSignal.onabort = () => {
+                this.#sendIframeAbort(fetchId);
+            }
         }
         delete fetchParams.signal;
         this.iframeWindow.postMessage({ action: "FETCH", values: { url, fetchParams, dataType, fetchId } }, "*");

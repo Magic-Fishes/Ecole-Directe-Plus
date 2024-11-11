@@ -19,6 +19,7 @@ import {
     useMergeRefs,
     FloatingPortal
 } from "@floating-ui/react";
+import { AppContext } from "../../../App";
 // Check out the FloatingUI docs for more information : https://floating-ui.com/docs/react
 
 import './Tooltip.css'
@@ -30,7 +31,7 @@ function useTooltip(options) {
     // available options:
     // isOpen (bool) ; placement (str: "top" ; "right" ; ...) ; animationDuration (int: ms) ; delay (int: ms) ;
     // restDuration (int: ms) ; restFallbackDuration (int: ms) ; disableSafePolygon (bool)
-    // disableHover (bool) ; disableFocus (bool) ; disableClick (bool) ; disableDismiss (bool)
+    // enableHover (bool) ; enableFocus (bool) ; enableClick (bool) ; enableDismiss (bool)
 
     const [isOpen, setIsOpen] = useState(options.isOpen ?? false);
 
@@ -61,22 +62,22 @@ function useTooltip(options) {
 
     // - - Interactions - -
     const hover = useHover(context, {
-        enabled: (options.disableHover ?? true),
+        enabled: (options.enableHover ?? true),
         restMs: (options.restDuration ?? 0),
         delay: (options.restDuration ? { open: options.restFallbackDuration } : { open: (options.delay ?? 0) }),
         handleClose: ((options.disableSafePolygon === undefined || options.disableSafePolygon) ? safePolygon() : null)
     });
 
     const focus = useFocus(context, {
-        enabled: (options.disableFocus ?? true)
+        enabled: (options.enableFocus ?? true)
     });
 
     const click = useClick(context, {
-        enabled: (options.disableClick ?? false)
+        enabled: (options.enableClick ?? false)
     });
 
     const dismiss = useDismiss(context, {
-        enabled: (options.disableDismiss ?? true),
+        enabled: (options.enableDismiss ?? true),
         outsidePressEvent: 'click'
     });
 
@@ -126,6 +127,7 @@ function useTooltip(options) {
         isOpen,
         setIsOpen,
         arrowRef,
+        options,
         ...interactions,
         ...transition,
         ...data
@@ -146,7 +148,7 @@ function useTooltipContext() {
 };
 
 export function Tooltip({ children, className = "", id = "", ...options }) {
-    const tooltip = useTooltip(options)
+    const tooltip = useTooltip(options);
 
     return (
         <div className={`tooltip ${className}`} id={id}>
@@ -154,7 +156,7 @@ export function Tooltip({ children, className = "", id = "", ...options }) {
                 {children}
             </TooltipContext.Provider>
         </div>
-    )
+    );
 }
 
 export const TooltipTrigger = forwardRef(function TooltipTrigger({ children, ...props }, propRef) {
@@ -198,6 +200,13 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
     // Affiche / N'affiche pas la tooltip
     if (!context.isMounted) return null;
 
+    // Gestion du clic à l'intérieur pour fermer la tooltip
+    const handleClickInside = () => {
+        if (context.options.closeOnClickInside) {
+            context.setIsOpen(false);
+        }
+    };
+
     return (
         <FloatingPortal>
             <div
@@ -209,10 +218,12 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
                     ...style
                 }}
                 {...context.getFloatingProps(props)}
+                onClick={handleClickInside}
             >
                 <FloatingArrow className={`floating-arrow ${className}`} ref={context.arrowRef} context={context} tipRadius={2} width={ARROW_WIDTH} height={ARROW_HEIGHT} />
                 {children}
             </div>
         </FloatingPortal>
-    )
+    );
 });
+

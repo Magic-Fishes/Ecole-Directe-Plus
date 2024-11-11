@@ -3,9 +3,229 @@
     height: 100%;
 }
 
+.folder-tooltip {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .1s;
+}
+.folder-tooltip div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+.folder-tooltip:has([data-state="open"]) {
+    background-color: rgb(var(--text-color-main), .15);
+}
+
+.folder-tooltip .folder-icon {
+    height: 33px;
+    transition: .1s;
+}
+.folder-tooltip .folder-icon path {
+    stroke: rgba(var(--text-color-alt), .7);
+    transition: .1s;
+}
+.folder-tooltip:has([data-state="open"]) .folder-icon path {
+    stroke: rgb(var(--text-color-main));
+}
+
+.folders-container {
+    list-style-type: none;
+    /* padding: 15px; */
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+}
+
+
+h3:has(~ .folders-container)  {
+    margin-bottom: 10px;
+}
+
+.folders-container .folder-button {
+    padding: 10px;
+    background-color: rgba(var(--background-color-0), .4);
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: var(--font-size-16);
+    transition: .1s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.folders-container .folder-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-0), .6);
+}
+
 @media only screen and (max-width: 869px) {
     .window.inbox-window {
         /* min-height: 160px; */
         max-height: 500px;
     }
+}
+
+.folder-icon-tooltip {
+    height: 30px;
+}
+
+.edit-folder-tooltip {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    height: 40px;
+    width: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .1s;
+}
+
+.edit-folder-tooltip div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 6px;
+}
+
+.edit-folder-tooltip:has([data-state="open"]) {
+    background-color: rgb(var(--text-color-main), .15);
+}
+
+.edit-folder-tooltip .edit-folder-icon {
+    height: 33px;
+    transition: .1s;
+}
+
+.edit-folder-tooltip .edit-folder-icon path {
+    stroke: rgba(var(--text-color-alt), .7);
+    transition: .1s;
+}
+
+.edit-folder-tooltip:has([data-state="open"]) .edit-folder-icon path {
+    stroke: rgb(var(--text-color-main));
+}
+
+.edit-folder-button {
+    padding: 10px;
+    background-color: rgba(var(--background-color-0), .4);
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: var(--font-size-16);
+    transition: .1s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-folder-button:is(:hover, :focus-visible) {
+    background-color: rgba(var(--background-color-0), .6);
+}
+
+.edit-folder-container {
+    list-style-type: none;
+    /* padding: 15px; */
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+}
+
+h3:has(~ .edit-folder-container) {
+    margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 869px) {
+    .window.inbox-window {
+        /* min-height: 160px; */
+        max-height: 500px;
+    }
+}
+
+.edit-folder-icon-tooltip {
+    height: 30px;
+}
+
+.delete:is(:hover) {
+    background-color: rgba(var(--background-color-error), 0.4);
+    transition: .3s;
+}
+
+.delete:is(:hover) path {
+    stroke: #fff;
+    transition: .3s;
+}
+
+#MessagesTitle:is(:hover){
+    background-color: rgba(var(--text-color-main),.15);
+    transition: .3s;
+    cursor: text;
+}
+
+#MessagesTitle {
+    padding: 10px;
+    border-radius: 10px;
+    transition: .3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: fit-content;
+}
+
+.MessagesTitle-container {
+    transition: .3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: center;    
+}
+
+.prevent-highlight {
+    cursor:  grab !important;
+    background-color: transparent !important;
+}
+
+.create-folder {
+    background-color: rgba(var(--background-color-0), .9) !important;
+}
+
+.edit-folder-name-input {
+    transform: scale(.85);
+    width: 100%;
+}
+
+.edit-folder-name-input .text-input {
+    text-align: center;
+    padding: 10px !important;
+}
+
+.edit-folder-name-container {
+    width: calc(100% - 80px);
+}
+
+.selected-folder {
+    background-color: rgba(var(--background-color-3), 0.6) !important;
+}
+
+.no-questionmark {
+    cursor: default;
 }

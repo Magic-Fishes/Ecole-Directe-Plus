@@ -1,4 +1,3 @@
-
 /* - - - header - - - */
 
 #app {
@@ -50,10 +49,12 @@
     
     /* background-color: red; */
 }
+
 .header-logo-container a {
     outline: none;
     position: relative;
 }
+
 .header-logo-container #version-tag {
     width: max-content;
     position: absolute;
@@ -67,7 +68,6 @@
     border-radius: 7px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     pointer-events: none;
-    
 }
 
 .header-logo-container #header-logo {
@@ -75,9 +75,11 @@
     width: auto;
     transition: 0.2s;
 }
+
 .header-logo-container #header-logo:hover {
     filter: drop-shadow(0 0 20px rgba(var(--text-color-main), 0.2));
 }
+
 .header-logo-container #header-logo:active {
     filter: drop-shadow(0 0 20px rgba(var(--text-color-main), 0.4));
 }
@@ -120,6 +122,7 @@ li#messaging.header-button-container { order: 5; }
     /* width: 400px; */
     /* padding: 5px; */
 }
+
 .header-menu .account-selection #account-selector {
     width: 100%;
     width: 400px;
@@ -148,7 +151,7 @@ main.content {
 @media only screen and (max-width: 869px) {
     .header-container {
         order: 1;
-    } 
+    }
 
     .header-menu {
         border-radius: 20px 20px 0 0;
@@ -167,10 +170,12 @@ main.content {
         padding: 30px clamp(15px, 3.5vw, 30px);
         padding-bottom: 0;
     }
+
     main.content #account-selector {
         max-height: 80px;
         padding: 0;
     }
+
     main.content #account-selector #options-wrapper {
         background-color: rgb(var(--background-color-1));
         box-shadow: var(--box-shadow-window);
@@ -188,20 +193,19 @@ main.content {
 }
 
 @media only screen and (max-width: 450px) {
-    
     .standalone .header-menu {
         padding-bottom: 25px;
     }
 
-    
+
     .header-container:not(.standalone) {
         max-height: 75px;
     }
-    
-    
+
     .header-button .icon-container svg {
         height: 45px
     }
+
     .header-button .notifications {
         left: 30px;
     }
