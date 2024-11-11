@@ -7,9 +7,10 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import { getProxiedURL } from "../../../utils/requests";
 import FileComponent from "../../generic/FileComponent";
 import ContentLoader from "react-content-loader";
+import CanardmanSleeping from "../../graphics/CanardmanSleeping";
+import ConfusedCanardman from "../../graphics/ConfusedCanardman";
 
 import "./Account.css";
-import { is } from "date-fns/locale";
 
 export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrativeDocuments, sortSchoolLife, isLoggedIn, activeAccount }) {
     const { actualDisplayTheme, accountsListState, useUserData, useUserSettings } = useContext(AppContext)
@@ -151,7 +152,12 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                             ) : null
                             }
                         </div>
-                        <div className="documents-container">
+                        <div className="documents-container" style={
+                            {
+                                //if isLoadingDocuments is true, set overflow to hidden to prevent scrolling
+                                overflow: isLoadingDocuments ? "hidden" : "auto"
+                            }
+                        }>
                             {isLoadingDocuments ? (
                                 <div>
                                     <div className="document-category">
@@ -206,7 +212,10 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                     documents?.factures?.length === 0
                                     // && documents?.inscriptionsReinscriptions?.length === 0
                                     ? (
-                                        <span className="no-available-documents">Aucun document disponible.</span>
+                                        <div className="no-available-documents">
+                                            <CanardmanSleeping className="sleeping-logo" />
+                                            <span>Aucun document disponible</span>
+                                        </div>
                                     ) : (
                                         <>
                                             {/* {module.params.DocumentsInscriptionsReinscriptionsActif === "1" && documents?.inscriptionsReinscriptions?.length > 0 && (
@@ -281,8 +290,10 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                         </div>
                     </>
                 ) : (
-                    <div className="documents-container">
-                        <span className="no-available-documents">Le module de documents n'est pas accessible.</span>
+
+                    <div className="no-available-documents">
+                        <span>Le module de documents n'est pas accessible</span>
+                        <ConfusedCanardman className="sleeping-logo" />
                     </div>
                 )}
             </section>

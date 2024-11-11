@@ -138,7 +138,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                 }
                             }><PrintIcon /></button></TooltipTrigger><TooltipContent>Imprimer</TooltipContent></Tooltip>
                             {parsedHashFolder != -2 && parsedHashFolder != -1 && parsedHashFolder != -4 ? (
-                                <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
+                                <Tooltip className="action-button-main" closeOnClickInside={true}><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
                                     <TooltipContent className="no-questionmark">
                                         <h3>Changer De Dossier</h3>
                                         <ul className="folders-container">

@@ -242,7 +242,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                     <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
                             {folders !== undefined && folders.length > 1
-                                ? <Tooltip className="folder-tooltip" placement="bottom" onClick={(event) => event.stopPropagation()}>
+                                ? <Tooltip className="folder-tooltip" placement="bottom" closeOnClickInside={true} onClick={(event) => event.stopPropagation()}>
                                     <TooltipTrigger> <FolderIcon className="folder-icon" /> </TooltipTrigger>
                                     <TooltipContent className="no-questionmark">
                                         <h3>Dossiers</h3>

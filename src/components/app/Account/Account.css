@@ -65,11 +65,13 @@ body:has(#account) {
     display: flex;
     flex-flow: column nowrap;
 }
+
 #documents.frame {
     display: flex;
     flex-flow: column nowrap;
     overflow: auto;
 }
+
 .coming-soon {
     height: 100%;
     color: rgb(var(--text-color-alt));
@@ -82,6 +84,7 @@ body:has(#account) {
     border-radius: 8px;
     opacity: .5;
 }
+
 #profile .coming-soon {
     margin-top: 30px;
 }
@@ -152,7 +155,7 @@ body:has(#account) {
         grid-column: auto;
         grid-row: 3 / 4;
     }
-    
+
     #account .frame .frame-heading {
         padding-block: 10px;
     }
@@ -245,12 +248,16 @@ body:has(#account) {
     font-size: var(--font-size-16);
     font-weight: 500;
 }
+
 .no-available-documents {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
+    gap: 15px;
+    color: rgb(var(--text-color));
 }
 
 .document-container {
@@ -259,4 +266,16 @@ body:has(#account) {
 
 .single-year {
     padding-left: 0 !important;
+}
+
+.documents-container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.sleeping-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
 }

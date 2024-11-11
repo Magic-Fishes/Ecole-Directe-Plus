@@ -773,22 +773,18 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
         function cleanup() {
             for (let header of headers) {
-                header.removeEventListener("mousedown", handleMouseDown);
-                header.removeEventListener("touchstart", handleMouseDown);
+                header.removeEventListener("pointerdown", handleMouseDown);
                 for (let child of header.children) {
-                    child.removeEventListener("mousedown", stopEventPropagation);
-                    child.removeEventListener("touchstart", stopEventPropagation);
+                    child.removeEventListener("pointerdown", stopEventPropagation);
                 }
             }
         }
 
         for (let header of headers) {
             if (allowWindowsManagement) {
-                header.addEventListener("mousedown", handleMouseDown);
-                header.addEventListener("touchstart", handleMouseDown);
+                header.addEventListener("pointerdown", handleMouseDown);
                 for (let child of header.children) {
-                    child.addEventListener("mousedown", stopEventPropagation);
-                    child.addEventListener("touchstart", stopEventPropagation);
+                    child.addEventListener("pointerdown", stopEventPropagation);
                 }
             }
         }
@@ -797,7 +793,6 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             cleanup();
         };
     }, [isTabletLayout, allowWindowsManagement]);
-
 
     useEffect(() => {
         // load and apply old windowArrangement
