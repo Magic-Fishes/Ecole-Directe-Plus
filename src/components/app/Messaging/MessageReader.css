@@ -112,6 +112,17 @@
     }
 }
 
+@media (max-width: 600px) {
+    #message-reader .email-footer {
+        height: 200px;
+        flex-direction: column;
+    }
+
+    .actions-container {
+        margin: auto;
+    }
+}
+
 #message-reader .attachments-container {
     list-style-type: none;
     height: 100%;
