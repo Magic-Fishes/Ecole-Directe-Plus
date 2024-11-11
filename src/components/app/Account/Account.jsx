@@ -27,8 +27,9 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
     availableYearsArray.push(nextYear);
 
     const profilePictureRefs = useRef([]);
+    const contentLoaderRandomValues = useRef({ documentsNumber: Array.from({ length: 3 }, (_) => Math.floor(Math.random() * 10) + 1), fileNameWidth: Array.from({ length: 10 }, (_) => Math.floor(Math.random() * 31) + 60 ) });
 
-    const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);;
+    const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
 
     useEffect(() => {
         document.title = "Compte • Ecole Directe Plus";
@@ -76,33 +77,29 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
     useEffect(() => {
         setIsLoadingDocuments(true);
         if (isLoggedIn && selectedYear) {
-            const controller = new AbortController();
-            const fetchDocuments = async () => {
-                try {
-                    setIsLoadingDocuments(true);
-                    let selectedYearFetch = selectedYear === availableYearsArray[availableYearsArray.length - 1] ? '' : selectedYear;
-                    await fetchAdministrativeDocuments(selectedYearFetch, controller);
-                    let data = userData.get("administrativeDocuments");
-                    if (data) {
-                        setDocuments(data);
-                    } else {
-                        setDocuments({ factures: [], notes: [], viescolaire: [], administratifs: [], entreprises: [] });
+            let data = userData.get("administrativeDocuments");
+            if (data === undefined) {
+                const controller = new AbortController();
+                const fetchDocuments = async () => {
+                    try {
+                        setIsLoadingDocuments(true);
+                        let selectedYearFetch = selectedYear === availableYearsArray[availableYearsArray.length - 1] ? '' : selectedYear;
+                        await fetchAdministrativeDocuments(selectedYearFetch, controller);
+                    } catch (error) {
+                        console.error("Error fetching documents:", error);
                     }
-                    console.log("Documents fetched for year:", selectedYear, data);
-                } catch (error) {
-                    console.error("Error fetching documents:", error);
-                } finally {
-                    if (!controller.signal.aborted) {
-                        setIsLoadingDocuments(false);
-                    }
-                }
-            };
-            fetchDocuments();
-            return () => {
-                controller.abort();
-            };
+                };
+                fetchDocuments();
+                
+                return () => {
+                    controller.abort();
+                };
+            }
+
+            setDocuments(data);
+            setIsLoadingDocuments(false);
         }
-    }, [selectedYear, isLoggedIn]);
+    }, [selectedYear, isLoggedIn, userData.get("administrativeDocuments")]);
 
     return (
         <div id="account">
@@ -158,44 +155,45 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                             {isLoadingDocuments ? (
                                 <div>
                                     <div className="document-category">
-                                        {Array.from({ length: 5 }).map((_, index) => (
-                                        <div style={{padding: "15px"}}>
-                                        <h3 style={{paddingBottom: "10px"}}>
-                                            <ContentLoader
-                                            animate={settings.get("displayMode") === "quality"}
-                                            speed={1}
-                                            backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                            foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                            height="30"
-                                            style={{ width: "30%" }}
-                                        >
-                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                            </ContentLoader>
-                                        </h3>
-                                            {Array.from({ length: Math.floor(Math.random() * 10 + 1) }, (_, index) => (
-                                            <div className="file-box-loader " style={{paddingBottom: "3px"}}>
-                                                <ContentLoader
-                                                    animate={settings.get("displayMode") === "quality"}
-                                                    speed={1}
-                                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                    height="30"
-                                                    style={{ width: `${Math.floor(Math.random() * 31) + 60}%` }}
-                                                >
-                                                    <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                                </ContentLoader>
-                                                <h2 className="file-date">                                <ContentLoader
-                                                    animate={settings.get("displayMode") === "quality"}
-                                                    speed={1}
-                                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                    height="30"
-                                                    style={{ width: "100%" }}
-                                                >
-                                                    <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                                </ContentLoader></h2>
-                                            </div>
-                                        ))}
+                                        {Array.from({ length: 3 }).map((_, index) => (
+                                            <div style={{ padding: "15px" }}>
+                                                <h3 style={{ paddingBottom: "10px" }}>
+                                                    <ContentLoader
+                                                        animate={settings.get("displayMode") === "quality"}
+                                                        speed={1}
+                                                        backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                        height="30"
+                                                        style={{ width: "30%" }}
+                                                    >
+                                                        <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                    </ContentLoader>
+                                                </h3>
+                                                {Array.from({ length: contentLoaderRandomValues.current.documentsNumber[index] }, (_, index) => (
+                                                    <div className="file-box-loader " style={{ marginBottom: "10px" }}>
+                                                        <ContentLoader
+                                                            animate={settings.get("displayMode") === "quality"}
+                                                            speed={1}
+                                                            backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                            foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                            height="25"
+                                                            style={{ width: `${contentLoaderRandomValues.current.fileNameWidth[index]}%` }}
+                                                        >
+                                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                        </ContentLoader>
+                                                        <h2 className="file-date" style={{ display: "flex", alignItems: "center"}}>
+                                                            <ContentLoader
+                                                            animate={settings.get("displayMode") === "quality"}
+                                                            speed={1}
+                                                            backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                            foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                            height="20"
+                                                            style={{ width: "100%" }}
+                                                        >
+                                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                        </ContentLoader></h2>
+                                                    </div>
+                                                ))}
                                             </div>
                                         ))}
                                     </div>
@@ -209,7 +207,6 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                     // && documents?.inscriptionsReinscriptions?.length === 0
                                     ? (
                                         <span className="no-available-documents">Aucun document disponible.</span>
-                                        // TODO: add content-loader
                                     ) : (
                                         <>
                                             {/* {module.params.DocumentsInscriptionsReinscriptionsActif === "1" && documents?.inscriptionsReinscriptions?.length > 0 && (

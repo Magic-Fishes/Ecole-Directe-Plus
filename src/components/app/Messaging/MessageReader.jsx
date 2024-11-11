@@ -70,7 +70,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
             {selectedMessage !== null && messages && messages.length > 0
                 ? <div className="message-container">
                     <div className="email-header">
-                        <p className="author">{message && (settings.get("isStreamerModeEnabled") ? message?.from?.name?.split(" ")[0] + " " + "-".repeat(message?.from?.name?.length) : message?.from?.name)}</p>
+                        <p className="author">{message && (message?.from?.civilite + " " + (settings.get("isStreamerModeEnabled") ? "-".repeat(message?.from?.nom?.length) : message?.from?.nom))}</p>
                         <h3>{message && capitalizeFirstLetter(message?.subject)}</h3>
                         <p className="send-date">{message && message?.date && (new Date(message.date).toLocaleDateString("fr-FR", {
                             month: "long",

@@ -46,13 +46,13 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
 
 
     const module = accountsListState[activeAccount].modules?.find(module => module.code === "MESSAGERIE");
-    let canSendMessages = (module?.params?.destAdmin ?? "1") === "1" || 
+    let canSendMessages = false && (module?.params?.destAdmin ?? "1") === "1" || 
                           (module?.params?.destEleve ?? "1") === "1" || 
                           (module?.params?.destFamille ?? "1") === "1" || 
                           (module?.params?.destProf ?? "1") === "1" || 
                           (module?.params?.destEspTravail ?? "1") === "1";
     if (accountsListState[activeAccount].accountType !== "E") {
-        canSendMessages = true;
+        // canSendMessages = true;
     }
 
     const [isEditingFolder, setIsEditingFolder] = useState(false);

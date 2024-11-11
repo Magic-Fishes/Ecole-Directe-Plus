@@ -80,7 +80,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                         (displayType === 0 ? strengths : weaknesses).map((strength, idx) => <li key={strength?.subject?.name || crypto.randomUUID()} style={{ "--order": idx }} className="strength-container">
                             <Link to={"#" + strength?.subject?.id} className="strength-wrapper">
                                 <span className="subject-container">
-                                    <span className="subject-rank">{idx + 1}</span>
+                                    <span className="subject-rank">{displayType === 0 ? idx + 1 : (sortedGrades && Object.keys(sortedGrades[selectedPeriod].subjects).length || 3) - idx}</span>
                                     <span className="subject-name">{strength?.subject?.name}</span>
                                 </span>
                                 <span className="subject-average"><Grade grade={{ value: strength?.subject?.average ?? "N/A" }} /></span>
