@@ -7,9 +7,10 @@ import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 import { getProxiedURL } from "../../../utils/requests";
 import FileComponent from "../../generic/FileComponent";
 import ContentLoader from "react-content-loader";
+import CanardmanSleeping from "../../graphics/CanardmanSleeping";
+import ConfusedCanardman from "../../graphics/ConfusedCanardman";
 
 import "./Account.css";
-import { is } from "date-fns/locale";
 
 export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrativeDocuments, sortSchoolLife, isLoggedIn, activeAccount }) {
     const { actualDisplayTheme, accountsListState, useUserData, useUserSettings } = useContext(AppContext)
@@ -154,48 +155,53 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                             ) : null
                             }
                         </div>
-                        <div className="documents-container">
+                        <div className="documents-container" style={
+                            {
+                                //if isLoadingDocuments is true, set overflow to hidden to prevent scrolling
+                                overflow: isLoadingDocuments ? "hidden" : "auto"
+                            }
+                        }>
                             {isLoadingDocuments ? (
                                 <div>
                                     <div className="document-category">
                                         {Array.from({ length: 5 }).map((_, index) => (
-                                        <div style={{padding: "15px"}}>
-                                        <h3 style={{paddingBottom: "10px"}}>
-                                            <ContentLoader
-                                            animate={settings.get("displayMode") === "quality"}
-                                            speed={1}
-                                            backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                            foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                            height="30"
-                                            style={{ width: "30%" }}
-                                        >
-                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                            </ContentLoader>
-                                        </h3>
-                                            {Array.from({ length: Math.floor(Math.random() * 10 + 1) }, (_, index) => (
-                                            <div className="file-box-loader " style={{paddingBottom: "3px"}}>
-                                                <ContentLoader
-                                                    animate={settings.get("displayMode") === "quality"}
-                                                    speed={1}
-                                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                    height="30"
-                                                    style={{ width: `${Math.floor(Math.random() * 31) + 60}%` }}
-                                                >
-                                                    <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                                </ContentLoader>
-                                                <h2 className="file-date">                                <ContentLoader
-                                                    animate={settings.get("displayMode") === "quality"}
-                                                    speed={1}
-                                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                                                    height="30"
-                                                    style={{ width: "100%" }}
-                                                >
-                                                    <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                                </ContentLoader></h2>
-                                            </div>
-                                        ))}
+                                            <div style={{ padding: "15px" }}>
+                                                <h3 style={{ paddingBottom: "10px" }}>
+                                                    <ContentLoader
+                                                        animate={settings.get("displayMode") === "quality"}
+                                                        speed={1}
+                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                        height="30"
+                                                        style={{ width: "30%" }}
+                                                    >
+                                                        <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                    </ContentLoader>
+                                                </h3>
+                                                {Array.from({ length: Math.floor(Math.random() * 10 + 1) }, (_, index) => (
+                                                    <div className="file-box-loader " style={{ paddingBottom: "3px" }}>
+                                                        <ContentLoader
+                                                            animate={settings.get("displayMode") === "quality"}
+                                                            speed={1}
+                                                            backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                            foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                            height="30"
+                                                            style={{ width: `${Math.floor(Math.random() * 31) + 60}%` }}
+                                                        >
+                                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                        </ContentLoader>
+                                                        <h2 className="file-date">                                <ContentLoader
+                                                            animate={settings.get("displayMode") === "quality"}
+                                                            speed={1}
+                                                            backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                            foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                            height="30"
+                                                            style={{ width: "100%" }}
+                                                        >
+                                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                        </ContentLoader></h2>
+                                                    </div>
+                                                ))}
                                             </div>
                                         ))}
                                     </div>
@@ -208,8 +214,10 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                     documents?.factures?.length === 0
                                     // && documents?.inscriptionsReinscriptions?.length === 0
                                     ? (
-                                        <span className="no-available-documents">Aucun document disponible.</span>
-                                        // TODO: add content-loader
+                                        <div className="no-available-documents">
+                                            <span>Aucun document disponible</span>
+                                            <CanardmanSleeping className="sleeping-logo" />
+                                        </div>
                                     ) : (
                                         <>
                                             {/* {module.params.DocumentsInscriptionsReinscriptionsActif === "1" && documents?.inscriptionsReinscriptions?.length > 0 && (
@@ -284,8 +292,10 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                         </div>
                     </>
                 ) : (
-                    <div className="documents-container">
-                        <span className="no-available-documents">Le module de documents n'est pas accessible.</span>
+
+                    <div className="no-available-documents">
+                        <span>Le module de documents n'est pas accessible</span>
+                        <ConfusedCanardman className="sleeping-logo" />
                     </div>
                 )}
             </section>
