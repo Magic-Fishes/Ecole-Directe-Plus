@@ -137,7 +137,7 @@ export default function LandingPage({ token, accountsList }) {
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
             <div className="text-center">
                 <h1>Découvrez <strong className="heading-emphasis">Ecole Directe Plus</strong></h1>
-                <p>EDP offre une expérience unique avec une interface moderne et intuitive, enrichie de fonctionnalités exclusives, le tout de façon gratuite, libre et open-source.</p>
+                <p>EDP augmente EcoleDirecte, avec une interface moderne et intuitive, enrichie de fonctionnalités exclusives, le tout de façon gratuite, libre et open-source.</p>
                 <Link to="/login" className="login-call-to-action">{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
             </div>
             <div className="fade-out-image">

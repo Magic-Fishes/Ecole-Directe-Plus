@@ -152,7 +152,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
             notifications: notifications?.messaging || 0,
-            isNew: true
+            isNew: false
         }
     ]
     // Behavior
