@@ -3,7 +3,7 @@ import ContentLoader from "react-content-loader"
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import PatchNotesIcon from "../../graphics/PatchNotesIcon"
@@ -18,7 +18,7 @@ const supposedNoSessionContent = [
     "",
 ]
 
-export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...props }) {
+export default function DetailedTask({ task, userHomeworks, day, ...props }) {
     const navigate = useNavigate()
 
     const isMouseInCheckBoxRef = useRef(false);
@@ -28,7 +28,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
     const settings = useUserSettings();
     const homeworks = userHomeworks.get()
 
-    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
+    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 150) + 100, contentHeight: Math.floor(Math.random() * 200) + 50 })
 
 
     const location = useLocation();
@@ -36,8 +36,8 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
-        const parentBounds = parent.getBoundingClientRect();
-        const bounds = element.getBoundingClientRect();
+        const parentBounds = getZoomedBoudingClientRect(parent.getBoundingClientRect());
+        const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
         
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
@@ -72,7 +72,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
     }, [location, detailedTaskRef.current, homeworks])
 
     function completedTaskAnimation() {
-        const bounds = taskCheckboxRef.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
         const origin = {
             x: bounds.left + 15 / 2,
             y: bounds.top + 15 / 2
@@ -87,7 +87,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
         });
     }
 
-    function checkTask(date, task, taskIndex) {
+    function checkTask(date, task) {
         const tasksToUpdate = (task.isDone ? {
             tasksNotDone: [task.id],
         } : {
@@ -99,20 +99,20 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                 completedTaskAnimation();
             }
         }
-        homeworks[date][taskIndex].isDone = !task.isDone;
+        homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
         userHomeworks.set(homeworks);
     }
 
     return <>{(task?.content
         ? <div ref={detailedTaskRef} onClick={(e) => {navigate(`#${day};${task.id}`); e.stopPropagation()}} className={`detailed-task ${task.isDone ? "done" : ""}`} id={"task-" + task.id} {...props} >
             <div className="task-header">
-                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task, taskIndex) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
+                <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
                     {task.subject.replace(". ", ".").replace(".", ". ")}
                 </h4>
             </div>
             <div className="task-subtitle">
-                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? "M. -------" : task.teacher}</span>}
+                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? task.teacher.split(" ")[0] + " " + "-".repeat(task.teacher.length) : task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
@@ -130,7 +130,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                         speed={1}
                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                         foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
-                        style={{ width: contentLoadersRandomValues.current.labelWidth + "px", maxHeight: "35px" }}
+                        style={{ width: contentLoadersRandomValues.current.labelWidth + "px", maxHeight: "30px" }}
                     >
                         <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                     </ContentLoader>
@@ -143,7 +143,7 @@ export default function DetailedTask({ task, userHomeworks, day, taskIndex, ...p
                     backgroundColor={'#7e7eab7F'}
                     foregroundColor={'#9a9ad17F'}
                     height="14"
-                    style={{ width: contentLoadersRandomValues.current.labelWidth - 100 + "px" }}
+                    style={{ width: contentLoadersRandomValues.current.labelWidth/1.5 + "px" }}
                 >
                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                 </ContentLoader>

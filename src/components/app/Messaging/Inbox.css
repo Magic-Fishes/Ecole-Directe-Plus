@@ -35,6 +35,7 @@
 
 #inbox .messages-container ul {
     list-style-type: none;
+    overflow: hidden;
 }
 
 #inbox .message-container {
@@ -43,9 +44,24 @@
     padding: 10px;    
     border-left: 4px solid rgb(var(--text-color-alt), .5);
     border-bottom: 1px solid rgb(var(--text-color-alt), .5);
-    opacity: .6;
+    opacity: 0;
+    --opacity: .6;
     outline: none;
     cursor: pointer;
+    animation: jump-in 0.5s var(--timing-function-spring-effect) forwards;
+    animation-delay: calc(var(--order) * 60ms);
+}
+
+@keyframes jump-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    
+    to {
+        opacity: var(--opacity);
+        transform: translateY(0);
+    }
 }
 
 #inbox .message-container:last-child {
@@ -55,14 +71,14 @@
 #inbox .message-container[data-read=false] {
     border-left: 4px solid rgb(var(--text-color-alt));
     padding-left: 6px;
-    opacity: 1;
+    --opacity: 1;
 }
 
 #inbox .message-container:is(:hover, :focus-visible) {
     background-color: rgba(var(--background-color-0), .2);
 }
 #inbox .message-container.selected {
-    opacity: .8;
+    --opacity: .8;
     background-color: rgba(var(--background-color-focus));
 }
 
@@ -127,4 +143,15 @@
 }
 :fullscreen #inbox .message-container:last-child {
     border-bottom: none;
+}
+
+
+#inbox .no-message-received {
+    color: rgb(var(--text-color-alt));
+    display: flex;
+    height: 100%;
+    padding: 75px 20px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }

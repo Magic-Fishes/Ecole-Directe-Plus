@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { applyZoom } from "../../../utils/zoom";
+// import { Chart } from 'chart.js';
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 import "./Charts.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
@@ -31,11 +32,12 @@ export default function Charts({ selectedPeriod }) {
     const userData = useUserData();
 
     const generalAverageHistory = userData.get("generalAverageHistory");
+    const classGeneralAverageHistory = userData.get("classGeneralAverageHistory");
     const streakScoreHistory = userData.get("streakScoreHistory");
     const subjectsComparativeInformation = userData.get("subjectsComparativeInformation");
 
     const resizeChart = () => {
-        chartContainerRef.current.height = document.getElementById("charts")?.getBoundingClientRect().height - document.querySelector("#charts > .top-container")?.getBoundingClientRect().height;
+        chartContainerRef.current.height = getZoomedBoudingClientRect(document.getElementById("charts")?.getBoundingClientRect()).height - getZoomedBoudingClientRect(document.querySelector("#charts > .top-container")?.getBoundingClientRect()).height;
     }
 
     useEffect(() => {
@@ -51,6 +53,9 @@ export default function Charts({ selectedPeriod }) {
         /**
          * return the appropriate dataset according to the selectedChart
          */
+        const userData = useUserData();
+        const minMaxEnabled = userData.get("gradesEnabledFeatures")?.moyenneMin && userData.get("gradesEnabledFeatures")?.moyenneMax;
+
 
         switch (selectedChart) {
             case 0:
@@ -97,6 +102,15 @@ export default function Charts({ selectedPeriod }) {
                         },
                         {
                             type: "line",
+                            label: "Moyenne générale de classe",
+                            data: classGeneralAverageHistory[selectedPeriod].classGeneralAverages,
+                            borderColor: 'rgb(53, 180, 162)',
+                            backgroundColor: 'rgba(53, 180, 162, 0.5)',
+                            tension: 0.2,
+                            // yAxisID: "y"
+                        },
+                        {
+                            type: "line",
                             label: "Score de Streak",
                             data: streakScoreHistory[selectedPeriod],
                             borderColor: 'rgb(255, 99, 132)',
@@ -128,6 +142,7 @@ export default function Charts({ selectedPeriod }) {
                 chartData.current = {
                     labels: Array.from({ length: subjectsComparativeInformation[selectedPeriod].length }, (_, i) => subjectsComparativeInformation[selectedPeriod][i].subjectFullname),
                     datasets: [
+                    ...(minMaxEnabled ? [
                         {
                             type: "bar",
                             label: "Moyennes min et max de classe",
@@ -139,7 +154,9 @@ export default function Charts({ selectedPeriod }) {
                             // yAxisID: "y"
                             borderSkipped: false,
                             order: 2
-                        },
+                            },
+                        ] : []
+                        ),
                         {
                             type: "line",
                             label: "Moyenne élève",

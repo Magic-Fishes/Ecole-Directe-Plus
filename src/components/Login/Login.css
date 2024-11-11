@@ -13,7 +13,9 @@
     border: 2px solid rgb(var(--text-color-alt));
     border-radius: 10px;
     
+    opacity: 0;
     animation: edp-unblock-ad-pop-in .3s var(--timing-function-spring-effect) forwards;
+    animation-delay: .5s;
     transition: border-color .1s, background-color .1s;
     cursor: pointer;
     text-decoration: none;
@@ -53,24 +55,33 @@
     fill: rgba(var(--text-color-main), .9);
 }
 
-#edp-unblock-ad span {
+#edp-unblock-ad span:not(:last-child) {
     flex: 1;
     color: rgb(var(--text-color-alt));
     transition: .1s;
 }
-#edp-unblock-ad a {
+
+#edp-unblock-ad .edpu-explanation {
     color: rgb(var(--text-color-alt));
     transition: .1s;
 }
-#edp-unblock-ad:is(:hover, :focus-visible) :is(span, a) {
+
+#edp-unblock-ad span {
+    color: rgb(var(--text-color-alt));
+    transition: .1s;
+}
+
+#edp-unblock-ad:is(:hover, :focus-visible) span {
     color: rgba(var(--text-color-main), .9);
 }
 
 @keyframes edp-unblock-ad-pop-in {
     from {
+        opacity: 1;
         transform: translate(-50%, calc(-100% - 15px));
     }
     to {
+        opacity: 1;
         transform: translate(-50%, 0);
     }
 }
@@ -190,6 +201,9 @@ p.policy {
 
 @media only screen and (max-width: 869px) {
     p.not-affiliated-mention {
+        display: none;
+    }
+    #edp-unblock-ad {
         display: none;
     }
 }

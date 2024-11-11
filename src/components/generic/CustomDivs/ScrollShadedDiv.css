@@ -1,3 +1,4 @@
+/* ScrollShadedDiv.css */
 
 .scroll-shaded-div {
     max-height: 100%;
@@ -7,52 +8,70 @@
 
 .scroll-shaded-div .content {
     overflow: auto;
-    max-height: inherit;
+    /* Adjust as needed */
+    height: 100%;
+    /* Adjust as needed */
+    width: 100%;
+    position: relative;
 }
 
-.scroll-shaded-div :is(.content:focus, .content:focus-within) {
-    outline: none;
-}
-
+/* Top and bottom shadows */
 .top-shadow,
 .bottom-shadow {
     position: absolute;
     left: 0;
-    width: 100%;
-    height: 30px;
-    transition: 0.25s;
-    opacity: 0;
+    right: 0;
+    height: 20px;
+    /* Adjust height of the shadow */
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .top-shadow {
     top: 0;
-    background: radial-gradient(
-        ellipse 65% 100% at 50% 0,
-        rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)),
-        rgba(0, 0, 0, 0)
-    );
+    background: linear-gradient(to bottom, rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)), transparent);
 }
-
-/* .top-shadow {
-    top: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)), rgba(0, 0, 0, 0));
-}
- */
-/* .bottom-shadow {
-    bottom: 0;
-    background: radial-gradient(
-        farthest-side at 50% 100%,
-        rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)),
-        rgba(0, 0, 0, 0)
-    );
-} */
 
 .bottom-shadow {
     bottom: 0;
-    background: radial-gradient(
-        ellipse 75% 100% at 50% 100%,
-        rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)),
-        rgba(0, 0, 0, 0)
-    );
+    background: linear-gradient(to top, rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)), transparent);
+}
+
+/* Left and right shadows */
+.left-shadow,
+.right-shadow {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    /* Adjust width of the shadow */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.left-shadow {
+    left: 0;
+    background: linear-gradient(to right, rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)), transparent);
+}
+
+.right-shadow {
+    right: 0;
+    background: linear-gradient(to left, rgba(0, 0, 0, var(--alpha-shadow-color-scroll-shaded-div)), transparent);
+}
+
+/* Optional: If you have any custom styles for the content */
+.scroll-shaded-div .content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.scroll-shaded-div .content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.scroll-shaded-div .content::-webkit-scrollbar-track {
+    background: transparent;
 }

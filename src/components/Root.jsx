@@ -9,7 +9,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 import { useCreateNotification } from "./generic/PopUps/Notification";
 import A2FLogin from "./Login/A2FLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, requireA2F, setRequireA2F, fetchA2F }) {
+export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled, requireA2F, setRequireA2F, fetchA2F }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -93,6 +93,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 return 0;
             } else {
                 localStorage.clear();
+                localStorage.setItem("EDPVersion", currentEDPVersion);
             }
         }
 
@@ -103,7 +104,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     setIsNewUser(true);
                 } else {
                     localStorage.setItem("EDPVersion", currentEDPVersion);
-                    setIsNewEDPVersion(true);
                     necessaryResets(localStorage.getItem("EDPVersion"));
                 }
             } else {
@@ -447,8 +447,9 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     <button type="submit" style={{ display: "inline" }}>REPO GITHUB</button>
                 </form>}
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
-                {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
-                {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />}
+                {isAdmin && <input type="button" onClick={() => setIsEDPUnblockActuallyInstalled(!isEDPUnblockActuallyInstalled)} value={"EDPU INSTALLED: " + isEDPUnblockActuallyInstalled} />}
+                {isAdmin && <input type="button" onClick={handleEdBan} value="EDPU NOTIF" />}
+                {/* {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />} */}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

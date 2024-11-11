@@ -17,7 +17,7 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat } from "./utils/gradesTools";
+import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat, calcClassGeneralAverage, calcClassAverage } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
@@ -70,8 +70,8 @@ function consoleLogEDPLogo() {
 
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.3.1";
-const apiVersion = "4.60.5";
+const currentEDPVersion = "0.4.0";
+const apiVersion = "4.64.0";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -125,7 +125,7 @@ const browserExtensionDownloadLink = {
     Safari: "/edp-unblock"
 }
 
-const userBrowser = getBrowser()
+const userBrowser = getBrowser();
 
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -248,7 +248,7 @@ let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
-export default function App() {
+export default function App({ edpFetch }) {
     // global account data
     const [tokenState, setTokenState] = useState(tokenFromLs); // token d'identification
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
@@ -278,6 +278,7 @@ export default function App() {
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [isEDPUnblockInstalled, setIsEDPUnblockInstalled] = useState(true);
+    const [isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled] = useState(false);
     const [isStandaloneApp, setIsStandaloneApp] = useState(((window.navigator.standalone ?? false) || window.matchMedia('(display-mode: standalone)').matches)); // détermine si l'utilisateur a installé le site comme application, permet également de modifier le layout en conséquence
     const [appKey, setAppKey] = useState(() => crypto.randomUUID());
     const [proxyError, setProxyError] = useState(false); // en cas d'erreur sur le serveur proxy d'EDP (toutes les requêtes passent par lui pour contourner les restrictions d'EcoleDirecte)
@@ -522,6 +523,20 @@ export default function App() {
         localStorage.setItem("oldActiveAccount", activeAccount)
     }, [activeAccount]);
 
+    useEffect(() => {
+        const handleMessage = (event) => {
+            if (event.data.type === "EDP_UNBLOCK") {
+                console.log("EDP Unblock v" + event.data.payload.version + " installed");
+                setIsEDPUnblockActuallyInstalled(true);
+            }
+        };
+
+        window.addEventListener("message", handleMessage, false);
+        return () => {
+            window.removeEventListener("message", handleMessage, false);
+        }
+    }, [])
+
     // fonctions de type utils pour modifier le userData
     function changeUserData(data, value) {
         setUserData((oldData) => {
@@ -634,6 +649,12 @@ export default function App() {
                             document.documentElement.style.fontSize = newFontSize + "em";
                         }
                     }
+                } else if (window.innerHeight < 900) {
+                    if (window.innerHeight >= 650) {
+                        document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
+                    } else {
+                        document.documentElement.style.zoom = .75;
+                    }
                 } else {
                     document.documentElement.style.fontSize = "";
                     document.documentElement.style.zoom = "";
@@ -735,6 +756,7 @@ export default function App() {
         const periodsFromJson = grades[activeAccount].periodes;
         const periods = {};
         const generalAverageHistory = {}; // used for charts
+        const classGeneralAverageHistory = {}; // used for charts
         const streakScoreHistory = {}; // used for charts
         const subjectsComparativeInformation = {};
         const totalBadges = {
@@ -761,7 +783,7 @@ export default function App() {
                     newPeriod.isMockExam = period.examenBlanc;
                     newPeriod.MTname = period.ensembleMatieres.nomPP;
                     newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
-                    newPeriod.classAverage = period.ensembleMatieres.moyenneClasse;
+                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
                     newPeriod.subjects = {};
                     let i = 0;
                     for (let matiere of period.ensembleMatieres.disciplines) {
@@ -813,6 +835,7 @@ export default function App() {
                     }
                     periods[period.codePeriode] = newPeriod;
                     generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
+                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
                     streakScoreHistory[period.codePeriode] = [];
                 }
             }
@@ -879,9 +902,6 @@ export default function App() {
                 newGrade.subjectName = grade.libelleMatiere;
                 newGrade.isSignificant = !grade.nonSignificatif;
                 newGrade.examSubjectSRC = grade.uncSujet;
-                if (grade.id == 6291688) {
-                    console.log(grade)
-                }
                 newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
                 newGrade.isReal = true;
@@ -907,11 +927,12 @@ export default function App() {
                 if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
                     subjectDatas[periodCode][subjectCode] = [];
                 }
-                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant });
+                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
                 const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
                 const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
+                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
 
                 // streak management
                 newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
@@ -938,6 +959,7 @@ export default function App() {
                 streakScoreHistory[periodCode].push(periods[periodCode].streak);
 
                 periods[periodCode].subjects[subjectCode].average = average;
+                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
 
                 const category = findCategory(periods[periodCode], subjectCode);
                 if (category !== null) {
@@ -949,8 +971,12 @@ export default function App() {
                 generalAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].generalAverage = generalAverage;
 
+                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
+                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
+                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
+                periods[periodCode].classGeneralAverage = classGeneralAverage;
+
                 // création des badges
-                // les noms sont marqués dans le figma stv mieux t'y retrouver
                 const gradeBadges = [];
                 if (!isNaN(newGrade.value)) {
                     if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
@@ -1024,6 +1050,7 @@ export default function App() {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
         enabledFeatures.coefficient = settings.coefficientNote;
+        enabledFeatures.rank = settings.moyenneRang;
 
         // add the average of all subjects a special type of chart
         for (const period in periods) {
@@ -1045,6 +1072,7 @@ export default function App() {
         changeUserData("totalBadges", totalBadges);
         changeUserData("sortedGrades", periods);
         changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
+        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
         changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
         changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
         changeUserData("gradesEnabledFeatures", enabledFeatures);
@@ -1104,7 +1132,7 @@ export default function App() {
                 }
 
                 if (!contenuDeSeance) {
-                    contenuDeSeance = aFaire
+                    contenuDeSeance = aFaire.contenuDeSeance;
                 }
 
                 if (aFaire) {
@@ -1145,21 +1173,132 @@ export default function App() {
     }
 
 
-    function sortMessages(messages) {
-        const sortedMessages = messages.messages.received.map((message) => { console.log("files:", message.files); return {
-            date: message.date,
-            files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
-            from: message.from,
-            id: message.id,
-            read: message.read,
-            subject: message.subject,
-            content: null,
-            // ...
-        }});
+    function sortMessageFolders(messages, origin = 0) {
+        const oldMessageFolders = useUserData("messageFolders").get();
+        let sortedMessageFolders = messages.classeurs.filter((folder) => (oldMessageFolders === undefined || !oldMessageFolders.some((oldFolder) => oldFolder.id === folder.id))).map((folder) => {
+            return {
+                id: folder.id,
+                name: folder.libelle,
+                fetchInitiated: false,
+                fetched: origin === folder.id
+            }
+        });
+        if (oldMessageFolders === undefined) {
+            sortedMessageFolders.unshift({
+                id: 0,
+                name: "Boîte de réception",
+                fetchInitiated: true,
+                fetched: origin === 0
+            })
+        } else {
+            sortedMessageFolders.unshift(oldMessageFolders.map((folder) => { folder.id === origin && (folder.fetched = true); return folder }));
+            sortedMessageFolders = sortedMessageFolders.flat();
+        }
+        // Add hardcoded folders
+        if (!sortedMessageFolders.some((folder) => folder.id === -1)) {
+            sortedMessageFolders.push({
+                id: -1,
+                name: "Envoyés",
+                fetchInitiated: false,
+                fetched: origin === -1
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -2)) {
+            sortedMessageFolders.push({
+                id: -2,
+                name: "Archivés",
+                fetchInitiated: false,
+                fetched: origin === -2
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -3)) {
+            sortedMessageFolders.push({
+                id: -3,
+                name: "Nouveau dossier",
+                // This is a virtual folder (it doesn't exist at all, it's just a button to create a new folder so it doesn't need to be fetched)
+                fetchInitiated: true,
+                fetched: true
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -4)) {
+            sortedMessageFolders.push({
+                id: -4,
+                name: "Brouillons",
+                fetchInitiated: false,
+                fetched: origin === -4
+            })
+        }
+
+        return sortedMessageFolders;
+    }
+
+
+    function sortMessages(messages, type) {
+        let sortedMessages = [];
+        // This handles the special folders (sent, received, archived) by adressign them an unused folderId
+        if (type === "received") {
+            sortedMessages = messages.messages.received.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: message.idClasseur,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        } else if (type === "sent") {
+            sortedMessages = messages.messages.sent.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -1,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
+        else if (type === "archived") {
+            sortedMessages = messages.messages.archived.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -2,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
+        else if (type === "draft") {
+            sortedMessages = messages.messages.draft.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -4,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
 
         return sortedMessages;
     }
-    
+
     function sortMessageContent(messageContent) {
         if (!messageContent) {
             return;
@@ -1310,18 +1449,15 @@ export default function App() {
             submitErrorMessage: ""
         };
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options)
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options, "text")
             .then((response) => {
-                return response.text().then((data) => {
-                    if (!data) {
-                        setIsEDPUnblockInstalled(false);
-                    } else {
-                        return JSON.parse(data)
-                    }
-                })
+                if (!response) {
+                    setIsEDPUnblockInstalled(false);
+                } else {
+                    return JSON.parse(response);
+                }
             })
             .then((response) => {
-                console.log(".then ~ response:", response)
                 // GESTION DATA
                 let statusCode = response.code;
                 if (statusCode === 200) {
@@ -1332,7 +1468,12 @@ export default function App() {
                     }
                     let token = response.token // collecte du token
                     let accountsList = [];
-                    let accounts = response.data.accounts[0];
+                    let accounts = response.data.accounts.find((account) => account.typeCompte !== "P") ?? response.data.accounts[0];
+                    if (response.data.accounts.some((account) => account.typeCompte === "P")) {
+                        messages.submitButtonText = "Échec de la connexion";
+                        messages.submitErrorMessage = "Les comptes enseignants ne sont pas supportés par Ecole Directe Plus";
+                        return;
+                    }
                     const accountType = accounts.typeCompte; // collecte du type de compte
                     if (accountType === "E") {
                         // compte élève
@@ -1401,6 +1542,7 @@ export default function App() {
             })
             .catch((error) => {
                 if (error.name !== 'AbortError') {
+                    console.error(error);
                     messages.submitButtonText = "Échec de la connexion";
                     messages.submitErrorMessage = "Error: " + error.message;
                 }
@@ -1417,7 +1559,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1427,16 +1569,14 @@ export default function App() {
                 body: `data=${JSON.stringify(data)}`,
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
-            })
+            },
+            "text")
             .then((response) => {
-                return response.text().then((data) => {
-                    if (!data) {
-                        setIsEDPUnblockInstalled(false);
-
-                    } else {
-                        return JSON.parse(data)
-                    }
-                })
+                if (!response) {
+                    setIsEDPUnblockInstalled(false);
+                } else {
+                    return JSON.parse(response);
+                }
             })
             .then((response) => {
                 let code;
@@ -1467,7 +1607,7 @@ export default function App() {
         const data = {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
         }
-        fetch(
+        edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1478,8 +1618,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1536,7 +1676,7 @@ export default function App() {
             }
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
-            fetch(
+            edpFetch(
                 getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
                 {
                     method: "POST",
@@ -1546,8 +1686,8 @@ export default function App() {
                     body: "data={}",
                     signal: controller.signal
                 },
+                "json"
             )
-                .then((response) => response.json())
                 .then((response) => {
                     const code = response.code;
                     if (code === 200) {
@@ -1601,7 +1741,7 @@ export default function App() {
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
             try {
-                const response = await fetch(
+                const response = await edpFetch(
                     getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
                     {
                         method: "POST",
@@ -1610,9 +1750,10 @@ export default function App() {
                         },
                         body: "data={}",
                         signal: controller.signal
-                    }
+                    },
+                    "json"
                 );
-                const responseData = await response.json();
+                const responseData = await response;
                 const code = responseData.code;
                 if (code === 200) {
                     if (date === "incoming") {
@@ -1649,7 +1790,7 @@ export default function App() {
         abortControllers.current.push(controller);
         const userId = activeAccount;
 
-        return fetch(
+        return edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1659,8 +1800,8 @@ export default function App() {
                 body: "data=" + JSON.stringify({ idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone }),
                 signal: controller.signal
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1681,14 +1822,38 @@ export default function App() {
     }
 
 
-    async function fetchMessages(controller = (new AbortController())) {
+    async function fetchMessages(folderId = 0, controller = (new AbortController())) {
+
+        const oldMessageFolders = useUserData("messageFolders").get();
+        if (oldMessageFolders && oldMessageFolders?.length > 0) {
+            if (oldMessageFolders.find((item) => item.id === folderId)?.fetchInitiated) {
+                return;
+            } else {
+                oldMessageFolders.find((item) => item.id === folderId).fetchInitiated = true;
+                useUserData("messageFolders").set(oldMessageFolders)
+            }
+        }
+
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=0&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
+        // handle special folders (this is done that way because special folders are not considered as folders by EcoleDirecte but need to be fetched differently)
+        let specialFolderType = "received";
+        if (folderId === -1) {
+            specialFolderType = "sent";
+            // set the folderId to 0 to avoid errors
+            folderId = 0;
+        } else if (folderId === -2) {
+            specialFolderType = "archived";
+            folderId = 0;
+        } else if (folderId === -4) {
+            specialFolderType = "draft";
+            folderId = 0;
+        }
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1698,10 +1863,9 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
-                console.log(".then ~ response:", response)
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
                     code = 49969;
@@ -1709,7 +1873,27 @@ export default function App() {
                     code = response.code;
                 }
                 if (code === 200) {
-                    changeUserData("sortedMessages", sortMessages(response.data));
+                    let oldSortedMessages = useUserData("sortedMessages").get();
+                    if (oldSortedMessages === undefined) {
+                        oldSortedMessages = [];
+                    }
+
+                    // we've added the specialFolderType to the function to handle the special folders (to handle different data path for special folders and special folderId)
+                    oldSortedMessages.push(sortMessages(response.data, specialFolderType));
+                    // if in oldSortedMessages there is multiple times the same message, we remove the duplicates
+                    console.log(oldSortedMessages)
+                    oldSortedMessages = oldSortedMessages.flat().filter((item, index, self) => self.findIndex((item2) => item2.id === item.id) === index);
+                    console.log(oldSortedMessages)
+                    if (specialFolderType === "sent") {
+                        // set the folderId back to -1 to than handle the special folders
+                        folderId = -1;
+                    } else if (specialFolderType === "archived") {
+                        folderId = -2;
+                    } else if (specialFolderType === "draft") {
+                        folderId = -4;
+                    }
+                    changeUserData("sortedMessages", oldSortedMessages.flat());
+                    changeUserData("messageFolders", sortMessageFolders(response.data, folderId));
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     requireLogin();
@@ -1728,7 +1912,7 @@ export default function App() {
 
     async function fetchMessageContent(id, controller) {
         const oldSortedMessages = useUserData("sortedMessages").get();
-        if (oldSortedMessages) {
+        if (oldSortedMessages && oldSortedMessages?.length > 0) {
             const targetMessageIdx = oldSortedMessages.findIndex((item) => item.id === id);
             if (oldSortedMessages[targetMessageIdx].content !== null) {
                 return;
@@ -1739,8 +1923,11 @@ export default function App() {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+
+        const mode = (oldSortedMessages.find((item) => item.id === id).folderId === -1 || oldSortedMessages.find((item) => item.id === id).folderId === -4) ? "expediteur" : "destinataire";
+
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1750,8 +1937,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1777,7 +1964,7 @@ export default function App() {
             })
     }
 
-    async function fetchMessageMarkAsUnread(ids=[], controller) {
+    async function fetchMessageMarkAsUnread(ids = [], controller) {
         if (ids.length < 1) {
             return;
         }
@@ -1788,8 +1975,8 @@ export default function App() {
             action: "marquerCommeNonLu",
             ids: ids
         }
-        fetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ?  "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
+        edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1799,8 +1986,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1828,7 +2015,7 @@ export default function App() {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        fetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1838,8 +2025,8 @@ export default function App() {
                 body: `data=${JSON.stringify(data)}`,
                 signal: controller.signal,
                 referrerPolicy: "no-referrer"
-            })
-            .then((response) => response.json())
+            },
+            "json")
             .then((response) => {
                 let code;
                 if (accountsListState[activeAccount].firstName === "Guest") {
@@ -1872,7 +2059,7 @@ export default function App() {
 
     function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
         abortControllers.current.push(controller);
-        fetch(
+        edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1883,8 +2070,8 @@ export default function App() {
                 signal: controller.signal,
                 referrerPolicy: "no-referrer",
             },
+            "json"
         )
-            .then((response) => response.json())
             .then((response) => {
                 let code = response.code;
                 if (code === 200) {
@@ -1910,7 +2097,7 @@ export default function App() {
         const data = {
             libelle: name,
         }
-        fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
+        edpFetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
             {
                 method: "POST",
                 headers: {
@@ -1924,7 +2111,7 @@ export default function App() {
 
     async function fetchFile(id, type, specialParams) {
         const { idDevoir } = specialParams
-        return await fetch(
+        return await edpFetch(
             `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${id}&leTypeDeFichier=${type}${idDevoir ? `&idDevoir=${idDevoir}` : ""}`,
             {
                 method: "POST",
@@ -1935,10 +2122,304 @@ export default function App() {
                 body: `data=${JSON.stringify({ forceDownload: 0 })}`,
                 referrerPolicy: "no-referrer"
             },
+            "blob"
         )
-            .then(response => response.blob())
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
+
+    async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'data={}',
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        )
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+
+                    const formatDocument = (documents) =>
+                        documents.map((e) => {
+                            const [year, month, day] = e.date.split('-');
+                            const formattedDate = `${day}/${month}/${year}`;
+                            return new File(e.id, e.type, `${e.libelle}.pdf`, undefined, { date: formattedDate });
+                        });
+
+                    const administrativeDocuments = formatDocument(response.data?.administratifs ?? []);
+                    const notesDocuments = formatDocument(response.data?.notes ?? []);
+                    const vieScolaireDocuments = formatDocument(response.data?.viescolaire ?? []);
+                    const entrepriseDocuments = formatDocument(response.data?.entreprises ?? []);
+                    const facturesDocuments = formatDocument(response.data?.factures ?? []);
+                    // const insReinsDocuments = formatDocument(response.data.inscriptionsReinscriptions);
+
+
+                    const responseDocuments = {
+                        administratifs: administrativeDocuments,
+                        notes: notesDocuments,
+                        viescolaire: vieScolaireDocuments,
+                        entreprises: entrepriseDocuments,
+                        factures: facturesDocuments,
+                        // inscriptionsReinscriptions: insReinsDocuments
+                    }
+
+                    changeUserData("administrativeDocuments", responseDocuments);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            });
+    }
+
+    async function renameFolder(id, name, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ id, type: "classeur", icon: "fa-folder", order: 1, libelle: name, expired: Date.now() + 3600000 })}`,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // the updated folder should be edited in order no modify the libelle of the correct folder
+                const updatedFolders = oldMessageFolders.map(folder => {
+                    if (folder.id === id) {
+                        return { ...folder, name };
+                    }
+                    return folder;
+                });
+                useUserData("messageFolders").set(updatedFolders);
+            }
+            // TODO: handle errors
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteFolder(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=delete&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data={}",
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // delete the folder from the list of folders
+                const updatedFolders = oldMessageFolders.filter(folder => folder.id !== id);
+                useUserData("messageFolders").set(updatedFolders);
+                return true;
+            }
+            // TODO: handle errors (ex: "Dossier non vide")
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function createFolder(name, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ libelle: name })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                const newFolder = {
+                    id: response.data.id,
+                    name: response.data.libelle,
+                    fetchInitiated: false,
+                    fetched: false
+                };
+                const updatedFolders = [...oldMessageFolders, newFolder];
+                useUserData("messageFolders").set(updatedFolders);
+                return response.data.id;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function archiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "archiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                //move the message to the -3 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: -2 };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message archivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function unarchiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "desarchiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the 0 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: 0 };
+                    }
+                    return message;
+                });
+                // re-sort the messages by date
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message désarchivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function moveMessage(ids, folderId, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "deplacer", idClasseur: folderId, ids: ids.map((id) => `${id}:-1`) })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the specified folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (ids.includes(message.id)) {
+                        return { ...message, folderId };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message déplacé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        // the data is:
+        // data = {
+        //     "action": "supprimer",
+        //     "ids": [
+        //         16199
+        //     ],
+        //     "anneeMessages": "2024-2025",
+        //     "idDossier": -5
+        // }
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "supprimer", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"), idDossier: -5 })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // delete the message from the list of messages
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.filter(message => message.id !== id);
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message supprimé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
@@ -2099,6 +2580,8 @@ export default function App() {
                     handleEdBan={handleEdBan}
                     isEDPUnblockInstalled={isEDPUnblockInstalled}
                     setIsEDPUnblockInstalled={setIsEDPUnblockInstalled}
+                    isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled}
+                    setIsEDPUnblockActuallyInstalled={setIsEDPUnblockActuallyInstalled}
                     requireA2F={requireA2F}
                     setRequireA2F={setRequireA2F}
                     fetchA2F={fetchA2F}
@@ -2118,7 +2601,7 @@ export default function App() {
                     path: "feedback",
                 },
                 {
-                    element: <EdpUnblock />,
+                    element: <EdpUnblock isEDPUnblockActuallyInstalled={isEDPUnblockActuallyInstalled} />,
                     path: "edp-unblock",
                 },
                 {
@@ -2138,7 +2621,7 @@ export default function App() {
                     path: "unsubscribe-emails",
                 },
                 {
-                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} currentEDPVersion={currentEDPVersion} />,
+                    element: <Login keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} currentEDPVersion={currentEDPVersion} />,
                     path: "login",
                 },
                 {
@@ -2172,7 +2655,7 @@ export default function App() {
                             path: "account",
                         },
                         {
-                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
+                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
                             path: ":userId/account"
                         },
                         {
@@ -2192,7 +2675,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} fetchHomeworks={fetchHomeworks} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} />,
+                            element: <Dashboard fetchUserGrades={fetchUserGrades} grades={grades} fetchHomeworks={fetchHomeworks} activeAccount={activeAccount} isLoggedIn={isLoggedIn} useUserData={useUserData} sortGrades={sortGrades} isTabletLayout={isTabletLayout} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -2224,7 +2707,7 @@ export default function App() {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />,
                             path: ":userId/messaging"
                         },
                     ],

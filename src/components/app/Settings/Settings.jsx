@@ -12,7 +12,7 @@ import KeyboardKey from "../../generic/KeyboardKey";
 import StoreCallToAction from "../../generic/StoreCallToAction";
 
 import { AppContext } from "../../../App";
-import { applyZoom } from "../../../utils/zoom";
+import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
 import "./Settings.css";
@@ -69,7 +69,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
     }
 
     function confettiAnimation() {
-        const bounds = partyModeCheckbox.current.getBoundingClientRect();
+        const bounds = getZoomedBoudingClientRect(partyModeCheckbox.current.getBoundingClientRect());
         const origin = {
             x: bounds.left + 30 / 2,
             y: bounds.top + 30 / 2

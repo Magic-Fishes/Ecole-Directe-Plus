@@ -12,19 +12,22 @@ import InfoButton from "../../generic/Informative/InfoButton";
 import Grade from "./Grade";
 
 import "./Strengths.css";
+import ReverseIcon from "../../graphics/ReverseIcon";
 
 export default function Strengths({ activeAccount, sortedGrades, selectedPeriod, className = "", ...props }) {
     const [strengths, setStrengths] = useState([]);
+    const [weaknesses, setWeaknesses] = useState([]);
+    const [displayType, setDisplayType] = useState(0); // 0: strengths; 1: weaknesses
     const { useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
-
 
     useEffect(() => {
         function strengthsCalculation() {
             if (sortedGrades && sortedGrades[selectedPeriod]) {
-                const STRENGTHS_NUMBER = 3;
                 const period = sortedGrades[selectedPeriod];
+                const STRENGTHS_NUMBER = 3;
                 const newStrengths = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
+                const newWeaknesses = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
                 
                 for (let subjectKey in period.subjects) {
                     const subject = period.subjects[subjectKey];
@@ -37,6 +40,7 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                     } else {
                         algebricDiff = 0;
                     }
+                    // strengths
                     for (let i = 0; i < newStrengths.length; i++) {
                         const strength = newStrengths[i];
                         if (strength === undefined || (subject.average !== "N/A" && strength.subject.average === "N/A") || (subject.average !== "N/A" && strength.subject.average !== "N/A" && algebricDiff >= strength.algebricDiff)) {
@@ -45,8 +49,18 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                             break;
                         }
                     }
+                    // weaknesses
+                    for (let i = 0; i < newWeaknesses.length; i++) {
+                        const strength = newWeaknesses[i];
+                        if (strength === undefined || (subject.average !== "N/A" && strength.subject.average === "N/A") || (subject.average !== "N/A" && strength.subject.average !== "N/A" && algebricDiff <= strength.algebricDiff)) {
+                            newWeaknesses.splice(i, 0, { algebricDiff, subject })
+                            newWeaknesses.splice(newWeaknesses.length - 1, 1);
+                            break;
+                        }
+                    }
                 }
                 setStrengths(newStrengths);
+                setWeaknesses(newWeaknesses);
             }
         }
         
@@ -55,17 +69,18 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
 
     return (<Window className={`strengths ${className}`} {...props}>
         <WindowHeader>
-            <h2>Vos points forts</h2>
-            <InfoButton className="strengths-info">Calculés en fonction de la différence entre votre moyenne et celle de la classe</InfoButton>
+            <button disabled={!sortedGrades || !sortedGrades[selectedPeriod]} className="display-type-reverse-button" onClick={() => {setDisplayType((displayType+1) % 2)}} title={displayType === 0 ? "Basculer sur les points faibles" : "Basculer sur les points forts"} > <ReverseIcon /> </button>
+            <h2>{displayType === 0 ? "Vos points forts" : "Vos points faibles"}</h2>
+            <InfoButton className={"strengths-info " + (displayType === 0 ? "info-strengths" : "info-weaknesses")}>Calculés en fonction de la différence entre votre moyenne et celle de la classe</InfoButton>
         </WindowHeader>
         <WindowContent>
             {sortedGrades && sortedGrades[selectedPeriod]
-                ? <ol className="strengths-container">
+                ? <ol className={"strengths-container " + (displayType === 0 ? "display-strengths" : "display-weaknesses")}>
                     {
-                        strengths.map((strength, idx) => <li key={crypto.randomUUID()} className="strength-container">
+                        (displayType === 0 ? strengths : weaknesses).map((strength, idx) => <li key={strength?.subject?.name || crypto.randomUUID()} style={{ "--order": idx }} className="strength-container">
                             <Link to={"#" + strength?.subject?.id} className="strength-wrapper">
                                 <span className="subject-container">
-                                    <span className="subject-rank">{idx + 1}</span>
+                                    <span className="subject-rank">{displayType === 0 ? idx + 1 : (sortedGrades && Object.keys(sortedGrades[selectedPeriod].subjects).length || 3) - idx}</span>
                                     <span className="subject-name">{strength?.subject?.name}</span>
                                 </span>
                                 <span className="subject-average"><Grade grade={{ value: strength?.subject?.average ?? "N/A" }} /></span>
@@ -73,9 +88,9 @@ export default function Strengths({ activeAccount, sortedGrades, selectedPeriod,
                         </li>)
                     }
                 </ol>
-                : <ol className="strengths-container">
+                : <ol className="strengths-container display-strengths">
                     {
-                        Array.from({ length: 3 }, (_, index) => <li key={crypto.randomUUID()} className="strength-container">
+                        Array.from({ length: 3 }, (_, index) => <li key={crypto.randomUUID()} style={{ "--order": -69 /* skip the animation */ }} className="strength-container">
                             <div className="strength-wrapper">
                                 <ContentLoader
                                     animate={settings.get("displayMode") === "quality"}

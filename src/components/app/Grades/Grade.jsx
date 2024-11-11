@@ -14,19 +14,33 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
 
     const generalAverage = sortedGrades[selectedPeriod].generalAverage;
-    const subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
+    const gradeCoef = grade.coef ?? 1;
+    let subjectCoef = grade?.subject?.coef ?? gradeCoef;
+    let subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
+    
 
     function getSummedCoef(subjects) {
         let sum = 0;
         for (let key in subjects) {
-            sum += subjects[key].coef;
+            if (subjects[key].grades.length > 0) {
+                sum += subjects[key].coef;
+            }
         }
+        // if all subjects have 0 as coef, we replace all coef by 1 
+        if (sum === 0) {
+            sum = Object.keys(subjects).length;
+            subjectCoef = 1;
+        }
+
         return sum;
     }
 
     // Use subject coef if subject is provided, otherwise use grade's coef
-    const gradeCoef = subject ? subject.coef : grade.coef ?? 1;
-    const gradeScore = (gradeCoef * (grade.value - generalAverage)) / (subjectsSummedCoefs - gradeCoef);
+
+    // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
+
+
+    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
@@ -174,7 +188,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 ).toFixed(2) > 0 ? "+" : ""}
                                 {(
                                     gradeScore
-                                ).toFixed(2)}
+                                ).toFixed(2).replace(".", ",")}
                                 {gradeScore > 0.2 ? (
                                     <Arrow className="grade-arrow grade-arrow-vertical-up" />
                                 ) : gradeScore > 0.07 ? (

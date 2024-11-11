@@ -108,7 +108,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         </div>
                         <div className="general-average">
                             <span>Moyenne Générale</span>
-                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classAverage !== undefined && sortedGrades[selectedPeriod].classAverage !== null && sortedGrades[selectedPeriod].classAverage !== ""
+                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classGeneralAverage !== undefined && sortedGrades[selectedPeriod].classGeneralAverage !== null && sortedGrades[selectedPeriod].classGeneralAverage !== ""
                                 ? <Tooltip >
                                     <TooltipTrigger>
                                         <span>
@@ -132,7 +132,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             <Grade
                                                 grade={{
                                                     value:
-                                                        sortedGrades[selectedPeriod].classAverage ?? "N/A",
+                                                        sortedGrades[selectedPeriod].classGeneralAverage ?? "N/A",
                                                     scale: 20,
                                                     coef: 1,
                                                     isSignificant: true,
