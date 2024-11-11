@@ -22,7 +22,7 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
-import useUserSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
+import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
 
 import { defaultGlobalSettings, EDPVersion } from "./edpConfig";
 import useSettings from "./utils/hooks/useSettings";
@@ -247,7 +247,7 @@ window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 export default function App({ edpFetch }) {
     // global account data
     // const userSession = useUserSession(localStorageSession);
-    const userSession = useUserSession();
+    const userSession = useEcoleDirecteSession();
     const {
         userData,
         get,
@@ -260,12 +260,12 @@ export default function App({ edpFetch }) {
         requestLogin,
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,
-        isLoggedIn,
-        requireDoubleAuth,
-        doubleAuthAcquired,
+        loginStates,
         selectedUserIndex,
         selectedUser,
     } = account;
+
+    const { /*requireLogin, */isLoggedIn, requireDoubleAuth, requireNewToken, doubleAuthAcquired } = loginStates;
 
     const tokenState = token.value;
     const setTokenState = token.set;

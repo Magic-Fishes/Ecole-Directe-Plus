@@ -4,7 +4,7 @@ import { decrypt, encrypt } from "../../utils/utils";
 import useInitializer from "./utils/useInitializer";
 
 // constants
-import { loginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
+import { LoginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
 import { guestDataPath, guestCredentials } from "../constants/config";
 
 // split
@@ -32,26 +32,22 @@ import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
  * )
  */
 
-export default function useUserAccount({ onLogin }) {
-    const [loginState, setLoginState] = useState(loginStates.REQUIRE_LOGIN);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [token, setToken] = useState("");
-    const [selectedUserIndex, setSelectedUserIndex] = useState(null);
-    const [users, setUsers] = useInitializer(null, null, (newValue) => {
-        setSelectedUserIndex(0);
-        onLogin(newValue);
-        return newValue
-    });
+export default function useEcoleDirecteAccount(initialValues) {
+    const [loginState, setLoginState] = useState(initialValues?.loginState ?? LoginStates.REQUIRE_LOGIN);
+    const [username, setUsername] = useState(initialValues?.username ?? "");
+    const [password, setPassword] = useState(initialValues?.password ?? "");
+    const [token, setToken] = useState(initialValues?.token ?? "");
+    const [selectedUserIndex, setSelectedUserIndex] = useState(initialValues?.selectedUserIndex ?? null);
+    const [users, setUsers] = useState(initialValues?.users ?? null);
 
     const doubleAuthKey = useRef(null);
     const selectedUser = users !== null && selectedUserIndex < users.length ? users[selectedUserIndex] : null;
 
-    const isLoggedIn = loginState === loginStates.LOGGED_IN;
-    const requireLogin = loginState === loginStates.REQUIRE_LOGIN;
-    const requireNewToken = loginState === loginStates.REQUIRE_NEW_TOKEN;
-    const requireDoubleAuth = loginState === loginStates.REQUIRE_DOUBLE_AUTH;
-    const doubleAuthAcquired = loginState === loginStates.DOUBLE_AUTH_ACQUIRED;
+    const isLoggedIn = loginState === LoginStates.LOGGED_IN;
+    const requireLogin = loginState === LoginStates.REQUIRE_LOGIN;
+    const requireNewToken = loginState === LoginStates.REQUIRE_NEW_TOKEN;
+    const requireDoubleAuth = loginState === LoginStates.REQUIRE_DOUBLE_AUTH;
+    const doubleAuthAcquired = loginState === LoginStates.DOUBLE_AUTH_ACQUIRED;
 
     async function requestLogin(controller = new AbortController()) {
 
@@ -67,18 +63,18 @@ export default function useUserAccount({ onLogin }) {
                 case 200:
                     setToken(response.token); // collecte du token
                     setUsers(mapLogin(response.data));
-                    setLoginState(loginStates.LOGGED_IN);
+                    setLoginState(LoginStates.LOGGED_IN);
                     return LoginCodes.SUCCESS;
                 case 250:
                     doubleAuthKey.current = null;
                     setToken(response.token); // collecte du token pour la double authentification
-                    setLoginState(loginStates.REQUIRE_DOUBLE_AUTH);
+                    setLoginState(LoginStates.REQUIRE_DOUBLE_AUTH);
                     return LoginCodes.REQUIRE_DOUBLE_AUTH;
                 case 202:
-                    setLoginState(loginStates.REQUIRE_LOGIN);
+                    setLoginState(LoginStates.REQUIRE_LOGIN);
                     return LoginCodes.ACCOUNT_CREATION_ERROR;
                 case -1:
-                    setLoginState(loginStates.BANNED_USER);
+                    setLoginState(LoginStates.BANNED_USER);
                     return LoginCodes.EMPTY_RESPONSE;
                 default: // UNHANDLED ERROR
                     // !:! report l'erreur
@@ -89,16 +85,16 @@ export default function useUserAccount({ onLogin }) {
                 if (error.type === "ED_ERROR") {
                     switch (error.code) {
                         case 505:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return LoginCodes.INVALID_CREDENTIALS;
                         case 74000:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return LoginCodes.SERVER_ERROR;
                         case -1:
-                            setLoginState(loginStates.BANNED_USER);
+                            setLoginState(LoginStates.BANNED_USER);
                             return LoginCodes.EMPTY_RESPONSE;
                         default:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return { code: -1, message: error.message };
                     }
                 }
@@ -122,14 +118,14 @@ export default function useUserAccount({ onLogin }) {
                             message: "",
                         };
                     default:// !:! report en webhook
-                        setLoginState(loginStates.REQUIRE_LOGIN);
+                        setLoginState(LoginStates.REQUIRE_LOGIN);
                         console.error(response.message);
                         return { code: -1, message: response.message };
                 }
             })
             .catch((error) => {
                 if (error.type === "ED_ERROR") {
-                    setLoginState(loginStates.REQUIRE_LOGIN);
+                    setLoginState(LoginStates.REQUIRE_LOGIN);
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
@@ -140,7 +136,7 @@ export default function useUserAccount({ onLogin }) {
                     }
                 }
                 if (error.name !== "AbortError") {
-                    setLoginState(loginStates.REQUIRE_LOGIN);
+                    setLoginState(LoginStates.REQUIRE_LOGIN);
                     console.error(error);
                     return { code: -1, message: error.message };
                 }
@@ -154,20 +150,20 @@ export default function useUserAccount({ onLogin }) {
                 switch (response.code) {
                     case 200:
                         doubleAuthKey.current = response.data;
-                        setLoginState(loginStates.DOUBLE_AUTH_ACQUIRED);
+                        setLoginState(LoginStates.DOUBLE_AUTH_ACQUIRED);
                         return {
                             code: 0,
                             message: "",
                         };
                     default:
                         console.error(response.message);
-                        setLoginState(loginStates.REQUIRE_LOGIN);
+                        setLoginState(LoginStates.REQUIRE_LOGIN);
                         return { code: -1, message: response.message };
                 }
             })
             .catch((error) => {
                 if (error.type === "ED_ERROR") {
-                    setLoginState(loginStates.REQUIRE_LOGIN);
+                    setLoginState(LoginStates.REQUIRE_LOGIN);
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
@@ -178,36 +174,15 @@ export default function useUserAccount({ onLogin }) {
                     }
                 }
                 if (error.name !== "AbortError") {
-                    setLoginState(loginStates.REQUIRE_LOGIN);
+                    setLoginState(LoginStates.REQUIRE_LOGIN);
                     console.error(error);
                     return { code: -1, message: error.message };
                 }
             })
     }
 
-    function exportToString(requestedData) {
-        /**
-         * This function works with the next one. It will
-         * export data of the account into strings.
-         * The mai purpose is to provide an easy way of
-         * storing and load data in web browser storages
-         * (local/session storage)
-         * The @param requestedData can be :
-         *  - "credentials" : will return an encrypted value of the users credentials
-         *  - "account" : will return a JSON version of the users state
-         *  - "doubleAuthKeys" : will return a JSON version of the doubleAuthKeys
-         *  - "token" : will return the token
-         */
-        switch (requestedData) {
-            case "credentials":
-                return encrypt(JSON.stringify({ username, password }));
-            case "account":
-                return JSON.stringify({ users, selectedUserIndex });
-            case "doubleAuthKeys":
-                return JSON.stringify(doubleAuthKey);
-            case "token":
-                return token;
-        }
+    function exportInitAccounts() {
+        return { loginState, username, password, token, selectedUserIndex, users }
     }
 
     function importFromString({ credentials, account, doubleAuthKeys, token }) {
@@ -249,11 +224,16 @@ export default function useUserAccount({ onLogin }) {
         },
         token: { value: token, set: setToken },
         selectedUserIndex: { value: selectedUserIndex, set: setSelectedUserIndex },
+        loginStates: {
+            requireLogin,
+            isLoggedIn,
+            requireDoubleAuth,
+            requireNewToken,
+            doubleAuthAcquired,
+            set: setLoginState,
+        },
         selectedUser,
         users,
-        isLoggedIn,
-        requireDoubleAuth,
-        doubleAuthAcquired,
         requestLogin,
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,

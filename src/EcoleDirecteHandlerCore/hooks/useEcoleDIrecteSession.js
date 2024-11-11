@@ -1,9 +1,9 @@
 // libs/utils
-import { useState, useEffect, useRef } from "react";
-import useUserAccount from "./useEcoleDirecteAccount";
+import { useEffect } from "react";
+import useEcoleDirecteAccount from "./useEcoleDirecteAccount";
 // lonstants
 import { guestDataPath } from "../constants/config";
-import { GradesCodes, HomeworksCodes } from "../constants/codes";
+import { LoginStates, GradesCodes, HomeworksCodes } from "../constants/codes";
 
 // split
 import useAccountData from "./utils/useAccountData";
@@ -13,7 +13,6 @@ import fetchTimeline from "../requests/fetchTimeline";
 import mapTimeline from "../mappers/timeline";
 import fetchHomeworks from "../requests/fetchHomeworks";
 import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
-
 
 /**
  * Each fetch function will return a code, and other data such as messages, display text, ...
@@ -33,7 +32,7 @@ import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
  * )
  */
 
-export default function useUserSession(localStorageSession = {}) {
+export default function useEcoleDirecteSession(localStorageSession = {}) {
     const [userData, {
         initialize: initializeUserData,
         reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
@@ -41,15 +40,16 @@ export default function useUserSession(localStorageSession = {}) {
         setSelectedUserDataIndex,
     }] = useAccountData();
 
-    const account = useUserAccount({
-        onLogin: (users) => {
+    const account = useEcoleDirecteAccount({});
+    const { token, users, selectedUser, selectedUserIndex, loginStates } = account;
+
+    useEffect(() => {
+        if (loginStates.isLoggedIn) {
             initializeUserData(users.length);
+        } else if (loginStates.requireLogin) {
+            resetUserData();
         }
-    });
-
-    const { token, selectedUser, selectedUserIndex } = account;
-
-
+    }, [loginStates.isLoggedIn, loginStates.requireLogin]);
 
     useEffect(() => {
         setSelectedUserDataIndex(selectedUserIndex.value);
@@ -61,7 +61,7 @@ export default function useUserSession(localStorageSession = {}) {
         if (selectedUser.id === -1) {
             response = import(/* @vite-ignore */ guestDataPath.grades)
         } else {
-            response = fetchGrades(schoolYear, selectedUser.id, token, controller)
+            response = fetchGrades(schoolYear, selectedUser.id, token.value, controller)
         }
 
         return response.then((response) => {
@@ -81,10 +81,10 @@ export default function useUserSession(localStorageSession = {}) {
                 if (error.type === "ED_ERROR") {
                     switch (error.code) {
                         case 520:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return GradesCodes.INVALID_TOKEN;
                         case 525:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return GradesCodes.EXPIRED_TOKEN;
                         default:
                             return { code: -1, message: error.message };
@@ -133,10 +133,10 @@ export default function useUserSession(localStorageSession = {}) {
                 if (error.type === "ED_ERROR") {
                     switch (error.code) {
                         case 520:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return HomeworksCodes.INVALID_TOKEN;
                         case 525:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return HomeworksCodes.EXPIRED_TOKEN;
                         default:
                             return { code: -1, message: error.message };
@@ -172,10 +172,10 @@ export default function useUserSession(localStorageSession = {}) {
                 if (error.type === "ED_ERROR") {
                     switch (error.code) {
                         case 520:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return GradesCodes.INVALID_TOKEN;
                         case 525:
-                            setLoginState(loginStates.REQUIRE_LOGIN);
+                            loginStates.set(LoginStates.REQUIRE_LOGIN);
                             return GradesCodes.EXPIRED_TOKEN;
                         default:
                             return { code: -1, message: error.message };

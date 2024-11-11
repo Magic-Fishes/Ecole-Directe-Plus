@@ -7,7 +7,7 @@ export default function fetchGrades(schoolYear, userId, token, controller = unde
     headers.append("x-token", token);
 
     const body = new URLSearchParams();
-    body.append("anneeScolaire", schoolYear);
+    body.append("data", JSON.stringify({anneeScolaire: schoolYear}));
 
     const options = {
         method: "POST",

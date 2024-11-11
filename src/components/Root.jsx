@@ -405,12 +405,6 @@ export default function Root({ get, accountsList, fakeLogin, resetUserData, sync
         }
     }
 
-    const date = new Date();
-    if ((!sessionStorage.getItem('april')) && ((date.getMonth() === 3) && (date.getDate() < 2))) {
-        sessionStorage.setItem('april', 'true');
-        window.location.reload(false);
-    }
-
     return (
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>

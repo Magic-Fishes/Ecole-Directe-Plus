@@ -1,5 +1,5 @@
 
-export const loginStates = {
+export const LoginStates = {
     LOGGED_IN: 0,
     REQUIRE_LOGIN: 1,
     REQUIRE_DOUBLE_AUTH: 2,
@@ -14,7 +14,7 @@ export const LoginCodes = {
     REQUIRE_DOUBLE_AUTH:    { code: 2, message: "Double authentification is needed" },
     SERVER_ERROR:           { code: 3, message: "Couldn't connect to the server, try again later" },
     ACCOUNT_CREATION_ERROR: { code: 4, message: "There is a problem with your account, be sure that it is activated and working" },
-    EMPTY_RESPONSE:         { code: 5, message: "You were not able to get a response from EcoleDirecte's servers. You're maybe banned from their services" },
+    EMPTY_RESPONSE:         { code: 5, message: "You were not able to get a response from EcoleDirecte's servers. You might have send a wrong data format. Another reason could be that you're banned from their services." },
 }
 
 export const DoubleAuthCodes = {

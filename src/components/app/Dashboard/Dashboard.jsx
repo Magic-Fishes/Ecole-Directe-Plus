@@ -33,7 +33,6 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
     const navigate = useNavigate();
     const location = useLocation()
 
-
     const hashParameters = location.hash.split(";")
     const selectedTask = hashParameters.length > 1 && homeworks && homeworks[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
 

@@ -5,7 +5,6 @@ import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
 import Button from "../generic/UserInputs/Button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../generic/PopUps/Tooltip";
-import { decrypt, encrypt } from "../../utils/utils"
 
 import AccountIcon from "../graphics/AccountIcon"
 import KeyIcon from "../graphics/KeyIcon"
@@ -13,11 +12,8 @@ import KeyIcon from "../graphics/KeyIcon"
 import "./LoginForm.css";
 import { AccountContext } from "../../App";
 
-// const lsIdName = encrypt("userIds")
-
-const april = sessionStorage.getItem('april') === "true"
-
-const lsIdName = "encryptedUserIds"
+const today = new Date();
+const april = (today.getMonth() === 3) && (today.getDate() < 2);
 
 export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLoggedInCheckBox = false, ...props }) {
 

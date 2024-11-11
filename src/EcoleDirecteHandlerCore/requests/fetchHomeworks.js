@@ -1,7 +1,6 @@
 import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
 import EdpError from "../utils/edpError";
-import { format } from "date-fns";
 
 export default function fetchHomeworks(date, userId, token, controller = undefined) {
     const headers = new Headers();
@@ -18,7 +17,7 @@ export default function fetchHomeworks(date, userId, token, controller = undefin
         referrerPolicy: "no-referrer",
     };
 
-    const endpoint = date === null ?  "" : `/${format(date, "yyyy-MM-dd")}`;
+    const endpoint = date === null ?  "" : `/${date}`;
 
     return edpFetch(`https://api.ecoledirecte.com/v3/Eleves/${userId}/cahierdetexte${endpoint}.awp?verbe=get&v=${apiVersion}`, options, "text")
         .catch((error) => {
