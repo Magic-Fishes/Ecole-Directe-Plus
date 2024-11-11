@@ -33,7 +33,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { accountsListState, useUserData } = useContext(AppContext);
+    const { accountsListState, useUserData, isTabletLayout } = useContext(AppContext);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [selectedFolder, setSelectedFolder] = useState(0);
     const oldSelectedMessage = useRef(selectedMessage);
@@ -46,7 +46,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
 
 
     const module = accountsListState[activeAccount].modules?.find(module => module.code === "MESSAGERIE");
-    let canSendMessages = false && (module?.params?.destAdmin ?? "1") === "1" || 
+    let canSendMessages = (module?.params?.destAdmin ?? "1") === "1" || 
                           (module?.params?.destEleve ?? "1") === "1" || 
                           (module?.params?.destFamille ?? "1") === "1" || 
                           (module?.params?.destProf ?? "1") === "1" || 
@@ -242,7 +242,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                     <Window allowFullscreen={true} className="inbox-window">
                         <WindowHeader className="inbox-window-header">
                             {folders !== undefined && folders.length > 1
-                                ? <Tooltip className="folder-tooltip" placement="bottom" closeOnClickInside={true} onClick={(event) => event.stopPropagation()}>
+                                ? <Tooltip className="folder-tooltip" placement="bottom" closeOnClickInside={isTabletLayout} onClick={(event) => event.stopPropagation()}>
                                     <TooltipTrigger> <FolderIcon className="folder-icon" /> </TooltipTrigger>
                                     <TooltipContent className="no-questionmark">
                                         <h3>Dossiers</h3>

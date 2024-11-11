@@ -195,7 +195,6 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger({ children, ...
 
 export const TooltipContent = forwardRef(function TooltipContent({ children, style, className = "", ...props }, propRef) {
     const context = useTooltipContext();
-    const { isTabletLayout } = useContext(AppContext);
     const ref = useMergeRefs([context.refs.setFloating, children.ref, propRef]);
 
     // Affiche / N'affiche pas la tooltip
@@ -203,7 +202,7 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
 
     // Gestion du clic à l'intérieur pour fermer la tooltip
     const handleClickInside = () => {
-        if (context.options.closeOnClickInside && isTabletLayout) {
+        if (context.options.closeOnClickInside) {
             context.setIsOpen(false);
         }
     };

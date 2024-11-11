@@ -71,6 +71,9 @@ body:has(#account) {
     flex-flow: column nowrap;
     overflow: auto;
 }
+#documents .file-name {
+    font-size: 18px;
+}
 
 .coming-soon {
     height: 100%;
@@ -257,7 +260,7 @@ body:has(#account) {
     height: 100%;
     width: 100%;
     gap: 15px;
-    color: rgb(var(--text-color));
+    color: rgb(var(--text-color-alt));
 }
 
 .document-container {
