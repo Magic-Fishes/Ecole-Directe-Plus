@@ -292,8 +292,6 @@ export default function Charts({ selectedPeriod }) {
     useEffect(() => {
         refreshChart();
         useUserSettings("selectedChart").set(selectedChart);
-        console.log("selectedChart:", selectedChart);
-        console.log("selectedChartSetting:", useUserSettings("selectedChart").get());
     }, [selectedChart, activeAccount, selectedPeriod]);
 
     useEffect(() => {
