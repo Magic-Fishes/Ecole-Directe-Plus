@@ -93,7 +93,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                     } finally {
                         setTimeout(() => {
                             setIsLoadingDocuments(false);
-                        } , 1000);
+                        } , 0);
                     }
                 };
                 fetchDocuments();
