@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { LoginContext } from "../../App";
+import { AccountContext } from "../../App";
 import sortGrades from "../sortData/sortGrades";
 
 export async function fetchGrades(schoolYear, controller = (new AbortController())) {
-    const { account, edpFetch, token, setToken } = useContext(LoginContext);
+    const { account, edpFetch, token, setToken } = useContext(AccountContext);
 
     if (account.firstName === "Guest") {
         return import("../../data/guest/grades.json").then((module) => sortGrades(module.data))

@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext } from "react"
 import ContentLoader from "react-content-loader"
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
 import CheckBox from "../../generic/UserInputs/CheckBox"
-import { AppContext } from "../../../App"
+import { AppContext, SettingsContext, UserDataContext } from "../../../App"
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 
@@ -18,27 +18,29 @@ const supposedNoSessionContent = [
     "",
 ]
 
-export default function DetailedTask({ task, userHomeworks, day, ...props }) {
-    const navigate = useNavigate()
+export default function DetailedTask({ task, day, ...props }) {
+    const { actualDisplayTheme, fetchHomeworksDone } = useContext(AppContext)
+    
+    const userData = useContext(UserDataContext);
+    const { homeworks } = userData;
 
+    const settings = useContext(SettingsContext);
+    const { isPartyModeEnabled, displayMode, isStreamerModeEnabled } = settings.user;
+    
+    const navigate = useNavigate()
+    const location = useLocation();
+    
     const isMouseInCheckBoxRef = useRef(false);
     const detailedTaskRef = useRef(null);
     const taskCheckboxRef = useRef(null);
-    const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
-    const settings = useUserSettings();
-    const homeworks = userHomeworks.get()
-
     const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 150) + 100, contentHeight: Math.floor(Math.random() * 200) + 50 })
-
-
-    const location = useLocation();
     const oldLocationHash = useRef(null);
 
     function scrollIntoViewNearestParent(element) {
         const parent = element.parentElement;
         const parentBounds = getZoomedBoudingClientRect(parent.getBoundingClientRect());
         const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
-        
+
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
 
@@ -48,7 +50,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
         }
 
         oldLocationHash.current = location.hash;
-        
+
         if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
             return;
         }
@@ -68,7 +70,6 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
         if (taskId === task.id && detailedTaskRef.current) {
             setTimeout(() => scrollIntoViewNearestParent(detailedTaskRef.current), 200);
         }
-
     }, [location, detailedTaskRef.current, homeworks])
 
     function completedTaskAnimation() {
@@ -88,19 +89,17 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
     }
 
     function checkTask(date, task) {
-        const tasksToUpdate = (task.isDone ? {
-            tasksNotDone: [task.id],
-        } : {
-            tasksDone: [task.id],
-        })
-        fetchHomeworksDone(tasksToUpdate);
+        const tasksToUpdate = (task.isDone
+            ? { tasksNotDone: [task.id] }
+            : { tasksDone: [task.id] })
+        fetchHomeworksDone(tasksToUpdate); // !:! need to handle errors and stuff (idk but need handle it)
         if (tasksToUpdate.tasksDone !== undefined) {
-            if (settings.get("isPartyModeEnabled") && settings.get("displayMode") === "quality") {
+            if (isPartyModeEnabled.value && displayMode.value === "quality") {
                 completedTaskAnimation();
             }
         }
         homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
-        userHomeworks.set(homeworks);
+        userData.set("homeworks", homeworks);
     }
 
     return <>{(task?.content
@@ -112,7 +111,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
                 </h4>
             </div>
             <div className="task-subtitle">
-                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {settings.get("isStreamerModeEnabled") ? "M. -------" : task.teacher}</span>}
+                {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")} par {isStreamerModeEnabled.value ? "M. -------" : task.teacher}</span>}
                 {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}
             </div>
             <EncodedHTMLDiv className="task-content" nonEncodedChildren={<CopyButton content={clearHTML(task.content, undefined, false).innerText} />} backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{task.content}</EncodedHTMLDiv>
@@ -126,7 +125,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
                 <CheckBox id={"task-cb-" + crypto.randomUUID()} ref={taskCheckboxRef} label="Effectué" onChange={() => { }} checked={false} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
                     <ContentLoader
-                        animate={settings.get("displayMode") === "quality"}
+                        animate={displayMode.value === "quality"}
                         speed={1}
                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                         foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -138,7 +137,7 @@ export default function DetailedTask({ task, userHomeworks, day, ...props }) {
             </div>
             <div className="task-subtitle">
                 <ContentLoader
-                    animate={settings.get("displayMode") === "quality"}
+                    animate={displayMode.value === "quality"}
                     speed={1}
                     backgroundColor={'#7e7eab7F'}
                     foregroundColor={'#9a9ad17F'}

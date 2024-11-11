@@ -1,12 +1,14 @@
-export const EDPVersion = "0.4.0";
 export const apiVersion = "4.60.5";
 export const guestDataPath = {
     login: "/guestData/default/login.json",
     grades: "/guestData/default/grades.json",
+    incoming_homeworks: "/guestData/default/incoming_homeworks.json",
+    detailed_homeworks: "/guestData/default/detailed_homeworks.json",
 }
+
 export const guestCredentials = {
-    username: "guest",
-    password: "secret"
+    username: "a",
+    password: "a"
 }
 
 /**
@@ -25,24 +27,6 @@ export const guestCredentials = {
  *     - step
  */
 
-export const settings = [
-    {
-        name: "keepLoggedIn",
-        type: 0,
-        isCommon: true,
-        isSavable: true,
-        default: false,
-    },
-    {
-        name: "isSepiaEnabled",
-        type: 0,
-        default: false,
-        properties: {
-
-        }
-    }
-]
-
 /**{
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -57,7 +41,7 @@ export const settings = [
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
     isSchoolYearEnabled: false,
-    lucioleFont: false,
+    isLucioleFontEnabled: false,
     windowArrangement: [],
     allowWindowsArrangement: true,
     dynamicLoading: true,

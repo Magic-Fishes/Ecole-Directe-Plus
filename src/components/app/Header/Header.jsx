@@ -18,18 +18,21 @@ import Policy from "../../generic/Policy";
 // import HomeworksIcon from "../../graphics/HomeworksIcon";
 // import PlanningIcon from "../../graphics/PlanningIcon"
 
-import { EDPVersion } from "../../../EcoleDirecteHandlerCore/constants/edpConfig";
+import { EDPVersion } from "../../../edpConfig";
 
-import { AppContext } from "../../../App";
+import { AppContext, UserDataContext } from "../../../App";
 
 import "./Header.css";
 
 
-export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, timeline, isFullScreen, isTabletLayout, logout }) {
+    const { globalSettings, isStandaloneApp } = useContext(AppContext);
+    
+    const userData = useContext(UserDataContext);
+    const { notifications } = userData;
+    
     const navigate = useNavigate();
     const location = useLocation();
-
-    const { globalSettings, useUserData, isStandaloneApp } = useContext(AppContext);
 
     const { userId } = useParams();
     
@@ -56,50 +59,11 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
     }, [userId]);
 
     // handle notifications
-    function calculateNotificationsNumber(timeline) {
-        const notifications = useUserData().get("notifications") ?? {};
-        // reset notifications
-        notifications.grades = 0;
-        notifications.messaging = 0;
-        notifications.account = 0;
-
-        for (const eventKey in timeline[activeAccount]) {
-            const event = timeline[activeAccount][eventKey];
-            // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
-            //     continue;
-            // }
-            switch (event.typeElement) {
-                case "Note":
-                    // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
-                    if ((Date.now() - (new Date(event.date)).getTime()) < (3 * 1000 * 60 * 60 * 24)) {
-                        let newGradesNb = 1;
-                        if (event.titre === "Nouvelles évaluations") {
-                            newGradesNb = event.contenu.split("/").length;
-                        }
-                        notifications.grades = (notifications.grades ?? 0) + newGradesNb;
-                    }
-                    break;
-
-                case "Messagerie":
-                    notifications.messaging = (notifications.messaging ?? 0) + 1;
-                    break;
-                
-                case "VieScolaire":
-                case "Document":
-                    notifications.account = (notifications.account ?? 0) + 1;
-                    break;
-            }
-        }
-        useUserData().set("notifications", notifications)
-    }
-
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
-            if (timeline.length < 1 || timeline[activeAccount] === undefined) {
-                fetchTimeline(controller);
-            } else {
-                calculateNotificationsNumber(timeline);
+            if (timeline === undefined) {
+                userData.get.timeline(controller);
             }
         }
 
@@ -138,8 +102,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
             audio.play();
         }
     }, [easterEggCounter]);
-
-    const notifications = useUserData().get("notifications");
+    
     const headerNavigationButtons = [
         {
             enabled: true,

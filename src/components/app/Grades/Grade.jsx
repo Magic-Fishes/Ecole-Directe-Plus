@@ -4,17 +4,30 @@ import { Link } from 'react-router-dom';
 import CloseButton from "../../graphics/CloseButton";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
 import Arrow from "../../graphics/Arrow";
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 import "./Grade.css";
 
 export default function Grade({ grade, subject, className = "", ...props }) {
-    const { useUserSettings, useUserData, deleteFakeGrade } = useContext(AppContext);
-    const userData = useUserData();
-    const grades = userData.get("grades");
-    const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
+    const { deleteFakeGrade } = useContext(AppContext);
 
-    const generalAverage = grades[selectedPeriod].generalAverage;
-    const subjectsSummedCoefs = getSummedCoef(grades[selectedPeriod].subjects);
+    const userData = useContext(UserDataContext);
+    const { grades, activePeriod, gradesEnabledFeatures } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { isGradeScaleEnabled, gradeScale } = settings.user;
+
+    const generalAverage = grades[activePeriod].generalAverage;
+    const subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
+
+    const [classList, setClassList] = useState([]);
+
+    const gradeRef = useRef(null);
+
+    const coefficientEnabled = gradesEnabledFeatures?.coefficient;
+    // Use subject coef if subject is provided, otherwise use grade's coef
+    const gradeCoef = grade.coef ?? 1;
+    const subjectCoef = grade?.subject?.coef ?? gradeCoef;
+    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -25,17 +38,6 @@ export default function Grade({ grade, subject, className = "", ...props }) {
         }
         return sum;
     }
-
-    // Use subject coef if subject is provided, otherwise use grade's coef
-    const gradeCoef = grade.coef ?? 1;
-    const subjectCoef = grade?.subject?.coef ?? gradeCoef;
-    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
-
-    const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
-    const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
-    const gradeScale = useUserSettings("gradeScale");
-    const [classList, setClassList] = useState([]);
-    const gradeRef = useRef(null);
 
     function hasStreakGradeAfter(siblingsLimit = 0) {
         let i = 0;
@@ -141,9 +143,9 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 }
                             >
                                 {(
-                                    isGradeScaleEnabled.get() && !isNaN(grade.value)
+                                    isGradeScaleEnabled.value && !isNaN(grade.value)
                                         ? Math.round(
-                                            (grade.value * gradeScale.get()) / 
+                                            (grade.value * gradeScale.value) / 
                                             (grade.scale ?? 20) * 
                                             100
                                         ) / 100
@@ -151,7 +153,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                                 )
                                     ?.toString()
                                     .replace(".", ",")}
-                                {isGradeScaleEnabled.get() ||
+                                {isGradeScaleEnabled.value ||
                                     ((grade.scale ?? 20) !== 20 && (
                                         <sub>/{grade.scale}</sub>
                                     ))}
@@ -196,9 +198,9 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                     // Render the span without tooltip if not a subject grade
                     <span>
                         {(
-                            isGradeScaleEnabled.get() && !isNaN(grade.value)
+                            isGradeScaleEnabled.value && !isNaN(grade.value)
                                 ? Math.round(
-                                    (grade.value * gradeScale.get()) /
+                                    (grade.value * gradeScale.value) /
                                     (grade.scale ?? 20) *
                                     100
                                 ) / 100
@@ -206,7 +208,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                         )
                             ?.toString()
                             .replace(".", ",")}
-                        {isGradeScaleEnabled.get() ||
+                        {isGradeScaleEnabled.value ||
                             ((grade.scale ?? 20) !== 20 && <sub>/{grade.scale}</sub>)}
                         {coefficientEnabled && gradeCoef !== 1 && <sup>({gradeCoef})</sup>}
                     </span>

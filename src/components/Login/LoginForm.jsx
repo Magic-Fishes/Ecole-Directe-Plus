@@ -11,30 +11,22 @@ import AccountIcon from "../graphics/AccountIcon"
 import KeyIcon from "../graphics/KeyIcon"
 
 import "./LoginForm.css";
-import { LoginContext } from "../../App";
+import { AccountContext } from "../../App";
 
 // const lsIdName = encrypt("userIds")
 
 const april = sessionStorage.getItem('april') === "true"
 
-
 const lsIdName = "encryptedUserIds"
-
-const submitButtonTexts = {
-    "submitting": "Connexion...",
-    "submitted": "Connecté",
-    "invalid": "Échec de la connexion",
-}
 
 export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLoggedInCheckBox = false, ...props }) {
 
     const {
-        username,
-        password,
+        userCredentials,
         keepLoggedIn,
         requestLogin,
         doubleAuthAcquired,
-    } = useContext(LoginContext);
+    } = useContext(AccountContext);
 
     // States
     const [submitState, setSubmitState] = useState("");
@@ -42,9 +34,9 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
     const [errorMessage, setErrorMessage] = useState("");
 
     // Behavior
-    const updateUsername = (event) => { username.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
-    const updatePassword = (event) => { password.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
-    const updateKeepLoggedIn = (event) => setKeepLoggedIn(event.target.checked); // !:! à set
+    const updateUsername = (event) => { userCredentials.username.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
+    const updatePassword = (event) => { userCredentials.password.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
+    const updateKeepLoggedIn = (event) => keepLoggedIn.set(event.target.checked); // !:! à set
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -124,13 +116,13 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
 
     return (
         <form onSubmit={handleSubmit} {...props} id="login-form">
-            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitState("invalid")} />
-            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitState("invalid")} />
+            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitState("invalid")} />
+            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitState("invalid")} />
             <p className="error-message">{errorMessage}</p>
             <div className="login-option">
                 <Tooltip delay={400}>
                     <TooltipTrigger>
-                        <CheckBox disabled={disabledKeepLoggedInCheckBox} id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn} onChange={updateKeepLoggedIn} />
+                        <CheckBox disabled={disabledKeepLoggedInCheckBox} id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn.value} onChange={updateKeepLoggedIn} />
                     </TooltipTrigger>
                     <TooltipContent className="fdisclaimer">
                         Avertissement : cette fonctionnalité peut présenter des risques, notamment si vous êtes infecté par un logiciel malveillant

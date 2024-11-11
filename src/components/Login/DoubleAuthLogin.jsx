@@ -6,7 +6,7 @@ import RadioButton from "../generic/UserInputs/RadioButton";
 import { decodeBase64 } from "../../utils/utils";
 import Button from "../generic/UserInputs/Button";
 import ScrollShadedDiv from "../generic/CustomDivs/ScrollShadedDiv";
-import { LoginContext } from "../../App";
+import { AccountContext } from "../../App";
 
 import "./DoubleAuthLogin.css";
 
@@ -16,7 +16,7 @@ export default function DoubleAuthLogin({ ...props }) {
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,
         requestLogin
-    } = useContext(LoginContext);
+    } = useContext(AccountContext);
 
     const [doubleAuthForm, setDoubleAuthForm] = useState({});
     const [isOpen, setIsOpen] = useState(true);
@@ -63,6 +63,9 @@ export default function DoubleAuthLogin({ ...props }) {
                     setErrorMessage("Vous avez mis trop de temps à répondre au formulaire.")
                     return;
                 case 2:
+                    setErrorMessage("Une erreur inattendue s'est produite."); // cas où le token est invalide (!= d'expiré, le case 1), c'est donc une erreur côté EDP donc non prévue
+                    return;
+                case 3:
                     setErrorMessage("Votre compte EcoleDirecte a peut être été bloqué suite à une réponse incorrecte au défi de sécurité. Consultez vos emails pour les instructions de déblocage.");
                     return;
                 case -1:

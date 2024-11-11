@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import {
     WindowsContainer,
@@ -15,24 +15,15 @@ import "./Grades.css";
 
 
 export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
-    const { fetchGrades, fetchData, useUserData, useUserSettings } = useContext(AppContext)
-    const userData = useUserData();
-    const userSettings = useUserSettings();
+    const userData = useContext(UserDataContext);
+    const { grades, activePeriod } = userData;
 
-    const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
-    const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
+    const settings = useContext(SettingsContext);
+    const { isSchoolYearEnabled, schoolYear } = settings.user;
     
-    const grades = userData.get("grades");
-    const fetchSchoolYear = userSettings.get("isSchoolYearEnabled") ? userSettings.get("schoolYear").join("-") : "";
+    const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
 
-    useEffect(() => {
-        setSelectedPeriod(userData.get("activePeriod"))
-    }, [grades]);
-
-    useEffect(() => {
-        userData.set("activePeriod", selectedPeriod);
-    }, [selectedPeriod])
-
+    const fetchSchoolYear = isSchoolYearEnabled.value ? schoolYear.value.join("-") : "";
 
     // Behavior
     useEffect(() => {
@@ -42,7 +33,7 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn && grades === undefined) {
-            fetchGrades(fetchData, fetchSchoolYear, controller).then(console.log);
+            userData.get.grades(fetchSchoolYear, controller).then(console.log);
         }
 
         return () => {
@@ -56,9 +47,9 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
             <WindowsContainer name="grades">
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
-                        <StreakScore streakScore={(grades && grades[selectedPeriod]?.streak) ?? 0} streakHighScore={(grades && grades[selectedPeriod]?.maxStreak) ?? 0} />
-                        <Information grades={grades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
-                        <Strengths grades={grades} activeAccount={activeAccount} selectedPeriod={selectedPeriod} />
+                        <StreakScore streakScore={(grades?.[activePeriod]?.streak) ?? 0} streakHighScore={(grades?.[activePeriod]?.maxStreak) ?? 0} />
+                        <Information grades={grades} activeAccount={activeAccount} />
+                        <Strengths grades={grades} activeAccount={activeAccount} />
                     </WindowsLayout>
                     <WindowsLayout growthFactor={2}>
                         <DOMSimulation>
@@ -66,17 +57,11 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
                                 ? <MobileResults
                                     activeAccount={activeAccount}
                                     grades={grades}
-                                    selectedPeriod={selectedPeriod}
-                                    setSelectedPeriod={setSelectedPeriod}
                                     selectedDisplayType={selectedDisplayType}
                                     setSelectedDisplayType={setSelectedDisplayType} />
                                 : <Results
-                                    activeAccount={activeAccount}
-                                    grades={grades}
-                                    selectedPeriod={selectedPeriod}
-                                    setSelectedPeriod={setSelectedPeriod}
                                     selectedDisplayType={selectedDisplayType}
-                                    setSelectedDisplayType={setSelectedDisplayType} />
+                                    setSelectedDisplayType={(test) => {console.log(test); setSelectedDisplayType(test)}} />
                             }
                         </DOMSimulation>
                     </WindowsLayout>

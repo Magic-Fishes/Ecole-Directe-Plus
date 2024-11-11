@@ -1,7 +1,8 @@
 import { useReducer } from "react";
 
-export default function useSettings() {
-    const [settings, dispatch] = useReducer({}, (state, { action, params }) => {
+export default function useSettings(defaultSettings) {
+
+    const [settings, dispatch] = useReducer((state, { action, params }) => {
         const next = { ...state };
 
         switch (action) {
@@ -32,15 +33,14 @@ export default function useSettings() {
                 }
         }
 
-    })
-
-    function setSetting(setting, value) {
-        dispatch( {action: "SET", params: {setting, value}} )
-    }
-    
-    function setSettingProperty(setting, property, value) {
-        dispatch( {action: "SET_PROPERTY", params: {setting, property, value}} )
-    }
+    }, defaultSettings);
  
-    return [settings, {setSetting, setSettingProperty}];
+    return Object.fromEntries(Object.keys(settings).map(setting => [
+        setting,
+        {
+            ...settings[setting],
+            set: (value) => dispatch({ action: "SET", params: { setting, value } }),
+            setroperty: (property, value) => dispatch({ action: "SET_PROPERTY", params: { setting, property, value } })
+        }
+    ]));
 }

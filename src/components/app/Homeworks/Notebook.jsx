@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter, getISODate } from "../../../utils/utils";
 
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 import Task from "./Task";
 import SessionContent from "./SessionContent";
 import DropDownArrow from "../../graphics/DropDownArrow";
@@ -14,9 +14,14 @@ import { canScroll } from "../../../utils/DOM";
 
 import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
-    const { isLoggedIn, actualDisplayTheme, useUserData, useUserSettings, fetchHomeworks, isTabletLayout } = useContext(AppContext);
-    const settings = useUserSettings();
-    const userHomeworks = useUserData("sortedHomeworks");
+    const { isLoggedIn, actualDisplayTheme } = useContext(AppContext);
+    
+    const userData = useContext(UserDataContext);
+    const { homeworks } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { displayMode } = settings.user;
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -30,7 +35,6 @@ export default function Notebook({ hideDateController = false }) {
     // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
-    const homeworks = userHomeworks.get();
     const hashParameters = location.hash.split(";")
     const selectedDate = hashParameters[0].slice(1)
 
@@ -65,10 +69,10 @@ export default function Notebook({ hideDateController = false }) {
         navigate(`#${newDate};${(cleanup && hashParameters[1]) || ""}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true });
     }
 
-    function nearestHomeworkDate(dir = 1, date) {
+    function nearestHomeworkDate(direction, date) {
         /**
          * Return the nearest date on which there is homeworks according to the given date
-         * @param dir Direction in time to check : 1 to move forward ; -1 to move backwards
+         * @param direction Direction in time to check : 1 to move forward ; -1 to move backwards
          */
         if (!homeworks) {
             return getISODate(new Date());
@@ -79,7 +83,7 @@ export default function Notebook({ hideDateController = false }) {
             dates.push(date);
         }
         dates.sort();
-        const newDateIdx = dates.indexOf(date) + dir;
+        const newDateIdx = dates.indexOf(date) + direction;
         if (newDateIdx < 0) {
             const prevDate = new Date(date);
             prevDate.setDate(prevDate.getDate() - 1);
@@ -215,7 +219,7 @@ export default function Notebook({ hideDateController = false }) {
                     const SCROLL_FRICTION = 0.95;
                     const SCROLL_COEF = 1.05;
                     function applyInertia() {
-                        if (!isNotebookGrab.current && settings.get("displayMode") === "quality" && (mouseSpeed.x < -0.1 || mouseSpeed.x > 0.1) || (mouseSpeed.y < -0.1 && mouseSpeed.y > 0.1)) {
+                        if (!isNotebookGrab.current && displayMode.value === "quality" && (mouseSpeed.x < -0.1 || mouseSpeed.x > 0.1) || (mouseSpeed.y < -0.1 && mouseSpeed.y > 0.1)) {
                             notebookContainerRef.current.scrollBy({ left: mouseSpeed.x * SCROLL_COEF, top: mouseSpeed.y * SCROLL_COEF, behavior: "instant" });
                             mouseSpeed.x *= SCROLL_FRICTION;
                             mouseSpeed.y *= SCROLL_FRICTION;
@@ -292,7 +296,7 @@ export default function Notebook({ hideDateController = false }) {
                 || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
                     && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
             && isLoggedIn) {
-            fetchHomeworks(controller, selectedDate)
+            userData.get.homeworks(selectedDate, controller);
         }
 
         return () => {
@@ -340,12 +344,12 @@ export default function Notebook({ hideDateController = false }) {
                                     {tasks.map((task, taskIndex) => {
                                         const result = [
                                             selectedDate === el
-                                                ? <DetailedTask key={"detailed-" + task.id} task={task} userHomeworks={userHomeworks} day={el} />
-                                                : <Task key={task.id} day={el} task={task} userHomeworks={userHomeworks} />]
+                                                ? <DetailedTask key={"detailed-" + task.id} task={task} day={el} />
+                                                : <Task key={task.id} task={task} day={el} />]
                                         if (selectedDate === el && taskIndex < tasks.length - 1) {
                                             result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
                                         }
-                                        return result.flat()
+                                        return result.flat();
                                     })}
                                     {sessionContents.length !== 0 && (selectedDate === el
                                         ? <div className="detailed-section-separator"><hr /><span>Contenus de Séances</span><hr /></div>
@@ -354,12 +358,12 @@ export default function Notebook({ hideDateController = false }) {
                                     {sessionContents.map((sessionContent, sessionContentIndex) => {
                                         const result = [
                                             selectedDate === el
-                                                ? <DetailedSessionContent key={"detailed-" + sessionContent.id} sessionContent={sessionContent} userHomeworks={userHomeworks} sessionContentIndex={sessionContentIndex} day={el} />
-                                                : <SessionContent key={sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} userHomeworks={userHomeworks} />]
+                                                ? <DetailedSessionContent key={"detailed-" + sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} />
+                                                : <SessionContent key={sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} />]
                                         if (selectedDate === el && sessionContentIndex < sessionContents.length - 1) {
                                             result.push(<hr key={toString(sessionContent.id) + "-hr"} className="detailed-task-separator" />)
                                         }
-                                        return result.flat()
+                                        return result.flat();   
                                     })}
                                 </div>
                             </div>
@@ -371,7 +375,7 @@ export default function Notebook({ hideDateController = false }) {
                         <div className="notebook-day-header">
                             <span className="notebook-day-date">
                                 <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={displayMode.value === "quality"}
                                     speed={1}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
@@ -385,8 +389,8 @@ export default function Notebook({ hideDateController = false }) {
                         <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                             {
                                 index === 0
-                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} userHomeworks={userHomeworks} day={el} />)
-                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} day={el} task={{}} userHomeworks={userHomeworks} />)
+                                    ? Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <DetailedTask key={"detailed-" + i} task={{}} day={el} />)
+                                    : Array.from({ length: contentLoadersRandomValues.current.tasks[el] }).map((el, i) => <Task key={i} task={{}} day={el} />)
                             }
                         </div>
                     </div>

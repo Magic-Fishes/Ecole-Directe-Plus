@@ -2,7 +2,7 @@ import ContentLoader from "react-content-loader";
 import { useNavigate } from "react-router-dom";
 
 import "./SessionContent.css";
-export default function SessionContent({ day, sessionContent, sessionContentIndex, userHomeworks, ...props }) {
+export default function SessionContent({ day, sessionContent, sessionContentIndex, ...props }) {
     const navigate = useNavigate();
 
 

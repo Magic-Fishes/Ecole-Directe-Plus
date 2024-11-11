@@ -1,7 +1,7 @@
 
 import { useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import {
     WindowsContainer,
@@ -20,20 +20,21 @@ import PopUp from "../../generic/PopUps/PopUp";
 import "./Dashboard.css";
 
 export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, isTabletLayout }) {
-    const { getGrades, fetchData, useUserData, useUserSettings } = useContext(AppContext)
+    const userData = useContext(UserDataContext);
+    const { grades, homeworks } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { isSchoolYearEnabled, schoolYear } = settings.user;
+
+    const fetchSchoolYear = isSchoolYearEnabled.value ? schoolYear.value.join("-") : ""
 
     const navigate = useNavigate();
     const location = useLocation()
-    const userData = useUserData();
-    const userSettings = useUserSettings();
 
-    const grades = userData.get("grades");
-    const fetchSchoolYear = userSettings.get("isSchoolYearEnabled") ? userSettings.get("schoolYear").join("-") : ""
-    
 
-    const homeworks = useUserData("sortedHomeworks");
     const hashParameters = location.hash.split(";")
-    const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
+    const selectedTask = hashParameters.length > 1 && homeworks && homeworks[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
+
     // Behavior
     useEffect(() => {
         document.title = "Accueil • Ecole Directe Plus";
@@ -42,7 +43,7 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn && grades === undefined) {
-            fetchGrades(fetchData, fetchSchoolYear, controller).then(console.log);
+            userData.get.grades(null, controller);
         }
 
         return () => {
@@ -52,16 +53,14 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (homeworks.get() === undefined) {
-                fetchHomeworks(controller);
-            }
+        if (isLoggedIn && homeworks === undefined) {
+            userData.get.homeworks(null, controller);
         }
 
         return () => {
             controller.abort();
         }
-    }, [homeworks.get(), isLoggedIn, activeAccount]);
+    }, [homeworks, isLoggedIn, activeAccount]);
 
     useEffect(() => {
         if (hashParameters.length > 2 && (hashParameters[2] === "s" && !selectedTask?.sessionContent)) {

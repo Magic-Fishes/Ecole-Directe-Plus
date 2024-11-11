@@ -153,8 +153,8 @@ export default function mapGrades(grades) {
             newGrade.subjectName = grade.libelleMatiere;
             newGrade.isSignificant = !grade.nonSignificatif;
             newGrade.examSubjectSRC = grade.uncSujet;
-            newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-            newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+            // newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+            // newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
             newGrade.isReal = true;
             /* Si newGrade.isReal est faux :
                 pas de :
@@ -297,7 +297,6 @@ export default function mapGrades(grades) {
 
     const settings = grades.parametrage;
     const enabledFeatures = {};
-
     enabledFeatures.moyenneMin = settings.moyenneMin;
     enabledFeatures.moyenneMax = settings.moyenneMax;
     enabledFeatures.coefficient = settings.coefficientNote;
@@ -319,16 +318,25 @@ export default function mapGrades(grades) {
         }
     }
 
-    return {
-        userData: {
-            grades: periods,
-            totalBadges: totalBadges,
-            generalAverageHistory: generalAverageHistory, // used for charts
-            classGeneralAverageHistory: classGeneralAverageHistory, // used for charts
-            streakScoreHistory: streakScoreHistory, // used for charts
-            subjectsComparativeInformation: subjectsComparativeInformation, // used for charts
-            gradesEnabledFeatures: enabledFeatures,
-            lastGrades: newLastGrades.reverse(),
+    let activePeriod = 0;
+    for (let periodCode in periods) {
+        if (Date.now() > periods[periodCode].endDate) {
+            if (activePeriod < Object.keys(periods).length - 1) {
+                activePeriod++;
+            }
         }
+    }
+    activePeriod = Object.keys(periods)[activePeriod];
+
+    return {
+        grades: periods,
+        totalBadges,
+        generalAverageHistory, // used for charts
+        classGeneralAverageHistory, // used for charts
+        streakScoreHistory, // used for charts
+        subjectsComparativeInformation, // used for charts
+        gradesEnabledFeatures: enabledFeatures,
+        lastGrades: newLastGrades.reverse(),
+        activePeriod,
     }
 }

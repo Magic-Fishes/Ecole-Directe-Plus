@@ -1,12 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import mapLogin from "../mappers/login";
-import { guestDataPath, guestCredentials } from "../constants/edpConfig";
+// libs/utils
+import { useState, useRef } from "react";
+import { decrypt, encrypt } from "../../utils/utils";
 import useInitializer from "./utils/useInitializer";
+
+// constants
+import { loginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
+import { guestDataPath, guestCredentials } from "../constants/config";
+
+// split
 import fetchLogin from "../requests/fetchLogin";
+import mapLogin from "../mappers/login";
 import fetchDoubleAuthAnswer from "../requests/fetchDoubleAuthAnswer";
 import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
-import { decrypt, encrypt } from "../../utils/utils";
-import { loginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
 
 /**
  * Each get function (the ones that get parse and store data such as requestLogin of getGrades)
@@ -27,7 +32,7 @@ import { loginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
  * )
  */
 
-export default function useUserAccount(localStorageSession = {}) {
+export default function useUserAccount({ onLogin }) {
     const [loginState, setLoginState] = useState(loginStates.REQUIRE_LOGIN);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -35,6 +40,7 @@ export default function useUserAccount(localStorageSession = {}) {
     const [selectedUserIndex, setSelectedUserIndex] = useState(null);
     const [users, setUsers] = useInitializer(null, null, (newValue) => {
         setSelectedUserIndex(0);
+        onLogin(newValue);
         return newValue
     });
 
@@ -42,6 +48,7 @@ export default function useUserAccount(localStorageSession = {}) {
     const selectedUser = users !== null && selectedUserIndex < users.length ? users[selectedUserIndex] : null;
 
     const isLoggedIn = loginState === loginStates.LOGGED_IN;
+    const requireLogin = loginState === loginStates.REQUIRE_LOGIN;
     const requireNewToken = loginState === loginStates.REQUIRE_NEW_TOKEN;
     const requireDoubleAuth = loginState === loginStates.REQUIRE_DOUBLE_AUTH;
     const doubleAuthAcquired = loginState === loginStates.DOUBLE_AUTH_ACQUIRED;
@@ -109,7 +116,7 @@ export default function useUserAccount(localStorageSession = {}) {
                 setToken((old) => response?.token || old);
                 switch (response.code) {
                     case 200:
-                        return {
+                        return { // !:! faire un mapper enft
                             data: response.data,
                             code: 0,
                             message: "",
@@ -126,6 +133,8 @@ export default function useUserAccount(localStorageSession = {}) {
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
+                        case 525:
+                            return DoubleAuthCodes.EXPIRED_TOKEN;
                         default:
                             return { code: -1, message: error.message };
                     }
@@ -162,6 +171,8 @@ export default function useUserAccount(localStorageSession = {}) {
                     switch (error.code) {
                         case 520:
                             return DoubleAuthCodes.INVALID_TOKEN;
+                        case 525:
+                            return DoubleAuthCodes.EXPIRED_TOKEN;
                         default:
                             return { code: -1, message: error.message };
                     }
@@ -232,11 +243,14 @@ export default function useUserAccount(localStorageSession = {}) {
     }
 
     return {
-        username: { value: username, set: setUsername },
-        password: { value: password, set: setPassword },
+        userCredentials: {
+            username: { value: username, set: (value) => { if (requireLogin) setUsername(value) } },
+            password: { value: password, set: (value) => { if (requireLogin) setPassword(value) } },
+        },
         token: { value: token, set: setToken },
         selectedUserIndex: { value: selectedUserIndex, set: setSelectedUserIndex },
         selectedUser,
+        users,
         isLoggedIn,
         requireDoubleAuth,
         doubleAuthAcquired,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import ContentLoader from "react-content-loader";
-import { Link, useLocation } from "react-router-dom";
-import { AppContext } from "../../../App";
+import { Link } from "react-router-dom";
+import { SettingsContext } from "../../../App";
 import {
     Window,
     WindowHeader,
@@ -14,10 +14,10 @@ import Grade from "./Grade";
 import "./Strengths.css";
 
 export default function Strengths({ activeAccount, grades, selectedPeriod, className = "", ...props }) {
-    const [strengths, setStrengths] = useState([]);
-    const { useUserSettings } = useContext(AppContext);
-    const settings = useUserSettings();
+    const settings = useContext(SettingsContext);
+    const { displayMode } = settings.user;
 
+    const [strengths, setStrengths] = useState([]);
 
     useEffect(() => {
         function strengthsCalculation() {
@@ -25,7 +25,7 @@ export default function Strengths({ activeAccount, grades, selectedPeriod, class
                 const STRENGTHS_NUMBER = 3;
                 const period = grades[selectedPeriod];
                 const newStrengths = Array.from({ length: STRENGTHS_NUMBER }, () => undefined);
-                
+
                 for (let subjectKey in period.subjects) {
                     const subject = period.subjects[subjectKey];
                     if (subject.isCategory) { continue };
@@ -49,7 +49,7 @@ export default function Strengths({ activeAccount, grades, selectedPeriod, class
                 setStrengths(newStrengths);
             }
         }
-        
+
         strengthsCalculation()
     }, [grades, activeAccount, selectedPeriod]);
 
@@ -78,14 +78,14 @@ export default function Strengths({ activeAccount, grades, selectedPeriod, class
                         Array.from({ length: 3 }, (_, index) => <li key={crypto.randomUUID()} className="strength-container">
                             <div className="strength-wrapper">
                                 <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={displayMode.value === "quality"}
                                     speed={1}
                                     backgroundColor={'#35c92e'}
                                     foregroundColor={'#3fef36'}
                                     height="30"
-                                    style={{width: "100%"}}
+                                    style={{ width: "100%" }}
                                 >
-                                    <rect x="0" y="0" rx="15" ry="15" style={{width: "100%", height: "100%"}} />
+                                    <rect x="0" y="0" rx="15" ry="15" style={{ width: "100%", height: "100%" }} />
                                 </ContentLoader>
                             </div>
                         </li>)

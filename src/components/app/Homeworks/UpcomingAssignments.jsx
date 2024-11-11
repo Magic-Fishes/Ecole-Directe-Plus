@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { AppContext } from "../../../App";
+import { useRef, useContext } from "react";
+import { UserDataContext } from "../../../App";
 import Interrogation from "./Interrogation";
 import CanardmanSleeping from "../../graphics/CanardmanSleeping";
 
@@ -14,15 +14,13 @@ const placeholder = [
 ]
 
 export default function UpcomingAssignments() {
-    const { useUserData } = useContext(AppContext)
-    const upcomingAssignments = useUserData("upcomingAssignments");
-    const currentUpcomingAssignments = upcomingAssignments.get();
-    const [choosenPlaceholder, _] = useState(placeholder[parseInt(Math.random() * placeholder.length)])
+    const { upcomingAssignments } = useContext(UserDataContext);
 
-    return currentUpcomingAssignments?.length
-        ? currentUpcomingAssignments.map((e) => <Interrogation task={e} key={e.id} />)
+    const choosenPlaceholder = useRef(placeholder[parseInt(Math.random() * placeholder.length)]);
+    return upcomingAssignments?.length
+        ? upcomingAssignments.map((e) => <Interrogation key={e.id} date={e.date} id={e.id} />)
         : <div className="loading">
-            {choosenPlaceholder}
+            {choosenPlaceholder.current}
             <CanardmanSleeping />
         </div>
 }

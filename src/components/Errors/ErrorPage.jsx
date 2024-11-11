@@ -1,7 +1,7 @@
 
 import { useState, useContext, useRef } from "react";
 import { useRouteError } from "react-router-dom";
-import { AppContext } from "../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../App";
 
 import { generateUUID, sendToWebhook, sendJsonToWebhook } from "../../utils/utils";
 
@@ -10,22 +10,22 @@ import "./ErrorPage.css";
 import Button from "../generic/UserInputs/Button";
 
 export default function ErrorPage({ sardineInsolente }) {
-    const { accountsListState, activeAccount, isDevChannel, globalSettings, useUserSettings, useUserData } = useContext(AppContext);
+    const { accountsListState, activeAccount, isDevChannel } = useContext(AppContext);
+    
+    const userData = useContext(UserDataContext);
+    const settings = useContext(SettingsContext);
+
     const error = useRouteError();
     const [reportSent, setReportSent] = useState(false);
     const [userDataSent, setUserDataSent] = useState([]);
 
     const sendingDelayRef = useRef(0);
 
-    const userData = useUserData();
-
-    const settings = useUserSettings();
 
     function safetyFunction() {
         console.log("safety function | reset")
         localStorage.clear()
     }
-
 
     if (error.status === 404) {
         return (
@@ -36,9 +36,9 @@ export default function ErrorPage({ sardineInsolente }) {
         if (process.env.NODE_ENV !== "development") {
             safetyFunction();
             if (isDevChannel) {
-                globalSettings.isDevChannel.set(true);
+                settings.global.isDevChannel.set(true);
             }
-            if (settings.get("allowAnonymousReports")) {
+            if (settings.user.allowAnonymousReports.value) {
                 const report = {
                     uuid: generateUUID(accountsListState[activeAccount].firstName + accountsListState[activeAccount].lastName),
                     error_name: error.name,
@@ -57,7 +57,7 @@ export default function ErrorPage({ sardineInsolente }) {
         }
 
         function handleDataSend(data) {
-            const report = userData.get(data)
+            const report = userData[data];
             console.log(sendingDelayRef.current - new Date().getTime())
             console.log(Math.max(sendingDelayRef.current - new Date().getTime(), 0))
             sendJsonToWebhook(
@@ -86,10 +86,10 @@ export default function ErrorPage({ sardineInsolente }) {
                 <div className="data-sender">
                     <h2>Pour nous aider vous pouvez :</h2>
                     <div className="button-wrapper">
-                        <Button onClick={() => handleDataSend("grades")} disabled={!userData.get("grades") || userDataSent.includes("grades")} >
+                        <Button onClick={() => handleDataSend("grades")} disabled={!userData.grades || userDataSent.includes("grades")} >
                             {userDataSent.includes("grades") ? "Merci pour votre retour !" : "Envoyer vos notes"}
                         </Button>
-                        <Button onClick={() => handleDataSend("sortedHomeworks")} disabled={!userData.get("sortedHomeworks") || userDataSent.includes("sortedHomeworks")} >
+                        <Button onClick={() => handleDataSend("sortedHomeworks")} disabled={!userData.sortedHomeworks || userDataSent.includes("sortedHomeworks")} >
                             {userDataSent.includes("sortedHomeworks") ? "Merci pour votre retour !" : "Envoyer vos devoirs"}
                         </Button>
                     </div>

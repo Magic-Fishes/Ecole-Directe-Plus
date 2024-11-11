@@ -1,25 +1,19 @@
 import { useEffect, useRef, useContext } from "react"
-import ContentLoader from "react-content-loader"
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv"
-import CheckBox from "../../generic/UserInputs/CheckBox"
 import { AppContext } from "../../../App"
-import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
+import { getZoomedBoudingClientRect } from "../../../utils/zoom";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import DownloadIcon from "../../graphics/DownloadIcon"
 
-import { clearHTML } from "../../../utils/html"
-
 import "./DetailedSessionContent.css"
 
-export default function DetailedSessionContent({ sessionContent, userHomeworks, day, sessionContentIndex, ...props }) {
+export default function DetailedSessionContent({ sessionContent, day, sessionContentIndex, ...props }) {
     const navigate = useNavigate()
 
     const detailedTaskRef = useRef(null);
     const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
     const settings = useUserSettings();
-    const homeworks = userHomeworks.get()
 
-    const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 100) + 200, contentHeight: Math.floor(Math.random() * 200) + 50 })
     const location = useLocation();
     const oldLocationHash = useRef(null);
 
@@ -58,7 +52,9 @@ export default function DetailedSessionContent({ sessionContent, userHomeworks, 
             setTimeout(() => scrollIntoViewNearestParent(detailedTaskRef.current), 200);
         }
 
-    }, [location, detailedTaskRef.current, homeworks])
+    }, [location, detailedTaskRef.current])
+    // }, [location, detailedTaskRef.current, homeworks])
+    // !:! I assumed that set the homeworks as a dependence of this useEffect was useless and just a 
 
     return <div ref={detailedTaskRef} onClick={(e) => { navigate(`#${day};${sessionContent.id}`); e.stopPropagation() }} className={`detailed-session-content ${sessionContent.isDone ? "done" : ""}`} id={"session-content-" + sessionContent.id} {...props} >
         <div className="session-content-header">

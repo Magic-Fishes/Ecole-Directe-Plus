@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import { capitalizeFirstLetter, decodeBase64 } from "../../../utils/utils";
 
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import {
     Window,
@@ -26,10 +26,10 @@ import {
 import CanardmanSearching from "../../graphics/CanardmanSearching";
 import DownloadIcon from "../../graphics/DownloadIcon";
 import LoadingAnimation from "../../graphics/LoadingAnimation";
-
-import "./Information.css";
 import ExpandIcon from "../../graphics/ExpandIcon";
 import ReduceIcon from "../../graphics/ReduceIcon";
+
+import "./Information.css";
 
 function findGradesObjectById(list, value) {
     if (value === "") {
@@ -52,18 +52,22 @@ function findGradesObjectById(list, value) {
 }
 
 export default function Information({ grades, activeAccount, selectedPeriod, ...props }) {
+    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+
+    const { gradesEnabledFeatures } = useContext(UserDataContext);
+
+    const settings = useContext(SettingsContext);
+    const { displayMode, isStreamerModeEnabled } = settings.user;
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    
     const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    const { isTabletLayout, actualDisplayTheme, useUserSettings, useUserData } = useContext(AppContext);
-
-    const settings = useUserSettings();
-    const userData = useUserData();
-
+    const isDisplayModeQuality = displayMode === "quality";
+    
     let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
     if (grades && grades[selectedPeriod]) {
         selectedElement = findGradesObjectById(Object.values(grades && grades[selectedPeriod].subjects), location.hash.slice(1));
@@ -82,7 +86,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                         {
                             Array.from({ length: 4 }, (_, index) => <div key={crypto.randomUUID()}>
                                 <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={isDisplayModeQuality}
                                     speed={1}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -92,7 +96,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                                     <rect x="0" y="0" rx="5" ry="5" style={{ width: "100%", height: "100%" }} />
                                 </ContentLoader>
                                 <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={isDisplayModeQuality}
                                     speed={1}
                                     backgroundColor={'#4b48d9'}
                                     foregroundColor={'#6354ff'}
@@ -106,7 +110,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                     </div>
                     <div style={{ textAlign: "center" }}>
                         <ContentLoader
-                            animate={settings.get("displayMode") === "quality"}
+                            animate={isDisplayModeQuality}
                             speed={1}
                             backgroundColor={'#7e7eab7F'}
                             foregroundColor={'#9a9ad17F'}
@@ -120,7 +124,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                     <div className="info-zone" style={{ paddingBottom: "0" }}>
                         <div className="text">
                             <ContentLoader
-                                animate={settings.get("displayMode") === "quality"}
+                                animate={isDisplayModeQuality}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -131,7 +135,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             </ContentLoader>
 
                             <ContentLoader
-                                animate={settings.get("displayMode") === "quality"}
+                                animate={isDisplayModeQuality}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -142,7 +146,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             </ContentLoader>
 
                             <ContentLoader
-                                animate={settings.get("displayMode") === "quality"}
+                                animate={isDisplayModeQuality}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -166,11 +170,11 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             <div className="number-name">Moyenne</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>
-                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div> {/* Pour le bug de Label avec certaines notes ne contenant pas la moyenne min et max */}
+                        {gradesEnabledFeatures?.moyenneMin && <div> {/* Pour le bug de Label avec certaines notes ne contenant pas la moyenne min et max */}
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.classMin.toString().replace(".", ",")}{isNaN(selectedElement.classMin) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
-                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div>
+                        {gradesEnabledFeatures?.moyenneMin && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
@@ -235,11 +239,11 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             <div className="number-name">Classe</div>
                             <div className="number-value">{selectedElement.classAverage.toString().replace(".", ",")}{isNaN(selectedElement.classAverage) ? null : <sub>/20</sub>}</div>
                         </div>
-                        {userData.get("gradesEnabledFeatures")?.moyenneMin && <div>
+                        {gradesEnabledFeatures?.moyenneMin && <div>
                             <div className="number-name">Min</div>
                             <div className="number-value">{selectedElement.minAverage.toString().replace(".", ",")}{isNaN(selectedElement.minAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
-                        {userData.get("gradesEnabledFeatures")?.moyenneMax && <div>
+                        {gradesEnabledFeatures?.moyenneMax && <div>
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
@@ -249,11 +253,11 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                     <div className="info-zone">
                         <div className="text">
                             <h4>{capitalizeFirstLetter(selectedElement.name)}</h4>
-                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "M. -------" : teacher.nom}</address>)}
+                            {selectedElement.teachers.map((teacher) => <address key={crypto.randomUUID()}>{isStreamerModeEnabled.value ? "M. -------" : teacher.nom}</address>)}
                             {selectedElement.appreciations
                                 ? selectedElement.appreciations.map((appreciation) => {
                                     if (appreciation.length > 0) {
-                                        return <p className="appreciation" key={crypto.randomUUID()}>{settings.get("isStreamerModeEnabled") ? "*Appréciation masquée*" : decodeBase64(appreciation)}</p>;
+                                        return <p className="appreciation" key={crypto.randomUUID()}>{isStreamerModeEnabled.value ? "*Appréciation masquée*" : decodeBase64(appreciation)}</p>;
                                     }
                                 })
                                 : null

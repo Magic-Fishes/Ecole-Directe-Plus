@@ -9,16 +9,21 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 import { useCreateNotification } from "./generic/PopUps/Notification";
 import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 
-import { EDPVersion } from "../EcoleDirecteHandlerCore/constants/edpConfig";
-import { LoginContext } from "../App";
+import { EDPVersion } from "../edpConfig";
+import { AccountContext, SettingsContext } from "../App";
 
-export default function Root({ isLoggedIn, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth }) {
+export default function Root({ get, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { requireDoubleAuth } = useContext(LoginContext)
+    const { requireDoubleAuth } = useContext(AccountContext)
+    const {
+        isSepiaEnabled: { value: isSepiaEnabled },
+        isHighContrastEnabled: { value: isHighContrastEnabled },
+        isGrayscaleEnabled: { value: isGrayscaleEnabled },
+        isLucioleFontEnabled: { value: isLucioleFontEnabled },
+    } = useContext(SettingsContext).user;
 
-    const settings = useUserSettings();
 
     const createNotification = useCreateNotification();
 
@@ -183,11 +188,6 @@ export default function Root({ isLoggedIn, token, accountsList, fakeLogin, reset
 
     // filters management
     useEffect(() => {
-        const isSepiaEnabled = settings.get("isSepiaEnabled");
-        const isHighContrastEnabled = settings.get("isHighContrastEnabled");
-        const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
-        const isLucioleFontEnabled = settings.get("lucioleFont");
-
         let filters = "";
         let fontFamily = ""
         if (isSepiaEnabled) {
@@ -206,7 +206,7 @@ export default function Root({ isLoggedIn, token, accountsList, fakeLogin, reset
 
         document.documentElement.style.setProperty("--font-family", fontFamily);
         document.documentElement.style.filter = filters;
-    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled"), settings.get("lucioleFont"), settings.get("isPhotoBlurEnabled")])
+    }, [isSepiaEnabled, isHighContrastEnabled, isGrayscaleEnabled, isLucioleFontEnabled])
 
 
     // - - - - - - - - - - - - - - - - - - - - //
@@ -343,24 +343,24 @@ export default function Root({ isLoggedIn, token, accountsList, fakeLogin, reset
     // thème
     const switchDisplayTheme = () => {
         if (displayTheme === "dark") {
-            setDisplayTheme("light");
+            displayTheme.set("light");
             return "clair";
         } else if (displayTheme === "light") {
-            setDisplayTheme("dark");
+            displayTheme.set("dark");
             return "sombre";
         } else {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setDisplayTheme("light");
+                displayTheme.set("light");
                 return "clair";
             } else {
-                setDisplayTheme("dark");
+                displayTheme.set("dark");
                 return "sombre";
             }
         }
     }
 
     const updateDisplayTheme = (event) => {
-        setDisplayTheme(event.target.value);
+        displayTheme.set(event.target.value);
     }
 
     // display mode
@@ -444,6 +444,7 @@ export default function Root({ isLoggedIn, token, accountsList, fakeLogin, reset
                 {isAdmin && <input type="button" onClick={changeFont} value="CHANGE FONT" />}
                 {isAdmin && <input type="button" onClick={handleEdBan} value="TEST BLOCK" />}
                 {isAdmin && <input type="button" onClick={() => { fetchHomeworks((new AbortController()), new Date("2024-05-27")) }} value="FETCH DAY HOMEWORKS" />}
+                {isAdmin && <input type="button" onClick={() => { get.grades() }} value="FETCH DAY HOMEWORKS" />}
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>

@@ -1,8 +1,9 @@
 import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
 import EdpError from "../utils/edpError";
+import { format } from "date-fns";
 
-export default function fetchDoubleAuthQuestions(token, controller = undefined) {
+export default function fetchHomeworks(date, userId, token, controller = undefined) {
     const headers = new Headers();
     headers.append("x-token", token);
 
@@ -17,7 +18,9 @@ export default function fetchDoubleAuthQuestions(token, controller = undefined) 
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=get&v=${apiVersion}`, options, "text")
+    const endpoint = date === null ?  "" : `/${format(date, "yyyy-MM-dd")}`;
+
+    return edpFetch(`https://api.ecoledirecte.com/v3/Eleves/${userId}/cahierdetexte${endpoint}.awp?verbe=get&v=${apiVersion}`, options, "text")
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;

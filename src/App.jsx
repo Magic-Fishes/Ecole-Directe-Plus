@@ -22,9 +22,11 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
-import useUserSession from "./EcoleDirecteHandlerCore/hooks/useUserSession";
+import useUserSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
 
-import { EDPVersion } from "./EcoleDirecteHandlerCore/constants/edpConfig";
+import { defaultGlobalSettings, EDPVersion } from "./edpConfig";
+import useSettings from "./utils/hooks/useSettings";
+import useAccountSettings from "./utils/hooks/useAccountSettings";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -99,7 +101,7 @@ const defaultSettings = {
     isGradeScaleEnabled: false,
     schoolYear: getCurrentSchoolYear(),
     isSchoolYearEnabled: false,
-    lucioleFont: false,
+    isLucioleFontEnabled: false,
     windowArrangement: [],
     allowWindowsArrangement: true,
     dynamicLoading: true,
@@ -194,8 +196,8 @@ function initSettings(accountList) {
             isSchoolYearEnabled: {
                 value: getSetting("isSchoolYearEnabled", i),
             },
-            lucioleFont: {
-                value: getSetting("lucioleFont", i),
+            isLucioleFontEnabled: {
+                value: getSetting("isLucioleFontEnabled", i),
             },
             windowArrangement: {
                 value: getSetting("windowArrangement", i),
@@ -232,7 +234,10 @@ function initData(length) {
 
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
-export const LoginContext = createContext(null);
+export const AccountContext = createContext(null);
+export const SettingsContext = createContext(null);
+export const UserDataContext = createContext(null);
+// !:! créer un context only setting et only userData
 
 let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
@@ -243,13 +248,12 @@ export default function App({ edpFetch }) {
     // const userSession = useUserSession(localStorageSession);
     const userSession = useUserSession();
     const {
+        userData,
+        get,
         account,
-        userSettings: userSettingsTemp,
-        userData: userDataTemp,
     } = userSession;
     const {
-        username,
-        password,
+        userCredentials,
         token,
         doubleAuthInfo,
         requestLogin,
@@ -261,23 +265,23 @@ export default function App({ edpFetch }) {
         selectedUserIndex,
         selectedUser,
     } = account;
-    const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-    const { globalSettings } = userSettingsTemp;
+
     const tokenState = token.value;
     const setTokenState = token.set;
     const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
-    const [userIds, setUserIds] = useState(userIdsFromLs); // identifiants de connexion (username, pwd)
+    const globalSettings = useSettings(defaultGlobalSettings);
+    // !:! pour le default, store les valeurs en js, et quand on les get, on regarde si elles existent sinon on prend celle par dfaut du config.json
+    const { isDevChannel, keepLoggedIn } = globalSettings;
 
-    const [temp0, setIsLoggedIn] = useState(false); // !:! à enlever
     // user settings
-    const [userSettings, setUserSettings] = useState(initSettings(accountListFromLs)); // paramètres propre à chaque profil du compte
-    const [shareSettings, setShareSettings] = useState(getSetting("shareSettings", selectedUserIndex.value, true));
-    const [isDevChannel, setIsDevChannel] = useState(getSetting("isDevChannel", selectedUserIndex.value, true)); // canal dev: redirige vers l'URL dev.ecole-directe.plus où on déploie beaucoup plus régulièrement les mises à jour, mais qui peut être un peu instable
+    // paramètres propre à chaque profil du compte
+    const userSettings = useAccountSettings(selectedUserIndex.value != null ? selectedUserIndex.value : 0, [Object.fromEntries(Object.keys(defaultSettings).map((setting) => [setting, { value: defaultSettings[setting], properties: {} }]))]); // !:! Il faut ettre un default pertinent
+
+    const { displayTheme } = userSettings;
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
-    const [userData, setUserData] = useState([]); // informations annexes de l'utilisateur qui ne relèvent pas directement d'un JSON issue de l'API d'ED que l'on a préalablement filtré et trié
 
     // utils
     const [oldTimeoutId, setOldTimeoutId] = useState(null);
@@ -359,158 +363,59 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////// SETTINGS ///////////
 
-    function changeUserSettings(setting, value, accountIdx = selectedUserIndex.value) {
-        setUserSettings((oldSettings) => {
-            const newSettings = [...oldSettings];
-            newSettings[accountIdx][setting].value = value;
-            return newSettings;
-        })
-        if (shareSettings) {
-            syncSettings();
-        }
-    }
+    // !:! IL faut gérer le changement de storage
 
-    function syncSettings() {
-        setUserSettings((oldSettings) => {
-            const selectedUserSetting = oldSettings[selectedUserIndex.value]
-            const newSettings = Array.from({ length: oldSettings.length }, (_) => structuredClone(selectedUserSetting));
-            return newSettings;
-        })
-    }
+    // useEffect(() => {
+    //     const lsGlobalSettings = {};
+    //     for (const i in globalSettings) {
+    //         lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
+    //     }
+    //     localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
 
-    function getUserSettingValue(setting) {
-        if (userSettings[selectedUserIndex.value] && userSettings[selectedUserIndex.value][setting]) {
-            return userSettings[selectedUserIndex.value][setting].value;
-        } else {
-            return undefined;
-        }
-    }
+    //     const handleStorageChange = () => {
+    //         const newLsGlobalSettings = JSON.parse(localStorage.getItem("globalSettings"))
+    //         if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
+    //             for (const i in globalSettings) {
+    //                 globalSettings[i].set(newLsGlobalSettings[i])
+    //             }
+    //         }
+    //     }
+    //     window.addEventListener("storage", handleStorageChange)
 
-    function getUserSettingObject(setting) {
-        return userSettings[selectedUserIndex.value][setting]
-    }
+    //     return (() => {
+    //         window.removeEventListener("storage", handleStorageChange);
+    //     });
+    // }, [keepLoggedIn.value,
+    //     shareSettings,
+    //     isDevChannel])
 
-    function useUserSettings(setting = "") {
-        /*
-            use as a hook like location
-            
-            EX :
-            userSettings = useUserSettings()
-            console.log(userSettings.get("displayTheme"))
-            > Value of displayTheme of current user
+    // useEffect(() => {
+    //     const handleStorageChange = () => {
+    //         // logout if the user has logout in any tab
+    //         if (accountsListState?.length > 0 && localStorage.getItem("accountsList") === null) {
+    //             logout();
+    //             return 0;
+    //         }
+    //         // handle getting from localStorage if it changes
+    //         if (accountsListState?.length > 0) {
+    //             const newSettings = initSettings(accountsListState)
+    //             if (!areOccurenciesEqual(newSettings, userSettings)) {
+    //                 setUserSettings(newSettings);
+    //             }
+    //         }
+    //     }
 
+    //     const timeoutHandleStorageChange = () => {
+    //         setTimeout(() => handleStorageChange(), 0); // timeout to prevent issues due to react async behavior
+    //     }
 
-            You can pass the setting you wan in arguments of useUserSettings
+    //     window.addEventListener("storage", timeoutHandleStorageChange)
 
-            EX : 
-            userDisplayTheme = useUserSettings("displayTheme")
-            console.log(userDisplayTheme.get())
-            > Value of displayTheme of current user
-        */
-        if (setting === "") {
-            return {
-                set: changeUserSettings, // set((oldState) => newState = oldState)
-                get: getUserSettingValue, // get the value
-                object: getUserSettingObject, // get the entire object
-            }
-        } else {
-            return {
-                set: (value) => { changeUserSettings(setting, value) },
-                get: () => getUserSettingValue(setting),
-                object: () => getUserSettingObject(setting),
-            }
-        }
-    }
-
-
-
-
-    useEffect(() => {
-        const lsGlobalSettings = {};
-        for (const i in globalSettings) {
-            lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
-        }
-        localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
-
-        const handleStorageChange = () => {
-            const newLsGlobalSettings = JSON.parse(localStorage.getItem("globalSettings"))
-            if (!areOccurenciesEqual(newLsGlobalSettings, globalSettings)) {
-                for (const i in globalSettings) {
-                    globalSettings[i].set(newLsGlobalSettings[i])
-                }
-            }
-        }
-        window.addEventListener("storage", handleStorageChange)
-
-        return (() => {
-            window.removeEventListener("storage", handleStorageChange);
-        });
-    }, [keepLoggedIn.value,
-        shareSettings,
-        isDevChannel])
-
-    useEffect(() => {
-        // handle storing into localStorage
-        if (userSettings?.length > 0) {
-            const lsUserSettings = [];
-            for (let i = 0; i < userSettings.length; i++) {
-                lsUserSettings[i] = {};
-                for (let n in userSettings[i]) {
-                    lsUserSettings[i][n] = (userSettings[i] ? (userSettings[i][n]?.value ?? defaultSettings[n]) : defaultSettings[n]);
-                }
-            }
-            localStorage.setItem("userSettings", JSON.stringify(lsUserSettings));
-        }
-    }, [userSettings]);
-
-    useEffect(() => {
-        if (tokenState !== "") {
-            localStorage.setItem("token", tokenState);
-        }
-    }, [tokenState]);
-
-    useEffect(() => {
-        if (accountsListState?.length > 0) {
-            localStorage.setItem("accountsList", JSON.stringify(accountsListState));
-        }
-    }, [accountsListState]);
-
-    useEffect(() => {
-        const handleStorageChange = () => {
-            // logout if the user has logout in any tab
-            if (accountsListState?.length > 0 && localStorage.getItem("accountsList") === null) {
-                logout();
-                return 0;
-            }
-            // handle getting from localStorage if it changes
-            applyConfigFromLocalStorage();
-            if (accountsListState?.length > 0) {
-                const newSettings = initSettings(accountsListState)
-                if (!areOccurenciesEqual(newSettings, userSettings)) {
-                    setUserSettings(newSettings);
-                }
-            }
-        }
-
-        const timeoutHandleStorageChange = () => {
-            setTimeout(() => handleStorageChange(), 0); // timeout to prevent issues due to react async behavior
-        }
-
-        window.addEventListener("storage", timeoutHandleStorageChange)
-
-        return (() => {
-            window.removeEventListener("storage", timeoutHandleStorageChange);
-        });
-    }, [accountsListState, userSettings, tokenState]);
-
-
-    useEffect(() => {
-        if (shareSettings) {
-            syncSettings();
-        }
-    }, [shareSettings])
+    //     return (() => {
+    //         window.removeEventListener("storage", timeoutHandleStorageChange);
+    //     });
+    // }, [accountsListState, userSettings, tokenState]);
 
     useEffect(() => {
         localStorage.setItem("oldActiveAccount", selectedUserIndex.value)
@@ -518,70 +423,14 @@ export default function App({ edpFetch }) {
 
     /////////// USER DATA ///////////
 
-    // fonctions de type utils pour modifier le userData
-
-    function changeUserData(data, value) {
-        setUserData((oldData) => {
-            const newData = [...oldData];
-            if (!newData[selectedUserIndex.value]) {
-                newData[selectedUserIndex.value] = {};
-            }
-            newData[selectedUserIndex.value][data] = value;
-            return newData;
-        })
-    }
-
-    function getUserData(data) {
-        return (userData ? (userData[selectedUserIndex.value] ? userData[selectedUserIndex.value][data] : undefined) : undefined);
-    }
-
-    function useUserData(data = "") {
-        return data
-            ? { set: (value) => changeUserData(data, value), get: () => getUserData(data) } // If the data is choosen, there is no need to get the full
-            : { set: changeUserData, get: getUserData }
-    }
-
-    // gestion de la désactivation automatique du "rester connecté"
-    useEffect(() => {
-        if (!keepLoggedIn.value) {
-            localStorage.removeItem(lsIdName);
-        } else if (userIds.username && userIds.password) {
-            localStorage.setItem(lsIdName, encrypt(JSON.stringify({ username: userIds.username, password: userIds.password })));
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, [keepLoggedIn.value]);
-
-    // réapplique les informations sauvegardées dans le localStorage (certaines ont déjà été appliquées à l'initialisation des States)
-    function applyConfigFromLocalStorage() {
-        // informations de connexion
-        const token = localStorage.getItem("token");
-        if (token && token !== "none" && token !== tokenState) {
-            setTokenState(token);
-        }
-        const accountsList = JSON.parse(localStorage.getItem("accountsList"));
-        if (accountsList && accountsList.length > 0 && !areOccurenciesEqual(accountsList, accountsListState)) {
-            setAccountsListState(accountsList);
-        }
-    }
-
-    // sécurité qui empêche la reconnexion automatique s'il manque au moins un identifiant
-    useEffect(() => {
-        if (!userIds.username || !userIds.password) {
-            console.log("USERIDS EMPTY -> DISABLING KEEP LOGGED IN")
-            setKeepLoggedIn(false);
-        }
-    }, [userIds]);
-
     useEffect(() => {
         // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
-        applyConfigFromLocalStorage();
 
         // Gestion thème
         const handleOSThemeChange = () => {
             console.clear();
             consoleLogEDPLogo();
-            if (getUserSettingValue("displayTheme") === "auto") {
+            if (displayTheme.value === "auto") {
                 document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
                 document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
                 toggleThemeTransitionAnimation();
@@ -597,7 +446,6 @@ export default function App({ edpFetch }) {
     // Applique les informations du localStorage dès la première frame pour éviter certains bugs
     const isFirstFrame = useRef(true);
     if (isFirstFrame.current) {
-        applyConfigFromLocalStorage();
         isFirstFrame.current = false;
     }
 
@@ -661,7 +509,7 @@ export default function App({ edpFetch }) {
          * - name : nom du devoir
          * - type : type de devoir (DS, DM, ...)
          */
-        const grades = getUserData("grades")
+        const grades = userData.grades;
         grades[periodKey].subjects[subjectKey].grades.push({
             value: value,
             coef: coef,
@@ -685,19 +533,19 @@ export default function App({ edpFetch }) {
             subjectKey: subjectKey,
             periodKey: periodKey,
         })
-        changeUserData("grades", grades);
+        userData.set("grades", grades);
         updatePeriodGrades(periodKey)
     }
 
     function deleteFakeGrade(UUID, subjectKey, periodKey) {
-        const newGrades = { ...getUserData("grades") }
+        const newGrades = { ...userData.grades }
         newGrades[periodKey].subjects[subjectKey].grades = newGrades[periodKey].subjects[subjectKey].grades.filter((el) => el.id !== UUID)
-        changeUserData("grades", newGrades);
-        updatePeriodGrades(periodKey)
+        userData.set("grades", newGrades);
+        updatePeriodGrades(periodKey);
     }
 
     function updatePeriodGrades(periodKey) {
-        const grades = getUserData("grades");
+        const grades = userData.grades;
         const period = grades[periodKey];
 
         for (const subject in period.subjects) {
@@ -709,19 +557,7 @@ export default function App({ edpFetch }) {
         }
         period.generalAverage = calcGeneralAverage(period)
         grades[periodKey] = period;
-        ("grades", grades);
-    }
-
-    function setDefaultPeriod(grades = getUserData("grades")) {
-        let currentPeriod = 0;
-        for (let periodCode in grades) {
-            if (Date.now() > grades[periodCode].endDate) {
-                if (currentPeriod < Object.keys(grades).length - 1) {
-                    currentPeriod++;
-                }
-            }
-        }
-        changeUserData("activePeriod", Object.keys(grades)[currentPeriod]);
+        ("grades", grades); // !:! wtf
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -762,60 +598,9 @@ export default function App({ edpFetch }) {
                 i++;
             }
         }
-        changeUserData("upcomingAssignments", upcomingAssignments)
+        userData.set("upcomingAssignments", upcomingAssignments)
         return sortedHomeworks
     }
-
-    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
-        const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
-            return [day[0], day[1].map((homework) => {
-                const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
-                var contenuDeSeance = homework.contenuDeSeance;
-                if (!aFaire && !contenuDeSeance) {
-                    return null;
-                }
-
-                if (!contenuDeSeance) {
-                    contenuDeSeance = aFaire.contenuDeSeance;
-                }
-
-                if (aFaire) {
-
-                    const { donneLe, effectue, contenu, documents } = aFaire;
-
-                    return {
-                        id: id,
-                        type: "task",
-                        subjectCode: codeMatiere,
-                        subject: matiere,
-                        addDate: donneLe,
-                        isInterrogation: interrogation,
-                        isDone: effectue,
-                        teacher: nomProf,
-                        content: contenu,
-                        files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
-                        sessionContent: contenuDeSeance.contenu,
-                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
-                    }
-                }
-                else {
-                    // This handles the case where there is no homework but there is a session content. I think it can be improved but for now it's fine
-                    return {
-                        id: id,
-                        type: "sessionContent",
-                        subjectCode: codeMatiere,
-                        subject: matiere,
-                        addDate: day[0],
-                        teacher: nomProf,
-                        sessionContent: contenuDeSeance.contenu,
-                        sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
-                    }
-                }
-            }).filter((item) => item)]
-        }))
-        return sortedHomeworks
-    }
-
 
     function sortMessageFolders(messages, origin = 0) {
         const oldMessageFolders = useUserData("messageFolders").get();
@@ -915,7 +700,7 @@ export default function App({ edpFetch }) {
             }
         });
 
-        changeUserData("sortedSchoolLife", sortedSchoolLife);
+        userData.set("sortedSchoolLife", sortedSchoolLife);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -925,9 +710,6 @@ export default function App({ edpFetch }) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function requireLogin() {
-        // Affiche la BottomSheet de reconnexion
-        setIsLoggedIn(false);
-        localStorage.setItem("token", "none");
     }
 
     function loginFromOldAuthInfo(token, accountsList) {
@@ -935,7 +717,6 @@ export default function App({ edpFetch }) {
         if (!!token && token !== "none" && accountsList.length > 0) {
             console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
             setUserInfo(token, accountsList);
-            setIsLoggedIn(true);
         } else {
             console.log("NO ACCOUNTSLIST: LOGGED OUT");
             logout();
@@ -979,121 +760,6 @@ export default function App({ edpFetch }) {
         </>, { customClass: "extension-warning", timer: "infinite" })
     }
 
-    async function fetchTimeline(controller = (new AbortController())) {
-        abortControllers.current.push(controller);
-        const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
-        }
-
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[selectedUserIndex.value].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    // "user-agent": navigator.userAgent,
-                    "x-token": tokenState,
-                },
-                body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer"
-            },
-            "text")
-            .then((response) => {
-                if (!response) {
-                    setIsEDPUnblockInstalled(false);
-                } else {
-                    return JSON.parse(response);
-                }
-            })
-            .then((response) => {
-                let code;
-                if (selectedUser.id === -1) {
-                    code = 49969;
-                } else {
-                    code = response.code;
-                }
-                if (code === 200) {
-                    const oldTimeline = structuredClone(timeline);
-                    oldTimeline[selectedUserIndex.value] = response.data;
-                    setTimeline(oldTimeline);
-                    setTokenState(response.token);
-                } else if (code === 520 || code === 525) {
-                    // token invalide
-                    requireLogin();
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-    }
-
-    async function fetchHomeworks(controller = (new AbortController()), date = "incoming") {
-        /**
-         * Fetch user homeworks
-         * @param controller AbortController
-         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
-         */
-        abortControllers.current.push(controller);
-        const userId = selectedUserIndex.value;
-
-        let endpoint;
-        if (date === "incoming") {
-            endpoint = "cahierdetexte";
-        } else {
-            endpoint = "cahierdetexte/" + getISODate(date);
-        }
-        if (selectedUser.id === -1) {
-            if (date === "incoming") {
-                import("./data/guest/homeworks.json").then((module) => {
-                    changeUserData("sortedHomeworks", sortNextHomeworks(module.data))
-                })
-            } else {
-                import("./data/guest/detailed_homeworks.json").then((module) => {
-                    changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [module.data.date]: module.data.matieres }) })
-                })
-            }
-            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-        } else {
-            edpFetch(
-                getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
-                {
-                    method: "POST",
-                    headers: {
-                        "x-token": tokenState
-                    },
-                    body: "data={}",
-                    signal: controller.signal
-                },
-                "json"
-            )
-                .then((response) => {
-                    const code = response.code;
-                    if (code === 200) {
-                        if (date === "incoming") {
-                            changeUserData("sortedHomeworks", { ...sortNextHomeworks(response.data), ...getUserData("sortedHomeworks") })
-                        } else {
-                            changeUserData("sortedHomeworks", { ...getUserData("sortedHomeworks"), ...sortDayHomeworks({ [response.data.date]: response.data.matieres }) })
-                        }
-                    } else if (code === 520 || code === 525) {
-                        // token invalide
-                        console.log("INVALID TOKEN: LOGIN REQUIRED");
-                        requireLogin();
-                    }
-                    setTokenState((old) => (response?.token || old));
-                })
-                .catch((error) => {
-                    if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                        setProxyError(true);
-                    } else {
-                        console.error(error)
-                    }
-                })
-                .finally(() => {
-                    abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-                })
-        }
-    }
-
     async function fetchHomeworksSequentially(controller = new AbortController(), date = "incoming") {
         abortControllers.current.push(controller);
         const userId = selectedUserIndex.value;
@@ -1108,11 +774,11 @@ export default function App({ edpFetch }) {
         if (selectedUser.id === -1) {
             if (date === "incoming") {
                 const module = await import("./data/guest/homeworks.json");
-                changeUserData("sortedHomeworks", sortNextHomeworks(module.data));
+                userData.set("homeworks", sortNextHomeworks(module.data));
             } else {
                 const module = await import("./data/guest/detailed_homeworks.json");
-                changeUserData("sortedHomeworks", {
-                    ...getUserData("sortedHomeworks"),
+                userData.set("homeworks", {
+                    ...userData.sortedHomeworks,
                     ...sortDayHomeworks({ [module.data.date]: module.data.matieres })
                 });
             }
@@ -1135,13 +801,13 @@ export default function App({ edpFetch }) {
                 const code = responseData.code;
                 if (code === 200) {
                     if (date === "incoming") {
-                        changeUserData("sortedHomeworks", {
+                        userData.set("homeworks", {
                             ...sortNextHomeworks(responseData.data),
-                            ...getUserData("sortedHomeworks")
+                            ...userData.sortedHomeworks
                         });
                     } else {
-                        changeUserData("sortedHomeworks", {
-                            ...getUserData("sortedHomeworks"),
+                        userData.set("homeworks", {
+                            ...userData.sortedHomeworks,
                             ...sortDayHomeworks({ [responseData.data.date]: responseData.data.matieres })
                         });
                     }
@@ -1201,20 +867,20 @@ export default function App({ edpFetch }) {
 
 
     async function fetchMessages(folderId = 0, controller = (new AbortController())) {
-        const oldMessageFolders = useUserData("messageFolders").get();
+        const oldMessageFolders = userData.messageFolders;
         if (oldMessageFolders && oldMessageFolders?.length > 0) {
             if (oldMessageFolders.find((item) => item.id === folderId)?.fetchInitiated) {
                 return;
             } else {
                 oldMessageFolders.find((item) => item.id === folderId).fetchInitiated = true;
-                useUserData("messageFolders").set(oldMessageFolders)
+                userData.set("messageFolders", oldMessageFolders)
             }
         }
 
         abortControllers.current.push(controller);
         const userId = selectedUserIndex.value;
         const data = {
-            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+            anneeMessages: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : getCurrentSchoolYear().join("-"),
         }
         edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&page=0&itemsPerPage=100&getAll=0&verbe=get&v=${apiVersion}`, true),
@@ -1237,13 +903,13 @@ export default function App({ edpFetch }) {
                     code = response.code;
                 }
                 if (code === 200) {
-                    let oldSortedMessages = useUserData("sortedMessages").get();
+                    let oldSortedMessages = userData.sortedMessages;
                     if (oldSortedMessages === undefined) {
                         oldSortedMessages = [];
                     }
                     oldSortedMessages.push(sortMessages(response.data));
-                    changeUserData("sortedMessages", oldSortedMessages.flat());
-                    changeUserData("messageFolders", sortMessageFolders(response.data, folderId));
+                    userData.set("sortedMessages", oldSortedMessages.flat());
+                    userData.set("messageFolders", sortMessageFolders(response.data, folderId));
                 } else if (code === 520 || code === 525) {
                     // token invalide
                     requireLogin();
@@ -1261,7 +927,7 @@ export default function App({ edpFetch }) {
     }
 
     async function fetchMessageContent(id, controller) {
-        const oldSortedMessages = useUserData("sortedMessages").get();
+        const oldSortedMessages = userData.sortedMessages;
         if (oldSortedMessages && oldSortedMessages?.length > 0) {
             const targetMessageIdx = oldSortedMessages.findIndex((item) => item.id === id);
             if (oldSortedMessages[targetMessageIdx].content !== null) {
@@ -1271,7 +937,7 @@ export default function App({ edpFetch }) {
         abortControllers.current.push(controller);
         const userId = selectedUserIndex.value;
         const data = {
-            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+            anneeMessages: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : getCurrentSchoolYear().join("-"),
         }
         edpFetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
@@ -1318,7 +984,7 @@ export default function App({ edpFetch }) {
         abortControllers.current.push(controller);
         const userId = selectedUserIndex.value;
         const data = {
-            anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
+            anneeMessages: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : getCurrentSchoolYear().join("-"),
             action: "marquerCommeNonLu",
             ids: ids
         }
@@ -1355,11 +1021,10 @@ export default function App({ edpFetch }) {
             })
     }
 
-
     async function fetchSchoolLife(controller = (new AbortController())) {
         abortControllers.current.push(controller);
         const data = {
-            anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
+            anneeScolaire: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : ""
         }
 
         edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[selectedUserIndex.value].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
@@ -1453,8 +1118,8 @@ export default function App({ edpFetch }) {
         setAccountsListState(accountsList);
         setTimeline(createUserLists(accountsList.length));
         setSchoolLife(createUserLists(accountsList.length));
-        setUserSettings(initSettings(accountsList));
-        setUserData(initData(accountsList.length));
+        // !:! setUserSettings(initSettings(accountsList));
+        // !:! setUserData(initData(accountsList.length));
         // localStorage.setItem("token", token);
         // localStorage.setItem("accountsList", JSON.stringify(accountsList));
     }
@@ -1484,7 +1149,6 @@ export default function App({ edpFetch }) {
         setAccountsListState([]);
         resetUserData();
         keepLoggedIn.set(false);
-        setIsLoggedIn(false);
         // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
         for (let controller of abortControllers.current) {
             controller.abort();
@@ -1497,11 +1161,11 @@ export default function App({ edpFetch }) {
 
     useEffect(() => {
         const metaThemeColor = document.getElementById("theme-color");
-        if (getUserSettingValue("displayTheme") === "dark") {
+        if (displayTheme.value === "dark") {
             document.documentElement.classList.add("dark");
             document.documentElement.classList.remove("light");
             metaThemeColor.content = "#181829";
-        } else if (getUserSettingValue("displayTheme") === "light") {
+        } else if (displayTheme.value === "light") {
             document.documentElement.classList.add("light");
             document.documentElement.classList.remove("dark");
             metaThemeColor.content = "#e4e4ff";
@@ -1511,21 +1175,20 @@ export default function App({ edpFetch }) {
             metaThemeColor.content = (window.matchMedia('(prefers-color-scheme: dark)').matches ? "#181829" : "#e4e4ff");
         }
         toggleThemeTransitionAnimation();
-    }, [getUserSettingValue("displayTheme")]);
+    }, [displayTheme.value]);
 
 
     function getActualDisplayTheme() {
-        const displayTheme = getUserSettingValue("displayTheme");
-        if (displayTheme === "auto") {
+        if (displayTheme.value === "auto") {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
         }
-        return displayTheme;
+        return displayTheme.value;
     }
 
 
 
     function toggleThemeTransitionAnimation() {
-        if (getUserSettingValue("displayMode") === "balanced" || getUserSettingValue("displayMode") === "performance") {
+        if (userSettings.displayMode.value === "balanced" || userSettings.displayMode.value === "performance") {
             return 0;
         }
         //  vérifie l'existence d'un timeout actif
@@ -1545,8 +1208,8 @@ export default function App({ edpFetch }) {
         document.documentElement.classList.remove("balanced");
         document.documentElement.classList.remove("performance");
 
-        document.documentElement.classList.add(getUserSettingValue("displayMode"));
-    }, [getUserSettingValue("displayMode")]);
+        document.documentElement.classList.add(userSettings.displayMode.value);
+    }, [userSettings.displayMode.value]);
 
     /* ################################################################################### */
 
@@ -1567,11 +1230,12 @@ export default function App({ edpFetch }) {
                     fakeLogin={fakeLogin}
                     resetUserData={resetUserData}
 
-                    setDisplayTheme={(value) => { changeUserSettings("displayTheme", value) }}
-                    displayTheme={getUserSettingValue("displayTheme")}
+                    get={get}
 
-                    setDisplayModeState={(value) => { changeUserSettings("displayMode", value) }}
-                    displayMode={getUserSettingValue("displayMode")}
+                    displayTheme={displayTheme}
+
+                    setDisplayModeState={(value) => { displayMode.set(value) }}
+                    displayMode={userSettings.displayMode.value}
 
                     activeAccount={selectedUserIndex.value}
                     setActiveAccount={selectedUserIndex.set}
@@ -1579,14 +1243,10 @@ export default function App({ edpFetch }) {
                     isStandaloneApp={isStandaloneApp}
                     isTabletLayout={isTabletLayout}
 
-                    fetchHomeworks={fetchHomeworks}
-
                     setIsFullScreen={setIsFullScreen}
                     globalSettings={globalSettings}
-                    useUserSettings={useUserSettings}
                     entryURL={entryURL}
                     setting={userSettings}
-                    syncSettings={syncSettings}
                     createFolderStorage={createFolderStorage}
 
                     handleEdBan={handleEdBan}
@@ -1649,13 +1309,12 @@ export default function App({ edpFetch }) {
                                 activeAccount={selectedUserIndex.value}
                                 carpeConviviale={carpeConviviale}
                                 isLoggedIn={isLoggedIn}
-                                fetchTimeline={fetchTimeline}
                                 timeline={timeline}
                                 isTabletLayout={isTabletLayout}
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} backgroundTask={keepLoggedIn.value && !!userIds.username && !!userIds.password && !requireDoubleAuth} onClose={() => setIsLoggedIn(true)} close={keepLoggedIn.value && !!userIds.username && !!userIds.password && !requireDoubleAuth} />)}
+                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} onClose={() => { }} close={true} />)} {/* // !:! changer le true ofc*/}
                         </>),
                     path: "app",
                     children: [
@@ -1684,7 +1343,7 @@ export default function App({ edpFetch }) {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard fetchHomeworks={fetchHomeworks} activeAccount={selectedUserIndex.value} isLoggedIn={isLoggedIn} useUserData={useUserData} isTabletLayout={isTabletLayout} />,
+                            element: <Dashboard activeAccount={selectedUserIndex.value} isLoggedIn={isLoggedIn} isTabletLayout={isTabletLayout} />,
                             path: ":userId/dashboard"
                         },
                         {
@@ -1692,7 +1351,7 @@ export default function App({ edpFetch }) {
                             path: "grades"
                         },
                         {
-                            element: <Grades activeAccount={selectedUserIndex.value} isLoggedIn={isLoggedIn} useUserData={useUserData} isTabletLayout={isTabletLayout} />,
+                            element: <Grades activeAccount={selectedUserIndex.value} isLoggedIn={isLoggedIn} isTabletLayout={isTabletLayout} />,
                             path: ":userId/grades"
                         },
                         {
@@ -1700,7 +1359,7 @@ export default function App({ edpFetch }) {
                             path: "homeworks"
                         },
                         {
-                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} fetchHomeworks={fetchHomeworks} />,
+                            element: <Homeworks isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} />,
                             path: ":userId/homeworks"
                         },
                         {
@@ -1726,13 +1385,10 @@ export default function App({ edpFetch }) {
     ]);
 
     const appContextValue = useMemo(() => ({
-        useUserData,
-        useUserSettings,
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
         fetchHomeworksDone,
-        fetchHomeworks,
         fetchHomeworksSequentially,
         promptInstallPWA,
         selectedUserIndex,
@@ -1746,13 +1402,10 @@ export default function App({ edpFetch }) {
         actualDisplayTheme,
         EDPVersion,
     }), [
-        useUserData,
-        useUserSettings,
         refreshApp,
         addNewGrade,
         deleteFakeGrade,
         fetchHomeworksDone,
-        fetchHomeworks,
         fetchHomeworksSequentially,
         promptInstallPWA,
         selectedUserIndex,
@@ -1762,14 +1415,12 @@ export default function App({ edpFetch }) {
         isTabletLayout,
         isStandaloneApp,
         isDevChannel,
-        globalSettings,
         actualDisplayTheme,
         EDPVersion,
     ]);
 
-    const loginValue = {
-        username,
-        password,
+    const accountContextValue = {
+        userCredentials,
         keepLoggedIn,
         doubleAuthInfo,
         doubleAuthAcquired,
@@ -1777,15 +1428,29 @@ export default function App({ edpFetch }) {
         requireDoubleAuth,
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,
+        selectedUser,
+    }
+
+    const settingsContextValue = {
+        global: globalSettings,
+        user: userSettings
+    }
+
+    const userDataContextValue = {
+        ...userData
     }
 
     return (
         <AppContext.Provider value={appContextValue} key={appKey}>
-            <LoginContext.Provider value={loginValue}>
-                <Suspense fallback={<AppLoading />}>
-                    <RouterProvider router={router} />
-                </Suspense>
-            </LoginContext.Provider>
+            <AccountContext.Provider value={accountContextValue}>
+                <SettingsContext.Provider value={settingsContextValue}>
+                    <UserDataContext.Provider value={userDataContextValue}>
+                        <Suspense fallback={<AppLoading />}>
+                            <RouterProvider router={router} />
+                        </Suspense>
+                    </UserDataContext.Provider>
+                </SettingsContext.Provider>
+            </AccountContext.Provider>
         </AppContext.Provider>
     );
 }

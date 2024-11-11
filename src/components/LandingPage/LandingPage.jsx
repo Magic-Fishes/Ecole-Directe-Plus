@@ -2,7 +2,7 @@ import { useRef, useEffect, useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
-import { AppContext } from "../../App"
+import { AppContext, SettingsContext } from "../../App"
 
 // graphics
 import EdpuLogo from "../graphics/EdpuLogo";
@@ -20,7 +20,8 @@ import "./LandingPage.css";
 import "./LandingPage2.css";
 
 export default function LandingPage({ token, accountsList }) {
-    const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
+    const { isMobileLayout, isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+    const { theme, displayMode } = useContext(SettingsContext);
 
     const [isLoggedIn, setIsLoggedIn] = useState(token && accountsList.length > 0); // this one is different from the one in App.jsx
 
@@ -33,8 +34,6 @@ export default function LandingPage({ token, accountsList }) {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const theme = useUserSettings("displayTheme")
-    const displayMode = useUserSettings("displayMode").get();
 
     const changeTheme = () => {
         theme.set(actualDisplayTheme === "light" ? "dark" : "light");

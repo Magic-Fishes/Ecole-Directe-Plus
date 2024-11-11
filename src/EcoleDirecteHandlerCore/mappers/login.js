@@ -19,8 +19,7 @@ export default function mapLogin(data) {
     } else {
         // compte parent
         return accounts.profile.eleves.map((account) => {
-            const { id, prenom, nom, email, photo, nomEtablissement, classe, modules } = account;
-            console.log(account)
+            const { id, prenom, nom, photo, nomEtablissement, classe, modules } = account;
             return {
                 accountType: "P",
                 lastConnection: accounts.lastConnexion,

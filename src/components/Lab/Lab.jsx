@@ -45,6 +45,7 @@ import useInitializer from "../../EcoleDirecteHandlerCore/hooks/utils/useInitial
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
     // States
+    const [jsp, rerenderer] = useState(0);
     const [test, setTest] = useState(["Signaler un bug", "Suggestion", "Retour d'expérience", "Autre", "Celui qui ne se souvient pas du passé est condamné à le répéter.", "option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option10 OH non j'ai oublié option9"]);
     const [test2, setTest2] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +64,14 @@ export default function Lab({ fetchGrades }) {
     const [targetURL, setTargetURL] = useState("");
     const [testHash, setTestHash] = useState("");
     const [fileExtension, setFileExtension] = useState("PNG");
-
+    
+    const initialTestState2 = {
+        a: {
+            b: "123"
+        },
+        b: 123
+    }
+    const [testState2, setTestState2] = useState(initialTestState2);
     const navigate = useNavigate();
 
     // Behavior
@@ -331,6 +339,20 @@ export default function Lab({ fetchGrades }) {
                 console.log(newValue);
             }}>Change initializer value</Button>
             {initializer}
+            <Button onClick={() => {
+                initialTestState2.b += 1;
+                setTestState2(testState2)
+            }}>change initial value</Button>
+            <Button onClick={() => {
+                setTestState2((old) => {
+                    const next = {...old};
+                    next.a.b += "+";
+                    return next;
+                });
+            }}>set value</Button>
+            {JSON.stringify(initialTestState2)}
+            <br/>
+            {JSON.stringify(testState2)}
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>

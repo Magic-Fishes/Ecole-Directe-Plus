@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
-import { AppContext } from "../../App";
+import { AppContext, SettingsContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
 
 import "./Window.css";
@@ -46,14 +46,13 @@ function useWindowsContainerContext() {
 
 
 export function WindowsContainer({ children, name = "", className = "", id = "", animateWindows = true, allowWindowsManagement = true, ...props }) {
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement");
-    const displayMode = useUserSettings("displayMode");
-    const allowWindowsArrangement = useUserSettings("allowWindowsArrangement");
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting, displayMode, allowWindowsArrangement } = settings.user;
 
     name = (isTabletLayout ? "tablet-" : "") + name;
-    const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement: allowWindowsArrangement.get() && allowWindowsManagement }));
+    const [windowsContainer, setWindowsContainer] = useState(useWindowsContainer({ animateWindows, allowWindowsManagement: allowWindowsArrangement.value && allowWindowsManagement }));
 
     const windowsContainerRef = useRef(null);
     const floatingPortalRef = useRef(null);
@@ -136,7 +135,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
          */
         if (name) {
             // windowArrangementSetting.set((oldWindowArrangement) => [...oldWindowArrangement.filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
-            windowArrangementSetting.set([...windowArrangementSetting.get().filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
+            windowArrangementSetting.set([...windowArrangementSetting.value.filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
         }
     }
 
@@ -419,7 +418,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
             targetWindow.classList.remove("moving")
             floatingWindow.remove()
-        }, displayMode.get() === "quality" ? 400 : 0);
+        }, displayMode.value === "quality" ? 400 : 0);
     }
 
     const handleFullscreen = (targetWindow) => {
@@ -584,10 +583,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
             // console.log("scrollableParentElement", scrollableParentElement);
 
-            
+
             floatingWindow = targetWindow.cloneNode(true);
             // console.log("floatingWindow:", floatingWindow)
-            
+
             // reapply scroll levels of each scrollable container to the new cloned floatingWindow
             const scrollableChildren = digChildren(targetWindow, (() => 0), ((el) => (el.scrollTop > 0)));
             setTimeout(() => scrollableChildren.forEach(element => {
@@ -802,7 +801,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     useEffect(() => {
         // load and apply old windowArrangement
         if (name) {
-            const buffer = windowArrangementSetting.get();
+            const buffer = windowArrangementSetting.value;
             let windowArrangement;
             for (let item of buffer) {
                 if (item.name === name) {
@@ -816,7 +815,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 console.error("windowsContainer has no \"name\" attribute but you have allowed window management: window rearrangements will not be saved");
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
 
     useEffect(() => {
@@ -934,9 +933,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 export function WindowsLayout({ children, direction = "row", growthFactor = 1, ultimateContainer = false, className = "", ...props }) {
     // available directions: row, column
 
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement")
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting } = settings.user;
 
     const context = useWindowsContainerContext();
 
@@ -954,7 +954,7 @@ export function WindowsLayout({ children, direction = "row", growthFactor = 1, u
                 context.windowsLayouts.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
     if (isTabletLayout && !ultimateContainer) {
         return children;
@@ -970,9 +970,10 @@ export function WindowsLayout({ children, direction = "row", growthFactor = 1, u
 
 export function MoveableContainer({ children, className = "", ...props }) {
 
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement")
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting } = settings.user;
 
     const context = useWindowsContainerContext();
 
@@ -991,7 +992,7 @@ export function MoveableContainer({ children, className = "", ...props }) {
                 context.moveableContainers.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
 
     return (
@@ -1002,11 +1003,12 @@ export function MoveableContainer({ children, className = "", ...props }) {
 }
 
 
-export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName="self", WIP = false, className = "", ...props }) {
+export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName = "self", WIP = false, className = "", ...props }) {
 
     const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement");
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting } = settings.user;
 
     const context = useWindowsContainerContext();
 
@@ -1028,7 +1030,7 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
                 context.fullscreenInfo.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
 
     return (

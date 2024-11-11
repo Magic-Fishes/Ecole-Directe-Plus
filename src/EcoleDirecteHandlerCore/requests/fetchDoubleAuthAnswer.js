@@ -1,8 +1,8 @@
-import { apiVersion } from "../constants/edpConfig";
+import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
 import EdpError from "../utils/edpError";
 
-export default function fetchDoubleAuthAnswer(token, choice, controller = new AbortController()) {
+export default function fetchDoubleAuthAnswer(token, choice, controller = undefined) {
     const headers = new Headers();
     headers.append("x-token", token);
 
@@ -24,7 +24,7 @@ export default function fetchDoubleAuthAnswer(token, choice, controller = new Ab
         })
         .then((response) => {
             if (!response) {
-                throw new EdpError(FetchErrorBuilders.doubleAuth.EMPTY_RESPONSE);
+                throw new EdpError(FetchErrorBuilders.EMPTY_RESPONSE);
             }
             response = JSON.parse(response);
             if (response.code < 300) {
@@ -32,8 +32,9 @@ export default function fetchDoubleAuthAnswer(token, choice, controller = new Ab
             }
             switch (response.code) {
                 case 520:
-                    throw new EdpError(FetchErrorBuilders.doubleAuth.INVALID_TOKEN);
-                    // !:! besoin du cas où la réponse est fausse (peut-être code 525)
+                    throw new EdpError(FetchErrorBuilders.INVALID_TOKEN);
+                case 525:
+                    throw new EdpError(FetchErrorBuilders.EXPIRED_TOKEN);
                 default: // UNHANDLED ERROR
                     throw new EdpError({
                         name: "UnhandledError",
