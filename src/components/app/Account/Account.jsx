@@ -178,6 +178,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                 // && documents?.inscriptionsReinscriptions?.length === 0
                                 ? (
                                     <span className="no-available-documents">Aucun document disponible.</span>
+                                    // TODO: add content-loader
                             ) : (
                                     <>
                                         {/* {module.params.DocumentsInscriptionsReinscriptionsActif === "1" && documents?.inscriptionsReinscriptions?.length > 0 && (
@@ -191,7 +192,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                                 ))}
                                             </div>
                                         )} */}
-                                        {module.params.DocumentsFactureActif === "1" && documents?.factures?.length > 0 && (
+                                        {module?.params?.DocumentsFactureActif === "1" && documents?.factures?.length > 0 && (
                                         <div className="document-category">
                                             <h3>Factures</h3>
                                             {documents.factures.map(file => (
@@ -202,7 +203,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             ))}
                                             </div>
                                     )}
-                                    {module.params.DocumentsAdministratifActif === "1" && documents?.administratifs?.length > 0 && (
+                                    {module?.params?.DocumentsAdministratifActif === "1" && documents?.administratifs?.length > 0 && (
                                         <div className="document-category">
                                             <h3>Documents Administratifs</h3>
                                                 {documents.administratifs.map(file => (
@@ -213,7 +214,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             ))}
                                         </div>
                                     )}
-                                    {module.params.DocumentsNotesActif === "1" && documents?.notes?.length > 0 && (
+                                    {module?.params?.DocumentsNotesActif === "1" && documents?.notes?.length > 0 && (
                                         <div className="document-category">
                                             <h3>Notes</h3>
                                                 {documents.notes.map(file => (
@@ -224,7 +225,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             ))}
                                         </div>
                                     )}
-                                    {module.params.DocumentsVSActif === "1" && documents?.viescolaire?.length > 0 && (
+                                    {module?.params?.DocumentsVSActif === "1" && documents?.viescolaire?.length > 0 && (
                                         <div className="document-category">
                                             <h3>Vie Scolaire</h3>
                                                 {documents.viescolaire.map(file => (
@@ -235,7 +236,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             ))}
                                         </div>
                                     )}
-                                    {module.params.DocumentsEntrepriseActif === "1" && documents?.entreprises?.length > 0 && (
+                                    {module?.params?.DocumentsEntrepriseActif === "1" && documents?.entreprises?.length > 0 && (
                                         <div className="document-category">
                                             <h3>Documents Entreprise</h3>
                                                 {documents.entreprises.map(file => (

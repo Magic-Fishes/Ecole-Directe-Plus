@@ -78,8 +78,7 @@ h3:has(~ .folders-container)  {
 }
 
 .folder-icon-tooltip {
-    height: 40px;
-    width: 40px;
+    height: 30px;
 }
 
 .edit-folder-tooltip {
@@ -100,6 +99,7 @@ h3:has(~ .folders-container)  {
     justify-content: center;
     height: 100%;
     width: 100%;
+    padding: 6px;
 }
 
 .edit-folder-tooltip:has([data-state="open"]) {
@@ -160,17 +160,16 @@ h3:has(~ .edit-folder-container) {
 }
 
 .edit-folder-icon-tooltip {
-    height: 40px;
-    width: 40px;
+    height: 30px;
 }
 
 .delete:is(:hover) {
-    background-color: #ff0000;
+    background-color: rgba(var(--background-color-error), 0.4);
     transition: .3s;
 }
 
 .delete:is(:hover) path {
-    stroke: #ffffff;
+    stroke: #fff;
     transition: .3s;
 }
 

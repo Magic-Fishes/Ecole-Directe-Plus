@@ -16,18 +16,17 @@ import InboxIcon from "../../graphics/InboxIcon";
 import MarkAsUnread from "../../graphics/MarkAsUnread";
 import SendIcon from "../../graphics/SendIcon";
 import DraftIcon from "../../graphics/DraftIcon";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../generic/PopUps/Tooltip";
 import DeleteIcon from "../../graphics/DeleteIcon";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../generic/PopUps/Tooltip";
 
 
 export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnread, setSelectedMessage, archiveMessage, unarchiveMessage, moveMessage, deleteMessage }) {
-    
+
     // States
-    const location = useLocation(); 
+    const location = useLocation();
     const { useUserData, actualDisplayTheme, useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
     const messages = useUserData("sortedMessages").get();
-    const messagesUnread = useUserData("sortedMessages");
     const message = messages ? messages.find((item) => item.id === selectedMessage) : null;
     const [spoiler, setSpoiler] = useState(settings.get("isStreamerModeEnabled"));
     const [folders, setFolders] = useState(useUserData("messageFolders").get());
@@ -55,12 +54,12 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
         }
 
         // mark as unread locally and kick the content so as to trigger a refetch the next reading (as the "mark as read" feature is trigger when fetching the message)
+        const messagesUnread = useUserData("sortedMessages");
         const oldMsg = messagesUnread.get()
         const msgIdx = oldMsg.findIndex((item) => item.id === msg.id);
         oldMsg[msgIdx].read = false;
         oldMsg[msgIdx].content = null;
         messagesUnread.set(oldMsg);
-        // update the messages glo
     }
 
     // JSX
@@ -119,9 +118,9 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                     <hr />
                     <div className="email-footer">
                         <ScrollShadedDiv enableSideShadows={true} className="scroll-footer-div">
-                        <ul className="attachments-container">
-                            {message && message.files && message.files.length > 0
-                                ? message.files.map((file) => <li key={file.id}><button className="attachment" onClick={() => file.download()}><DownloadIcon className="download-icon" />{file.name + "." + file.extension}</button></li>)
+                            <ul className="attachments-container">
+                                {message && message.files && message.files.length > 0
+                                    ? message.files.map((file) => <li key={file.id}><button className="attachment" onClick={() => file.download()}><DownloadIcon className="download-icon" />{file.name + "." + file.extension}</button></li>)
                                     : <li className="no-attatchemnts-messages"><p>Aucun fichier joint</p></li>}
                             </ul>
                         </ScrollShadedDiv>
@@ -132,49 +131,50 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                     // only print the content of the rendered message
                                     const printWindow = window.open("", "_blank");
                                     printWindow.document.write("<html><head><title>Impression</title></head><body>");
-                                    printWindow.document.write(document.querySelector(".message-content").innerHTML);
+                                    printWindow.document.write(document.querySelector("#message-reader .message-content").innerHTML);
                                     //remove the email footer
-                                    printWindow.document.querySelector(".email-footer").remove();
+                                    printWindow.document.querySelector("#message-reader .email-footer").remove();
                                     printWindow.document.write("</body></html>");
                                     printWindow.document.close();
                                     printWindow.print();
                                 }
                             }><PrintIcon /></button></TooltipTrigger><TooltipContent>Imprimer</TooltipContent></Tooltip>
-                            {parsedHashFolder != -2 && parsedHashFolder != -1 && parsedHashFolder != -4  ? (
+                            {parsedHashFolder != -2 && parsedHashFolder != -1 && parsedHashFolder != -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button"><FolderIcon /></button></TooltipTrigger><TooltipContent>
-                                <TooltipContent className="no-questionmark">
-                                    <h3>Changer De Dossier</h3>
-                                    <ul className="folders-container">
-                                        {folders
-                                            .sort((a, b) => {
-                                                const order = [0, -1, -2, -4];
-                                                const indexA = order.indexOf(a.id);
-                                                const indexB = order.indexOf(b.id);
-                                                if (indexA === -1 && indexB === -1) return 0;
-                                                if (indexA === -1) return 1;
-                                                if (indexB === -1) return -1;
-                                                return indexA - indexB;
-                                            })
-                                            .filter((folder) => folder.id !== -3 &&  folder.id !== -2 && folder.id !== -1 && folder.id !== -4)
-                                            .map((folder) => (
-                                                <li key={folder.id} className={`folder-button-container ${folder.id === parsedHashFolder ? 'not-allowed' : ''}`}>
-                                                    <button
-                                                        onClick={() => {
-                                                            moveMessage(message.id, folder.id);
-                                                            setSelectedMessage(null);
-                                                        }}
-                                                        className={`folder-button ${folder.id === parsedHashFolder ? 'selected-folder cannot-click' : ''}`}
-                                                    >
-                                                        {folder.id === 0 ? <InboxIcon className="folder-icon-tooltip" /> : folder.id === -1 ? <SendIcon className="folder-icon-tooltip" /> : folder.id === -2 ? <ArchiveIcon className="folder-icon-tooltip" /> : folder.id === -4 ? <DraftIcon className="folder-icon-tooltip"/> : <FolderIcon className="folder-icon-tooltip" />}
-                                                        {capitalizeFirstLetter(folder.name)}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                    </ul>
-                                </TooltipContent>
+                                    <TooltipContent className="no-questionmark">
+                                        <h3>Changer De Dossier</h3>
+                                        <ul className="folders-container">
+                                            {folders
+                                                .filter((folder) => folder.id !== -3 && folder.id !== -2 && folder.id !== -1 && folder.id !== -4)
+                                                .sort((a, b) => {
+                                                    const order = [0, -1, -2, -4];
+                                                    const indexA = order.indexOf(a.id);
+                                                    const indexB = order.indexOf(b.id);
+                                                    if (indexA === -1 && indexB === -1) return 0;
+                                                    if (indexA === -1) return 1;
+                                                    if (indexB === -1) return -1;
+                                                    return indexA - indexB;
+                                                })
+                                                .map((folder) => (
+                                                    <li key={folder.id} className={`folder-button-container ${folder.id === parsedHashFolder ? 'not-allowed' : ''}`}>
+                                                        <button
+                                                            onClick={() => {
+                                                                moveMessage([message.id], folder.id);
+                                                                setSelectedMessage(null);
+                                                            }}
+                                                            disabled={folder.id === parsedHashFolder}
+                                                            className={`folder-button ${folder.id === parsedHashFolder ? 'selected-folder cannot-click' : ''}`}
+                                                        >
+                                                            {folder.id === 0 ? <InboxIcon className="folder-icon-tooltip" /> : folder.id === -1 ? <SendIcon className="folder-icon-tooltip" /> : folder.id === -2 ? <ArchiveIcon className="folder-icon-tooltip" /> : folder.id === -4 ? <DraftIcon className="folder-icon-tooltip" /> : <FolderIcon className="folder-icon-tooltip" />}
+                                                            {capitalizeFirstLetter(folder.name)}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    </TooltipContent>
                                 </TooltipContent></Tooltip>
                             ) : (
-                                    null
+                                null
                             )}
                             {parsedHashFolder === -2 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
@@ -184,24 +184,24 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                     }
                                 }><InboxIcon /></button></TooltipTrigger><TooltipContent>Désarchiver</TooltipContent></Tooltip>
                             ) : parsedHashFolder != -1 && parsedHashFolder != -4 ? (
-                                    <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
-                                        () => {
-                                            archiveMessage(message.id);
-                                            setSelectedMessage(null);
-                                        }
+                                <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
+                                    () => {
+                                        archiveMessage(message.id);
+                                        setSelectedMessage(null);
+                                    }
                                 }><ArchiveIcon /></button></TooltipTrigger><TooltipContent>Archiver</TooltipContent></Tooltip>
                             ) : (
                                 null
                             )}
-                            { parsedHashFolder === -4 ? (
+                            {parsedHashFolder === -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
-                                    deleteMessage(message.id);
-                                    setSelectedMessage(null);
-                                }
-                            }><DeleteIcon /></button></TooltipTrigger><TooltipContent>Supprimer</TooltipContent></Tooltip>
+                                        deleteMessage(message.id);
+                                        setSelectedMessage(null);
+                                    }
+                                }><DeleteIcon /></button></TooltipTrigger><TooltipContent>Supprimer</TooltipContent></Tooltip>
                             ) : (
-                                    null
+                                null
                             )}
                             <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
                         </div>

@@ -186,6 +186,7 @@ body:has(#account) {
 }
 
 .document-category h3 {
+    font-weight: var(--font-weight-semi-bold);
     display: flex;
     align-items: center;
     margin: 0;
@@ -197,9 +198,9 @@ body:has(#account) {
     content: '';
     flex-grow: 1;
     height: 1px;
-    margin-left: 10px;
+    margin-left: 15px;
     /* Space between title and the line */
-    background-color: #4a48bd;
+    background-color: rgb(var(--border-color-0));
     /* Customize color as needed */
     border: none;
 }
@@ -213,7 +214,7 @@ body:has(#account) {
     flex: auto 200px;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .frame-heading-documents {

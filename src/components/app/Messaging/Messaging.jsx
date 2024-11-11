@@ -26,8 +26,6 @@ import NewFolderIcon from "../../graphics/NewFolderIcon";
 import DraftIcon from "../../graphics/DraftIcon";
 import { capitalizeFirstLetter } from "../../../utils/utils";
 import TextInput from "../../generic/UserInputs/TextInput";
-import { el } from "date-fns/locale";
-import { set } from "date-fns";
 
 
 export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fetchMessageContent, fetchMessageMarkAsUnread, renameFolder, deleteFolder, createFolder, archiveMessage, unarchiveMessage, moveMessage, deleteMessage }) {
@@ -107,12 +105,10 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         }
         const parsedHashMessage = parseInt(location.hash.slice(location.hash.lastIndexOf('-') + 1));
         const parsedHashFolder = parseInt(location.hash.slice(1, location.hash.lastIndexOf('-')));
-        console.log("useEffect ~ parsedHashMessage", parsedHashMessage)
 
-        if (!isNaN(parsedHashMessage) && parsedHashMessage !== selectedMessage) {
+        if (!isNaN(parsedHashMessage) && !isNaN(parsedHashFolder)  && parsedHashMessage !== selectedMessage) {
             if (messages.get()) {
                 const doesMessageExist = messages.get()?.findIndex((item) => item.id === parsedHashMessage) !== -1;
-                console.log("useEffect ~ doesMessageExist:", doesMessageExist)
                 if (doesMessageExist) {
                     setSelectedFolder(parsedHashFolder);
                     setSelectedMessage(parsedHashMessage);
@@ -139,7 +135,6 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
         if (!isEditingFolder) {
             const currentFolder = folders?.find((item) => item.id === selectedFolder);
             if (currentFolder) {
-                console.log("currentFolder", currentFolder);
                 setNewFolderName(currentFolder.name);
             }
         }
@@ -154,11 +149,10 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                 let newFolder = await createFolder(newFolderName, controller);
                 setTimeout(() => setSelectedFolder(newFolder), 0);
                 // refresh the folder list and title
-
             } else {
-                renameFolder(selectedFolder, newFolderName); // Call the rename function with folder ID and new name
+                await renameFolder(selectedFolder, newFolderName); // Call the rename function with folder ID and new name
             }
-            setIsEditingFolder(false); // Exit editing mode
+            setTimeout(() => setIsEditingFolder(false), 0); // Exit editing mode
         }
     };
 
@@ -247,6 +241,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                         <h3>Dossiers</h3>
                                         <ul className="folders-container">
                                             {folders
+                                                .filter((folder) => folder.id !== -3)
                                                 .sort((a, b) => {
                                                     const order = [0, -1, -2, -4];
                                                     const indexA = order.indexOf(a.id);
@@ -256,14 +251,13 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                                     if (indexB === -1) return -1;
                                                     return indexA - indexB;
                                                 })
-                                                .filter((folder) => folder.id !== -3)
                                                 .map((folder) => (
                                                     <li key={folder.id} className="folder-button-container">
                                                         <button 
                                                             onClick={() => {
                                                                 setSelectedFolder(folder.id)
                                                                 setSelectedMessage(null);
-                                                             }} 
+                                                            }} 
                                                             className={`folder-button ${folder.id === selectedFolder ? 'selected-folder' : ''}`}
                                                         >
                                                             {folder.id === 0 ? <InboxIcon className="folder-icon-tooltip" /> : folder.id === -1 ? <SendIcon className="folder-icon-tooltip" /> : folder.id === -2 ? <ArchiveIcon className="folder-icon-tooltip" /> : folder.id === -4 ? <DraftIcon className="folder-icon-tooltip" /> : <FolderIcon className="folder-icon-tooltip" />}
@@ -276,12 +270,12 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                                     () => {
                                                         if (!isEditingFolder) {
                                                             setSelectedFolder(-3);
-                                                            setNewFolderName('Créer un dossier');
+                                                            setNewFolderName('Nouveau dossier');
                                                             setTimeout(() => setIsEditingFolder(true), 0);
                                                             setSelectedMessage(null);
                                                         }
                                                     }
-                                                } className="folder-button create-folder"><NewFolderIcon className="folder-icon-tooltip" /> Créer un dossier</button>
+                                                } className="folder-button create-folder"><NewFolderIcon className="folder-icon-tooltip" />Créer un dossier</button>
                                             </li>
                                         </ul>
                                     </TooltipContent>
@@ -302,16 +296,10 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                                 <button className="edit-folder-button delete" onClick={async () => {
                                                     // if the folder dosn't contain any message, we can delete it directly but if it contains messages, we need to move them to the inbox
                                                     if (messages.get().filter((message) => message.folderId === selectedFolder).length > 0) {
-                                                        const controller = new AbortController();
-                                                        for (let message of messages.get().filter((message) => message.folderId === selectedFolder)) {
-                                                            moveMessage(message.id, 0, controller);
-                                                        }
+                                                        await moveMessage(messages.get().filter((message) => message.folderId === selectedFolder).map((message) => message.id), 0);
                                                     }
-                                                    setTimeout(async () => {
-                                                        const controller = new AbortController();
-                                                        await deleteFolder(selectedFolder, controller);
-                                                        setSelectedFolder(0);
-                                                    }, 100);                          
+                                                    deleteFolder(selectedFolder);
+                                                    setSelectedFolder(0);
                                                 }}><DeleteIcon className="edit-folder-icon-tooltip delete testeee" />Supprimer</button>
                                             </li>
                                         </ul>

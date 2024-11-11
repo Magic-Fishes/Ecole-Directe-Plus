@@ -102,6 +102,7 @@
 #message-reader .email-footer {
     height: 100px;
     overflow: hidden;
+    display: flex;
 }
 
 
@@ -118,7 +119,10 @@
     padding: 15px;
     display: flex;
     flex-flow: row nowrap;
+    flex: 1;
     gap: 15px;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 #message-reader .attachments-container .attachment {
@@ -160,16 +164,7 @@
     text-align: center;
 }
 
-.email-footer {
-    display: flex;
-}
 
-.attachments-container {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    flex-grow: 1;
-}
 
 .attachments-container li {
     list-style-type: none;
@@ -189,16 +184,16 @@
 .action-button {
     width: 40px;
     height: 40px;
-    background: rgb(var(--background-color-1));
     padding: 5px;
-    border: none;
+    background-color: transparent;
+    border: 1px solid rgba(var(--text-color-alt), .5);
     border-radius: 10px;
     cursor: pointer;
     transition: .2s;
 }
 
 .action-button:is(:hover, :focus-visible) {
-    background: rgba(var(--background-color-3), 1);
+    background: rgb(var(--background-color-3));
     transition: .2s;
 }
 .action-button path {
