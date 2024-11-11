@@ -644,6 +644,12 @@ export default function App({ edpFetch }) {
                             document.documentElement.style.fontSize = newFontSize + "em";
                         }
                     }
+                } else if (window.innerHeight < 900) {
+                    if (window.innerHeight >= 650) {
+                        document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
+                    } else {
+                        document.documentElement.style.zoom = .85;
+                    }
                 } else {
                     document.documentElement.style.fontSize = "";
                     document.documentElement.style.zoom = "";
