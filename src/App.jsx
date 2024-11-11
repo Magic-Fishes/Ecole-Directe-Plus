@@ -648,7 +648,7 @@ export default function App({ edpFetch }) {
                     if (window.innerHeight >= 650) {
                         document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
                     } else {
-                        document.documentElement.style.zoom = .85;
+                        document.documentElement.style.zoom = .75;
                     }
                 } else {
                     document.documentElement.style.fontSize = "";
