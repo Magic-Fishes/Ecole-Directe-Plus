@@ -19,6 +19,7 @@ import {
     useMergeRefs,
     FloatingPortal
 } from "@floating-ui/react";
+import { AppContext } from "../../../App";
 // Check out the FloatingUI docs for more information : https://floating-ui.com/docs/react
 
 import './Tooltip.css'
@@ -194,6 +195,7 @@ export const TooltipTrigger = forwardRef(function TooltipTrigger({ children, ...
 
 export const TooltipContent = forwardRef(function TooltipContent({ children, style, className = "", ...props }, propRef) {
     const context = useTooltipContext();
+    const { isTabletLayout } = useContext(AppContext);
     const ref = useMergeRefs([context.refs.setFloating, children.ref, propRef]);
 
     // Affiche / N'affiche pas la tooltip
@@ -201,7 +203,7 @@ export const TooltipContent = forwardRef(function TooltipContent({ children, sty
 
     // Gestion du clic à l'intérieur pour fermer la tooltip
     const handleClickInside = () => {
-        if (context.options.closeOnClickInside) {
+        if (context.options.closeOnClickInside && isTabletLayout) {
             context.setIsOpen(false);
         }
     };
