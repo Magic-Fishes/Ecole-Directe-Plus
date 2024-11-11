@@ -921,7 +921,7 @@ export default function App({ edpFetch }) {
                 const subjectAverage = periods[periodCode].subjects[subjectCode].average;
                 const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
                 const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);   
+                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
 
                 // streak management
                 newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
@@ -959,7 +959,7 @@ export default function App({ edpFetch }) {
                 generalAverageHistory[periodCode].generalAverages.push(generalAverage);
                 generalAverageHistory[periodCode].dates.push(newGrade.date);
                 periods[periodCode].generalAverage = generalAverage;
-                
+
                 const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
                 classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
                 classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
@@ -1039,6 +1039,7 @@ export default function App({ edpFetch }) {
         enabledFeatures.moyenneMin = settings.moyenneMin;
         enabledFeatures.moyenneMax = settings.moyenneMax;
         enabledFeatures.coefficient = settings.coefficientNote;
+        enabledFeatures.rank = settings.moyenneRang;
 
         // add the average of all subjects a special type of chart
         for (const period in periods) {
@@ -1161,14 +1162,16 @@ export default function App({ edpFetch }) {
     }
 
 
-    function sortMessageFolders(messages, origin=0) {
+    function sortMessageFolders(messages, origin = 0) {
         const oldMessageFolders = useUserData("messageFolders").get();
-        let sortedMessageFolders = messages.classeurs.filter((folder) => (oldMessageFolders === undefined || !oldMessageFolders.some((oldFolder) => oldFolder.id === folder.id))).map((folder) => { return {
-            id: folder.id,
-            name: folder.libelle,
-            fetchInitiated: false,
-            fetched: origin === folder.id
-        }});
+        let sortedMessageFolders = messages.classeurs.filter((folder) => (oldMessageFolders === undefined || !oldMessageFolders.some((oldFolder) => oldFolder.id === folder.id))).map((folder) => {
+            return {
+                id: folder.id,
+                name: folder.libelle,
+                fetchInitiated: false,
+                fetched: origin === folder.id
+            }
+        });
         if (oldMessageFolders === undefined) {
             sortedMessageFolders.unshift({
                 id: 0,
@@ -1177,26 +1180,110 @@ export default function App({ edpFetch }) {
                 fetched: origin === 0
             })
         } else {
-            sortedMessageFolders.unshift(oldMessageFolders.map((folder) => {folder.id === origin && (folder.fetched = true); return folder}));
+            sortedMessageFolders.unshift(oldMessageFolders.map((folder) => { folder.id === origin && (folder.fetched = true); return folder }));
             sortedMessageFolders = sortedMessageFolders.flat();
+        }
+        // Add hardcoded folders
+        if (!sortedMessageFolders.some((folder) => folder.id === -1)) {
+            sortedMessageFolders.push({
+                id: -1,
+                name: "Envoyés",
+                fetchInitiated: false,
+                fetched: origin === -1
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -2)) {
+            sortedMessageFolders.push({
+                id: -2,
+                name: "Archivés",
+                fetchInitiated: false,
+                fetched: origin === -2
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -3)) {
+            sortedMessageFolders.push({
+                id: -3,
+                name: "Nouveau dossier",
+                // This is a virtual folder (it doesn't exist at all, it's just a button to create a new folder so it doesn't need to be fetched)
+                fetchInitiated: true,
+                fetched: true
+            })
+        }
+        if (!sortedMessageFolders.some((folder) => folder.id === -4)) {
+            sortedMessageFolders.push({
+                id: -4,
+                name: "Brouillons",
+                fetchInitiated: false,
+                fetched: origin === -4
+            })
         }
 
         return sortedMessageFolders;
     }
 
 
-    function sortMessages(messages) {
-        const sortedMessages = messages.messages.received.map((message) => { return {
-            date: message.date,
-            files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
-            from: message.from,
-            id: message.id,
-            folderId: message.idClasseur,
-            read: message.read,
-            subject: message.subject,
-            content: null,
-            // ...
-        }});
+    function sortMessages(messages, type) {
+        let sortedMessages = [];
+        // This handles the special folders (sent, received, archived) by adressign them an unused folderId
+        if (type === "received") {
+            sortedMessages = messages.messages.received.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: message.idClasseur,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        } else if (type === "sent") {
+            sortedMessages = messages.messages.sent.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -1,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
+        else if (type === "archived") {
+            sortedMessages = messages.messages.archived.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -2,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
+        else if (type === "draft") {
+            sortedMessages = messages.messages.draft.map((message) => {
+                return {
+                    date: message.date,
+                    files: structuredClone(message.files)?.map((file) => new File(file.id, file.type, file.libelle)),
+                    from: message.from,
+                    id: message.id,
+                    folderId: -4,
+                    read: message.read,
+                    subject: message.subject,
+                    content: null,
+                    // ...
+                }
+            });
+        }
 
         return sortedMessages;
     }
@@ -1724,7 +1811,8 @@ export default function App({ edpFetch }) {
     }
 
 
-    async function fetchMessages(folderId=0, controller = (new AbortController())) {
+    async function fetchMessages(folderId = 0, controller = (new AbortController())) {
+
         const oldMessageFolders = useUserData("messageFolders").get();
         if (oldMessageFolders && oldMessageFolders?.length > 0) {
             if (oldMessageFolders.find((item) => item.id === folderId)?.fetchInitiated) {
@@ -1734,14 +1822,27 @@ export default function App({ edpFetch }) {
                 useUserData("messageFolders").set(oldMessageFolders)
             }
         }
-        
+
         abortControllers.current.push(controller);
         const userId = activeAccount;
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
+        // handle special folders (this is done that way because special folders are not considered as folders by EcoleDirecte but need to be fetched differently)
+        let specialFolderType = "received";
+        if (folderId === -1) {
+            specialFolderType = "sent";
+            // set the folderId to 0 to avoid errors
+            folderId = 0;
+        } else if (folderId === -2) {
+            specialFolderType = "archived";
+            folderId = 0;
+        } else if (folderId === -4) {
+            specialFolderType = "draft";
+            folderId = 0;
+        }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=received&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1765,7 +1866,21 @@ export default function App({ edpFetch }) {
                     if (oldSortedMessages === undefined) {
                         oldSortedMessages = [];
                     }
-                    oldSortedMessages.push(sortMessages(response.data));
+
+                    // we've added the specialFolderType to the function to handle the special folders (to handle different data path for special folders and special folderId)
+                    oldSortedMessages.push(sortMessages(response.data, specialFolderType));
+                    // if in oldSortedMessages there is multiple times the same message, we remove the duplicates
+                    console.log(oldSortedMessages)
+                    oldSortedMessages = oldSortedMessages.flat().filter((item, index, self) => self.findIndex((item2) => item2.id === item.id) === index);
+                    console.log(oldSortedMessages)
+                    if (specialFolderType === "sent") {
+                        // set the folderId back to -1 to than handle the special folders
+                        folderId = -1;
+                    } else if (specialFolderType === "archived") {
+                        folderId = -2;
+                    } else if (specialFolderType === "draft") {
+                        folderId = -4;
+                    }
                     changeUserData("sortedMessages", oldSortedMessages.flat());
                     changeUserData("messageFolders", sortMessageFolders(response.data, folderId));
                 } else if (code === 520 || code === 525) {
@@ -1797,8 +1912,11 @@ export default function App({ edpFetch }) {
         const data = {
             anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"),
         }
+
+        const mode = (oldSortedMessages.find((item) => item.id === id).folderId === -1 || oldSortedMessages.find((item) => item.id === id).folderId === -4) ? "expediteur" : "destinataire";
+
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=destinataire&v=${apiVersion}`, true),
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
             {
                 method: "POST",
                 headers: {
@@ -1997,6 +2115,300 @@ export default function App({ edpFetch }) {
         )
             .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
+
+    async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'data={}',
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        )
+            .then((response) => {
+                let code = response.code;
+                if (code === 200) {
+
+                    const formatDocument = (documents) =>
+                        documents.map((e) => {
+                            const [year, month, day] = e.date.split('-');
+                            const formattedDate = `${day}/${month}/${year}`;
+                            return new File(e.id, e.type, `${e.libelle}.pdf`, undefined, { date: formattedDate });
+                        });
+
+                    const administrativeDocuments = formatDocument(response.data?.administratifs ?? []);
+                    const notesDocuments = formatDocument(response.data?.notes ?? []);
+                    const vieScolaireDocuments = formatDocument(response.data?.viescolaire ?? []);
+                    const entrepriseDocuments = formatDocument(response.data?.entreprises ?? []);
+                    const facturesDocuments = formatDocument(response.data?.factures ?? []);
+                    // const insReinsDocuments = formatDocument(response.data.inscriptionsReinscriptions);
+
+
+                    const responseDocuments = {
+                        administratifs: administrativeDocuments,
+                        notes: notesDocuments,
+                        viescolaire: vieScolaireDocuments,
+                        entreprises: entrepriseDocuments,
+                        factures: facturesDocuments,
+                        // inscriptionsReinscriptions: insReinsDocuments
+                    }
+
+                    changeUserData("administrativeDocuments", responseDocuments);
+                } else if (code === 520 || code === 525) {
+                    console.log("INVALID TOKEN: LOGIN REQUIRED");
+                    requireLogin();
+                }
+                setTokenState((old) => (response?.token || old));
+            })
+            .finally(() => {
+                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+            });
+    }
+
+    async function renameFolder(id, name, controller = (new AbortController())) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ id, type: "classeur", icon: "fa-folder", order: 1, libelle: name, expired: Date.now() + 3600000 })}`,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // the updated folder should be edited in order no modify the libelle of the correct folder
+                const updatedFolders = oldMessageFolders.map(folder => {
+                    if (folder.id === id) {
+                        return { ...folder, name };
+                    }
+                    return folder;
+                });
+                useUserData("messageFolders").set(updatedFolders);
+            }
+            // TODO: handle errors
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteFolder(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=delete&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: "data={}",
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                // delete the folder from the list of folders
+                const updatedFolders = oldMessageFolders.filter(folder => folder.id !== id);
+                useUserData("messageFolders").set(updatedFolders);
+                return true;
+            }
+            // TODO: handle errors (ex: "Dossier non vide")
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function createFolder(name, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ libelle: name })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                const oldMessageFolders = useUserData("messageFolders").get();
+                const newFolder = {
+                    id: response.data.id,
+                    name: response.data.libelle,
+                    fetchInitiated: false,
+                    fetched: false
+                };
+                const updatedFolders = [...oldMessageFolders, newFolder];
+                useUserData("messageFolders").set(updatedFolders);
+                return response.data.id;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function archiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "archiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                //move the message to the -3 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: -2 };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message archivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function unarchiveMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${encodeURIComponent(JSON.stringify({ action: "desarchiver", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-") }))}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the 0 folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (message.id === id) {
+                        return { ...message, folderId: 0 };
+                    }
+                    return message;
+                });
+                // re-sort the messages by date
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message désarchivé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function moveMessage(ids, folderId, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "deplacer", idClasseur: folderId, ids: ids.map((id) => `${id}:-1`) })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // move the message to the specified folder
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.map(message => {
+                    if (ids.includes(message.id)) {
+                        return { ...message, folderId };
+                    }
+                    return message;
+                });
+                updatedMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message déplacé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
+    async function deleteMessage(id, controller = new AbortController()) {
+        abortControllers.current.push(controller);
+        // the data is:
+        // data = {
+        //     "action": "supprimer",
+        //     "ids": [
+        //         16199
+        //     ],
+        //     "anneeMessages": "2024-2025",
+        //     "idDossier": -5
+        // }
+        const userId = activeAccount;
+        return edpFetch(
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
+            {
+                method: "POST",
+                headers: {
+                    "x-token": tokenState
+                },
+                body: `data=${JSON.stringify({ action: "supprimer", ids: [id], anneeMessages: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : getCurrentSchoolYear().join("-"), idDossier: -5 })}`,
+                signal: controller.signal,
+                referrerPolicy: "no-referrer",
+            },
+            "json"
+        ).then(response => {
+            if (response.code === 200) {
+                // delete the message from the list of messages
+                const oldSortedMessages = useUserData("sortedMessages").get();
+                const updatedMessages = oldSortedMessages.filter(message => message.id !== id);
+                changeUserData("sortedMessages", updatedMessages);
+                console.log(updatedMessages);
+                console.log("Message supprimé avec succès");
+                return true;
+            }
+        }).finally(() => {
+            abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
+        });
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
@@ -2232,7 +2644,7 @@ export default function App({ edpFetch }) {
                             path: "account",
                         },
                         {
-                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
+                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={activeAccount} />,
                             path: ":userId/account"
                         },
                         {
@@ -2284,7 +2696,7 @@ export default function App({ edpFetch }) {
                             path: "messaging"
                         },
                         {
-                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} />,
+                            element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />,
                             path: ":userId/messaging"
                         },
                     ],

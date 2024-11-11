@@ -65,10 +65,16 @@ body:has(#account) {
     display: flex;
     flex-flow: column nowrap;
 }
+
 #documents.frame {
     display: flex;
     flex-flow: column nowrap;
+    overflow: auto;
 }
+#documents .file-name {
+    font-size: 18px;
+}
+
 .coming-soon {
     height: 100%;
     color: rgb(var(--text-color-alt));
@@ -81,6 +87,7 @@ body:has(#account) {
     border-radius: 8px;
     opacity: .5;
 }
+
 #profile .coming-soon {
     margin-top: 30px;
 }
@@ -151,7 +158,7 @@ body:has(#account) {
         grid-column: auto;
         grid-row: 3 / 4;
     }
-    
+
     #account .frame .frame-heading {
         padding-block: 10px;
     }
@@ -170,4 +177,108 @@ body:has(#account) {
     11% {
         transform: translateY(0);
     }
+}
+
+.file-component {
+    z-index: 0 !important;
+    margin: 5px;
+    background-color: transparent;
+    border: none;
+    height: 70px;
+}
+
+.file-component .file-icon {
+    width: 50px
+}
+
+.document-category h3 {
+    font-weight: var(--font-weight-semi-bold);
+    display: flex;
+    align-items: center;
+    margin: 0;
+    /* To remove any default margins from the h3 */
+    /* Optional: adjust based on your design */
+}
+
+.document-category h3::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    margin-left: 15px;
+    /* Space between title and the line */
+    background-color: rgb(var(--border-color-0));
+    /* Customize color as needed */
+    border: none;
+}
+
+.year-selector {
+    width: 160px;
+}
+
+.frame-heading-container {
+    display: flex;
+    flex: auto 200px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.frame-heading-documents {
+    margin: 0 auto;
+    padding-left: 160px;
+}
+
+@media only screen and (max-width: 1150px) {
+    .frame-heading-documents {
+        padding-left: 0;
+    }
+}
+
+.file-box {
+    display: flex;
+    align-items: center;
+}
+
+.file-box-loader {
+    display: grid;
+    grid-template-columns: 3.5fr .5fr;
+    gap: 10px;
+}
+
+.file-date {
+    margin-left: auto;
+    margin-right: 30px;
+    font-size: var(--font-size-16);
+    font-weight: 500;
+}
+
+.no-available-documents {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 15px;
+    color: rgb(var(--text-color-alt));
+}
+
+.document-container {
+    height: 100%;
+}
+
+.single-year {
+    padding-left: 0 !important;
+}
+
+.documents-container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.sleeping-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
 }

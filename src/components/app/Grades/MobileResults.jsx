@@ -6,7 +6,8 @@ import {
     MoveableContainer,
     Window,
     WindowHeader,
-    WindowContent
+    WindowContent,
+    WindowsContainer
 } from "../../generic/Window";
 
 import InfoButton from "../../generic/Informative/InfoButton";
@@ -58,7 +59,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         </div>
                     }
                 </MoveableContainer>
-                <Window>
+                <Window allowFullscreen={true}>
                     <WindowHeader className="results-header">
                         <div className="results-title">
                             <h2>Résultats</h2>
@@ -292,5 +293,6 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                 </Window>
             </MoveableContainer>
         </MoveableContainer>
+        
     )
 }
