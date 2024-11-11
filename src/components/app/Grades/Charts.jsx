@@ -1,12 +1,9 @@
-
 import { useState, useEffect, useRef, useContext } from "react";
 // import { Chart } from 'chart.js';
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
-
 import "./Charts.css";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-
 
 import { AppContext } from "../../../App";
 
@@ -18,8 +15,12 @@ export default function Charts({ selectedPeriod }) {
      * 2: Subjects average | radar
      */
 
-    // States
-    const [chartType, setChartType] = useState(0);
+    // States 
+
+    const { useUserSettings } = useContext(AppContext);
+
+    const settings = useUserSettings()
+    const [selectedChart, setSelectedChart] = useState(settings.get("selectedChart"));
 
     const chartContainerRef = useRef(null);
     const canvasContainerRef = useRef(null);
@@ -40,7 +41,6 @@ export default function Charts({ selectedPeriod }) {
     }
 
     useEffect(() => {
-
         window.addEventListener("resize", resizeChart);
         resizeChart();
 
@@ -49,16 +49,15 @@ export default function Charts({ selectedPeriod }) {
         }
     }, [])
 
-
     function getChartData() {
         /**
-         * return the appropriate dataset according to the chartType
+         * return the appropriate dataset according to the selectedChart
          */
         const userData = useUserData();
         const minMaxEnabled = userData.get("gradesEnabledFeatures")?.moyenneMin && userData.get("gradesEnabledFeatures")?.moyenneMax;
 
 
-        switch (chartType) {
+        switch (selectedChart) {
             case 0:
                 // General average + streak history | line
                 chartOptions.current = {
@@ -71,17 +70,17 @@ export default function Charts({ selectedPeriod }) {
                             suggestedMax: 20
                         },
                         // y1: {
-                        //     type: 'linear',
-                        //     display: true,
-                        //     position: 'right',
-                        //     suggestedMax: 20
+                        //   type: 'linear',
+                        //   display: true,
+                        //   position: 'right',
+                        //   suggestedMax: 20
                         // }
                         // xAxes: [{
-                        //     type: 'time',
-                        //     ticks: {
-                        //         autoSkip: true,
-                        //         maxTicksLimit: 20
-                        //     }
+                        //   type: 'time',
+                        //   ticks: {
+                        //     autoSkip: true,
+                        //     maxTicksLimit: 20
+                        //   }
                         // }]
                     },
                     interaction: {
@@ -179,24 +178,24 @@ export default function Charts({ selectedPeriod }) {
                             order: 1,
                         },
                         // {
-                        //     type: "line",
-                        //     label: "Moyennes max classe",
-                        //     data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.maxAverage),
-                        //     borderColor: 'rgb(53, 162, 235)',
-                        //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                        //     tension: 0.2,
-                        //     // yAxisID: "y1"
-                        //     order: 2,
+                        //   type: "line",
+                        //   label: "Moyennes max classe",
+                        //   data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.maxAverage),
+                        //   borderColor: 'rgb(53, 162, 235)',
+                        //   backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                        //   tension: 0.2,
+                        //   // yAxisID: "y1"
+                        //   order: 2,
                         // },
                         // {
-                        //     type: "line",
-                        //     label: "Moyennes min classe",
-                        //     data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.minAverage),
-                        //     borderColor: 'rgb(53, 162, 235)',
-                        //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                        //     tension: 0.2,
-                        //     // yAxisID: "y1"
-                        //     order: 3,
+                        //   type: "line",
+                        //   label: "Moyennes min classe",
+                        //   data: subjectsComparativeInformation[selectedPeriod].map((subject) => subject.minAverage),
+                        //   borderColor: 'rgb(53, 162, 235)',
+                        //   backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                        //   tension: 0.2,
+                        //   // yAxisID: "y1"
+                        //   order: 3,
                         // },
                     ],
                 };
@@ -214,7 +213,7 @@ export default function Charts({ selectedPeriod }) {
                             beginAtZero: true,
                             suggestedMax: 20,
                             grid: {
-                                color: actualDisplayTheme == "dark" ? "rgba(180, 180, 240, .4)" : "rgba(76, 76, 184, .4)"
+                                color: actualDisplayTheme == "dark" ? "rgba(180, 180, 240, .4)" : "rgba(76, 76,  184, .4)"
                             }
                         }
                     },
@@ -308,9 +307,9 @@ export default function Charts({ selectedPeriod }) {
     }
 
     useEffect(() => {
-        console.log(chartType);
         refreshChart();
-    }, [chartType, activeAccount, selectedPeriod]);
+        useUserSettings("selectedChart").set(selectedChart);
+    }, [selectedChart, activeAccount, selectedPeriod]);
 
     useEffect(() => {
         const script = document.createElement("script");
@@ -330,7 +329,15 @@ export default function Charts({ selectedPeriod }) {
     return (
         <div id="charts">
             <div className="top-container">
-                <DropDownMenu name="chart-type" options={[0, 1, 2]} displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]} selected={chartType} onChange={(value) => setChartType(parseInt(value))} />
+                <DropDownMenu
+                    name="chart-type"
+                    options={[0, 1, 2]}
+                    displayedOptions={["Moyenne générale Courbe", "Moyennes par matière Barres", "Moyennes par matière Radar"]}
+                    selected={selectedChart}
+                    onChange={(value) => {
+                        setSelectedChart(parseInt(value));
+                    }}
+                />
                 <h3>Graphiques</h3>
                 <div className="artificial-horizontal-center"></div>
             </div>
