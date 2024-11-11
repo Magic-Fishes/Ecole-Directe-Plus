@@ -143,7 +143,7 @@ export default function Charts({ selectedPeriod }) {
                 chartData.current = {
                     labels: Array.from({ length: subjectsComparativeInformation[selectedPeriod].length }, (_, i) => subjectsComparativeInformation[selectedPeriod][i].subjectFullname),
                     datasets: [
-                    ...(minMaxEnabled && false ? [
+                    ...(minMaxEnabled ? [
                         {
                             type: "bar",
                             label: "Moyennes min et max de classe",

@@ -33,7 +33,7 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { useUserData } = useContext(AppContext);
+    const { accountsListState, useUserData } = useContext(AppContext);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [selectedFolder, setSelectedFolder] = useState(0);
     const oldSelectedMessage = useRef(selectedMessage);
@@ -45,8 +45,15 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
     }, [useUserData("messageFolders").get()]);
 
 
-
-
+    const module = accountsListState[activeAccount].modules?.find(module => module.code === "MESSAGERIE");
+    let canSendMessages = (module?.params?.destAdmin ?? "1") === "1" || 
+                          (module?.params?.destEleve ?? "1") === "1" || 
+                          (module?.params?.destFamille ?? "1") === "1" || 
+                          (module?.params?.destProf ?? "1") === "1" || 
+                          (module?.params?.destEspTravail ?? "1") === "1";
+    if (accountsListState[activeAccount].accountType !== "E") {
+        canSendMessages = true;
+    }
 
     const [isEditingFolder, setIsEditingFolder] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
@@ -242,6 +249,8 @@ export default function Messaging({ isLoggedIn, activeAccount, fetchMessages, fe
                                         <ul className="folders-container">
                                             {folders
                                                 .filter((folder) => folder.id !== -3)
+                                                // if canSendMessages is false, we don't show the drafts folder and the sent folder
+                                                .filter((folder) => canSendMessages || folder.id !== -4)
                                                 .sort((a, b) => {
                                                     const order = [0, -1, -2, -4];
                                                     const indexA = order.indexOf(a.id);

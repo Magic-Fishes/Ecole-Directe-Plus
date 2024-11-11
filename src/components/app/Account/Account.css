@@ -233,6 +233,12 @@ body:has(#account) {
     align-items: center;
 }
 
+.file-box-loader {
+    display: grid;
+    grid-template-columns: 3.5fr .5fr;
+    gap: 10px;
+}
+
 .file-date {
     margin-left: auto;
     margin-right: 30px;

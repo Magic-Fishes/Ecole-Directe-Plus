@@ -64,7 +64,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         try {
             // regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch { return -1 }
-        const filterBy = [message.subject, message.from.name, message.content?.content, message.files?.map((file) => file.name)].flat();
+        const filterBy = [message.subject, message.from.nom, message.content?.content, message.files?.map((file) => file.name)].flat();
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());
@@ -92,7 +92,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
                     ? <ScrollShadedDiv className="messages-container">
                         <ul>
                             {messages.filter((message) => message.folderId === selectedFolder).filter(filterResearch).map((message, index) => <li style={{ "--order": index }} className={"message-container" + (selectedMessage === message.id ? " selected" : "")} data-read={message.read} onClick={() => handleClick(message)} onKeyDown={(event) => handleKeyDown(event, message)} key={message.id} role="button" tabIndex={0}>
-                                <h4 className="message-subject"><span className="author-name">{settings.get("isStreamerModeEnabled") ? message.from.name.split(" ")[0] + " " + "-".repeat(message.from.name.length) : message.from.name}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon" /></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
+                                <h4 className="message-subject"><span className="author-name">{settings.get("isStreamerModeEnabled") ? (message.from.civilite + " " + message.from.prenom + " " + message.from.nom).split(" ")[0] + " " + "-".repeat((message.from.civilite + " " + message.from.prenom + " " + message.from.nom).length) : (message.from.civilite + " " + message.from.prenom + " " + message.from.nom)}</span> <span className="actions"><button disabled={!message.read} onClick={(event) => handleMarkAsUnread(event, message)} className="mark-as-unread" title="Marquer comme non lu"><MarkAsUnread className="mark-as-unread-icon" /></button> {message.files?.length > 0 && <AttachmentIcon className="attachment-icon" />}</span></h4>
                                 <p className="message-author">{message.subject}</p>
                                 <p className="message-date">{(new Date(message.date)).toLocaleDateString("fr-FR", {
                                     month: "long",
