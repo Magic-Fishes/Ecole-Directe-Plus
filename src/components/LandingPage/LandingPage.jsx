@@ -15,6 +15,8 @@ import InfoTypoIcon from "../graphics/InfoTypoIcon";
 import UpArrow from "../graphics/UpArrow";
 
 import "./LandingPage.css";
+import "../generic/events/christmas/snowfall.css";
+import "../generic/events/christmas/snow.css";
 
 export default function LandingPage({ token, accountsList }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -114,7 +116,7 @@ export default function LandingPage({ token, accountsList }) {
 
     return (<div className="landing-page">
         {<header id="nav-bar" className="top-section">
-            <span className="nav-logo">
+            <span className="nav-logo snowy-element">
                 <EDPLogo className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />Ecole Directe Plus
             </span>
             {!isTabletLayout && !isMobileLayout && <nav className="nav-links">
@@ -124,7 +126,7 @@ export default function LandingPage({ token, accountsList }) {
                 <Link to="/edp-unblock" className={location.hash === "#edp-unblock" ? "selected" : ""} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
             </nav>}
             <div className="nav-buttons">
-                <Link className="nav-login" to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
+                <Link className="nav-login snowy-element" to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
                 <button className="change-theme" onClick={changeTheme} />
             </div>
         </header>}
@@ -138,6 +140,12 @@ export default function LandingPage({ token, accountsList }) {
             </div>
             <div className="fade-out-image">
                 <img src={isTabletLayout ? (isMobileLayout ? `/images/EDP-preview-mobile-${actualDisplayTheme}.jpeg` : `/images/EDP-preview-tablet-${actualDisplayTheme}.jpeg`) : `/images/EDP-preview-${actualDisplayTheme}.jpeg`} className={isTabletLayout ? (isMobileLayout ? "mobile" : "tablet") : "dekstop"} alt="Capture d'écran du site" />
+            </div>
+
+            <div className="initial-snow">
+                {Array.from({ length: 50 }, (_, index) => (
+                    <div key={index} className="snow">&#10052;</div>
+                ))}
             </div>
         </section>
         <section id="features">
@@ -171,12 +179,24 @@ export default function LandingPage({ token, accountsList }) {
                             <h4>Points forts</h4>
                             <p>Découvrez vos talents cachés grâce à un aperçu rapide de vos points forts. Parce que vous méritez de savoir à quel point vous êtes incroyable, nous mettons en lumière les matières dans lesquelles vous excellez.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div2">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Calcul automatique et instantané des moyennes</h4>
                             <p>Fini les calculs laborieux à la main. EDP fait tout le boulot pour vous. Parce que votre temps est précieux et doit être consacré à des choses plus importantes, comme procrastiner efficacement.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div3">
                         <OutlineEffectDiv className="bento-outline-effect">
@@ -193,30 +213,60 @@ export default function LandingPage({ token, accountsList }) {
                                 </button>
                             </div> */}
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div4">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Dernières notes</h4>
                             <p>Un coup d'œil et vous saurez tout. Avec l'aperçu rapide des dernières notes, regarder vos résultats en vif pendant l'intercours sera plus rapide que la formule 1 de Max Verstappen.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div5">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Score de Streak</h4>
                             <p>Atteignez le nirvana académique avec le Score de streak. Surpassez vous, cumulez les bonnes notes et débloquez des badges ! N'hésitez pas à flex quand vous avez une meilleure streak que vos amis.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div6">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Contrôles à venir</h4>
                             <p>Restez aux aguets avec l'aperçu des prochains contrôles. Anticipez les futurs contrôles et organisez vos révisions comme un pro. Enfin, en théorie… on ne peut pas vous garantir que vous ne procrastinerez pas quand même.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div7">
                         <OutlineEffectDiv className="bento-outline-effect">
                             <h4>Sécurité et confidentialité</h4>
                             <p>Votre sécurité, notre priorité, parce qu’il n’y a que vous et votre conscience qui devez connaître vos petits secrets académiques. EDP ne collecte AUCUNE information personnelle ou personnellement identifiable sur les utilisateurs du service. En tant que service non-affilié à Aplim, nous utilisons l'API d'EcoleDirecte pour que vous ayez accès à vos informations.</p>
                         </OutlineEffectDiv>
+
+                        <div className="initial-snow">
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <div key={index} className="snow">&#10052;</div>
+                            ))}
+                        </div>
                     </HoverFollowDiv>
                 </div>
             </div>

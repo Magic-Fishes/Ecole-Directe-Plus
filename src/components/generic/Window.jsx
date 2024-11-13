@@ -5,6 +5,7 @@ import { AppContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
 
 import "./Window.css";
+import "./events/christmas/snow.css";
 
 
 function useWindowsContainer(options) {
@@ -1037,7 +1038,7 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 export function WindowHeader({ children, className = "", ...props }) {
 
     return (
-        <div className={`window-header ${className}`} {...props}>
+        <div className={`window-header snowy-element ${className}`} {...props}>
             {children}
         </div>
     )

@@ -23,6 +23,7 @@ import Policy from "../../generic/Policy";
 import { AppContext } from "../../../App";
 
 import "./Header.css";
+import "../../generic/events/christmas/snowfall.css"
 
 
 export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
@@ -242,6 +243,12 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             {location.hash === "#feedback" && <BottomSheet className="feedback-bottom-sheet" heading="Faire un retour" onClose={handleCloseAnchorLinks} close={closeFeedbackBottomSheet} ><FeedbackForm activeUser={accountsList[activeAccount]} onSubmit={() => setCloseFeedbackBottomSheet(true)} carpeConviviale={carpeConviviale} /></BottomSheet>}
             {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
+
+            <div className="initial-snow">
+                {Array.from({ length: 50 }, (_, index) => (
+                    <div key={index} className="snow">&#10052;</div>
+                ))}
+            </div>
         </div>
     )
 }

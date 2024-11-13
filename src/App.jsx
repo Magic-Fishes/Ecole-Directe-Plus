@@ -112,7 +112,8 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false
+    isDevChannel: false,
+    periodEvent: 'christmas'
 }
 
 const browserExtensionDownloadLink = {
@@ -217,6 +218,10 @@ function initSettings(accountList) {
             },
             allowAnonymousReports: {
                 value: getSetting("allowAnonymousReports", i)
+            },
+            periodEvent: {
+                value: getSetting("periodEvent", i),
+                values: ["none", "christmas", "april"]
             }
         })
     }
