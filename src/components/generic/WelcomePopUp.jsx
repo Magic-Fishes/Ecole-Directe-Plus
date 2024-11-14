@@ -22,8 +22,8 @@ export default function WelcomePopUp({ currentEDPVersion, onClose }) {
                 <li>Bienvenue sur <em>Ecole Directe Plus</em>, votre nouvelle plateforme éducative libre et open-source. Suivez ce guide et faites vos premiers pas :</li>
                 <p className="not-affiliated-disclaimer">Attention : ce service n'est PAS affilié à EcoleDirecte ou Aplim, il s'agit d'un projet indépendant et communautaire.</p>
                 <ol>
-                    <li>Installez <a href="https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr">l'extension de navigateur EDP Unblock</a> afin d'accéder à Ecole Directe Plus sans interruption.</li>
-                    <li>Dans le menu de connexion, connectez vous simplement à l'aide de vos identifiants EcoleDirecte.</li>
+                    <li>Installez <a href="https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr">l'extension de navigateur EDP Unblock</a> afin d'accéder à Ecole Directe Plus sans interruption. (extension requise uniquement sur PC)</li>
+                    <li>Dans le menu de connexion, connectez vous simplement à l'aide de vos identifiants EcoleDirecte. (EDP utilise l'API d'EcoleDirecte pour fonctionner)</li>
                     <li>Félicitations, vous êtes connecté et prêt à utiliser EDP ! Profitez d'une multitude de fonctionnalités inédites :</li>
                     <ul>
                         <li>Calcul instantané des moyennes par matière</li>
