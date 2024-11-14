@@ -107,7 +107,7 @@ ol.strengths-container {
     visibility: hidden;
     transform: rotateX(-90deg);
     animation: .5s var(--timing-function-spring-effect) 0s unroll forwards;
-    animation-delay: calc(var(--order) * 75ms);
+    animation-delay: calc(calc(3 - var(--order)) * 75ms); /* 3 is the number of weaknesses that are displayed */
     
     cursor: pointer;
     transition: all 0.1s, outline 0s;
