@@ -253,7 +253,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
             {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
                 <div className="initial-snow">
-                    {Array.from({ length: 50 }, (_, index) => (
+                    {Array.from({ length: 75 }, (_, index) => (
                         <div key={index} className="snow">&#10052;</div>
                     ))}
                 </div>
