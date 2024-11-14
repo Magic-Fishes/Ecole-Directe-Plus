@@ -84,7 +84,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                         {message?.content
                             ? <>
                                 {spoiler ? <div className="reveal-spoiler-container"><h3>Streamer Mode activé</h3><span><p>Le contenu de ce message pourrait contenir des informations personnelles sensibles.</p><p>Cliquez sur Continuer pour afficher le message.</p></span><button className="reveal-spoiler" onClick={() => setSpoiler(false)}>Continuer</button></div> : null}
-                                <EncodedHTMLDiv className={`message-content${spoiler ? " spoiler" : ""}`} backgroundColor={actualDisplayTheme === "dark" ? "#303047" : "#d6d6f8"}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
+                                <EncodedHTMLDiv className={`message-content${spoiler ? " spoiler" : ""}`} backgroundColor={actualDisplayTheme === "dark" ? [72, 72, 102] : [200, 200, 240]}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
                             </>
                             : <ContentLoader
                                 className="message-content"
