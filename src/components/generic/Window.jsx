@@ -1036,9 +1036,14 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 }
 
 export function WindowHeader({ children, className = "", ...props }) {
+    
+    const { useUserSettings } = useContext(AppContext);
+    const settings = useUserSettings();
+
+    console.log(settings.get("periodEvent"))
 
     return (
-        <div className={`window-header snowy-element ${className}`} {...props}>
+        <div className={`window-header ${className} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "snowy-element" : ""}`} {...props}>
             {children}
         </div>
     )

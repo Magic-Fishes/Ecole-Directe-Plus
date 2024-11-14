@@ -153,6 +153,7 @@
     align-items: center;
     cursor: grab;
 }
+
 .window .window-header h2 {
     text-align: center;
     font-size: var(--font-size-20);

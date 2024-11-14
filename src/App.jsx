@@ -217,7 +217,7 @@ function initSettings(accountList) {
                 value: getSetting("negativeBadges", i),
             },
             allowAnonymousReports: {
-                value: getSetting("allowAnonymousReports", i)
+                value: getSetting("allowAnonymousReports", i),
             },
             periodEvent: {
                 value: getSetting("periodEvent", i),

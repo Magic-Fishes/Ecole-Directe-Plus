@@ -23,16 +23,18 @@ import Policy from "../../generic/Policy";
 import { AppContext } from "../../../App";
 
 import "./Header.css";
-import "../../generic/events/christmas/snowfall.css"
+import "../../generic/events/christmas/garland.css";
 
 
 export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { globalSettings, useUserData, isStandaloneApp } = useContext(AppContext);
+    const { globalSettings, useUserData, isStandaloneApp, useUserSettings } = useContext(AppContext);
 
     const { userId } = useParams();
+
+    const settings = useUserSettings();
     
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
@@ -192,7 +194,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             notifications: notifications?.messaging || 0,
             isNew: false
         }
-    ]
+    ];
     // Behavior
 
     const handleCloseAnchorLinks = () => {
@@ -203,6 +205,11 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     // JSX
     return (
         <div id="app">
+            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+                <ul className="lightrope">
+                    {Array(50).fill(0).map((_, index) => <li key={index} />)}
+                </ul>
+            )}
             {!isFullScreen && <div className={`header-container${isStandaloneApp ? " standalone" : ""}`}>
                 <header className="header-menu">
                     <div className="header-logo-container">
@@ -244,11 +251,13 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
 
-            <div className="initial-snow">
-                {Array.from({ length: 50 }, (_, index) => (
-                    <div key={index} className="snow">&#10052;</div>
-                ))}
-            </div>
+            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+                <div className="initial-snow">
+                    {Array.from({ length: 50 }, (_, index) => (
+                        <div key={index} className="snow">&#10052;</div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
