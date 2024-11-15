@@ -37,6 +37,11 @@ const Settings = lazy(() => import("./components/app/CoreApp").then((module) => 
 const Account = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Account } }));
 const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback } }));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
+const QCM = lazy(() =>
+    import("./components/app/CoreApp").then((module) => {
+      return { default: module.QCM };
+    })
+  );
 
 
 function consoleLogEDPLogo() {
@@ -2421,6 +2426,32 @@ export default function App({ edpFetch }) {
     }
 
 
+    async function fetchForms() {
+        const response = await edpFetch(
+          getProxiedURL(
+            "https://api.ecoledirecte.com/v3/edforms.awp?verbe=getlist&v=" +
+              apiVersion,
+            true
+          ),
+          {
+            method: "POST",
+            headers: {
+              "x-token": tokenState,
+            },
+            body: `data=${JSON.stringify({
+              anneeForms: getUserSettingValue("isSchoolYearEnabled")
+                ? getUserSettingValue("schoolYear").join("-")
+                : getCurrentSchoolYear().join("-"),
+              typeEntity: accountsListState[activeAccount].accountType,
+              idEntity: accountsListState[activeAccount].id,
+            })}`,
+            referrerPolicy: "no-referrer",
+          },
+          "json"
+        );
+        setTokenState((old) => response?.token || old);
+        return new Promise((resolve) => resolve(response));
+      }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                 //
     //                                                                              End Of Fetch Functions                                                                             //
@@ -2710,6 +2741,16 @@ export default function App({ edpFetch }) {
                             element: <Messaging isLoggedIn={isLoggedIn} activeAccount={activeAccount} fetchMessages={fetchMessages} fetchMessageContent={fetchMessageContent} fetchMessageMarkAsUnread={fetchMessageMarkAsUnread} renameFolder={renameFolder} deleteFolder={deleteFolder} createFolder={createFolder} archiveMessage={archiveMessage} unarchiveMessage={unarchiveMessage} moveMessage={moveMessage} deleteMessage={deleteMessage} />,
                             path: ":userId/messaging"
                         },
+                        {
+                            element: (
+                              <Navigate to={`/app/${activeAccount}/qcms`} replace={true} />
+                            ),
+                            path: "qcms",
+                          },
+                          {
+                            element: <QCM />,
+                            path: ":userId/qcms",
+                          },
                     ],
                 },
             ],
