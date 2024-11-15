@@ -70,7 +70,7 @@ function consoleLogEDPLogo() {
 
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.4.0";
+const currentEDPVersion = "0.4.1";
 const apiVersion = "4.64.0";
 
 // secret webhooks
@@ -112,7 +112,8 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false
+    isDevChannel: false, 
+    selectedChart: 0
 }
 
 const browserExtensionDownloadLink = {
@@ -167,6 +168,10 @@ function initSettings(accountList) {
             displayMode: {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
+            },
+            selectedChart: {
+                value: getSetting("selectedChart", i),
+                values: [0, 1, 2]
             },
             isSepiaEnabled: {
                 value: getSetting("isSepiaEnabled", i),
@@ -391,7 +396,7 @@ export default function App({ edpFetch }) {
             > Value of displayTheme of current user
 
 
-            You can pass the setting you wan in arguments of useUserSettings
+            You can pass the setting you want in arguments of useUserSettings
 
             EX : 
             userDisplayTheme = useUserSettings("displayTheme")
@@ -643,6 +648,12 @@ export default function App({ edpFetch }) {
                         } else {
                             document.documentElement.style.fontSize = newFontSize + "em";
                         }
+                    }
+                } else if (window.innerHeight < 900) {
+                    if (window.innerHeight >= 650) {
+                        document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
+                    } else {
+                        document.documentElement.style.zoom = .75;
                     }
                 } else {
                     document.documentElement.style.fontSize = "";
