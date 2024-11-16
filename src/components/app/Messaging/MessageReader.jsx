@@ -171,9 +171,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         </ul>
                                     </TooltipContent>
                                 </TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             {parsedHashFolder === -2 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
@@ -181,16 +179,14 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         setSelectedMessage(null);
                                     }
                                 }><InboxIcon /></button></TooltipTrigger><TooltipContent>Désarchiver</TooltipContent></Tooltip>
-                            ) : parsedHashFolder != -1 && parsedHashFolder != -4 ? (
+                            ) : parsedHashFolder !== -1 && parsedHashFolder !== -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
                                         archiveMessage(message.id);
                                         setSelectedMessage(null);
                                     }
                                 }><ArchiveIcon /></button></TooltipTrigger><TooltipContent>Archiver</TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             {parsedHashFolder === -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
@@ -198,9 +194,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         setSelectedMessage(null);
                                     }
                                 }><DeleteIcon /></button></TooltipTrigger><TooltipContent>Supprimer</TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
                         </div>
                     </div>
