@@ -1321,7 +1321,8 @@ export default function App({ edpFetch }) {
         const sortedSchoolLife = {
             delays: [],
             absences: [],
-            sanctions: []
+            sanctions: [],
+            incidents: []
         };
         schoolLife[activeAccount]?.absencesRetards.concat(schoolLife[activeAccount].sanctionsEncouragements ?? []).forEach((item) => {
             const newItem = {};
@@ -1346,6 +1347,9 @@ export default function App({ edpFetch }) {
 
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
+                    break;
+                case "Incident":
+                    sortedSchoolLife.incidents.push(newItem);
                     break;
 
                 default:
