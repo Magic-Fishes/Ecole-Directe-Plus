@@ -147,6 +147,16 @@ body:has(#account) {
     animation: loading-point 6s ease-in-out calc(0.4s * var(--index)) infinite;
 }
 
+@media only screen and (max-width: 450px) {
+    #account .behavior-types {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 20px;
+    }
+    #account .behavior-type {
+        border: none !important;
+    }
+}
 @media only screen and (max-width: 869px) {
     #account {
         height: auto;
