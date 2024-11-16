@@ -313,6 +313,10 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                         <span>Sanctions</span>
                         <span className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.sanctions.length ?? <><span style={{ "--index": 6 }}>.</span><span style={{ "--index": 7 }}>.</span><span style={{ "--index": 8 }}>.</span></>}</span>
                     </div>
+                    <div className="behavior-type">
+                        <span>Incidents</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.incidents.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.incidents.length ?? <><span style={{ "--index": 6 }}>.</span><span style={{ "--index": 7 }}>.</span><span style={{ "--index": 8 }}>.</span></>}</span>
+                    </div>
                 </div>
             </section>
         </div>
