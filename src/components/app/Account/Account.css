@@ -170,11 +170,11 @@ body:has(#account) {
         transform: translateY(0);
     }
 
-    5.5% {
+    4.16% {
         transform: translateY(-5px);
     }
 
-    11% {
+    8.33% {
         transform: translateY(0);
     }
 }
