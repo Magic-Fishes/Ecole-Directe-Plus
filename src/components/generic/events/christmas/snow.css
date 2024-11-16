@@ -1,7 +1,7 @@
 .snowy-element {
   position: relative;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #fff;
   overflow: hidden;
 }
@@ -25,4 +25,34 @@
 
 .snowy-element::after {
   transform: translateY(-50%);
+}
+
+
+
+
+
+
+.snow-cap {
+  position: absolute;
+  bottom: 3px;
+  width: 101%;
+  height: 95px;
+  pointer-events: none;
+}
+
+.snowy-element-window {
+  position: relative;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+}
+
+
+.inbox-window-header .snow-cap {
+  bottom: -5px;
+}
+
+.results-header .snow-cap {
+  left: -5px;
+  bottom: 5px;
 }

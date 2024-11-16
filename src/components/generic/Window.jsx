@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
+import SnowCap from "../graphics/snowCap";
 
 import "./Window.css";
 import "./events/christmas/snow.css";
@@ -1008,6 +1009,10 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
     const windowRef = useRef(null);
 
+    const settings = useUserSettings();
+
+
+
     useEffect(() => {
         // console.log("context.windows", context.windows)
         // console.log("context.fullscreenInfo", context.fullscreenInfo)
@@ -1028,7 +1033,8 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
 
     return (
-        <section className={`window ${className} ${WIP ? "work-in-progress" : ""}`} style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
+        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "allow-overflow-event" : ""}`}
+            style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
             {WIP ? null : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
         </section>
@@ -1036,14 +1042,14 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 }
 
 export function WindowHeader({ children, className = "", ...props }) {
-    
     const { useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
 
-    console.log(settings.get("periodEvent"))
-
     return (
-        <div className={`window-header ${className} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "snowy-element" : ""}`} {...props}>
+        <div className={`window-header ${className} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "snowy-element-window" : ""}`} {...props}>
+            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+                <SnowCap className="snow-cap"/>
+            )}
             {children}
         </div>
     )

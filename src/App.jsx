@@ -91,6 +91,28 @@ const referencedErrors = {
     "202": "accountCreationError",
 }
 
+// period events managment
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+let matchingPeriodEvent = "none";
+
+const periodEventDateTimes = {
+    christmas: {
+        name: 'christmas',
+        start: new Date(today.getFullYear(), 11, 1, 0, 0, 0),
+        end: new Date(today.getFullYear(), 11, 31, 0, 0, 0)
+    }
+};
+
+Object.values(periodEventDateTimes).forEach(period => {
+    if (today >= period.start && today <= period.end) {
+        let matchingPeriodEvent = period.name;
+    }
+    console.log(`%cPeriod event: ${matchingPeriodEvent}`);
+});
+
+//default settings
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -113,7 +135,7 @@ const defaultSettings = {
     negativeBadges: false,
     allowAnonymousReports: true,
     isDevChannel: false,
-    periodEvent: 'christmas'
+    periodEvent: matchingPeriodEvent
 }
 
 const browserExtensionDownloadLink = {

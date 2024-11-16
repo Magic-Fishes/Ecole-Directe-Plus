@@ -207,7 +207,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
         <div id="app">
             {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
                 <ul className="lightrope">
-                    {Array(50).fill(0).map((_, index) => <li key={index} />)}
+                    {Array(150).fill(0).map((_, index) => <li key={index} />)}
                 </ul>
             )}
             {!isFullScreen && <div className={`header-container${isStandaloneApp ? " standalone" : ""}`}>
@@ -253,7 +253,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
             {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
                 <div className="initial-snow">
-                    {Array.from({ length: 75 }, (_, index) => (
+                    {Array.from({ length: 50 }, (_, index) => (
                         <div key={index} className="snow">&#10052;</div>
                     ))}
                 </div>

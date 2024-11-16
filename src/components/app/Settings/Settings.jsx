@@ -25,6 +25,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
     const { isStandaloneApp, promptInstallPWA, useUserSettings, globalSettings, isTabletLayout } = useContext(AppContext);
 
     const partyModeCheckbox = useRef(null);
+    const periodEventCheckbox = useRef(null)
 
     const settings = useUserSettings();
 
@@ -200,6 +201,13 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
 
                 <div className="setting" id="party-mode">
                     <CheckBox id="party-mode-cb" ref={partyModeCheckbox} label={<span>Activer le mode festif 🎉</span>} checked={settings.get("isPartyModeEnabled")} onChange={(event) => { settings.set("isPartyModeEnabled", event.target.checked); if (event.target.checked) { confettiAnimation() } }} />
+                </div>
+
+                <div className="setting" id="period-event">
+                    <CheckBox id="party-mode-cb" ref={periodEventCheckbox} label={<span>Activer les thèmes saisonniers ✨</span>} checked={settings.get("periodEvent") === "christmas"} onChange={(event) => { 
+                        settings.set("periodEvent", event.target.checked ? "christmas" : "none"); 
+                        if (event.target.checked) { confettiAnimation() } 
+                    }} />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">

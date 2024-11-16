@@ -12,16 +12,16 @@
 	font-size: 50px;
 	color: white;
 	position: absolute;
-	top: -5vh;
+	top: -10vh;
 }
 
 @keyframes snowfall {
 	0% {
-		transform: translate3d(var(--left-ini), 0, 0);
+		transform: translate3d(var(--left-ini), 0, 0) rotate(0deg);
 	}
 
 	100% {
-		transform: translate3d(var(--left-end), 110vh, 0);
+		transform: translate3d(var(--left-end), 115vh, 0) rotate(360deg);
 	}
 }
 
