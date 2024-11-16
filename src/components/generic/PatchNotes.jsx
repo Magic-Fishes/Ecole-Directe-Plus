@@ -4,9 +4,10 @@ import "./PatchNotes.css"
 
 const contributors = [
     "Vooxify",
-    "OeildeLynx31",
     "Fefedu973",
     "FU0X0",
+    "Aldess",
+    "Ewalwi",
     "saumon-brule",
     "TruiteSeche",
 ]
@@ -15,8 +16,68 @@ export default function PatchNotes({ version, onClose }) {
 
     return (
         <div id="patch-notes">
-            <InfoPopUp type="info" header={"Nouvelle mise à jour EDP ! 🎊 v" + version} subHeader={"23 Septembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
+            <InfoPopUp type="info" header={"Nouvelle mise à jour EDP ! 🎊 v" + version} subHeader={"14 Novembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
                 <div>
+                    <hr />
+                    <p className="first-paragraph">
+                        Les messages c'est bien, mais les dossiers c'est mieux ! Non ? Eh bien on les a quand même fait pour vous.
+                    </p>
+                    <h3 className="sub-header">Nouveautés</h3>
+                    <ul>
+                        <li>L'onglet Messagerie permet maintenant d'organiser vos discussions dans <b>les dossiers de messages</b>. Vous pourrez créer, renommer et supprimer vos dossiers et y déplacer vos messages</li>
+                        <li>C'est plutôt positif de connaître là où on excelle grâce aux points forts, et bien découvrez maintenant là où vous êtes le plus mauvais grâce aux <b>points faibles</b>. Une bonne occasion de s'améliorer !</li>
+                        <li>Accédez dès maintenant à vos <b>documents administratifs</b> sur Ecole Directe Plus depuis la page de compte</li>
+                        <li>Si votre école le permet, vous pourrez maintenant voir votre <b>rang</b> dans chaque matières</li>
+                        <li>Les comptes <b>profs</b> sont maintenant compatibles avec EDP. Il y a maintenant un message spécial pour leur dire qu'il ne peuvent pas utiliser l'application 🤡</li>
+                        <li>Le graphique sélectionné sera maintenant <b>sauvegardé</b> pour vos prochaines consultations</li>
+                    </ul>
+                    <h3 className="sub-header">Améliorations</h3>
+                    <ul>
+                        <li>Si vous avez installé la PWA EDP, elle s'ouvrira maintenant directement sur l'application (ou la page de connexion) et non sur la page d'accueil</li>
+                        <li>Le message d'installation de l'extension sur mobile n'est plus</li>
+                        <li>Amélioration du mode streamer</li>
+                        <li>La limite de message récupéré par l'API est maintenant illimitée</li>
+                        <li>Système de recherche de messages plus pertinent</li>
+                        <li>L'intégration de l'extension avec le site a été améliorée</li>
+                        <li>Le comportement responsive permet de gérer des écrans moins hauts</li>
+                    </ul>
+                    <h3 className="sub-header">Correction de bugs</h3>
+                    <ul>
+                        <li>Le problème du scroll horizontal de la page d'accueil sur mobile a été résolu</li>
+                        <li>Les sous-matière n'étaient pas bien gérées lorsqu'elles n'avaient pas de coefficient</li>
+                        <li>Les moyennes minimums et maximums des moyennes de la classe ne sont plus affichées dans le graphiques lorsqu'elles ne sont pas fournies</li>
+                        <li>Les pop-ups de fichiers des devoirs du dashboard ne sont plus vides</li>
+                        <li>Fix d'un crash causé par un hash invalide lors du clic sur le feedback sur la page des devoirs (solution temporaire)</li>
+                    </ul>
+                    {contributors && <>
+                        <h3 className="sub-header">Contributeurs</h3>
+                        {contributors.length > 1
+                            ? contributors.reduce((acc, element, index) => {
+                                if (index == 1) {
+                                    return [
+                                        <a className="contributor" href={`https://github.com/${acc}`} target="_blank">{acc}</a>,
+                                        ", ",
+                                        <a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>
+                                    ]
+                                } else {
+                                    acc.push(", ");
+                                    acc.push(<a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>);
+                                    return acc;
+                                }
+                            })
+                            : <a href={`https://github.com/${contributors[0]}`}>{contributors[0]}</a>
+                        }
+                    </>}
+                    <h3 className="sub-header">Divers</h3>
+                    <ul>
+                        <li>Veuillez noter qu'Ecole Directe Plus est un service non-affilié à Aplim ou EcoleDirecte et est encore en cours de développement. Bénévolement, nous travaillons d'arrache-pied pour vous fournir la meilleure version possible du service.</li>
+                        <li>Vous avez un problème ou avez rencontré un bug ? Vous pouvez nous partager votre expérience dans la page de feedback</li>
+                        <li>Ecole Directe Plus a son propre <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord</a> ! Rejoignez le maintenant pour discuter avec les développeurs et tout le Canardman-Gang !</li>
+                        <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
+                        <iframe style={{ display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" }} src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullScreen></iframe>
+                    </ul>
+                    {/* Nouvelle mise à jour EDP ! 🎊 v0.4.0
+                    
                     <hr />
                     <p className="first-paragraph">
                         La messagerie fait son arrivée ! Vous pouvez dès à présent consulter les messages passionnants de vos profs et éducateurs sans aucune distraction.
@@ -78,7 +139,7 @@ export default function PatchNotes({ version, onClose }) {
                         <li>Ecole Directe Plus a son propre <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord</a> ! Rejoignez le maintenant pour discuter avec les développeurs et tout le Canardman-Gang !</li>
                         <li>Découvrez le trailer d'annonce d'Ecole Directe Plus qui expose en quelques images les ambitions que nous avons pour ce projet en constante évolution :</li>
                         <iframe style={{ display: "block", margin: "0 auto", width: "100%", aspectRatio: "16/9" }} src="https://www.youtube.com/embed/E3mhS5UPNYk" title="Ecole Directe Plus • Trailer d&#39;annonce" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowFullScreen></iframe>
-                    </ul>
+                    </ul> */}
                     {/* ---Enfin la rentrée ! 🎉🤡 --- v0.3.1
                     
                     <hr />
