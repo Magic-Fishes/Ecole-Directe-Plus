@@ -1,4 +1,4 @@
-import { useEffect, useRef, useContext } from "react";
+import { useState,useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -12,6 +12,7 @@ import KeyboardKey from "../../generic/KeyboardKey";
 import StoreCallToAction from "../../generic/StoreCallToAction";
 
 import { AppContext } from "../../../App";
+import { getCurrentPeriodEvent } from "../../../App"
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
 
@@ -32,6 +33,20 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
     useEffect(() => {
         document.title = "Paramètres • Ecole Directe Plus";
     }, []);
+
+    const [isPeriodEventEnabled, setIsPeriodEventEnabled] = useState(settings.get("periodEvent"));
+
+
+    const handlePeriodEventChange = (event) => {
+        const checked = event.target.checked;
+        setIsPeriodEventEnabled(checked);
+
+        settings.set("periodEvent", checked ? getCurrentPeriodEvent() : "none");
+
+        if (checked) {
+            confettiAnimation();
+        }
+    };
 
     const handleGradeScaleEnableChange = () => {
         const newEnableValue = !settings.get("isGradeScaleEnabled");
@@ -204,10 +219,13 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 </div>
 
                 <div className="setting" id="period-event">
-                    <CheckBox id="party-mode-cb" ref={periodEventCheckbox} label={<span>Activer les thèmes saisonniers ✨</span>} checked={settings.get("periodEvent") === "christmas"} onChange={(event) => { 
-                        settings.set("periodEvent", event.target.checked ? "christmas" : "none"); 
-                        if (event.target.checked) { confettiAnimation() } 
-                    }} />
+                    <CheckBox
+                        id="period-event-cb"
+                        ref={periodEventCheckbox}
+                        label={<span>Activer les thèmes saisonniers ✨</span>}
+                        checked={isPeriodEventEnabled}
+                        onChange={handlePeriodEventChange}
+                    />
                 </div>
 
                 <div className="setting" id="reset-windows-layouts">

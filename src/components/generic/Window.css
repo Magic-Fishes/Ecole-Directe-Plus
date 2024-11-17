@@ -191,6 +191,60 @@
     padding: 25px;
 }
 
+/* Remove overflow: hidden and adjust flex properties */
+.window {
+    background-color: rgb(var(--background-color-2));
+    border-radius: 15px;
+    flex: 1;
+    flex-shrink: 1;
+    /* Allow the window to shrink if necessary */
+    min-height: 0;
+    /* Allow the window to shrink below its content's height */
+    max-height: 100%;
+    /* Prevent the window from growing beyond its container */
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: visible;
+    box-shadow: var(--box-shadow-window);
+    outline: none;
+    opacity: 0;
+    scale: 0.85;
+    animation: go-in 0.5s var(--timing-function-spring-effect) forwards;
+}
+
+/* Ensure the window content scrolls internally */
+.window .window-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Allow the header to overflow */
+.window .window-header {
+    overflow: visible;
+    position: relative;
+    /* Ensure absolute children are positioned relative to this */
+    z-index: 1;
+    /* Keep the header above other content */
+}
+
+/* Position the snow-cap absolutely */
+.snow-cap {
+    position: absolute;
+    bottom: 3px;
+    width: 101%;
+    height: 95px;
+    pointer-events: none;
+    /* Adjust left and right positioning if necessary */
+}
+
+/* Ensure parent containers have constrained height */
+#windows-container,
+.windows-layout {
+    height: 100%;
+    max-height: 100%;
+}
+
 
 @media only screen and (max-width: 869px) {
     #windows-container {
@@ -227,4 +281,3 @@
         scale: 1;
     }
 }
-
