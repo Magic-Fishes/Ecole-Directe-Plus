@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
+import { getCurrentPeriodEvent } from "./events/setPeriodEvent";
 import SnowCap from "../graphics/snowCap";
 
 import "./Window.css";
@@ -1011,7 +1012,10 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
     const settings = useUserSettings();
 
+    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
+    const currentPeriodEvent = getCurrentPeriodEvent();
+    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     useEffect(() => {
         // console.log("context.windows", context.windows)
@@ -1033,7 +1037,7 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
 
     return (
-        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "allow-overflow-event" : ""}`}
+        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "allow-overflow-event" : ""}`}
             style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
             {WIP ? null : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
@@ -1045,9 +1049,15 @@ export function WindowHeader({ children, className = "", ...props }) {
     const { useUserSettings } = useContext(AppContext);
     const settings = useUserSettings();
 
+    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
+
+    const currentPeriodEvent = getCurrentPeriodEvent();
+    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
+
+
     return (
-        <div className={`window-header ${className} ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "snowy-element-window" : ""}`} {...props}>
-            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+        <div className={`window-header ${className} ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element-window" : ""}`} {...props}>
+            {isPeriodEventEnabled !== false && currentPeriodEvent === "christmas" && (
                 <SnowCap className="snow-cap"/>
             )}
             {children}

@@ -33,8 +33,6 @@ export default function LandingPage({ token, accountsList }) {
 
     const settings = useUserSettings();
 
-    console.log(settings.get("isPartyModeEnabled"), settings.get("periodEvent"));
-
     const theme = useUserSettings("displayTheme");
     const displayMode = useUserSettings("displayMode").get();
 

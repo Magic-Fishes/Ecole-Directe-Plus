@@ -22,6 +22,8 @@ import Policy from "../../generic/Policy";
 
 import { AppContext } from "../../../App";
 
+import { getCurrentPeriodEvent } from "../../generic/events/setPeriodEvent";
+
 import "./Header.css";
 import "../../generic/events/christmas/garland.css";
 
@@ -35,6 +37,11 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const { userId } = useParams();
 
     const settings = useUserSettings();
+
+    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
+
+    const currentPeriodEvent = getCurrentPeriodEvent();
+    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
     
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
@@ -205,7 +212,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     // JSX
     return (
         <div id="app">
-            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
                 <ul className="lightrope">
                     {Array(150).fill(0).map((_, index) => <li key={index} />)}
                 </ul>
@@ -251,7 +258,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
 
-            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
                 <div className="initial-snow">
                     {Array.from({ length: 50 }, (_, index) => (
                         <div key={index} className="snow">&#10052;</div>

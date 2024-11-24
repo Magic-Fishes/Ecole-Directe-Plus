@@ -91,33 +91,6 @@ const referencedErrors = {
     "202": "accountCreationError",
 }
 
-// period events managment
-export function getCurrentPeriodEvent() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let matchingPeriodEvent = "none";
-
-    const periodEventDateTimes = {
-        christmas: {
-            name: 'christmas',
-            start: new Date(today.getFullYear(), 11, 1, 0, 0, 0),
-            end: new Date(today.getFullYear(), 11, 31, 0, 0, 0)
-        }
-    };
-
-    Object.values(periodEventDateTimes).forEach(period => {
-        if (today >= period.start && today <= period.end) {
-            matchingPeriodEvent = period.name;
-        }
-    });
-
-    console.log(`%cPeriod event: ${matchingPeriodEvent}`);
-    return matchingPeriodEvent; // Return the matching event
-}
-
-const currentEvent = getCurrentPeriodEvent();
-
 //default settings
 const defaultSettings = {
     keepLoggedIn: false,
@@ -128,6 +101,7 @@ const defaultSettings = {
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
     isPartyModeEnabled: true,
+    isPeriodEventEnabled: true,
     isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
@@ -141,7 +115,6 @@ const defaultSettings = {
     negativeBadges: false,
     allowAnonymousReports: true,
     isDevChannel: false,
-    periodEvent: currentEvent
 }
 
 const browserExtensionDownloadLink = {
@@ -212,6 +185,9 @@ function initSettings(accountList) {
             isPartyModeEnabled: {
                 value: getSetting("isPartyModeEnabled", i),
             },
+            isPeriodEventEnabled: {
+                value: getSetting("isPeriodEventEnabled", i),
+            },
             isStreamerModeEnabled: {
                 value: getSetting("isStreamerModeEnabled", i),
             },
@@ -246,10 +222,6 @@ function initSettings(accountList) {
             },
             allowAnonymousReports: {
                 value: getSetting("allowAnonymousReports", i),
-            },
-            periodEvent: {
-                value: getSetting("periodEvent", i),
-                values: ["none", "christmas", "april"]
             }
         })
     }
@@ -2777,7 +2749,7 @@ export default function App({ edpFetch }) {
         isDevChannel,
         globalSettings,
         actualDisplayTheme,
-        currentEDPVersion,
+        currentEDPVersion
     ]);
 
     return (
