@@ -115,7 +115,7 @@ const defaultSettings = {
     negativeBadges: false,
     allowAnonymousReports: true,
     isDevChannel: false,
-    selectedChart: 0,
+    selectedChart: 0
 }
 
 const browserExtensionDownloadLink = {
