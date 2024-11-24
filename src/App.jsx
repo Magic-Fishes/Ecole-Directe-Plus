@@ -115,6 +115,7 @@ const defaultSettings = {
     negativeBadges: false,
     allowAnonymousReports: true,
     isDevChannel: false,
+    selectedChart: 0,
 }
 
 const browserExtensionDownloadLink = {
@@ -169,6 +170,10 @@ function initSettings(accountList) {
             displayMode: {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
+            },
+            selectedChart: {
+                value: getSetting("selectedChart", i),
+                values: [0, 1, 2]
             },
             isSepiaEnabled: {
                 value: getSetting("isSepiaEnabled", i),
