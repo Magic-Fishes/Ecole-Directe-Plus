@@ -70,7 +70,7 @@ function consoleLogEDPLogo() {
 
 consoleLogEDPLogo();
 
-const currentEDPVersion = "0.4.0";
+const currentEDPVersion = "0.4.1";
 const apiVersion = "4.64.0";
 
 // secret webhooks
@@ -401,7 +401,7 @@ export default function App({ edpFetch }) {
             > Value of displayTheme of current user
 
 
-            You can pass the setting you wan in arguments of useUserSettings
+            You can pass the setting you want in arguments of useUserSettings
 
             EX : 
             userDisplayTheme = useUserSettings("displayTheme")
@@ -653,6 +653,12 @@ export default function App({ edpFetch }) {
                         } else {
                             document.documentElement.style.fontSize = newFontSize + "em";
                         }
+                    }
+                } else if (window.innerHeight < 900) {
+                    if (window.innerHeight >= 650) {
+                        document.documentElement.style.zoom = (.35 / 350) * window.innerHeight + .1;
+                    } else {
+                        document.documentElement.style.zoom = .75;
                     }
                 } else {
                     document.documentElement.style.fontSize = "";
@@ -1320,7 +1326,8 @@ export default function App({ edpFetch }) {
         const sortedSchoolLife = {
             delays: [],
             absences: [],
-            sanctions: []
+            sanctions: [],
+            incidents: []
         };
         schoolLife[activeAccount]?.absencesRetards.concat(schoolLife[activeAccount].sanctionsEncouragements ?? []).forEach((item) => {
             const newItem = {};
@@ -1345,6 +1352,9 @@ export default function App({ edpFetch }) {
 
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
+                    break;
+                case "Incident":
+                    sortedSchoolLife.incidents.push(newItem);
                     break;
 
                 default:
