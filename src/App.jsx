@@ -91,6 +91,7 @@ const referencedErrors = {
     "202": "accountCreationError",
 }
 
+//default settings
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -100,6 +101,7 @@ const defaultSettings = {
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
     isPartyModeEnabled: true,
+    isPeriodEventEnabled: true,
     isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
@@ -112,7 +114,8 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false
+    isDevChannel: false,
+    selectedChart: 0
 }
 
 const browserExtensionDownloadLink = {
@@ -168,6 +171,10 @@ function initSettings(accountList) {
                 value: getSetting("displayMode", i),
                 values: ["quality", "balanced", "performance"]
             },
+            selectedChart: {
+                value: getSetting("selectedChart", i),
+                values: [0, 1, 2]
+            },
             isSepiaEnabled: {
                 value: getSetting("isSepiaEnabled", i),
             },
@@ -182,6 +189,9 @@ function initSettings(accountList) {
             },
             isPartyModeEnabled: {
                 value: getSetting("isPartyModeEnabled", i),
+            },
+            isPeriodEventEnabled: {
+                value: getSetting("isPeriodEventEnabled", i),
             },
             isStreamerModeEnabled: {
                 value: getSetting("isStreamerModeEnabled", i),
@@ -216,7 +226,7 @@ function initSettings(accountList) {
                 value: getSetting("negativeBadges", i),
             },
             allowAnonymousReports: {
-                value: getSetting("allowAnonymousReports", i)
+                value: getSetting("allowAnonymousReports", i),
             }
         })
     }
@@ -2744,7 +2754,7 @@ export default function App({ edpFetch }) {
         isDevChannel,
         globalSettings,
         actualDisplayTheme,
-        currentEDPVersion,
+        currentEDPVersion
     ]);
 
     return (
