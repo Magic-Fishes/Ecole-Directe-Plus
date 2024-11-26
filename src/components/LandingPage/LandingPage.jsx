@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../App";
-import { getCurrentPeriodEvent } from "../generic/events/setPeriodEvent";
+import { currentPeriodEvent } from "../generic/events/setPeriodEvent";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 
 // graphics
@@ -37,7 +37,6 @@ export default function LandingPage({ token, accountsList }) {
     const theme = useUserSettings("displayTheme");
     const displayMode = useUserSettings("displayMode").get();
 
-    const currentPeriodEvent = getCurrentPeriodEvent();
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 

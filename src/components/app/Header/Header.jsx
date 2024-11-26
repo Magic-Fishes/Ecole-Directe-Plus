@@ -22,7 +22,7 @@ import Policy from "../../generic/Policy";
 
 import { AppContext } from "../../../App";
 
-import { getCurrentPeriodEvent } from "../../generic/events/setPeriodEvent";
+import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
 
 import "./Header.css";
 import "../../generic/events/christmas/garland.css";
@@ -40,7 +40,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = getCurrentPeriodEvent();
+    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
     
     const [easterEggCounter, setEasterEggCounter] = useState(0);

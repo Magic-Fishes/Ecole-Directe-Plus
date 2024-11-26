@@ -10,7 +10,7 @@ import NumberInput from "../../generic/UserInputs/NumberInput";
 import Button from "../../generic/UserInputs/Button";
 import KeyboardKey from "../../generic/KeyboardKey";
 import StoreCallToAction from "../../generic/StoreCallToAction";
-import { getCurrentPeriodEvent,forceSetPeriodEvent } from "../../generic/events/setPeriodEvent";
+import { currentPeriodEvent,forceSetPeriodEvent } from "../../generic/events/setPeriodEvent";
 
 import { AppContext } from "../../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
@@ -46,8 +46,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
 
         console.log(isPeriodEventEnabled);
 
-        const newEvent = checked ? getCurrentPeriodEvent() : "none";
-        forceSetPeriodEvent(newEvent);
+        const newEvent = checked ? currentPeriodEvent() : "none";
 
         console.log(`PeriodEvent updated: ${newEvent}`);
     

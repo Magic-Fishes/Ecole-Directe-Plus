@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
-import { getCurrentPeriodEvent } from "./events/setPeriodEvent";
+import { currentPeriodEvent } from "./events/setPeriodEvent";
 import SnowCap from "../graphics/snowCap";
 
 import "./Window.css";
@@ -1014,7 +1014,7 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = getCurrentPeriodEvent();
+    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     useEffect(() => {
@@ -1051,7 +1051,7 @@ export function WindowHeader({ children, className = "", ...props }) {
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = getCurrentPeriodEvent();
+    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
 
