@@ -1014,7 +1014,6 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     useEffect(() => {
@@ -1051,7 +1050,6 @@ export function WindowHeader({ children, className = "", ...props }) {
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
 

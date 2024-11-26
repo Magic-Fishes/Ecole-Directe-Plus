@@ -23,9 +23,11 @@ import Policy from "../../generic/Policy";
 import { AppContext } from "../../../App";
 
 import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
+import { createSnowfall } from '../../generic/events/christmas/snowfall';
 
 import "./Header.css";
 import "../../generic/events/christmas/garland.css";
+import "../../generic/events/christmas/snowfall.css";
 
 
 export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
@@ -40,7 +42,6 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
-    const currentPeriodEvent = currentPeriodEvent();
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
     
     const [easterEggCounter, setEasterEggCounter] = useState(0);
@@ -64,6 +65,12 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             handleUserId(parseInt(userId));
         }
     }, [userId]);
+
+    useEffect(() => {
+        const snowContainer = document.querySelector('.initial-snow');
+        console.log("snowContainer:", snowContainer)
+        createSnowfall(snowContainer);
+    }, []);
 
     // handle notifications
     function calculateNotificationsNumber(timeline) {
@@ -259,11 +266,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
 
             {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
-                <div className="initial-snow">
-                    {Array.from({ length: 50 }, (_, index) => (
-                        <div key={index} className="snow">&#10052;</div>
-                    ))}
-                </div>
+                <div className="initial-snow"></div>
             )}
         </div>
     )

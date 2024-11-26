@@ -21,7 +21,7 @@
 	}
 
 	100% {
-		transform: translate3d(var(--left-end), 115vh, 0) rotate(360deg);
+		transform: translate3d(var(--left-end), 150vh, 0) rotate(360deg);
 	}
 }
 
