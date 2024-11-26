@@ -93,6 +93,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 return 0;
             } else {
                 localStorage.clear();
+                localStorage.setItem("EDPVersion", currentEDPVersion);
             }
         }
 
@@ -103,7 +104,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                     setIsNewUser(true);
                 } else {
                     localStorage.setItem("EDPVersion", currentEDPVersion);
-                    setIsNewEDPVersion(true);
                     necessaryResets(localStorage.getItem("EDPVersion"));
                 }
             } else {

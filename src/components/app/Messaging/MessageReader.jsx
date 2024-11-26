@@ -84,7 +84,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                         {message?.content
                             ? <>
                                 {spoiler ? <div className="reveal-spoiler-container"><h3>Streamer Mode activé</h3><span><p>Le contenu de ce message pourrait contenir des informations personnelles sensibles.</p><p>Cliquez sur Continuer pour afficher le message.</p></span><button className="reveal-spoiler" onClick={() => setSpoiler(false)}>Continuer</button></div> : null}
-                                <EncodedHTMLDiv className={`message-content${spoiler ? " spoiler" : ""}`} backgroundColor={actualDisplayTheme === "dark" ? "#303047" : "#d6d6f8"}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
+                                <EncodedHTMLDiv className={`message-content${spoiler ? " spoiler" : ""}`} backgroundColor={actualDisplayTheme === "dark" ? [72, 72, 102] : [200, 200, 240]}>{message?.content && message?.content?.content}</EncodedHTMLDiv>
                             </>
                             : <ContentLoader
                                 className="message-content"
@@ -171,9 +171,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         </ul>
                                     </TooltipContent>
                                 </TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             {parsedHashFolder === -2 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
@@ -181,16 +179,14 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         setSelectedMessage(null);
                                     }
                                 }><InboxIcon /></button></TooltipTrigger><TooltipContent>Désarchiver</TooltipContent></Tooltip>
-                            ) : parsedHashFolder != -1 && parsedHashFolder != -4 ? (
+                            ) : parsedHashFolder !== -1 && parsedHashFolder !== -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
                                         archiveMessage(message.id);
                                         setSelectedMessage(null);
                                     }
                                 }><ArchiveIcon /></button></TooltipTrigger><TooltipContent>Archiver</TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             {parsedHashFolder === -4 ? (
                                 <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={
                                     () => {
@@ -198,9 +194,7 @@ export default function MessageReader({ selectedMessage, fetchMessageMarkAsUnrea
                                         setSelectedMessage(null);
                                     }
                                 }><DeleteIcon /></button></TooltipTrigger><TooltipContent>Supprimer</TooltipContent></Tooltip>
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                             <Tooltip className="action-button-main"><TooltipTrigger><button className="action-button" onClick={(event) => handleMarkAsUnread(event, message)}><MarkAsUnread /></button></TooltipTrigger><TooltipContent>Marquer comme non lu</TooltipContent></Tooltip>
                         </div>
                     </div>

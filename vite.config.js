@@ -4,39 +4,38 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 import fs from 'fs';
 import path from 'path';
 
+// Define paths for iframe scripts
 const iframeFilePath = path.resolve(__dirname, 'src/utils/iframeRequest/iframe.js');
 const iframeRequestLinkerFilePath = path.resolve(__dirname, 'src/utils/iframeRequest/iframeRequestLinker.js');
 
+// Plugin to watch for modifications in specified files
 const watchModification = (filePaths) => ({
     name: 'watch-iframe-modification',
     configureServer(server) {
-        filePaths.forEach(filePath => {
-            server.watcher.add(filePath);
-        });
+        filePaths.forEach(filePath => server.watcher.add(filePath));
         server.watcher.on('change', (changedFile) => {
             if (filePaths.includes(changedFile)) {
                 console.log(`${changedFile} has changed. Refreshing...`);
-                server.ws.send({
-                    type: 'full-reload',
-                    path: '*'
-                });
+                server.ws.send({ type: 'full-reload', path: '*' });
             }
         });
     }
-})
+});
 
+// Plugin to replace a placeholder with iframe script content
 const replaceIframeScript = (filePath) => ({
     name: 'replace-iframe-script',
     enforce: "pre",
     transform(file, id) {
         if (id.endsWith("/index.jsx")) {
             const iframeCode = fs.readFileSync(filePath, 'utf-8');
-            return file.replace("IFRAME_JS_PLACEHOLDER", iframeCode.slice(iframeCode.indexOf("*/") + 2))
+            const scriptContent = iframeCode.slice(iframeCode.indexOf("*/") + 2);
+            return file.replace("IFRAME_JS_PLACEHOLDER", scriptContent);
         }
     }
-})
+});
 
-// https://vitejs.dev/config/
+// Vite configuration
 export default defineConfig({
     plugins: [
         react(),
@@ -44,8 +43,8 @@ export default defineConfig({
         replaceIframeScript(iframeFilePath),
         watchModification([iframeFilePath, iframeRequestLinkerFilePath]),
     ],
-    https: true,
     server: {
+        https: true,
         port: 3000,
     },
-})
+});
