@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../App";
+import { getCurrentPeriodEvent } from "../generic/events/setPeriodEvent";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 
 // graphics
@@ -35,6 +36,10 @@ export default function LandingPage({ token, accountsList }) {
 
     const theme = useUserSettings("displayTheme");
     const displayMode = useUserSettings("displayMode").get();
+
+    const currentPeriodEvent = getCurrentPeriodEvent();
+    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
+    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     const changeTheme = () => {
         theme.set(actualDisplayTheme === "light" ? "dark" : "light");
@@ -118,7 +123,7 @@ export default function LandingPage({ token, accountsList }) {
 
     return (<div className="landing-page">
         {<header id="nav-bar" className="top-section">
-            <span className={`nav-logo ${settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" ? "snowy-element" : ""}`}>
+            <span className={`nav-logo ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element" : ""}`}>
                 <EDPLogo className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />Ecole Directe Plus
             </span>
             {!isTabletLayout && !isMobileLayout && <nav className="nav-links">
@@ -128,11 +133,11 @@ export default function LandingPage({ token, accountsList }) {
                 <Link to="/edp-unblock" className={location.hash === "#edp-unblock" ? "selected" : ""} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
             </nav>}
             <div className="nav-buttons">
-                <Link className={`nav-login ${settings.get("isPartyModeEnabled") && settings.get("periodEvent") === "christmas" ? "snowy-element" : ""}`} to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
+                <Link className={`nav-login ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element" : ""}`} to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
                 <button className="change-theme" onClick={changeTheme} />
             </div>
         </header>}
-        {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas" && (
+        {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
             <div className="initial-snow">
                 {Array.from({ length: 50 }, (_, index) => (
                     <div key={index} className="snow">&#10052;</div>
@@ -152,7 +157,7 @@ export default function LandingPage({ token, accountsList }) {
             </div>
         
 
-            {settings.get("isPartyModeEnabled") !== false && settings.get("periodEvent") === "christmas"  && (
+            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
                 <div className="initial-snow">
                     {Array.from({ length: 50 }, (_, index) => (
                         <div key={index} className="snow">&#10052;</div>

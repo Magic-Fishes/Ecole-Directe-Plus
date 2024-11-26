@@ -34,12 +34,6 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
         document.title = "Paramètres • Ecole Directe Plus";
     }, []);
 
-    const [currentPeriodEvent, setCurrentPeriodEvent] = useState("none");
-
-    useEffect(() => {
-        const event = getCurrentPeriodEvent();
-        setCurrentPeriodEvent(event);
-    }, []);
 
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
