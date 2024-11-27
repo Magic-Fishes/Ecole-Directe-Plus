@@ -1,34 +1,41 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client"
+import { StrictMode, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import DOMNotification from "./components/generic/PopUps/Notification";
 import App from "./App";
 import IframeRequestLinker from "./utils/iframeRequest/iframeRequestLinker";
 import { getOS } from "./utils/utils";
 // import reportWebVitals from './reportWebVitals';
-
 // import { HelmetProvider } from 'react-helmet';
 
-
 const splashScreen = document.getElementById("loading-start");
-const iframeRequest = new IframeRequestLinker()
+const iframeRequest = new IframeRequestLinker();
 
 const handleIframeLoad = (event) => {
     iframeRequest.setIframe(event.target);
-}
+};
 
-async function edpFetch(url, fetchParams, dataType) {
-    return fetch(url, fetchParams).then((response) => response[dataType]())
-}
+const edpFetch = async (url, fetchParams, dataType) => {
+    const response = await fetch(url, fetchParams);
+    return response[dataType]();
+};
 
-splashScreen?.classList.add("fade-out");
-setTimeout(() => splashScreen?.remove(), 500);
+const SplashScreenRemover = () => {
+    useEffect(() => {
+        if (splashScreen) {
+            splashScreen.classList.add("fade-out");
+            setTimeout(() => splashScreen.remove(), 500);
+        }
+    }, []);
+    return null;
+};
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
+        <SplashScreenRemover />
         <DOMNotification>
             {/* <HelmetProvider> */}
                 <App edpFetch={["Windows", "Linux"].includes(getOS()) ? edpFetch : iframeRequest.fetch.bind(iframeRequest)} />
-                <iframe onLoad={handleIframeLoad} sandbox="allow-scripts" style={{display: "none"}} srcDoc='data:text/html, <!DOCTYPE HTML><html><head></head><body><script>IFRAME_JS_PLACEHOLDER</script></body></html>'></iframe> {/* The IFRAME_JS_PLACEHOLDER placeholder will be replace by the content of the file src/utils/iframeRequest/iframe.js when npm run dev or npn run build is launched*/}
+                <iframe onLoad={handleIframeLoad} sandbox="allow-scripts" style={{ display: "none" }} srcDoc="data:text/html, <!DOCTYPE HTML><html><head></head><body><script>IFRAME_JS_PLACEHOLDER</script></body></html>" />
             {/* </HelmetProvider> */}
         </DOMNotification>
     </StrictMode>
