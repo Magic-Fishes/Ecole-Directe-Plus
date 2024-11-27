@@ -20,7 +20,7 @@
         content="Ecole Directe Plus est une version améliorée d'EcoleDirecte (non-affiliée), offrant une meilleure expérience avec une interface moderne et intuitive, enrichie de fonctionnalités exclusives comme le calcul automatique de la moyenne générale, le tout gratuitement.">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="ecole-directe.plus">
+    <meta property="og:url" content="https://ecole-directe.plus">
     <meta property="og:site_name" content="Ecole Directe Plus">
     <meta property="og:title" content="Ecole Directe Plus">
     <meta property="og:description"
@@ -167,7 +167,8 @@
                 }
             }
         </style>
-        <svg role="img" id="loading-logo" viewBox="0 0 91 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg role="img" id="loading-logo" viewBox="0 0 91 86" fill="none" xmlns="http://www.w3.org/2000/svg" aria-labelledby="loading-title">
+            <title id="loading-title">Loading logo</title>
             <path d="M89.9985 24V0H31.9985C21.3319 0.833333 0 7.3 0 38.5C5.50049 26.5 17.499 24 21.4985 24H89.9985Z"
                 fill="url(#paint0_linear_740_7)" />
             <path
@@ -185,36 +186,4 @@
             try {
                 function getDisplayTheme() {
                     const oldActiveAccount = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
-                    const displayThemeFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"))[oldActiveAccount]?.displayTheme;
-                    if (displayThemeFromLs === undefined || displayThemeFromLs === "auto") {
-                        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                            return "dark";
-                        } else {
-                            return "light";
-                        }
-                    } else {
-                        return displayThemeFromLs;
-                    }
-                }
-                document.documentElement.classList.add(getDisplayTheme());
-            } catch (error) {
-                console.error("Error: theme couldn't be read from splashScreen");
-                console.error(error);
-                document.documentElement.classList.add("dark");
-            }
-        </script>
-        <script>
-            if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.register("/serviceWorker.js")
-                    .catch(function (error) {
-                        console.error("Échec de l'enregistrement du Service Worker:", error);
-                    });
-            }
-        </script>
-    </div>
-
-    <div id="root"></div>
-    <script type="module" src="/src/index.jsx"></script>
-</body>
-
-</html>
+                    const displayThemeFromLs = JSON.parse((localStorage.getItem("userSettings")[_{{{CITATION{{{_1{](https://github.com/c4software/bts-sio/tree/16f33285846e5ab07801a1fa25fee0a21f3173e8/tp%2Fjavascript%2Ftp2.md)[_{{{CITATION{{{_2{](https://github.com/VictorMOPSena/senasoft-repositorio/tree/28ec22b0e9513981352093cd9011f7353aaabca8/actualizar_personal.php)[_{{{CITATION{{{_3{](https://github.com/moeclay/pdw24jam_entry/tree/9606afcd7eba27990562194ec25565c642e33eab/application%2Fviews%2Fdashboard%2Fpersonal_point.php)[_{{{CITATION{{{_4{](https://github.com/nicholas-tollner/WebDevAssignment2/tree/6bea377d641b15508287c7f57519e63afb81e5b5/contact.php)[_{{{CITATION{{{_5{](https://github.com/tuanpham-aptech/sportequiptment/tree/dcf985d550a20e54ad6be00927c463c5fc75a020/.history%2Fadmin%2Fincludes%2Fheader_20211029103137.php)
