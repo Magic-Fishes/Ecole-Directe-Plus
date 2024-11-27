@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../App";
 import { currentPeriodEvent } from "../generic/events/setPeriodEvent";
+import { createSnowfall } from "../generic/events/christmas/snowfall";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 
 // graphics
@@ -47,6 +48,12 @@ export default function LandingPage({ token, accountsList }) {
     useEffect(() => {
         setIsLoggedIn(token && accountsList.length > 0);
     }, [token, accountsList]);
+
+    useEffect(() => {
+        const snowContainer = document.querySelector('.initial-snow');
+        console.log("snowContainer:", snowContainer)
+        createSnowfall(snowContainer);
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
@@ -137,11 +144,7 @@ export default function LandingPage({ token, accountsList }) {
             </div>
         </header>}
         {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
-            <div className="initial-snow">
-                {Array.from({ length: 50 }, (_, index) => (
-                    <div key={index} className="snow">&#10052;</div>
-                ))}
-            </div>
+            <div className="initial-snow"/>
         )}
         <section id="home" ref={homeSectionRef}>
             <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className="up-arrow" /></Link>
