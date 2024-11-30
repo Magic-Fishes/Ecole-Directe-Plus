@@ -1,7 +1,6 @@
 .initial-snow {
 	position: fixed;
 	top: 0;
-	left: 0;
 	right: 0;
 	overflow: hidden;
 	width: 100%;
@@ -10,18 +9,15 @@
 	zoom: 1.25;
 }
 
-.initial-snow > * {
-	font-size: 50px;
-	color: white;
-	position: absolute;
-	top: -10vh;
-}
-
 .snow {
     animation-name: snowfall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     position: absolute;
+	font-size: 50px;
+	color: white;
+	position: absolute;
+	top: -10vh;
 }
 
 @keyframes snowfall {

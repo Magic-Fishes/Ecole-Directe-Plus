@@ -5,7 +5,8 @@ export const createSnowfall = (container) => {
         snowflake.innerHTML = '&#10052;';
         snowflake.style.fontSize = `${Math.random() * 1 + 3}vw`;
         snowflake.style.left = `${Math.random() * 100}vw`;
-        snowflake.style.filter = `blur(${Math.random() * 5}px)`;
+        snowflake.style.filter = `blur(${Math.random() * 5 + 0.1}px)`;
+        snowflake.style.opacity = `${Math.random() * 0.5 + 0.3}`;
         snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
         snowflake.style.animationDelay = `${Math.random() * 10}s`;
         snowflake.style.setProperty('--left-ini', `${Math.random() * 20 - 10}vw`);
