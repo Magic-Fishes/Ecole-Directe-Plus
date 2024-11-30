@@ -5,7 +5,7 @@ function getCurrentPeriodEvent() {
     const periodEventDateTimes = {
         christmas: {
             name: 'christmas',
-            start: new Date(today.getFullYear(), 10, 1, 0, 0, 0),
+            start: new Date(today.getFullYear(), 11, 1, 0, 0, 0),
             end: new Date(today.getFullYear(), 11, 31, 0, 0, 0)
         }
     };

@@ -50,9 +50,11 @@ export default function LandingPage({ token, accountsList }) {
     }, [token, accountsList]);
 
     useEffect(() => {
-        const snowContainer = document.querySelector('.initial-snow');
-        console.log("snowContainer:", snowContainer)
-        createSnowfall(snowContainer);
+        if (isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas") {
+            const snowContainer = document.querySelector('.initial-snow');
+            console.log("snowContainer:", snowContainer)
+            createSnowfall(snowContainer);
+        }
     }, []);
 
     useEffect(() => {
