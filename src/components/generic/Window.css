@@ -230,11 +230,11 @@
 
 /* Position the snow-cap absolutely */
 .snow-cap {
-    position: absolute;
+    /* position: absolute;
     bottom: 3px;
     width: 101%;
     height: 95px;
-    pointer-events: none;
+    pointer-events: none; */
     /* Adjust left and right positioning if necessary */
 }
 

@@ -34,10 +34,14 @@
 
 .snow-cap {
   position: absolute;
-  bottom: 3px;
+  bottom: -5px;
   width: 101%;
   height: 95px;
   pointer-events: none;
+}
+
+.window-header.snowy-element-window {
+  height: 34px;
 }
 
 .snowy-element-window {
@@ -54,5 +58,5 @@
 
 .results-header .snow-cap {
   left: -5px;
-  bottom: 5px;
+  /* bottom: 5px; */
 }
