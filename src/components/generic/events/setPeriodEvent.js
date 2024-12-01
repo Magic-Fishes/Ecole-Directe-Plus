@@ -18,8 +18,7 @@ function getCurrentPeriodEvent() {
         }
     });
 
-    console.log(`Period event: ${matchingEvent}`);
     return matchingEvent; // Return the matching event
 }
 
-export let currentPeriodEvent = getCurrentPeriodEvent();
+export const currentPeriodEvent = getCurrentPeriodEvent();

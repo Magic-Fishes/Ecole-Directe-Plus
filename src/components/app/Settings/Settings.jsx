@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef, useContext } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -29,24 +29,15 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
     const periodEventCheckbox = useRef(null);
 
     const settings = useUserSettings();
-
+    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
+    
     useEffect(() => {
         document.title = "Paramètres • Ecole Directe Plus";
     }, []);
 
-
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
-
-    const handlePeriodEventChange = (event) => {
-        const checked = event.target.checked;
-
-        settings.set("isPeriodEventEnabled", checked);
-
-        const newEvent = checked ? currentPeriodEvent : "none";
-
-        console.log(`PeriodEvent updated: ${newEvent}`);
-    
-        if (checked) {
+    const handleIsPeriodEventEnabledChange = (event) => {
+        settings.set("isPeriodEventEnabled", event.target.checked);
+        if (event.target.checked) {
             confettiAnimation();
         }
     };
@@ -227,7 +218,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                         ref={periodEventCheckbox}
                         label={<span>Activer les thèmes saisonniers ✨</span>}
                         checked={isPeriodEventEnabled}
-                        onChange={handlePeriodEventChange}
+                        onChange={handleIsPeriodEventEnabledChange}
                     />
                 </div>
 

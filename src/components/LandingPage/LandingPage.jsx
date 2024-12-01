@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AppContext } from "../../App";
 import { currentPeriodEvent } from "../generic/events/setPeriodEvent";
-import { createSnowfall } from "../generic/events/christmas/snowfall";
+import Snowfall from "../generic/events/christmas/Snowfall";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 
 // graphics
@@ -17,7 +17,6 @@ import InfoTypoIcon from "../graphics/InfoTypoIcon";
 import UpArrow from "../graphics/UpArrow";
 
 import "./LandingPage.css";
-import "../generic/events/christmas/snowfall.css";
 import "../generic/events/christmas/snow.css";
 
 export default function LandingPage({ token, accountsList }) {
@@ -51,9 +50,6 @@ export default function LandingPage({ token, accountsList }) {
 
     useEffect(() => {
         if (isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas") {
-            const snowContainer = document.querySelector('.initial-snow');
-            console.log("snowContainer:", snowContainer)
-            createSnowfall(snowContainer);
         }
     }, []);
 
@@ -77,7 +73,7 @@ export default function LandingPage({ token, accountsList }) {
             rootMargin: "0px 0px -250px 0px",
             threshold: 0.1,
         })
-        
+
         if (communitySectionRef.current && openSourceSectionRef.current) {
             observer.observe(communitySectionRef.current);
             observer.observe(openSourceSectionRef.current);
@@ -145,9 +141,12 @@ export default function LandingPage({ token, accountsList }) {
                 <button className="change-theme" onClick={changeTheme} />
             </div>
         </header>}
-        {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
-            <div className="initial-snow"/>
-        )}
+        {
+            isPartyModeEnabled
+            && isPeriodEventEnabled
+            && currentPeriodEvent === "christmas"
+            && <Snowfall />
+        }
         <section id="home" ref={homeSectionRef}>
             <Link to="" className={`go-to-top ${isTop ? "unactive" : "active"}`}><UpArrow className="up-arrow" /></Link>
             <div className="affiliation-disclaimer"> <InfoTypoIcon />Service open source non-affilié à Aplim</div>
@@ -159,16 +158,7 @@ export default function LandingPage({ token, accountsList }) {
             <div className="fade-out-image">
                 <img src={isTabletLayout ? (isMobileLayout ? `/images/EDP-preview-mobile-${actualDisplayTheme}.jpeg` : `/images/EDP-preview-tablet-${actualDisplayTheme}.jpeg`) : `/images/EDP-preview-${actualDisplayTheme}.jpeg`} className={isTabletLayout ? (isMobileLayout ? "mobile" : "tablet") : "dekstop"} alt="Capture d'écran du site" />
             </div>
-        
 
-            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
-                <div className="initial-snow">
-                    {Array.from({ length: 50 }, (_, index) => (
-                        <div key={index} className="snow">&#10052;</div>
-                    ))}
-                </div>
-            )}
-            
         </section>
         <section id="features">
             {(displayMode !== "performance") && <>
@@ -202,7 +192,7 @@ export default function LandingPage({ token, accountsList }) {
                             <p>Découvrez vos talents cachés grâce à un aperçu rapide de vos points forts. Parce que vous méritez de savoir à quel point vous êtes incroyable, nous mettons en lumière les matières dans lesquelles vous excellez.</p>
                         </OutlineEffectDiv>
 
-                        
+
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div2">
                         <OutlineEffectDiv className="bento-outline-effect">
@@ -210,7 +200,7 @@ export default function LandingPage({ token, accountsList }) {
                             <p>Fini les calculs laborieux à la main. EDP fait tout le boulot pour vous. Parce que votre temps est précieux et doit être consacré à des choses plus importantes, comme procrastiner efficacement.</p>
                         </OutlineEffectDiv>
 
-                        
+
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div3">
                         <OutlineEffectDiv className="bento-outline-effect">
@@ -242,7 +232,7 @@ export default function LandingPage({ token, accountsList }) {
                             <p>Atteignez le nirvana académique avec le Score de streak. Surpassez vous, cumulez les bonnes notes et débloquez des badges ! N'hésitez pas à flex quand vous avez une meilleure streak que vos amis.</p>
                         </OutlineEffectDiv>
 
-                        
+
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div6">
                         <OutlineEffectDiv className="bento-outline-effect">
@@ -250,7 +240,7 @@ export default function LandingPage({ token, accountsList }) {
                             <p>Restez aux aguets avec l'aperçu des prochains contrôles. Anticipez les futurs contrôles et organisez vos révisions comme un pro. Enfin, en théorie… on ne peut pas vous garantir que vous ne procrastinerez pas quand même.</p>
                         </OutlineEffectDiv>
 
-                        
+
                     </HoverFollowDiv>
                     <HoverFollowDiv displayMode={displayMode} className="bento-card div7">
                         <OutlineEffectDiv className="bento-outline-effect">
@@ -258,7 +248,7 @@ export default function LandingPage({ token, accountsList }) {
                             <p>Votre sécurité, notre priorité, parce qu’il n’y a que vous et votre conscience qui devez connaître vos petits secrets académiques. EDP ne collecte AUCUNE information personnelle ou personnellement identifiable sur les utilisateurs du service. En tant que service non-affilié à Aplim, nous utilisons l'API d'EcoleDirecte pour que vous ayez accès à vos informations.</p>
                         </OutlineEffectDiv>
 
-                        
+
                     </HoverFollowDiv>
                 </div>
             </div>

@@ -11,26 +11,22 @@ import HomeworksIconOfficial from "../../graphics/HomeworksIconOfficial";
 import GradesIcon from "../../graphics/GradesIcon";
 import TimetableIcon from "../../graphics/TimetableIcon";
 import MessagingIcon from "../../graphics/MessagingIcon";
-import Button from "../../generic/UserInputs/Button";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import FeedbackForm from "../../Feedback/FeedbackForm";
 import PatchNotes from "../../generic/PatchNotes";
 import Policy from "../../generic/Policy";
-// import HomeworksIcon from "../../graphics/HomeworksIcon";
-// import PlanningIcon from "../../graphics/PlanningIcon"
 
 
 import { AppContext } from "../../../App";
 
 import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
-import { createSnowfall } from '../../generic/events/christmas/snowfall';
+import Snowfall from "../../generic/events/christmas/Snowfall";
+import "../../generic/events/christmas/garland.css";
 
 import "./Header.css";
-import "../../generic/events/christmas/garland.css";
-import "../../generic/events/christmas/snowfall.css";
 
 
-export default function Header({ currentEDPVersion, token, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ currentEDPVersion, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -43,7 +39,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
     const isPartyModeEnabled = settings.get("isPartyModeEnabled");
 
     const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
-    
+
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
     const [closeFeedbackBottomSheet, setCloseFeedbackBottomSheet] = useState(false);
@@ -59,20 +55,12 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
             setActiveAccount(parseInt(localStorage.getItem("oldActiveAccount") ?? 0));
         }
     }
-    
+
     useEffect(() => {
         if (userId !== undefined) {
             handleUserId(parseInt(userId));
         }
     }, [userId]);
-
-    useEffect(() => {
-        if (isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas") {
-            const snowContainer = document.querySelector('.initial-snow');
-            console.log("snowContainer:", snowContainer)
-            createSnowfall(snowContainer);
-        }
-    }, []);
 
     // handle notifications
     function calculateNotificationsNumber(timeline) {
@@ -102,7 +90,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                 case "Messagerie":
                     notifications.messaging = (notifications.messaging ?? 0) + 1;
                     break;
-                
+
                 case "VieScolaire":
                 case "Document":
                     notifications.account = (notifications.account ?? 0) + 1;
@@ -237,7 +225,7 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
 
                     <nav className="navbar">
                         <ul className="header-button-list">
-                            {headerNavigationButtons.map((headerButton) => ( headerButton.enabled &&
+                            {headerNavigationButtons.map((headerButton) => (headerButton.enabled &&
                                 <li className={`header-button-container`} key={headerButton.id} id={headerButton.name}>
                                     <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} isNew={headerButton.isNew} />
                                 </li>
@@ -264,12 +252,14 @@ export default function Header({ currentEDPVersion, token, accountsList, setActi
                 </Suspense>
             </main>
             {location.hash === "#feedback" && <BottomSheet className="feedback-bottom-sheet" heading="Faire un retour" onClose={handleCloseAnchorLinks} close={closeFeedbackBottomSheet} ><FeedbackForm activeUser={accountsList[activeAccount]} onSubmit={() => setCloseFeedbackBottomSheet(true)} carpeConviviale={carpeConviviale} /></BottomSheet>}
-            {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
+            {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks(); localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
-
-            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
-                <div className="initial-snow"></div>
-            )}
+            {
+                isPartyModeEnabled
+                && isPeriodEventEnabled
+                && currentPeriodEvent === "christmas"
+                && <Snowfall />
+            }
         </div>
     )
 }

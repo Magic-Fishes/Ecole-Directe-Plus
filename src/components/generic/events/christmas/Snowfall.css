@@ -22,10 +22,10 @@
 
 @keyframes snowfall {
 	0% {
-		transform: translate3d(var(--left-ini), 0, 0) rotate(0deg);
+		transform: translate(var(--left-ini), 0) rotate(0deg);
 	}
 
 	100% {
-		transform: translate3d(var(--left-end), 150vh, 0) rotate(360deg);
+		transform: translate(var(--left-end), 150vh) rotate(360deg);
 	}
 }
