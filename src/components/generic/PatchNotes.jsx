@@ -1,6 +1,6 @@
 import InfoPopUp from "./PopUps/InfoPopUp";
 import { Link } from "react-router-dom";
-import "./PatchNotes.css"
+import "./PatchNotes.css";
 
 const contributors = [
     "Vooxify",
