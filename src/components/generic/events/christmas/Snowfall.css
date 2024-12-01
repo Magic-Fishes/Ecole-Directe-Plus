@@ -6,7 +6,13 @@
 	width: 100%;
 	height: 100%;
     z-index: -1000;
-	/* zoom: 1.25; */
+}
+
+@supports (-webkit-appearance: none) {
+	/* only apply to chromium */
+	.initial-snow {
+		zoom: 1.25;
+	}
 }
 
 .snow {
