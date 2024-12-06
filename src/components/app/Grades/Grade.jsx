@@ -13,11 +13,14 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     const sortedGrades = userData.get("sortedGrades");
     const [selectedPeriod, setSelectedPeriod] = useState(userData.get("activePeriod"));
 
-    const generalAverage = sortedGrades[selectedPeriod].generalAverage;
+    const generalAverage = sortedGrades[selectedPeriod]?.generalAverage;
     const gradeCoef = grade.coef ?? 1;
     let subjectCoef = grade?.subject?.coef ?? gradeCoef;
     let subjectsSummedCoefs = getSummedCoef(sortedGrades[selectedPeriod].subjects);
-    
+
+    useEffect(() => {
+        setSelectedPeriod(userData.get("activePeriod"));
+    }, [userData.get("activePeriod")])
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -40,7 +43,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
 
 
-    const gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
+    const gradeScore = (subjectCoef * (grade.value - (generalAverage ?? grade.value))) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     const coefficientEnabled = useUserData().get("gradesEnabledFeatures")?.coefficient;
     const isGradeScaleEnabled = useUserSettings("isGradeScaleEnabled");
