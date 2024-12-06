@@ -96,7 +96,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                     <center>Légende</center>
                                     <p>GRIS : aujourd'hui</p>
                                     <p>BLEU : devoirs</p>
-                                    <p>DORÉ : devoirs effectués</p>
+                                    <p>VERT : devoirs effectués</p>
                                     <p>ROUGE : contrôle</p>
                                 </InfoButton>
                             </WindowHeader>
