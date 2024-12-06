@@ -72,8 +72,7 @@
     border: 2px solid rgba(var(--text-color-alt), .3);
     min-height: 200px;
 }
-.window.work-in-progress::after {
-    content: "En cours de développement... (Bientôt disponible)";
+.window.work-in-progress .wip-info {
     color: rgba(var(--text-color-alt), .5);
     position: absolute;
     top: 50%;
@@ -81,6 +80,15 @@
     transform: translate(-50%, -50%);
     width: 100%;
     text-align: center;
+    user-select: none;
+}
+
+.window.work-in-progress .wip-info a {
+    color: rgba(var(--text-color-alt), .5);
+    transition: .1s;
+}
+.window.work-in-progress .wip-info a:is(:hover, :focus-visible) {
+    color: rgba(var(--text-color-alt), 1);
 }
 
 .window.appeared {
