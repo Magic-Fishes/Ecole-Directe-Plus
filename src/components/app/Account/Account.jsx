@@ -244,7 +244,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsAdministratifActif === "1" && documents?.administratifs?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Documents Administratifs</h3>
+                                                    <h3>Documents administratifs</h3>
                                                     {documents.administratifs.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />
@@ -266,7 +266,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsVSActif === "1" && documents?.viescolaire?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Vie Scolaire</h3>
+                                                    <h3>Vie scolaire</h3>
                                                     {documents.viescolaire.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />
@@ -277,7 +277,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsEntrepriseActif === "1" && documents?.entreprises?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Documents Entreprise</h3>
+                                                    <h3>Documents entreprise</h3>
                                                     {documents.entreprises.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />

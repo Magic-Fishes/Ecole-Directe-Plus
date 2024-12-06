@@ -113,7 +113,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     <TooltipTrigger>
                                         <span>
                                             {sortedGrades && sortedGrades[selectedPeriod]
-                                                ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
+                                                ? <Grade grade={{ value: sortedGrades[selectedPeriod]?.generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
                                                 : <ContentLoader
                                                     animate={settings.get("displayMode") === "quality"}
                                                     speed={1}
@@ -142,7 +142,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     </TooltipContent>
                                 </Tooltip>
                                 : sortedGrades && sortedGrades[selectedPeriod]
-                                    ? <Grade grade={{ value: sortedGrades[selectedPeriod].generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
+                                    ? <Grade grade={{ value: sortedGrades[selectedPeriod]?.generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
                                     : <ContentLoader
                                         animate={settings.get("displayMode") === "quality"}
                                         speed={1}
