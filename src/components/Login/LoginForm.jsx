@@ -24,64 +24,99 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
         doubleAuthAcquired,
     } = useContext(AccountContext);
 
-    // States
-    const [submitState, setSubmitState] = useState("");
-    const [submitButtonText, setSubmitButtonText] = useState("Se connecter");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [displayState, setDisplayState] = useState({
+        submitState: "",
+        submitButtonText: "Se connecter",
+        errorMessage: "",
+    })
 
-    // Behavior
-    const updateUsername = (event) => { userCredentials.username.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
-    const updatePassword = (event) => { userCredentials.password.set(event.target.value); setSubmitState(""); setSubmitButtonText("Se connecter"); }
-    const updateKeepLoggedIn = (event) => keepLoggedIn.set(event.target.checked); // !:! à set
+    function resetDisplayState() {
+        setDisplayState((old) => ({
+            ...old,
+            submitState: "",
+            submitButtonText: "Se connecter",
+        }))
+    }
+
+    function updateUsername(event) {
+        userCredentials.username.set(event.target.value);
+        resetDisplayState();
+    }
+
+    function updatePassword(event) {
+        userCredentials.password.set(event.target.value);
+        resetDisplayState();
+    }
+
+    function updateKeepLoggedIn(event) {
+        keepLoggedIn.set(event.target.checked); // !:! à set
+    }
 
     function handleSubmit(event) {
         event.preventDefault();
         // empêche la connexion si déjà connecté ou formulaire invalide
-        if (submitState === "submitted") {
+        if (displayState.submitState === "submitted") {
             return 0
         }
         // UI
-        setSubmitState("submitting");
-        setSubmitButtonText("Connexion...");
-        setErrorMessage("");
+        setDisplayState({
+            submitState: "submitting",
+            submitButtonText: "Connexion...",
+            errorMessage: "",
+        })
 
         // Process login
         requestLogin()
             .then((result) => {
                 switch (result.code) {
                     case 0:
-                        setSubmitState("submitted");
-                        setSubmitButtonText("Connecté");
-                        setErrorMessage("");
+                        setDisplayState({
+                            submitState: "submitted",
+                            submitButtonText: "Connecté",
+                            errorMessage: "",
+                        })
                         return;
                     case 1:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("Identifiant et/ou mot de passe invalide");
+                        setDisplayState({
+                            submitState: "invalid",
+                            submitButtonText: "Échec de la connexion",
+                            errorMessage: "Identifiant et/ou mot de passe invalide",
+                        });
                         return;
                     case 2:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("Authentification à 2 facteurs requise");
+                        setDisplayState({
+                            submitState: "submitting",
+                            submitButtonText: "En attende d'A2F",
+                            errorMessage: "Authentification à 2 facteurs requise",
+                        });
                         return;
                     case 3:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("La connexion avec le serveur a échoué, réessayez dans quelques minutes");
+                        setDisplayState({
+                            submitState: "invalid",
+                            submitButtonText: "Échec de la connexion",
+                            errorMessage: "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
+                        });
+                        return;
                     case 4:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("Il semblerait que votre compte EcoleDirecte ne soit pas encore valide, renseignez vous auprès de votre établissement ou d'EcoleDirecte. On vous attend avec impatience !");
+                        setDisplayState({
+                            submitState: "invalid",
+                            submitButtonText: "Échec de la connexion",
+                            errorMessage: "Il semblerait que votre compte EcoleDirecte ne soit pas encore valide, renseignez vous auprès de votre établissement ou d'EcoleDirecte. On vous attend avec impatience !",
+                        });
                         return;
                     case 5:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("La connexion avec le serveur nécessite l'extension EDPUnblock");
+                        setDisplayState({
+                            submitState: "invalid",
+                            submitButtonText: "Échec de la connexion",
+                            errorMessage: "La connexion avec le serveur nécessite l'extension EDPUnblock",
+                        });
                         return;
                     case -1:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
-                        setErrorMessage("Une erreur inattendue s'est produite");
+                        setDisplayState({
+                            submitState: "invalid",
+                            submitButtonText: "Échec de la connexion",
+                            errorMessage: "Une erreur inattendue s'est produite",
+                        });
                         return;
                 }
             });
@@ -92,8 +127,11 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
             requestLogin()
                 .then((result) => {
                     // !:!
-                    setSubmitState(result.submitButtonText || "");
-                    setErrorMessage(result.message ?? "");
+                    setDisplayState({
+                        submitState: result.code ? "invalid" : "submitted",
+                        submitButtonText: result.code ? "Échec de la connexion" : "Connecté",
+                        errorMessage: result.message ?? "",
+                    });
                 });
         }
     }, [doubleAuthAcquired])
@@ -112,9 +150,9 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
 
     return (
         <form onSubmit={handleSubmit} {...props} id="login-form">
-            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setSubmitState("invalid")} />
-            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setSubmitState("invalid")} />
-            <p className="error-message">{errorMessage}</p>
+            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setDisplayState((old) => ({submitState: "invalid", ...old}))} />
+            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setDisplayState((old) => ({submitState: "invalid", ...old}))} />
+            <p className="error-message">{displayState.errorMessage}</p>
             <div className="login-option">
                 <Tooltip delay={400}>
                     <TooltipTrigger>
@@ -126,7 +164,7 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
                 </Tooltip>
                 <a id="password-forgotten-link" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp" target="blank">Mot de passe oublié ?</a>
             </div>
-            <Button id="submit-login" state={submitState} buttonType="submit" value={april ? "Ok" : submitButtonText} />
+            <Button id="submit-login" state={displayState.submitState} buttonType="submit" value={april ? "Ok" : displayState.submitButtonText} />
         </form>
     )
 }
