@@ -131,8 +131,9 @@ export function getBrowser() { // I didn't check all browsers, see : https://dev
                 (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
                     (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
                         (UA.includes("Edg/")) ? "Edge" : // verified on my computer
-                            (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
-                                "Safari" // not verified
+                            (UA.includes("DuckDuckGo/") || UA.includes("Ddg/")) ? "DuckDuckGo" : // OK
+                               (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
+                                   "Safari" // not verified
     )
 }
 
