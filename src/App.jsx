@@ -17,16 +17,18 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
+import { calcAverage, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
+import { createUserLists, getBrowser } from "./utils/utils";
+import { encrypt, getInitialEcoleDirecteSessions } from "./utils/edpUtils"
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
 import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
 
-import { defaultGlobalSettings, EDPVersion } from "./edpConfig";
+import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfig";
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
+import { LocalStorageNames } from "./utils/constants";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -43,39 +45,6 @@ const Account = lazy(() => import("./components/app/CoreApp").then((module) => {
 const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback } }));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
-
-function consoleLogEDPLogo() {
-    console.log(`%c
-                   /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-               #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-            /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&%/                                            
-        /&&/                                                
-        %/    /#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        &&&&&&&&&&&&/                                       
-        &&&&&&&&&&&&\\                                       
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           \\&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-              \\%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-    
-                Looking for curious minds. Are you in?      
-          https://github.com/Magic-Fishes/Ecole-Directe-Plus 
-`, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
-    console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
-        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
-}
-
-consoleLogEDPLogo();
-
-const currentEDPVersion = "0.4.1";
 const apiVersion = "4.64.0";
 
 // secret webhooks
@@ -109,7 +78,7 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false, 
+    isDevChannel: false,
     selectedChart: 0
 }
 
@@ -127,18 +96,8 @@ const userBrowser = getBrowser();
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
 // get data from localstorage
-const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
-const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
-const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
-const doubleAuthInfoFromLS = JSON.parse((localStorage.getItem("doubleAuthInfo") ?? "{}"));
-let userIdsFromLs;
-if (keepLoggedInFromLs) {
-    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
-} else {
-    userIdsFromLs = {};
-}
 
 function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
@@ -225,19 +184,6 @@ function initSettings(accountList) {
     return userSettings;
 }
 
-function initData(length) {
-    return Array.from({ length: length }, (_) => ({
-        badges: {
-            star: 0,
-            bestStudent: 0,
-            greatStudent: 0,
-            stonks: 0,
-            keepOnFire: 0,
-            meh: 0,
-        },
-    }))
-}
-
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 export const AccountContext = createContext(null);
@@ -249,14 +195,12 @@ let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
+consoleLogEDPLogo();
+
 export default function App({ edpFetch }) {
-    // global account data
-    // const userSession = useUserSession(localStorageSession);
-    const userSession = useEcoleDirecteSession();
+    const userSession = useEcoleDirecteSession(getInitialEcoleDirecteSessions());
     const {
         userData,
-        get,
-        account,
     } = userSession;
     const {
         userCredentials,
@@ -268,7 +212,9 @@ export default function App({ edpFetch }) {
         loginStates,
         selectedUserIndex,
         selectedUser,
-    } = account;
+        users,
+        exportInitAccounts,
+    } = userSession.Account;
 
     const { /*requireLogin, */isLoggedIn, requireDoubleAuth, requireNewToken, doubleAuthAcquired } = loginStates;
 
@@ -308,13 +254,14 @@ export default function App({ edpFetch }) {
     const createNotification = useCreateNotification();
 
     class File {
+        /** @param id : 5018 / "654123546545612654984.pdf"
+         * type : NODEVOIR / FICHIER_CDT
+         * file : "file.pdf" / "TEST.txt"
+         * name : "the_name_of_the_file_downloaded_without_extension"
+         * specialParams : params needed in the URL in certains cases
+         */
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
-            /**id : 5018 / "654123546545612654984.pdf"
-             * type : NODEVOIR / FICHIER_CDT
-             * file : "file.pdf" / "TEST.txt"
-             * name : "the_name_of_the_file_downloaded_without_extension"
-             * specialParams : params needed in the URL in certains cases
-             */
+            
             this.id = id
             this.type = type
             this.name = name
@@ -363,6 +310,34 @@ export default function App({ edpFetch }) {
             URL.revokeObjectURL(url);
         }
     }
+
+    useEffect(() => {
+        const { username, password } = exportInitAccounts();
+        if (keepLoggedIn.value && isLoggedIn && username && password) {
+            localStorage.setItem(LocalStorageNames.ENCRYPTED_CREDENTIALS, encrypt(JSON.stringify({ username, password })));
+        }
+    }, [userCredentials.username.value, userCredentials.password.value]);
+
+    useEffect(() => {
+        const { token } = exportInitAccounts();
+        if (isLoggedIn && token) {
+            localStorage.setItem(LocalStorageNames.TOKEN, token);
+        }
+    }, [token.value]);
+
+    useEffect(() => {
+        const { users } = exportInitAccounts();
+        if (isLoggedIn && users) {
+            localStorage.setItem(LocalStorageNames.USERS, JSON.stringify(users));
+        }
+    }, [loginStates, users]);
+    
+    useEffect(() => {
+        const { selectedUserIndex } = exportInitAccounts();
+        if (isLoggedIn) {
+            localStorage.setItem(LocalStorageNames.LAST_SELECTED_USER, selectedUserIndex.toString());
+        }
+    }, [selectedUserIndex]);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -423,10 +398,6 @@ export default function App({ edpFetch }) {
     //         window.removeEventListener("storage", timeoutHandleStorageChange);
     //     });
     // }, [accountsListState, userSettings, tokenState]);
-
-    useEffect(() => {
-        localStorage.setItem("oldActiveAccount", selectedUserIndex.value)
-    }, [selectedUserIndex.value]);
 
     useEffect(() => {
         const handleMessage = (event) => {
@@ -585,348 +556,6 @@ export default function App({ edpFetch }) {
         period.generalAverage = calcGeneralAverage(period)
         sortedGrades[periodKey] = period;
         changeUserData("sortedGrades", sortedGrades);
-    }
-
-    function setDefaultPeriod(sortedGrades = getUserData("sortedGrades")) {
-        let currentPeriod = 0;
-        for (let periodCode in sortedGrades) {
-            if (Date.now() > sortedGrades[periodCode].endDate) {
-                if (currentPeriod < Object.keys(sortedGrades).length - 1) {
-                    currentPeriod++;
-                }
-            }
-        }
-        changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
-    }
-
-    function sortGrades(grades, activeAccount) {
-        /**
-         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
-         */
-        const periodsFromJson = grades[activeAccount].periodes;
-        const periods = {};
-        const generalAverageHistory = {}; // used for charts
-        const classGeneralAverageHistory = {}; // used for charts
-        const streakScoreHistory = {}; // used for charts
-        const subjectsComparativeInformation = {};
-        const totalBadges = {
-            "star": 0,
-            "bestStudent": 0,
-            "greatStudent": 0,
-            "stonks": 0,
-            "keepOnFire": 0,
-            "meh": 0,
-        };
-        const newLastGrades = []
-        if (periodsFromJson !== undefined) {
-            for (let period of periodsFromJson) {
-                if (period) {
-                    const newPeriod = {};
-                    subjectsComparativeInformation[period.codePeriode] = [];
-
-                    newPeriod.streak = 0;
-                    newPeriod.maxStreak = 0;
-                    newPeriod.name = period.periode;
-                    newPeriod.code = period.codePeriode;
-                    newPeriod.startDate = new Date(period.dateDebut);
-                    newPeriod.endDate = new Date(period.dateFin);
-                    newPeriod.isMockExam = period.examenBlanc;
-                    newPeriod.MTname = period.ensembleMatieres.nomPP;
-                    newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
-                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
-                    newPeriod.subjects = {};
-                    let i = 0;
-                    for (let matiere of period.ensembleMatieres.disciplines) {
-                        // if (matiere.sousMatiere) {
-                        //     continue;
-                        // }
-                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
-                        if (matiere.groupeMatiere) {
-                            subjectCode = "category" + i.toString();
-                            i++;
-                        }
-                        const newSubject = {};
-                        newSubject.code = subjectCode;
-                        newSubject.elementType = "subject";
-                        newSubject.id = matiere.id.toString();
-                        if (matiere.sousMatiere) {
-                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
-                        } else {
-                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
-                        }
-                        newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
-                        newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
-                        newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
-                        newSubject.coef = matiere.coef;
-                        newSubject.size = matiere.effectif;
-                        newSubject.rank = matiere.rang;
-                        newSubject.isCategory = matiere.groupeMatiere;
-                        newSubject.isSubSubject = matiere.sousMatiere;
-                        newSubject.teachers = matiere.professeurs;
-                        newSubject.appreciations = matiere.appreciations;
-                        newSubject.grades = [];
-                        newSubject.average = "N/A";
-                        newSubject.streak = 0;
-                        newSubject.badges = {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                        newPeriod.subjects[subjectCode] = newSubject;
-                        subjectsComparativeInformation[period.codePeriode].push({
-                            subjectFullname: newSubject.name,
-                            classAverage: newSubject.classAverage,
-                            minAverage: newSubject.minAverage,
-                            maxAverage: newSubject.maxAverage
-                        });
-                    }
-                    periods[period.codePeriode] = newPeriod;
-                    generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
-                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
-                    streakScoreHistory[period.codePeriode] = [];
-                }
-            }
-            const gradesFromJson = grades[activeAccount].notes;
-            const subjectDatas = {};
-
-            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
-
-            for (let grade of (gradesFromJson ?? [])) {
-                // handle mock exam periods
-                let tempPeriodCode = grade.codePeriode;
-                let newPeriodCode = tempPeriodCode;
-                if (periods[tempPeriodCode].isMockExam) {
-                    newPeriodCode = tempPeriodCode.slice(0, 4);
-                    if (periods[newPeriodCode] === undefined) {
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                    }
-                }
-
-                const periodCode = newPeriodCode;
-                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
-                // try to rebuild the subject if it doesn't exist (happen when changing school year)
-                if (periods[periodCode].subjects[subjectCode] === undefined) {
-                    periods[periodCode].subjects[subjectCode] = {
-                        code: subjectCode,
-                        elementType: "subject",
-                        name: subjectCode,
-                        classAverage: "N/A",
-                        minAverage: "N/A",
-                        maxAverage: "N/A",
-                        coef: 1,
-                        size: "N/A",
-                        isCategory: false,
-                        teachers: [],
-                        appreciations: [],
-                        grades: [],
-                        average: 20,
-                        streak: 0,
-                        badges: {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                    }
-                }
-
-                const newGrade = {};
-                newGrade.elementType = "grade";
-                newGrade.id = grade.id.toString();
-                newGrade.name = grade.devoir;
-                newGrade.type = grade.typeDevoir;
-                newGrade.date = new Date(grade.date);
-                newGrade.entryDate = new Date(grade.dateSaisie);
-                newGrade.coef = safeParseFloat(grade.coef);
-                newGrade.scale = safeParseFloat(grade.noteSur);
-                newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = safeParseFloat(grade.minClasse);
-                newGrade.classMax = safeParseFloat(grade.maxClasse);
-                newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
-                newGrade.subjectName = grade.libelleMatiere;
-                newGrade.isSignificant = !grade.nonSignificatif;
-                newGrade.examSubjectSRC = grade.uncSujet;
-                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.isReal = true;
-                /* Si newGrade.isReal est faux :
-                    pas de :
-                        - badges
-                        - streak
-                        - moyenne de classe/min/max
-                        - correction ni sujet
-                        - date
-                    différences : 
-                        - id = randomUUID
-                    choisit par l'utilisateur : 
-                        - name
-                        - coef
-                        - scale
-                        - value
-                        - type
-                */
-                if (!subjectDatas.hasOwnProperty(periodCode)) {
-                    subjectDatas[periodCode] = {};
-                }
-                if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
-                    subjectDatas[periodCode][subjectCode] = [];
-                }
-                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
-                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
-                const subjectAverage = periods[periodCode].subjects[subjectCode].average;
-                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
-                const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
-
-                // streak management
-                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
-                if (newGrade.upTheStreak) {
-                    periods[periodCode].streak += 1;
-                    if (periods[periodCode].streak > periods[periodCode].maxStreak) {
-                        periods[periodCode].maxStreak = periods[periodCode].streak;
-                    }
-                    periods[periodCode].totalStreak += 1;
-                    periods[periodCode].subjects[subjectCode].streak += 1;
-                } else {
-                    if (newGrade.isSignificant && !["Abs", "Disp", "NE", "EA", "Comp"].includes(newGrade.value)) {
-                        periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
-                        periods[periodCode].subjects[subjectCode].streak = 0;
-
-                        // enlève le "upTheStreak" des notes précédant celle qu'on considère
-                        for (let grade of periods[periodCode].subjects[subjectCode].grades) {
-                            if (grade.upTheStreak) {
-                                grade.upTheStreak = "maybe";
-                            }
-                        }
-                    }
-                }
-                streakScoreHistory[periodCode].push(periods[periodCode].streak);
-
-                periods[periodCode].subjects[subjectCode].average = average;
-                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
-
-                const category = findCategory(periods[periodCode], subjectCode);
-                if (category !== null) {
-                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                    periods[periodCode].subjects[category.code].average = categoryAverage;
-                }
-                const generalAverage = calcGeneralAverage(periods[periodCode]);
-                generalAverageHistory[periodCode].generalAverages.push(generalAverage);
-                generalAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].generalAverage = generalAverage;
-
-                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
-                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
-                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].classGeneralAverage = classGeneralAverage;
-
-                // création des badges
-                const gradeBadges = [];
-                if (!isNaN(newGrade.value)) {
-                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
-                        gradeBadges.push("star");
-                        periods[periodCode].subjects[subjectCode].badges.star++
-                        totalBadges.star++
-                    }
-                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
-                        gradeBadges.push("bestStudent");
-                        periods[periodCode].subjects[subjectCode].badges.bestStudent++
-                        totalBadges.bestStudent++
-                    }
-                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
-                        gradeBadges.push("greatStudent");
-                        periods[periodCode].subjects[subjectCode].badges.greatStudent++
-                        totalBadges.greatStudent++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
-                        gradeBadges.push("stonks");
-                        periods[periodCode].subjects[subjectCode].badges.stonks++
-                        totalBadges.stonks++
-                    }
-                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
-                        gradeBadges.push("keepOnFire");
-                        periods[periodCode].subjects[subjectCode].badges.keepOnFire++
-                        totalBadges.keepOnFire++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
-                        gradeBadges.push("meh");
-                        periods[periodCode].subjects[subjectCode].badges.meh++
-                        totalBadges.meh++
-                    }
-                }
-                newGrade.badges = gradeBadges;
-                newGrade.skill = formatSkills(grade.elementsProgramme)
-
-                periods[periodCode].subjects[subjectCode].grades.push(newGrade);
-                if (lastGrades.includes(grade)) {
-                    newLastGrades.push(newGrade)
-                }
-            }
-        }
-
-        // supprime les périodes vides et examens blancs
-        let i = 0;
-        let firstPeriod;
-        for (const key in periods) {
-            if (i === 0) {
-                firstPeriod = { key: key, value: periods[key] }
-            }
-            i++;
-            let isEmpty = true;
-            if (periods[key])
-                for (const subject in periods[key].subjects) {
-                    if (periods[key].subjects[subject].grades.length !== 0) {
-                        isEmpty = false;
-                    }
-                }
-            if (isEmpty || periods[key].isMockExam) {
-                delete periods[key];
-            }
-        }
-        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
-        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
-            periods[firstPeriod.key] = firstPeriod.value;
-        }
-
-        const settings = grades[activeAccount].parametrage;
-        const enabledFeatures = {};
-
-        enabledFeatures.moyenneMin = settings.moyenneMin;
-        enabledFeatures.moyenneMax = settings.moyenneMax;
-        enabledFeatures.coefficient = settings.coefficientNote;
-
-        // add the average of all subjects a special type of chart
-        for (const period in periods) {
-            for (const subject in periods[period].subjects) {
-                for (const subjectID in subjectsComparativeInformation[period]) {
-                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
-                        const newAverage = periods[period].subjects[subject].average;
-                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
-                            subjectsComparativeInformation[period].splice(subjectID, 1);
-                            break;
-                        }
-                        subjectsComparativeInformation[period][subjectID].average = newAverage;
-                        break;
-                    }
-                }
-            }
-        }
-
-        changeUserData("totalBadges", totalBadges);
-        changeUserData("sortedGrades", periods);
-        changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
-        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
-        changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
-        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
-        changeUserData("gradesEnabledFeatures", enabledFeatures);
-        changeUserData("lastGrades", newLastGrades.reverse());
-        setDefaultPeriod(periods)
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -1915,25 +1544,19 @@ export default function App({ edpFetch }) {
     }
 
     function logout() {
+        userSession.logout();
         // suppression des informations de connexion
-        localStorage.removeItem("token");
-        localStorage.removeItem("accountsList");
-        localStorage.removeItem("oldActiveAccount");
-        // suppression des paramètres locaux et globaux
-        localStorage.removeItem("userSettings");
-        localStorage.removeItem("keepLoggedIn");
-        // réinitialisation des States
-        setTokenState("");
-        setAccountsListState([]);
-        resetUserData();
-        keepLoggedIn.set(false);
-        // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
-        for (let controller of abortControllers.current) {
-            controller.abort();
-        }
-        abortControllers.current = [];
+        localStorage.removeItem(LocalStorageNames.TOKEN);
+        localStorage.removeItem(LocalStorageNames.USERS);
+        localStorage.removeItem(LocalStorageNames.LAST_SELECTED_USER);
     }
 
+    useEffect(() => {
+        window.addEventListener("storage", console.log);
+        return () => {
+            window.removeEventListener("storage", console.log);
+        }
+    }, [])
 
     /* ################################ THEME ################################ */
 
@@ -2008,7 +1631,7 @@ export default function App({ edpFetch }) {
                     fakeLogin={fakeLogin}
                     resetUserData={resetUserData}
 
-                    get={get}
+                    get={userSession.get}
 
                     displayTheme={displayTheme}
 
@@ -2057,7 +1680,7 @@ export default function App({ edpFetch }) {
                     path: "quackquack",
                 },
                 {
-                    element: <Lab account={account} />,
+                    element: <Lab account={userSession.Account} />,
                     path: "lab",
                 },
                 {

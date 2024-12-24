@@ -60,8 +60,8 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
                         setErrorMessage("Identifiant et/ou mot de passe invalide");
                         return;
                     case 2:
-                        setSubmitState("invalid");
-                        setSubmitButtonText("Échec de la connexion");
+                        setSubmitState("submitted");
+                        setSubmitButtonText("A2F");
                         setErrorMessage("Authentification à 2 facteurs requise");
                         return;
                     case 3:

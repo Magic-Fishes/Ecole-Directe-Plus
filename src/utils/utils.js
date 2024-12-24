@@ -1,8 +1,6 @@
-import CryptoJS from 'crypto-js';
 import { v5 as uuidv5 } from "uuid";
 import sha256 from 'js-sha256';
 
-const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
 const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
 export function areOccurenciesEqual(obj1, obj2) {
@@ -43,20 +41,6 @@ export function getISODate(date) {
 
 export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function encrypt(chain) {
-    if (!chain) {
-        return chain
-    }
-    return CryptoJS.AES.encrypt(chain, key).toString()
-}
-
-export function decrypt(chain) {
-    if (!chain) {
-        return chain
-    }
-    return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)
 }
 
 export function decodeBase64(string) {

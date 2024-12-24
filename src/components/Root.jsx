@@ -103,7 +103,7 @@ export default function Root({ get, accountsList, fakeLogin, resetUserData, sync
                 return 0;
             } else {
                 localStorage.clear();
-                localStorage.setItem("EDPVersion", currentEDPVersion);
+                localStorage.setItem("EDPVersion", EDPVersion);
             }
         }
 

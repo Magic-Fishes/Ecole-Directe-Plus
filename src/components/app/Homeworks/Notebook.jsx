@@ -291,6 +291,12 @@ export default function Notebook({ hideDateController = false }) {
 
     useEffect(() => {
         const controller = new AbortController();
+        console.log(homeworks);
+        console.log((homeworks // SI l'objet des devoirs existe MAIS
+            && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
+                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
+                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
+            && isLoggedIn);
         if ((homeworks // SI l'objet des devoirs existe MAIS
             && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
                 || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
