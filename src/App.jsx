@@ -19,7 +19,7 @@ import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
 import { calcAverage, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
 import { createUserLists, getBrowser } from "./utils/utils";
-import { encrypt, getInitialEcoleDirecteSessions } from "./utils/edpUtils"
+import { getInitialEcoleDirecteSessions } from "./utils/edpUtils"
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
@@ -213,10 +213,9 @@ export default function App({ edpFetch }) {
         selectedUserIndex,
         selectedUser,
         users,
-        exportInitAccounts,
     } = userSession.Account;
 
-    const { /*requireLogin, */isLoggedIn, requireDoubleAuth, requireNewToken, doubleAuthAcquired } = loginStates;
+    const { isLoggedIn, requireDoubleAuth, doubleAuthAcquired } = loginStates;
 
     const tokenState = token.value;
     const setTokenState = token.set;
@@ -261,7 +260,6 @@ export default function App({ edpFetch }) {
          * specialParams : params needed in the URL in certains cases
          */
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
-            
             this.id = id
             this.type = type
             this.name = name
@@ -434,13 +432,6 @@ export default function App({ edpFetch }) {
             prefersDarkMode.removeEventListener('change', handleOSThemeChange);
         });
     }, []);
-
-    // Applique les informations du localStorage dès la première frame pour éviter certains bugs
-    const isFirstFrame = useRef(true);
-    if (isFirstFrame.current) {
-        isFirstFrame.current = false;
-    }
-
     // TABLET / MOBILE LAYOUT MANAGEMENT
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
@@ -792,37 +783,6 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function requireLogin() {
-    }
-
-    function loginFromOldAuthInfo(token, accountsList) {
-        // En cas de rafraichissement de la page, recovery des informations à partir du token s'il n'a pas expiré
-        if (!!token && token !== "none" && accountsList.length > 0) {
-            console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
-            setUserInfo(token, accountsList);
-        } else {
-            console.log("NO ACCOUNTSLIST: LOGGED OUT");
-            logout();
-        }
-    }
-
-    const fakeLogin = () => {
-        const fakeToken = "thisisafaketoken";
-        const fakeAccountsList = [
-            {
-                accountType: "E",
-                id: "0001",
-                firstName: "Guest",
-                lastName: "",
-                email: "ecole.directe.plus@gmail.com",
-                picture: "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
-                schoolName: "École de la République",
-                class: ["Pcpt", "Précepteur d'exception"]
-            },
-        ];
-        resetUserData()
-        setUserInfo(fakeToken, fakeAccountsList)
-    }
 
     function handleEdBan() {
         // Will summon a notification with JSX in it
@@ -1519,18 +1479,6 @@ export default function App({ edpFetch }) {
 
     /* ################################ CONNEXION/DÉCONNEXION ################################ */
 
-    function setUserInfo(token, accountsList) {
-        console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
-        setTokenState(token);
-        setAccountsListState(accountsList);
-        setTimeline(createUserLists(accountsList.length));
-        setSchoolLife(createUserLists(accountsList.length));
-        // !:! setUserSettings(initSettings(accountsList));
-        // !:! setUserData(initData(accountsList.length));
-        // localStorage.setItem("token", token);
-        // localStorage.setItem("accountsList", JSON.stringify(accountsList));
-    }
-
     function resetUserData(hard = true) {
         if (hard) {
             selectedUserIndex.set(0);
@@ -1550,13 +1498,6 @@ export default function App({ edpFetch }) {
         localStorage.removeItem(LocalStorageNames.USERS);
         localStorage.removeItem(LocalStorageNames.LAST_SELECTED_USER);
     }
-
-    useEffect(() => {
-        window.addEventListener("storage", console.log);
-        return () => {
-            window.removeEventListener("storage", console.log);
-        }
-    }, [])
 
     /* ################################ THEME ################################ */
 
@@ -1628,7 +1569,6 @@ export default function App({ edpFetch }) {
                     isLoggedIn={isLoggedIn}
                     token={tokenState}
                     accountsList={accountsListState}
-                    fakeLogin={fakeLogin}
                     resetUserData={resetUserData}
 
                     get={userSession.get}
@@ -1694,7 +1634,7 @@ export default function App({ edpFetch }) {
                 {
                     element: (isLoggedIn
                         ? <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} />
-                        : <Login logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
+                        : <Login logout={logout} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
                     path: "login",
                 },
                 {
@@ -1717,7 +1657,7 @@ export default function App({ edpFetch }) {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} onClose={() => { }} close={true} />)} {/* // !:! changer le true ofc*/}
+                            {(!isLoggedIn && <LoginBottomSheet logout={logout} onClose={() => { }} close={true} />)} {/* // !:! changer le true ofc*/}
                         </>),
                     path: "app",
                     children: [

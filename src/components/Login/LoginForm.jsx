@@ -15,7 +15,7 @@ import { AccountContext } from "../../App";
 const today = new Date();
 const april = (today.getMonth() === 3) && (today.getDate() < 2);
 
-export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLoggedInCheckBox = false, ...props }) {
+export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false, ...props }) {
 
     const {
         userCredentials,
@@ -61,8 +61,8 @@ export default function LoginForm({ logout, loginFromOldAuthInfo, disabledKeepLo
                         return;
                     case 2:
                         setSubmitState("submitted");
-                        setSubmitButtonText("A2F");
-                        setErrorMessage("Authentification à 2 facteurs requise");
+                        setSubmitButtonText("A2F requise");
+                        setErrorMessage("");
                         return;
                     case 3:
                         setSubmitState("invalid");
