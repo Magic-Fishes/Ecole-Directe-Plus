@@ -1,5 +1,11 @@
 User-agent: Googlebot
+Disallow: /lab
+
 User-agent: Bingbot
 Disallow: /lab
+
+User-agent: *
+Disallow: /private
+Disallow: /temp
 
 Sitemap: https://ecole-directe.plus/sitemap.xml
