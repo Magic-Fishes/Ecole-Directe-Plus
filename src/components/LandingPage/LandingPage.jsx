@@ -16,11 +16,9 @@ import UpArrow from "../graphics/UpArrow";
 
 import "./LandingPage.css";
 
-export default function LandingPage({ token, accountsList }) {
+export default function LandingPage({ isLoggedIn }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme } = useContext(AppContext);
-    const { theme, displayMode } = useContext(SettingsContext);
-
-    const [isLoggedIn, setIsLoggedIn] = useState(token && accountsList.length > 0); // this one is different from the one in App.jsx
+    const { displayTheme, displayMode } = useContext(SettingsContext).user;
 
     const [isTop, setIsTop] = useState(true);
     const homeSectionRef = useRef(null);
@@ -32,12 +30,8 @@ export default function LandingPage({ token, accountsList }) {
 
 
     const changeTheme = () => {
-        theme.set(actualDisplayTheme === "light" ? "dark" : "light");
+        displayTheme.set(actualDisplayTheme === "light" ? "dark" : "light");
     };
-
-    useEffect(() => {
-        setIsLoggedIn(token && accountsList.length > 0);
-    }, [token, accountsList]);
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {

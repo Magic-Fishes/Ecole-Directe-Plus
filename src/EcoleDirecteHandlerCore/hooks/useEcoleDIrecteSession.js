@@ -32,7 +32,7 @@ import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
  * )
  */
 
-export default function useEcoleDirecteSession(localStorageSession) {
+export default function useEcoleDirecteSession(initialSession) {
     const [userData, {
         initialize: initializeUserData,
         reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
@@ -40,7 +40,7 @@ export default function useEcoleDirecteSession(localStorageSession) {
         setSelectedUserDataIndex,
     }] = useAccountData();
 
-    const Account = useEcoleDirecteAccount(localStorageSession.Account);
+    const Account = useEcoleDirecteAccount(initialSession.Account);
     const { token, users, selectedUser, selectedUserIndex, loginStates } = Account;
 
     useEffect(() => {

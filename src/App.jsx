@@ -219,7 +219,7 @@ export default function App({ edpFetch }) {
     // paramètres propre à chaque profil du compte
     const userSettings = useAccountSettings(selectedUserIndex.value != null ? selectedUserIndex.value : 0, [Object.fromEntries(Object.keys(defaultSettings).map((setting) => [setting, { value: defaultSettings[setting], properties: {} }]))]); // !:! Il faut ettre un default pertinent
 
-    const { displayTheme } = userSettings;
+    const { displayTheme, displayMode } = userSettings;
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [timeline, setTimeline] = useState([]);
@@ -238,9 +238,12 @@ export default function App({ edpFetch }) {
 
     // diverse
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
-    const loginAbortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
-    const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
+    const actualDisplayTheme = displayTheme.value === "auto" // thème d'affichage réel (ex: dark ou light, et non pas auto)
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? "dark"
+            : "light"
+        : displayTheme.value;
     const createNotification = useCreateNotification();
 
     class File {
@@ -479,21 +482,18 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function addNewGrade({ value, coef, scale, name, type, subjectKey, periodKey }) {
+    function addNewGrade(periodKey, subjectKey, newValues) {
         /** 
          * Ajoute une nouvelle note à l'utilisateur (simulation)
-         * - value : valeur de la note
-         * - coef : coefficient de la note
-         * - scale : note maximum posible
-         * - name : nom du devoir
-         * - type : type de devoir (DS, DM, ...)
+         * - @param newValues.value : valeur de la note
+         * - @param newValues.coef : coefficient de la note
+         * - @param newValues.scale : note maximum posible
+         * - @param newValues.name : nom du devoir
+         * - @param newValues.type : type de devoir (DS, DM, ...)
          */
         const grades = userData.grades;
         grades[periodKey].subjects[subjectKey].grades.push({
-            value: value,
-            coef: coef,
-            scale: scale,
-            name: name,
+            ...newValues,
             badges: [],
             classAverage: "N/A",
             classMin: "N/A",
@@ -507,7 +507,6 @@ export default function App({ edpFetch }) {
             isReal: false,
             skill: [],
             subjectName: grades[periodKey].subjects[subjectKey].name,
-            type: type,
             upTheStreak: false,
             subjectKey: subjectKey,
             periodKey: periodKey,
@@ -1545,10 +1544,7 @@ export default function App({ edpFetch }) {
 
     /* ################################################################################### */
 
-    function refreshApp() {
-        // permet de refresh l'app sans F5
-        setAppKey(crypto.randomUUID());
-    }
+    const refreshApp = () => { setAppKey(crypto.randomUUID()) } // permet de refresh l'app sans F5
 
     // routing system
     const router = createBrowserRouter([
@@ -1566,7 +1562,7 @@ export default function App({ edpFetch }) {
                     displayTheme={displayTheme}
 
                     setDisplayModeState={(value) => { displayMode.set(value) }}
-                    displayMode={userSettings.displayMode.value}
+                    displayMode={displayMode.value}
 
                     activeAccount={selectedUserIndex.value}
                     setActiveAccount={selectedUserIndex.set}
@@ -1594,7 +1590,7 @@ export default function App({ edpFetch }) {
             errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
-                    element: <LandingPage token={tokenState} accountsList={accountsListState} />,
+                    element: <LandingPage token={tokenState} isLoggedIn={isLoggedIn} />,
                     path: "/",
                 },
                 {

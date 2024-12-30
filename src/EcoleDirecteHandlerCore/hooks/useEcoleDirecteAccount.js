@@ -32,13 +32,13 @@ import { consoleLogEDPLogo } from "../../edpConfig";
  * )
  */
 
-export default function useEcoleDirecteAccount(initialValues) {
-    const [loginState, setLoginState] = useState(initialValues.users ? (initialValues.token ? LoginStates.LOGGED_IN : LoginStates.REQUIRE_NEW_TOKEN) : LoginStates.REQUIRE_LOGIN);
-    const [username, setUsername] = useState(initialValues.username);
-    const [password, setPassword] = useState(initialValues.password);
-    const [token, setToken] = useState(initialValues.token);
-    const [selectedUserIndex, setSelectedUserIndex] = useState(initialValues.selectedUserIndex ?? 0);
-    const [users, setUsers] = useState(initialValues.users ?? null);
+export default function useEcoleDirecteAccount(initialAccount) {
+    const [loginState, setLoginState] = useState(initialAccount.users ? (initialAccount.token ? LoginStates.LOGGED_IN : LoginStates.REQUIRE_NEW_TOKEN) : LoginStates.REQUIRE_LOGIN);
+    const [username, setUsername] = useState(initialAccount.username);
+    const [password, setPassword] = useState(initialAccount.password);
+    const [token, setToken] = useState(initialAccount.token);
+    const [selectedUserIndex, setSelectedUserIndex] = useState(initialAccount.selectedUserIndex ?? 0);
+    const [users, setUsers] = useState(initialAccount.users ?? null);
 
     const doubleAuthKey = useRef(null);
     const selectedUser = users !== null && selectedUserIndex < users.length ? users[selectedUserIndex] : null;
@@ -201,8 +201,6 @@ export default function useEcoleDirecteAccount(initialValues) {
             fn(...params);
         }
     }
-
-    console.log("ALED")
 
     return {
         userCredentials: {
