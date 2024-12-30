@@ -1,5 +1,6 @@
 import { v5 as uuidv5 } from "uuid";
 import sha256 from 'js-sha256';
+import { Browsers } from "./constants";
 
 const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
@@ -110,13 +111,12 @@ export async function sendJsonToWebhook(targetWebhook, identifier, data, cooldow
 export function getBrowser() { // I didn't check all browsers, see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#browser_name_and_version
     const UA = navigator.userAgent
     return (
-        (UA.includes("OPR/") || UA.includes("Opera/")) ? "Opera" : // verified on my computer
-            (UA.includes("Chromium/")) ? "Chromium" : // not verified
-                (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
-                    (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
-                        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
-                            (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
-                                "Safari" // not verified
+        (UA.includes("OPR/") || UA.includes("Opera/")) ? Browsers.OPERA : // verified on my computer
+            (UA.includes("Chromium/")) ? Browsers.CHROMIUM : // not verified
+                (UA.includes("Firefox/")) ? Browsers.FIREFOX : // verified on my computer
+                    (UA.includes("Edg/")) ? Browsers.EDGE : // verified on my computer
+                        (UA.includes("Chrome/")) ? Browsers.CHROME : // verified on my computer
+                            Browsers.SAFARI // not verified
     )
 }
 

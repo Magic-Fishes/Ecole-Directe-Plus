@@ -63,7 +63,7 @@ export function decodeSettings(encodedSettings, initSettingsCallback) {
         "displayTheme",
         "displayMode",
     ];
-    
+    // !:! replace "Order" by "Table"
     const intOrder = [
         "gradeScale",
     ];

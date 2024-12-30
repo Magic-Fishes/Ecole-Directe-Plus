@@ -28,7 +28,7 @@ import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDire
 import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfig";
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
-import { LocalStorageNames } from "./utils/constants";
+import { Browsers, LocalStorageNames } from "./utils/constants";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -82,17 +82,7 @@ const defaultSettings = {
     selectedChart: 0
 }
 
-const browserExtensionDownloadLink = {
-    Opera: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Chromium: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Chrome: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Firefox: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
-    Edge: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
-    Safari: "/edp-unblock"
-}
-
 const userBrowser = getBrowser();
-
 const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
 // get data from localstorage
@@ -110,7 +100,7 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     return defaultSettings[setting];
 }
 
-
+/*
 function initSettings(accountList) {
     // comment ajouter un setting :
     // userSettings ici ; defaultSettings
@@ -183,13 +173,12 @@ function initSettings(accountList) {
     }
     return userSettings;
 }
-
+*/
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 export const AccountContext = createContext(null);
 export const SettingsContext = createContext(null);
 export const UserDataContext = createContext(null);
-// !:! créer un context only setting et only userData
 
 let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
@@ -199,9 +188,11 @@ consoleLogEDPLogo();
 
 export default function App({ edpFetch }) {
     const userSession = useEcoleDirecteSession(getInitialEcoleDirecteSessions());
+
     const {
         userData,
     } = userSession;
+
     const {
         userCredentials,
         token,
@@ -441,7 +432,7 @@ export default function App({ edpFetch }) {
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
 
-            if (getBrowser() !== "Firefox") {
+            if (userBrowser !== Browsers.FIREFOX) {
                 // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
                 if (window.innerWidth >= 869 && window.innerWidth < 1250) {
                     if (window.innerWidth >= 995) {
@@ -450,8 +441,7 @@ export default function App({ edpFetch }) {
                         document.documentElement.style.zoom = .7;
                     }
 
-                    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                    if (isSafari) {
+                    if (userBrowser === Browsers.SAFARI) {
                         const newFontSize = (.125 / 170) * window.innerWidth - .294;
                         if (newFontSize < 8) {
                             document.documentElement.style.fontSize = "8px";
@@ -798,7 +788,7 @@ export default function App({ edpFetch }) {
             <hr />
             <div className="extension-download-link">
                 <a href="/edp-unblock#about">En savoir plus</a>
-                <a href={browserExtensionDownloadLink[userBrowser]} target={(!["Safari", "Firefox"].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
+                <a href={browserExtensionDownloadLink[userBrowser]} target={(![Browsers.SAFARI, Browsers.FIREFOX].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
             </div>
         </>, { customClass: "extension-warning", timer: "infinite" })
     }
