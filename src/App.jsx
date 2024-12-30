@@ -29,6 +29,7 @@ import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfi
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
 import { Browsers, LocalStorageNames } from "./utils/constants";
+import { useLocalStorageEffect, useDisplayModeEffect, useDisplayThemeEffect, useBrowserDisplayThemeChange } from "./utils/hooks/useCustomEffect";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -83,7 +84,6 @@ const defaultSettings = {
 }
 
 const userBrowser = getBrowser();
-const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
 // get data from localstorage
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
@@ -226,7 +226,6 @@ export default function App({ edpFetch }) {
     const [schoolLife, setSchoolLife] = useState([]);
 
     // utils
-    const [oldTimeoutId, setOldTimeoutId] = useState(null);
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -252,7 +251,7 @@ export default function App({ edpFetch }) {
          * file : "file.pdf" / "TEST.txt"
          * name : "the_name_of_the_file_downloaded_without_extension"
          * specialParams : params needed in the URL in certains cases
-         */
+        */
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
             this.id = id
             this.type = type
@@ -303,40 +302,13 @@ export default function App({ edpFetch }) {
         }
     }
 
-    useEffect(() => {
-        const { username, password } = exportInitAccounts();
-        if (keepLoggedIn.value && isLoggedIn && username && password) {
-            localStorage.setItem(LocalStorageNames.ENCRYPTED_CREDENTIALS, encrypt(JSON.stringify({ username, password })));
-        }
-    }, [userCredentials.username.value, userCredentials.password.value]);
-
-    useEffect(() => {
-        const { token } = exportInitAccounts();
-        if (isLoggedIn && token) {
-            localStorage.setItem(LocalStorageNames.TOKEN, token);
-        }
-    }, [token.value]);
-
-    useEffect(() => {
-        const { users } = exportInitAccounts();
-        if (isLoggedIn && users) {
-            localStorage.setItem(LocalStorageNames.USERS, JSON.stringify(users));
-        }
-    }, [loginStates, users]);
-    
-    useEffect(() => {
-        const { selectedUserIndex } = exportInitAccounts();
-        if (isLoggedIn) {
-            localStorage.setItem(LocalStorageNames.LAST_SELECTED_USER, selectedUserIndex.toString());
-        }
-    }, [selectedUserIndex]);
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
     //                                                                                  Gestion Storage                                                                                 //
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    useLocalStorageEffect(userSession, keepLoggedIn);
 
     // !:! IL faut gérer le changement de storage
 
@@ -407,25 +379,7 @@ export default function App({ edpFetch }) {
 
     /////////// USER DATA ///////////
 
-    useEffect(() => {
-        // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
 
-        // Gestion thème
-        const handleOSThemeChange = () => {
-            console.clear();
-            consoleLogEDPLogo();
-            if (displayTheme.value === "auto") {
-                document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
-                document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
-                toggleThemeTransitionAnimation();
-            }
-        }
-        prefersDarkMode.addEventListener('change', handleOSThemeChange);
-
-        return (() => {
-            prefersDarkMode.removeEventListener('change', handleOSThemeChange);
-        });
-    }, []);
     // TABLET / MOBILE LAYOUT MANAGEMENT
     useEffect(() => {
         // gère l'état de isMobileLayout en fonction de la largeur de l'écran
@@ -1490,57 +1444,12 @@ export default function App({ edpFetch }) {
 
     /* ################################ THEME ################################ */
 
-    useEffect(() => {
-        const metaThemeColor = document.getElementById("theme-color");
-        if (displayTheme.value === "dark") {
-            document.documentElement.classList.add("dark");
-            document.documentElement.classList.remove("light");
-            metaThemeColor.content = "#181829";
-        } else if (displayTheme.value === "light") {
-            document.documentElement.classList.add("light");
-            document.documentElement.classList.remove("dark");
-            metaThemeColor.content = "#e4e4ff";
-        } else {
-            document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
-            document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
-            metaThemeColor.content = (window.matchMedia('(prefers-color-scheme: dark)').matches ? "#181829" : "#e4e4ff");
-        }
-        toggleThemeTransitionAnimation();
-    }, [displayTheme.value]);
-
-
-    function getActualDisplayTheme() {
-        if (displayTheme.value === "auto") {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
-        }
-        return displayTheme.value;
-    }
-
-
-
-    function toggleThemeTransitionAnimation() {
-        if (userSettings.displayMode.value === "balanced" || userSettings.displayMode.value === "performance") {
-            return 0;
-        }
-        //  vérifie l'existence d'un timeout actif
-        if (oldTimeoutId) {
-            // un timeout était déjà en cours, on le supprime
-            clearTimeout(oldTimeoutId);
-        }
-        document.documentElement.classList.add("switching-theme");
-        const timeoutId = setTimeout(() => { document.documentElement.classList.remove("switching-theme") }, 500);
-        setOldTimeoutId(timeoutId);
-    }
+    useDisplayThemeEffect(displayTheme, displayMode);
+    useBrowserDisplayThemeChange(displayMode);
 
     /* ################################ MODE D'AFFICHAGE ################################ */
 
-    useEffect(() => {
-        document.documentElement.classList.remove("quality");
-        document.documentElement.classList.remove("balanced");
-        document.documentElement.classList.remove("performance");
-
-        document.documentElement.classList.add(userSettings.displayMode.value);
-    }, [userSettings.displayMode.value]);
+    useDisplayModeEffect(displayMode);
 
     /* ################################################################################### */
 
