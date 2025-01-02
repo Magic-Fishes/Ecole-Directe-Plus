@@ -12,6 +12,7 @@ import mapLogin from "../mappers/login";
 import fetchDoubleAuthAnswer from "../requests/fetchDoubleAuthAnswer";
 import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
 import { consoleLogEDPLogo } from "../../edpConfig";
+import { logger } from "../../../devutils/utils";
 
 /**
  * Each get function (the ones that get parse and store data such as requestLogin of getGrades)
@@ -195,20 +196,13 @@ export default function useEcoleDirecteAccount(initialAccount) {
         setLoginState(LoginStates.REQUIRE_LOGIN);
     }
 
-    function logger(fn) {
-        return (...params) => {
-            console.trace();
-            fn(...params);
-        }
-    }
-
     return {
         userCredentials: {
             username: { value: username, set: (value) => { if (requireLogin) setUsername(value) } },
             password: { value: password, set: (value) => { if (requireLogin) setPassword(value) } },
         },
         token: { value: token, set: logger(setToken) },
-        selectedUserIndex: { value: selectedUserIndex, set: logger(setSelectedUserIndex) },
+        selectedUserIndex: { value: selectedUserIndex, set: logger(setSelectedUserIndex, false) },
         loginStates: {
             requireLogin,
             isLoggedIn,
