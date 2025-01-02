@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useRef } from "react";
 
 import PopUp from "../../generic/PopUps/PopUp";
 import Plus from "../../graphics/Plus"
@@ -28,7 +28,7 @@ export default function DOMSimulation({ children }) {
     });
 
     const gradeSimulationSubjectKey = useRef("");
-    const gradeSimulationPeriodKey = useref("");
+    const gradeSimulationPeriodKey = useRef("");
 
     const { addNewGrade } = useContext(AppContext);
 

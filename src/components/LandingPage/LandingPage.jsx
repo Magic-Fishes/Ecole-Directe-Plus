@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { AppContext, SettingsContext } from "../../App"
+import { AppContext, SettingsContext } from "../../App";
 import { currentPeriodEvent } from "../generic/events/setPeriodEvent";
 import Snowfall from "../generic/events/christmas/Snowfall";
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
@@ -21,7 +21,9 @@ import "../generic/events/christmas/snow.css";
 
 export default function LandingPage({ isLoggedIn }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme } = useContext(AppContext);
-    const { displayTheme, displayMode } = useContext(SettingsContext).user;
+    const settings = useContext(SettingsContext);
+    const { displayTheme, displayMode, isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
+    const isChristmasEventEnabled = isPartyModeEnabled.value && isPeriodEventEnabled && currentPeriodEvent === "christmas";
 
     const [isTop, setIsTop] = useState(true);
     const homeSectionRef = useRef(null);
@@ -31,20 +33,9 @@ export default function LandingPage({ isLoggedIn }) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const settings = useUserSettings();
-
-
-    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
-
     const changeTheme = () => {
         displayTheme.set(actualDisplayTheme === "light" ? "dark" : "light");
     };
-
-    useEffect(() => {
-        if (isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas") {
-        }
-    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver((intersections) => {
@@ -120,7 +111,7 @@ export default function LandingPage({ isLoggedIn }) {
 
     return (<div className="landing-page">
         {<header id="nav-bar" className="top-section">
-            <span className={`nav-logo ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element" : ""}`}>
+            <span className={`nav-logo ${isChristmasEventEnabled ? "snowy-element" : ""}`}>
                 <EDPLogo className="landing-logo" id="outside-container" alt="Logo Ecole Directe Plus" />Ecole Directe Plus
             </span>
             {!isTabletLayout && !isMobileLayout && <nav className="nav-links">
@@ -130,14 +121,12 @@ export default function LandingPage({ isLoggedIn }) {
                 <Link to="/edp-unblock" className={location.hash === "#edp-unblock" ? "selected" : ""} >EDP Unblock <EdpuLogo className="edpu-logo" /> </Link>
             </nav>}
             <div className="nav-buttons">
-                <Link className={`nav-login ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element" : ""}`} to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
+                <Link className={`nav-login ${isChristmasEventEnabled ? "snowy-element" : ""}`} to={isLoggedIn ? "/app" : "/login"}>{isLoggedIn ? "Ouvrir l'app" : "Se connecter"}</Link>
                 <button className="change-theme" onClick={changeTheme} />
             </div>
         </header>}
         {
-            isPartyModeEnabled
-            && isPeriodEventEnabled
-            && currentPeriodEvent === "christmas"
+            isChristmasEventEnabled
             && <Snowfall />
         }
         <section id="home" ref={homeSectionRef}>

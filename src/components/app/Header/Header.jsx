@@ -18,7 +18,7 @@ import Policy from "../../generic/Policy";
 
 import { EDPVersion } from "../../../edpConfig";
 
-import { AppContext, UserDataContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
 import Snowfall from "../../generic/events/christmas/Snowfall";
@@ -29,20 +29,19 @@ import "./Header.css";
 
 export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, timeline, isFullScreen, isTabletLayout, logout }) {
     const { globalSettings, isStandaloneApp } = useContext(AppContext);
-    
+
     const userData = useContext(UserDataContext);
     const { notifications } = userData;
     
+    const settings = useContext(SettingsContext);
+    const { isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
+
+    const isChristmasEventEnabled = isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent
+
     const navigate = useNavigate();
     const location = useLocation();
 
     const { userId } = useParams();
-
-    const settings = useUserSettings();
-
-    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
-
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
@@ -173,7 +172,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
     // JSX
     return (
         <div id="app">
-            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
+            {isChristmasEventEnabled && (
                 <ul className="lightrope">
                     {Array(150).fill(0).map((_, index) => <li key={index} />)}
                 </ul>
@@ -219,9 +218,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
             {location.hash === "#patch-notes" && <PatchNotes version={EDPVersion} onClose={() => { handleCloseAnchorLinks(); localStorage.setItem("EDPVersion", EDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
             {
-                isPartyModeEnabled
-                && isPeriodEventEnabled
-                && currentPeriodEvent === "christmas"
+                isChristmasEventEnabled
                 && <Snowfall />
             }
         </div>
