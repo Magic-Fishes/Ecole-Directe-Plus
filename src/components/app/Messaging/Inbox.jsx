@@ -64,7 +64,7 @@ export default function Inbox({ selectedMessage, setSelectedMessage, selectedFol
         try {
             // regexp = new RegExp(removeAccents(search.toLowerCase()));
         } catch { return -1 }
-        const filterBy = [message.subject, message.from.nom, message.content?.content, message.files?.map((file) => file.name)].flat();
+        const filterBy = [message.subject, message.from?.civilite + " " + message.from?.nom, message.content?.content, message.files?.map((file) => file.name)].flat();
         for (let filter of filterBy) {
             if (filter) {
                 filter = removeAccents(filter.toLowerCase());

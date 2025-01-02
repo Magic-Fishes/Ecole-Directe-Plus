@@ -115,8 +115,9 @@ export function getBrowser() { // I didn't check all browsers, see : https://dev
             (UA.includes("Chromium/")) ? Browsers.CHROMIUM : // not verified
                 (UA.includes("Firefox/")) ? Browsers.FIREFOX : // verified on my computer
                     (UA.includes("Edg/")) ? Browsers.EDGE : // verified on my computer
-                        (UA.includes("Chrome/")) ? Browsers.CHROME : // verified on my computer
-                            Browsers.SAFARI // not verified
+                        (UA.includes("DuckDuckGo/") || UA.includes("Ddg/")) ? "DuckDuckGo" : // OK
+                            (UA.includes("Chrome/")) ? Browsers.CHROME : // verified on my computer
+                                Browsers.SAFARI // not verified
     )
 }
 

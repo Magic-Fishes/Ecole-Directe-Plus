@@ -7,6 +7,7 @@ import { fr } from 'date-fns/locale';
 import DropDownArrow from "../../graphics/DropDownArrow";
 
 import './Calendar.css';
+import { isValidDateFormat } from '../../../utils/date';
 
 export default function Calendar({ onDateClick }) {
     const today = new Date()
@@ -20,7 +21,7 @@ export default function Calendar({ onDateClick }) {
 
     const navigate = useNavigate();
     const hashParameters = location.hash.split(";");
-    const selectedISODate = hashParameters[0].slice(1) || format(today, "yyyy-MM-dd");
+    const selectedISODate = isValidDateFormat(hashParameters[0].slice(1)) ? hashParameters[0].slice(1) : Date.now();
     const selectedDate = new Date(selectedISODate);
 
     const userHomeworks = useUserData("sortedHomeworks");

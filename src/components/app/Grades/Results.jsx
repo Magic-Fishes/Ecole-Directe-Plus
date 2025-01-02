@@ -123,7 +123,7 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                 <TooltipTrigger>
                                     <span>
                                         {grades && grades[activePeriod]
-                                            ? <Grade grade={{ value: grades[activePeriod].generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
+                                            ? <Grade grade={{ value: grades[activePeriod]?.generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
                                             : <ContentLoader
                                                 animate={isDisplayModeQuality}
                                                 speed={1}
@@ -151,7 +151,7 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                 </TooltipContent>
                             </Tooltip>
                             {/* : grades && grades[activePeriod]
-                                    ? <Grade grade={{ value: grades[activePeriod].generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
+                                    ? <Grade grade={{ value: grades[activePeriod]?.generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
                                     : <ContentLoader
                                         animate={isDisplayModeQuality}
                                         speed={1}

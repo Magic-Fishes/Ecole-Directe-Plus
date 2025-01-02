@@ -20,7 +20,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
 
     const gradeRef = useRef(null);
 
-    const generalAverage = grades[activePeriod].generalAverage;
+    const generalAverage = grades[activePeriod]?.generalAverage;
     const coefficientEnabled = gradesEnabledFeatures?.coefficient;
 
     function getSummedCoef(subjects) {
@@ -44,7 +44,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     let subjectCoef = grade?.subject?.coef ?? gradeCoef;
     let subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
     // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
-    let gradeScore = (subjectCoef * (grade.value - generalAverage)) / ((subjectsSummedCoefs - subjectCoef) || 1);
+    const gradeScore = (subjectCoef * (grade.value - (generalAverage ?? grade.value))) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
     function hasStreakGradeAfter(siblingsLimit = 0) {
         let i = 0;

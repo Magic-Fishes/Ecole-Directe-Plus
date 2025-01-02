@@ -58,6 +58,8 @@ const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 
+
+//default settings
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -67,6 +69,7 @@ const defaultSettings = {
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
     isPartyModeEnabled: true,
+    isPeriodEventEnabled: true,
     isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
@@ -134,6 +137,9 @@ function initSettings(accountList) {
             isPartyModeEnabled: {
                 value: getSetting("isPartyModeEnabled", i),
             },
+            isPeriodEventEnabled: {
+                value: getSetting("isPeriodEventEnabled", i),
+            },
             isStreamerModeEnabled: {
                 value: getSetting("isStreamerModeEnabled", i),
             },
@@ -167,7 +173,7 @@ function initSettings(accountList) {
                 value: getSetting("negativeBadges", i),
             },
             allowAnonymousReports: {
-                value: getSetting("allowAnonymousReports", i)
+                value: getSetting("allowAnonymousReports", i),
             }
         })
     }
@@ -685,7 +691,8 @@ export default function App({ edpFetch }) {
         const sortedSchoolLife = {
             delays: [],
             absences: [],
-            sanctions: []
+            sanctions: [],
+            incidents: []
         };
         schoolLife[activeAccount]?.absencesRetards.concat(schoolLife[activeAccount].sanctionsEncouragements ?? []).forEach((item) => {
             const newItem = {};
@@ -710,6 +717,9 @@ export default function App({ edpFetch }) {
 
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
+                    break;
+                case "Incident":
+                    sortedSchoolLife.incidents.push(newItem);
                     break;
 
                 default:
