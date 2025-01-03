@@ -32,21 +32,10 @@ export default function Notebook({ hideDateController = false }) {
     const anchorElement = useRef(null);
     const contentLoadersRandomValues = useRef({ days: Array.from({ length: Math.floor(Math.random() * 5) + 5 }, (_, i) => i), tasks: Array.from({ length: 10 }, (_, i) => Math.floor(Math.random() * 3) + 1) })
     const isNotebookGrab = useRef(false);
-    // const hasMouseMoved = useRef(false);
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const hashParameters = location.hash.split(";")
     const selectedDate = hashParameters[0].slice(1)
-
-    /*function calcStrokeColorColorProgression(progression) {
-        const startColor = [255, 66, 66];
-        const endColor = [0, 255, 56];
-        // I have absolutely no idea of why but with the condition under it makes orange when progresion is on the middle
-        // (this what I wanted but I though that it would need another intermediate color)
-        // so for no reason this works and I will not change it (it's only luck)
-        return `rgb(${progression >= 0.5 ? (endColor[0] * ((progression - 0.5) * 2) + startColor[0] * (1 - ((progression - 0.5) * 2))) : (endColor[0] * progression + startColor[0] * (1 - progression))}, ${endColor[1] * progression + startColor[1] * (1 - progression)}, ${endColor[2] * progression + startColor[2] * (1 - progression)})`;
-    }*/
-
 
     function validDateFormat(dateString) {
         const date = dateString.split("-");
@@ -292,14 +281,14 @@ export default function Notebook({ hideDateController = false }) {
     useEffect(() => {
         const controller = new AbortController();
         console.log(homeworks);
-        console.log((homeworks // SI l'objet des devoirs existe MAIS
-            && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
-                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
-                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
+        console.log((homeworks
+            && (homeworks[selectedDate] === undefined
+                || (homeworks[selectedDate].length
+                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent))))
             && isLoggedIn);
         if ((homeworks // SI l'objet des devoirs existe MAIS
             && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
-                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui aient été fetch mais qu'ils ne soient pas vides MAIS
+                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui ont été fetch mais qu'ils ne sont pas vides MAIS
                     && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
             && isLoggedIn) {
             userData.get.homeworks(selectedDate, controller);

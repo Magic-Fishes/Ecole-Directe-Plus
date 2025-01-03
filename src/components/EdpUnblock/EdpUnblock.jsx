@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getBrowser, getOS } from "../../utils/utils";
+import { getZoomedBoudingClientRect } from "../../utils/zoom";
+import { Browsers, OperatingSystems } from "../../utils/constants";
 import GoBackArrow from "../generic/buttons/GoBackArrow";
 import DiscordLink from "../generic/buttons/DiscordLink";
 import GithubLink from "../generic/buttons/GithubLink";
@@ -11,40 +13,37 @@ import EdgeLogo from "../graphics/EdgeLogo";
 import EdpuLogo from "../graphics/EdpuLogo";
 import DownloadIcon from "../graphics/DownloadIcon";
 import AboutArrow from "../graphics/AboutArrow";
+import BadgeCheck from "../graphics/BadgeCheck";
 
 import "./EdpUnblock.css";
-import { getZoomedBoudingClientRect } from "../../utils/zoom";
-import BadgeCheck from "../graphics/BadgeCheck";
-import { Browsers } from "../../utils/constants";
-
 
 const browserLogosInfos = {
-    Firefox: {
+    [Browsers.FIREFOX]: {
         logo: <FirefoxLogo />,
         available: true,
         url: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
     },
-    Chrome: {
+    [Browsers.CHROME]: {
         logo: <ChromeLogo />,
         available: true,
         url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
-    Opera: {
+    [Browsers.OPERA]: {
         logo: <ChromeLogo />,
         available: true,
         url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
-    Edge: {
+    [Browsers.EDGE]: {
         logo: <EdgeLogo />,
         available: true,
         url: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
     },
-    Chromium: {
+    [Browsers.CHROMIUM]: {
         logo: <ChromeLogo />,
         available: true,
         url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
-    Safari: {
+    [Browsers.SAFARI]: {
         logo: <span className="sad-emoji">😥</span>,
         available: false,
         url: "",
@@ -55,9 +54,15 @@ const userOS = getOS();
 const userBrowser = getBrowser();
 const nonCompatibleIOSBrowsers = Object.values(Browsers);
 const nonCompatibleAndroidBrowsers = Object.values(Browsers);
-nonCompatibleAndroidBrowsers.splice(nonCompatibleIOSBrowsers.indexOf(Browsers.FIREFOX), 1); // enleve firefox des navigateurs incompatibles sur android
 
-const compatibilityCondition = ((userOS === "iOS" && nonCompatibleIOSBrowsers.includes(userBrowser)) || (userOS === "Android" && nonCompatibleAndroidBrowsers.includes(userBrowser)) || (userOS === "MacOS" && userBrowser === Browsers.SAFARI));
+// enleve firefox des navigateurs incompatibles sur android
+nonCompatibleAndroidBrowsers.splice(nonCompatibleIOSBrowsers.indexOf(Browsers.FIREFOX), 1);
+
+const compatibilityCondition = (
+    (userOS === OperatingSystems.IOS && nonCompatibleIOSBrowsers.includes(userBrowser))
+    || (userOS === OperatingSystems.ANDROID && nonCompatibleAndroidBrowsers.includes(userBrowser))
+    || (userOS === OperatingSystems.MACOS && userBrowser === Browsers.SAFARI)
+);
 
 export default function EdpUnblock({ isEDPUnblockActuallyInstalled }) {
     const location = useLocation();
@@ -120,17 +125,17 @@ export default function EdpUnblock({ isEDPUnblockActuallyInstalled }) {
                             <h2>Ecole Directe Plus Unblock</h2>
                         </div>
                     </div>
-                    <p>Ecole Directe Plus a besoin de cette extension de navigateur pour <span style={{ fontWeight: "800"}}>fonctionner correctement</span> et accéder à l’API d’EcoleDirecte.</p>
-                    {compatibilityCondition && (userOS !== "iOS" ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un navigateur compatible comme le <a href={userOS === "iOS" ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === "iOS" ? "navigateur Orion" : "navigateur Firefox"}</a>.</p></> : <p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas compatible avec les navigateurs sur iOS et iPadOS. S'il vous plaît, considérez l'usage d'un autre appareil avec un système d'exploitation compatible comme un ordinateur sous Windows ou Linux, ou un appareil mobile sous Android.</p>) }
+                    <p>Ecole Directe Plus a besoin de cette extension de navigateur pour <span style={{ fontWeight: "800" }}>fonctionner correctement</span> et accéder à l’API d’EcoleDirecte.</p>
+                    {compatibilityCondition && (userOS !== OperatingSystems.IOS ? <><p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas disponible sur votre navigateur. 😥</p><p>S'il vous plaît considérez l'usage d'un navigateur compatible comme le <a href={userOS === OperatingSystems.IOS ? "https://apps.apple.com/app/id1484498200" : "https://play.google.com/store/apps/details?id=org.mozilla.firefox"} className="suggested-browser" target="_blank">{userOS === OperatingSystems.IOS ? "navigateur Orion" : "navigateur Firefox"}</a>.</p></> : <p>Malheureusement, l'extension Ecole Directe Plus Unblock n'est pas compatible avec les navigateurs sur iOS et iPadOS. S'il vous plaît, considérez l'usage d'un autre appareil avec un système d'exploitation compatible comme un ordinateur sous Windows ou Linux, ou un appareil mobile sous Android.</p>)}
                     <a href={browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].url} target={userBrowser === Browsers.FIREFOX ? "_self" : "_blank"} className={`edpu-download-link ${compatibilityCondition ? "disabled" : ""} ${browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].available ? "available" : "unavailable"}`}>
                         {browserLogosInfos[userBrowser] && browserLogosInfos[userBrowser].logo}
                         {isEDPUnblockActuallyInstalled
-                        ? <span>Extension installée</span>
-                        : (compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>)
+                            ? <span>Extension installée</span>
+                            : (compatibilityCondition ? <span>Navigateur incompatible</span> : <span>Ajouter l’extension</span>)
                         }
                         {isEDPUnblockActuallyInstalled
-                        ? <BadgeCheck />
-                        : (compatibilityCondition ? <div className="download-unavailable">✕</div> : <DownloadIcon />)
+                            ? <BadgeCheck />
+                            : (compatibilityCondition ? <div className="download-unavailable">✕</div> : <DownloadIcon />)
                         }
                     </a>
                 </div>

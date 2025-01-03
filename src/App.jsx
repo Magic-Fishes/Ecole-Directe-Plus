@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext, useContext, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
     createBrowserRouter,
@@ -53,7 +53,6 @@ const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
 const sardineInsolente = "SARDINE_INSOLENTE_WEBHOOK_URL";
 const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
 
-// const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
@@ -1438,10 +1437,9 @@ export default function App({ edpFetch }) {
             // localStorage.removeItem(lsIdName);
             localStorage.removeItem("encryptedUserIds");
         }
-        setUserData([])
+        setUserData([]);
         setTimeline([]);
         setSchoolLife([]);
-        // setKeepLoggedIn(false);
     }
 
     function logout() {

@@ -24,3 +24,28 @@ export const BrowserExtensionDownloadLink = {
     [Browsers.OPERA]: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     [Browsers.EDGE]: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
 }
+
+export const BrowserLabels = {
+    [Browsers.CHROMIUM]: "Chromium",
+    [Browsers.FIREFOX]: "Firefox",
+    [Browsers.CHROME]: "Chrome",
+    [Browsers.SAFARI]: "Safari",
+    [Browsers.OPERA]: "Opera",
+    [Browsers.EDGE]: "Edge",
+}
+
+export const OperatingSystems = {
+    WINDOWS: 0,
+    ANDROID: 1,
+    LINUX: 2,
+    MACOS: 3,
+    IOS: 4,
+}
+
+export const OperatingSystemLabels = {
+    [OperatingSystems.WINDOWS]: "Windows",
+    [OperatingSystems.ANDROID]: "Android",
+    [OperatingSystems.LINUX]: "Linux",
+    [OperatingSystems.MACOS]: "MacOS",
+    [OperatingSystems.IOS]: "iOS",
+}

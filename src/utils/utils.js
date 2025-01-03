@@ -1,6 +1,6 @@
 import { v5 as uuidv5 } from "uuid";
 import sha256 from 'js-sha256';
-import { Browsers } from "./constants";
+import { Browsers, OperatingSystems } from "./constants";
 
 const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
@@ -63,7 +63,7 @@ export function generateUUID(string) {
 }
 
 export function sendToWebhook(targetWebhook, data) {
-    let stringifiedData = JSON.stringify(data)
+    let stringifiedData = "JSON.stringify(data)";
     // prevent data from exceeding 2000 characters
     while (stringifiedData.length > 1900) {
         stringifiedData = stringifiedData.slice(0, stringifiedData.length);
@@ -76,7 +76,7 @@ export function sendToWebhook(targetWebhook, data) {
                 "user-agent": navigator.userAgent,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ content: stringifiedData })
+            body: JSON.stringify({ content: `\`\`\`${stringifiedData}\`\`\`` })
         }
     );
 }
@@ -130,15 +130,15 @@ export function getOS() {
     let os = null;
 
     if (macosPlatforms.indexOf(platform) !== -1) {
-        os = 'MacOS';
+        os = OperatingSystems.MACOS;
     } else if (iosPlatforms.indexOf(platform) !== -1) {
-        os = 'iOS';
+        os = OperatingSystems.IOS;
     } else if (windowsPlatforms.indexOf(platform) !== -1) {
-        os = 'Windows';
+        os = OperatingSystems.WINDOWS;
     } else if (/Android/.test(userAgent)) {
-        os = 'Android';
+        os = OperatingSystems.ANDROID;
     } else if (/Linux/.test(platform)) {
-        os = 'Linux';
+        os = OperatingSystems.LINUX;
     }
 
     return os;
