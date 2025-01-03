@@ -1,6 +1,6 @@
 export const KEY = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
 
-export const LocalStorageNames = {
+export const LocalStorageKeys = {
     ENCRYPTED_CREDENTIALS: "encryptedCredentials",
     TOKEN: "token",
     USERS: "users",

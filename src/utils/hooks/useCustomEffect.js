@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { LocalStorageNames } from "../constants";
+import { LocalStorageKeys } from "../constants";
 import { consoleLogEDPLogo } from "../../edpConfig";
 
 export function useLocalStorageEffect(userSession, keepLoggedIn) {
@@ -17,28 +17,28 @@ export function useLocalStorageEffect(userSession, keepLoggedIn) {
     useEffect(() => {
         const { username, password } = exportInitAccounts();
         if (keepLoggedIn.value && isLoggedIn && username && password) {
-            localStorage.setItem(LocalStorageNames.ENCRYPTED_CREDENTIALS, encrypt(JSON.stringify({ username, password })));
+            localStorage.setItem(LocalStorageKeys.ENCRYPTED_CREDENTIALS, encrypt(JSON.stringify({ username, password })));
         }
     }, [userCredentials.username.value, userCredentials.password.value]);
 
     useEffect(() => {
         const { token } = exportInitAccounts();
         if (isLoggedIn && token) {
-            localStorage.setItem(LocalStorageNames.TOKEN, token);
+            localStorage.setItem(LocalStorageKeys.TOKEN, token);
         }
     }, [token.value]);
 
     useEffect(() => {
         const { users } = exportInitAccounts();
         if (isLoggedIn && users) {
-            localStorage.setItem(LocalStorageNames.USERS, JSON.stringify(users));
+            localStorage.setItem(LocalStorageKeys.USERS, JSON.stringify(users));
         }
     }, [loginStates, users]);
 
     useEffect(() => {
         const { selectedUserIndex } = exportInitAccounts();
         if (isLoggedIn) {
-            localStorage.setItem(LocalStorageNames.LAST_SELECTED_USER, selectedUserIndex.toString());
+            localStorage.setItem(LocalStorageKeys.LAST_SELECTED_USER, selectedUserIndex.toString());
         }
     }, [selectedUserIndex]);
 }

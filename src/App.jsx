@@ -28,7 +28,7 @@ import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDire
 import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfig";
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
-import { Browsers, LocalStorageNames } from "./utils/constants";
+import { Browsers, LocalStorageKeys } from "./utils/constants";
 import { useLocalStorageEffect, useDisplayModeEffect, useDisplayThemeEffect, useBrowserDisplayThemeChange } from "./utils/hooks/useCustomEffect";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
@@ -1445,9 +1445,9 @@ export default function App({ edpFetch }) {
     function logout() {
         userSession.logout();
         // suppression des informations de connexion
-        localStorage.removeItem(LocalStorageNames.TOKEN);
-        localStorage.removeItem(LocalStorageNames.USERS);
-        localStorage.removeItem(LocalStorageNames.LAST_SELECTED_USER);
+        localStorage.removeItem(LocalStorageKeys.TOKEN);
+        localStorage.removeItem(LocalStorageKeys.USERS);
+        localStorage.removeItem(LocalStorageKeys.LAST_SELECTED_USER);
     }
 
     /* ################################ THEME ################################ */
