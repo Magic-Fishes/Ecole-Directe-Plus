@@ -1,8 +1,7 @@
-import CryptoJS from 'crypto-js';
 import { v5 as uuidv5 } from "uuid";
 import sha256 from 'js-sha256';
+import { Browsers, OperatingSystems } from "./constants";
 
-const key = "THIS_IS_A_PLACEHOLDER_FOR_YOUR_OWN_SECURITY" // Replace this key with a string of your choice
 const UUID_NAMESPACE = "7bbc8dba-be5b-4ff2-b516-713692d5f601";
 
 export function areOccurenciesEqual(obj1, obj2) {
@@ -45,20 +44,6 @@ export function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function encrypt(chain) {
-    if (!chain) {
-        return chain
-    }
-    return CryptoJS.AES.encrypt(chain, key).toString()
-}
-
-export function decrypt(chain) {
-    if (!chain) {
-        return chain
-    }
-    return CryptoJS.AES.decrypt(chain, key).toString(CryptoJS.enc.Utf8)
-}
-
 export function decodeBase64(string) {
     const decodedText = atob(string);
 
@@ -78,7 +63,7 @@ export function generateUUID(string) {
 }
 
 export function sendToWebhook(targetWebhook, data) {
-    let stringifiedData = JSON.stringify(data)
+    let stringifiedData = "JSON.stringify(data)";
     // prevent data from exceeding 2000 characters
     while (stringifiedData.length > 1900) {
         stringifiedData = stringifiedData.slice(0, stringifiedData.length);
@@ -91,7 +76,7 @@ export function sendToWebhook(targetWebhook, data) {
                 "user-agent": navigator.userAgent,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ content: stringifiedData })
+            body: JSON.stringify({ content: `\`\`\`${stringifiedData}\`\`\`` })
         }
     );
 }
@@ -126,13 +111,13 @@ export async function sendJsonToWebhook(targetWebhook, identifier, data, cooldow
 export function getBrowser() { // I didn't check all browsers, see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#browser_name_and_version
     const UA = navigator.userAgent
     return (
-        (UA.includes("OPR/") || UA.includes("Opera/")) ? "Opera" : // verified on my computer
-            (UA.includes("Chromium/")) ? "Chromium" : // not verified
-                (UA.includes("SeaMonkey/")) ? "Seamonkey" : // I honestly hope people don't use this anymore
-                    (UA.includes("Firefox/")) ? "Firefox" : // verified on my computer
-                        (UA.includes("Edg/")) ? "Edge" : // verified on my computer
-                            (UA.includes("Chrome/")) ? "Chrome" : // verified on my computer
-                                "Safari" // not verified
+        (UA.includes("OPR/") || UA.includes("Opera/")) ? Browsers.OPERA : // verified on my computer
+            (UA.includes("Chromium/")) ? Browsers.CHROMIUM : // not verified
+                (UA.includes("Firefox/")) ? Browsers.FIREFOX : // verified on my computer
+                    (UA.includes("Edg/")) ? Browsers.EDGE : // verified on my computer
+                        (UA.includes("DuckDuckGo/") || UA.includes("Ddg/")) ? "DuckDuckGo" : // OK
+                            (UA.includes("Chrome/")) ? Browsers.CHROME : // verified on my computer
+                                Browsers.SAFARI // not verified
     )
 }
 
@@ -145,15 +130,15 @@ export function getOS() {
     let os = null;
 
     if (macosPlatforms.indexOf(platform) !== -1) {
-        os = 'MacOS';
+        os = OperatingSystems.MACOS;
     } else if (iosPlatforms.indexOf(platform) !== -1) {
-        os = 'iOS';
+        os = OperatingSystems.IOS;
     } else if (windowsPlatforms.indexOf(platform) !== -1) {
-        os = 'Windows';
+        os = OperatingSystems.WINDOWS;
     } else if (/Android/.test(userAgent)) {
-        os = 'Android';
+        os = OperatingSystems.ANDROID;
     } else if (/Linux/.test(platform)) {
-        os = 'Linux';
+        os = OperatingSystems.LINUX;
     }
 
     return os;

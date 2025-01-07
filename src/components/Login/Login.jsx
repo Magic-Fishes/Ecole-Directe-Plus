@@ -21,7 +21,7 @@ if (april) {
     })
 }
 
-export default function Login({ logout, loginFromOldAuthInfo, isEDPUnblockInstalledActuallyInstalled }) {
+export default function Login({ logout, isEDPUnblockInstalledActuallyInstalled }) {
     const location = useLocation();
 
     if (localStorage.userSettings) {
@@ -54,7 +54,7 @@ export default function Login({ logout, loginFromOldAuthInfo, isEDPUnblockInstal
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
-                <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
+                <LoginForm logout={logout} />
             </div>
             <p className="not-affiliated-mention">
                 Service non-affilié à Aplim

@@ -13,7 +13,6 @@ import fetchTimeline from "../requests/fetchTimeline";
 import mapTimeline from "../mappers/timeline";
 import fetchHomeworks from "../requests/fetchHomeworks";
 import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
-import { testISODate, textPlacehodler } from "../utils/utils";
 
 /**
  * Each fetch function will return a code, and other data such as messages, display text, ...
@@ -33,7 +32,7 @@ import { testISODate, textPlacehodler } from "../utils/utils";
  * )
  */
 
-export default function useEcoleDirecteSession(localStorageSession = {}) {
+export default function useEcoleDirecteSession(initialSession) {
     const [userData, {
         initialize: initializeUserData,
         reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
@@ -41,8 +40,8 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
         setSelectedUserDataIndex,
     }] = useAccountData();
 
-    const account = useEcoleDirecteAccount({});
-    const { token, users, selectedUser, selectedUserIndex, loginStates } = account;
+    const Account = useEcoleDirecteAccount(initialSession.Account);
+    const { token, users, selectedUser, selectedUserIndex, loginStates } = Account;
 
     useEffect(() => {
         if (loginStates.isLoggedIn) {
@@ -102,13 +101,8 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
         /**
          * Fetch user homeworks
          * @param controller AbortController
-         * @param date fetch the specified date (string at ISO format) ; default value: null: will fetch the incoming homeworks 
+         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
          */
-
-        if (date !== null && !testISODate(date)) {
-            return HomeworksCodes.INVALID_DATE;
-        }
-
         const requestUserIndex = selectedUserIndex.value;
         let response;
         if (selectedUser.id === -1) {
@@ -128,17 +122,6 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
                         setUserData("upcomingAssignments", mappedUpcomingAssignments, requestUserIndex);
                     } else {
                         const { mappedDay } = mapDayHomeworks(response.data);
-                        if (users[requestUserIndex].id < 0) {
-                            const guestDetailedTaskDate = Object.keys(mappedDay)[0];
-                            mappedDay[date] = mappedDay[guestDetailedTaskDate].map(el => ({
-                                ...el,
-                                content: textPlacehodler(),
-                                sessionContent: textPlacehodler(),
-                            }));
-                            delete mappedDay[guestDetailedTaskDate];
-                        }
-                        console.log(textPlacehodler());
-                        console.log(mappedDay);
                         setUserData("homeworks", { ...userData.homeworks, ...mappedDay }, requestUserIndex);
                     }
                     return HomeworksCodes.SUCCESS;
@@ -205,6 +188,11 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
             })
     }
 
+    function logout() {
+        resetUserData();
+        Account.logout();
+    }
+
     return {
         userData: {
             ...userData,
@@ -215,6 +203,7 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
                 homeworks: getHomeworks,
             },
         },
-        account,
+        Account,
+        logout,
     }
 }

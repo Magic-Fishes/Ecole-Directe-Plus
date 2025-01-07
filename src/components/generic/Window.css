@@ -72,8 +72,7 @@
     border: 2px solid rgba(var(--text-color-alt), .3);
     min-height: 200px;
 }
-.window.work-in-progress::after {
-    content: "En cours de développement... (Bientôt disponible)";
+.window.work-in-progress .wip-info {
     color: rgba(var(--text-color-alt), .5);
     position: absolute;
     top: 50%;
@@ -81,6 +80,15 @@
     transform: translate(-50%, -50%);
     width: 100%;
     text-align: center;
+    user-select: none;
+}
+
+.window.work-in-progress .wip-info a {
+    color: rgba(var(--text-color-alt), .5);
+    transition: .1s;
+}
+.window.work-in-progress .wip-info a:is(:hover, :focus-visible) {
+    color: rgba(var(--text-color-alt), 1);
 }
 
 .window.appeared {
@@ -153,6 +161,7 @@
     align-items: center;
     cursor: grab;
 }
+
 .window .window-header h2 {
     text-align: center;
     font-size: var(--font-size-20);
@@ -188,6 +197,60 @@
 .moveable-container:fullscreen,
 .windows-layout:fullscreen {
     padding: 25px;
+}
+
+/* Remove overflow: hidden and adjust flex properties */
+.window {
+    background-color: rgb(var(--background-color-2));
+    border-radius: 15px;
+    flex: 1;
+    flex-shrink: 1;
+    /* Allow the window to shrink if necessary */
+    min-height: 0;
+    /* Allow the window to shrink below its content's height */
+    max-height: 100%;
+    /* Prevent the window from growing beyond its container */
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: visible;
+    box-shadow: var(--box-shadow-window);
+    outline: none;
+    opacity: 0;
+    scale: 0.85;
+    animation: go-in 0.5s var(--timing-function-spring-effect) forwards;
+}
+
+/* Ensure the window content scrolls internally */
+.window .window-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Allow the header to overflow */
+.window .window-header {
+    overflow: visible;
+    position: relative;
+    /* Ensure absolute children are positioned relative to this */
+    z-index: 1;
+    /* Keep the header above other content */
+}
+
+/* Position the snow-cap absolutely */
+.snow-cap {
+    /* position: absolute;
+    bottom: 3px;
+    width: 101%;
+    height: 95px;
+    pointer-events: none; */
+    /* Adjust left and right positioning if necessary */
+}
+
+/* Ensure parent containers have constrained height */
+#windows-container,
+.windows-layout {
+    height: 100%;
+    max-height: 100%;
 }
 
 
@@ -226,4 +289,3 @@
         scale: 1;
     }
 }
-

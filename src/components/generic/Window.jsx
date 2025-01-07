@@ -3,8 +3,11 @@ import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
 import { AppContext, SettingsContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
+import { currentPeriodEvent } from "./events/setPeriodEvent";
+import SnowCap from "../graphics/snowCap";
 
 import "./Window.css";
+import "./events/christmas/snow.css";
 
 
 function useWindowsContainer(options) {
@@ -999,13 +1002,11 @@ export function MoveableContainer({ children, className = "", ...props }) {
 
 
 export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName = "self", WIP = false, className = "", ...props }) {
-
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
-
-    const settings = useContext(SettingsContext);
-    const { windowArrangement: windowArrangementSetting } = settings.user;
-
     const context = useWindowsContainerContext();
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
+    const settings = useContext(SettingsContext);
+
+    const { windowArrangement: windowArrangementSetting, isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
 
     const windowRef = useRef(null);
 
@@ -1029,17 +1030,24 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 
 
     return (
-        <section className={`window ${className} ${WIP ? "work-in-progress" : ""}`} style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
-            {WIP ? null : children}
+        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent === "christmas" ? "allow-overflow-event" : ""}`}
+            style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
+            {WIP ? <p className="wip-info">Fonctionnalité en cours de développement...<br/>Rejoins le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'EDP</a> pour en suivre l'avancée !</p> : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
         </section>
     )
 }
 
 export function WindowHeader({ children, className = "", ...props }) {
+    const settings = useContext(SettingsContext);
+    
+    const { isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
 
     return (
-        <div className={`window-header ${className}`} {...props}>
+        <div className={`window-header ${className} ${isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent === "christmas" ? "snowy-element-window" : ""}`} {...props}>
+            {isPeriodEventEnabled.value !== false && currentPeriodEvent === "christmas" && (
+                <SnowCap className="snow-cap"/>
+            )}
             {children}
         </div>
     )

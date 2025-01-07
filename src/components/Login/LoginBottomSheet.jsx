@@ -3,28 +3,17 @@ import { useState } from "react";
 
 import BottomSheet from "../generic/PopUps/BottomSheet";
 import LoginForm from "./LoginForm";
-import { decrypt, encrypt } from "../../utils/utils";
 import "./LoginBottomSheet.css";
-import Button from "../generic/UserInputs/Button";
 
 // const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 
-export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, bufferUserIds, logout, loginFromOldAuthInfo, backgroundTask=false, onClose, ...props }) {
+export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, bufferUserIds, logout, backgroundTask=false, onClose, ...props }) {
     const [firstFrameKeepLoggedIn, setFirstFrameKeepLoggedIn] = useState(keepLoggedIn);
-
-    const handleClose = () => {
-        const userIdsFromLS = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
-        if (!userIdsFromLS.username || !userIdsFromLS.password) {
-            console.log("LOGIN BS KEEP LOGGED IN FALSE");
-            setKeepLoggedIn(false);
-        }
-        onClose();
-    }
 
     if (backgroundTask) {
         return (
-            <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} className="background-task"/>
+            <LoginForm logout={logout} className="background-task"/>
         )
     } else {
         return (
@@ -32,7 +21,7 @@ export default function LoginBottomSheet({ keepLoggedIn, setKeepLoggedIn, buffer
                 {firstFrameKeepLoggedIn
                 ? <p className="explanation">Veuillez vous reconnecter pour activer "rester connecté"</p>
                 : <p className="explanation">Votre session a expiré</p>}
-                <LoginForm logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} disabledKeepLoggedInCheckBox={firstFrameKeepLoggedIn} />
+                <LoginForm logout={logout} disabledKeepLoggedInCheckBox={firstFrameKeepLoggedIn} />
                 <div id="login-bs-logout" onClick={logout} role="button" tabIndex={0}>Se déconnecter</div>
             </BottomSheet>
         )

@@ -29,6 +29,14 @@ export function formatDateRelative(date, short=true) {
     }
 }
 
+export function isValidDateFormat(dateString) {
+    if (!dateString) {
+        return false;
+    }
+    const regex = /^\d{4}-\d{2}-\d{2}$/; // Matches YYYY-MM-DD format
+    return regex.test(dateString);
+}
+
 export function getCurrentSchoolYear() {
     /**
      * return an array:

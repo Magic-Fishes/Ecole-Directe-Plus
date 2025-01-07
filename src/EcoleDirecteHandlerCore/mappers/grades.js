@@ -181,7 +181,7 @@ export default function mapGrades(grades) {
             subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
             const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
             const subjectAverage = periods[periodCode].subjects[subjectCode].average;
-            const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
+            const oldGeneralAverage = isNaN(periods[periodCode]?.generalAverage) ? 10 : periods[periodCode]?.generalAverage;
             const average = calcAverage(subjectDatas[periodCode][subjectCode]);
             const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
 

@@ -42,6 +42,7 @@ import { textToHSL } from "../../utils/utils"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon"
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 import useInitializer from "../../EcoleDirecteHandlerCore/hooks/utils/useInitializer";
+import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants";
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
     // States
@@ -305,8 +306,8 @@ export default function Lab({ fetchGrades }) {
             <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)} />
 
             <h2>OS - BROWSER</h2>
-            <p>userOs: {getOS()}</p>
-            <p>userBrowser: {getBrowser()}</p>
+            <p>userOs: {OperatingSystemLabels[getOS()]}</p>
+            <p>userBrowser: {BrowserLabels[getBrowser()]}</p>
 
             <h3>Dynamic navigate</h3>
             <TextInput textType="text" placeholder="Target url" value={targetURL} onChange={(e) => setTargetURL(e.target.value)} />

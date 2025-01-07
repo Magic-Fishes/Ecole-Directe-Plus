@@ -1,6 +1,5 @@
 // libs/utils
 import { useState, useRef } from "react";
-import { decrypt, encrypt } from "../../utils/utils";
 import useInitializer from "./utils/useInitializer";
 
 // constants
@@ -12,6 +11,8 @@ import fetchLogin from "../requests/fetchLogin";
 import mapLogin from "../mappers/login";
 import fetchDoubleAuthAnswer from "../requests/fetchDoubleAuthAnswer";
 import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
+import { consoleLogEDPLogo } from "../../edpConfig";
+import { logger } from "../../../devutils/utils";
 
 /**
  * Each get function (the ones that get parse and store data such as requestLogin of getGrades)
@@ -32,13 +33,13 @@ import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
  * )
  */
 
-export default function useEcoleDirecteAccount(initialValues) {
-    const [loginState, setLoginState] = useState(initialValues?.loginState ?? LoginStates.REQUIRE_LOGIN);
-    const [username, setUsername] = useState(initialValues?.username ?? "");
-    const [password, setPassword] = useState(initialValues?.password ?? "");
-    const [token, setToken] = useState(initialValues?.token ?? "");
-    const [selectedUserIndex, setSelectedUserIndex] = useState(initialValues?.selectedUserIndex ?? null);
-    const [users, setUsers] = useState(initialValues?.users ?? null);
+export default function useEcoleDirecteAccount(initialAccount) {
+    const [loginState, setLoginState] = useState(initialAccount.users ? (initialAccount.token ? LoginStates.LOGGED_IN : LoginStates.REQUIRE_NEW_TOKEN) : LoginStates.REQUIRE_LOGIN);
+    const [username, setUsername] = useState(initialAccount.username);
+    const [password, setPassword] = useState(initialAccount.password);
+    const [token, setToken] = useState(initialAccount.token);
+    const [selectedUserIndex, setSelectedUserIndex] = useState(initialAccount.selectedUserIndex ?? 0);
+    const [users, setUsers] = useState(initialAccount.users ?? null);
 
     const doubleAuthKey = useRef(null);
     const selectedUser = users !== null && selectedUserIndex < users.length ? users[selectedUserIndex] : null;
@@ -182,39 +183,17 @@ export default function useEcoleDirecteAccount(initialValues) {
     }
 
     function exportInitAccounts() {
-        return { loginState, username, password, token, selectedUserIndex, users }
+        return { username, password, token, selectedUserIndex, users }
     }
 
-    function importFromString({ credentials, account, doubleAuthKeys, token }) {
-        /**
-         * This function works with the previous one
-         * (See its description for explanations).
-         * It takes as parameter an object with these keys :
-         *  @param {string} options.credentials
-         *  @param {string} options.account
-         *  @param {string} options.doubleAuthKeys
-         *  @param {string} options.token
-         * The values attributed to these key should be respectively
-         * the same as the one export by the function "exportToString"
-         * If one key is not defined, their value will not be imported  
-         */
-        // !:! à run dans un useEffect vide dans le App.jsx
-        if (credentials !== undefined) {
-            const { username, password } = JSON.parse(decrypt(credentials));
-            setUsername(username);
-            setPassword(password);
-        }
-        if (account !== undefined) {
-            const { users, selectedUserIndex } = JSON.parse(account);
-            setUsers(users);
-            setSelectedUserIndex(selectedUserIndex);
-        }
-        if (doubleAuthKeys !== undefined) {
-            setToken(token);
-        }
-        if (token !== undefined) {
-            setToken(token);
-        }
+    function logout()
+    {
+        setUsers(null);
+        setToken("");
+        setUsername("");
+        setPassword("");
+        setSelectedUserIndex(0);
+        setLoginState(LoginStates.REQUIRE_LOGIN);
     }
 
     return {
@@ -222,22 +201,22 @@ export default function useEcoleDirecteAccount(initialValues) {
             username: { value: username, set: (value) => { if (requireLogin) setUsername(value) } },
             password: { value: password, set: (value) => { if (requireLogin) setPassword(value) } },
         },
-        token: { value: token, set: setToken },
-        selectedUserIndex: { value: selectedUserIndex, set: setSelectedUserIndex },
+        token: { value: token, set: logger(setToken) },
+        selectedUserIndex: { value: selectedUserIndex, set: logger(setSelectedUserIndex, false) },
         loginStates: {
             requireLogin,
             isLoggedIn,
             requireDoubleAuth,
             requireNewToken,
             doubleAuthAcquired,
-            set: setLoginState,
+            set: logger(setLoginState),
         },
-        selectedUser,
-        users,
         requestLogin,
         getDoubleAuthQuestions,
         sendDoubleAuthAnswer,
-        exportToString,
-        importFromString,
+        selectedUser,
+        users,
+        exportInitAccounts,
+        logout,
     };
 }

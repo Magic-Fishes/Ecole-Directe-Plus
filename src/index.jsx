@@ -4,6 +4,7 @@ import DOMNotification from "./components/generic/PopUps/Notification";
 import App from "./App";
 import IframeRequestLinker from "./utils/iframeRequest/iframeRequestLinker";
 import { getOS } from "./utils/utils";
+import { OperatingSystems } from "./utils/constants";
 // import reportWebVitals from './reportWebVitals';
 
 // import { HelmetProvider } from 'react-helmet';
@@ -16,7 +17,7 @@ const handleIframeLoad = (event) => {
     iframeRequest.setIframe(event.target);
 }
 
-window.edpFetch = (["Windows", "Linux"].includes(getOS())
+window.edpFetch = ([OperatingSystems.LINUX, OperatingSystems.WINDOWS].includes(getOS())
     ? async (url, fetchParams, dataType) => {
         return fetch(url, fetchParams).then((response) => response[dataType]())
     }

@@ -15,27 +15,34 @@ import BottomSheet from "../../generic/PopUps/BottomSheet";
 import FeedbackForm from "../../Feedback/FeedbackForm";
 import PatchNotes from "../../generic/PatchNotes";
 import Policy from "../../generic/Policy";
-// import HomeworksIcon from "../../graphics/HomeworksIcon";
-// import PlanningIcon from "../../graphics/PlanningIcon"
 
 import { EDPVersion } from "../../../edpConfig";
 
-import { AppContext, UserDataContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
+
+import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
+import Snowfall from "../../generic/events/christmas/Snowfall";
+import "../../generic/events/christmas/garland.css";
 
 import "./Header.css";
 
 
 export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, timeline, isFullScreen, isTabletLayout, logout }) {
     const { globalSettings, isStandaloneApp } = useContext(AppContext);
-    
+
     const userData = useContext(UserDataContext);
     const { notifications } = userData;
     
+    const settings = useContext(SettingsContext);
+    const { isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
+
+    const isChristmasEventEnabled = isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent
+
     const navigate = useNavigate();
     const location = useLocation();
 
     const { userId } = useParams();
-    
+
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
     const [closeFeedbackBottomSheet, setCloseFeedbackBottomSheet] = useState(false);
@@ -51,7 +58,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
             setActiveAccount(parseInt(localStorage.getItem("oldActiveAccount") ?? 0));
         }
     }
-    
+
     useEffect(() => {
         if (userId !== undefined) {
             handleUserId(parseInt(userId));
@@ -154,7 +161,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
             notifications: notifications?.messaging || 0,
             isNew: false
         }
-    ]
+    ];
     // Behavior
 
     const handleCloseAnchorLinks = () => {
@@ -165,6 +172,11 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
     // JSX
     return (
         <div id="app">
+            {isChristmasEventEnabled && (
+                <ul className="lightrope">
+                    {Array(150).fill(0).map((_, index) => <li key={index} />)}
+                </ul>
+            )}
             {!isFullScreen && <div className={`header-container${isStandaloneApp ? " standalone" : ""}`}>
                 <header className="header-menu">
                     <div className="header-logo-container">
@@ -176,7 +188,7 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
 
                     <nav className="navbar">
                         <ul className="header-button-list">
-                            {headerNavigationButtons.map((headerButton) => ( headerButton.enabled &&
+                            {headerNavigationButtons.map((headerButton) => (headerButton.enabled &&
                                 <li className={`header-button-container`} key={headerButton.id} id={headerButton.name}>
                                     <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} isNew={headerButton.isNew} />
                                 </li>
@@ -203,8 +215,12 @@ export default function Header({ accountsList, setActiveAccount, activeAccount, 
                 </Suspense>
             </main>
             {location.hash === "#feedback" && <BottomSheet className="feedback-bottom-sheet" heading="Faire un retour" onClose={handleCloseAnchorLinks} close={closeFeedbackBottomSheet} ><FeedbackForm activeUser={accountsList[activeAccount]} onSubmit={() => setCloseFeedbackBottomSheet(true)} carpeConviviale={carpeConviviale} /></BottomSheet>}
-            {location.hash === "#patch-notes" && <PatchNotes version={EDPVersion} onClose={() => { handleCloseAnchorLinks() ; localStorage.setItem("EDPVersion", EDPVersion) }} />}
+            {location.hash === "#patch-notes" && <PatchNotes version={EDPVersion} onClose={() => { handleCloseAnchorLinks(); localStorage.setItem("EDPVersion", EDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
+            {
+                isChristmasEventEnabled
+                && <Snowfall />
+            }
         </div>
     )
 }

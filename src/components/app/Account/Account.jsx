@@ -244,7 +244,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsAdministratifActif === "1" && documents?.administratifs?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Documents Administratifs</h3>
+                                                    <h3>Documents administratifs</h3>
                                                     {documents.administratifs.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />
@@ -266,7 +266,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsVSActif === "1" && documents?.viescolaire?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Vie Scolaire</h3>
+                                                    <h3>Vie scolaire</h3>
                                                     {documents.viescolaire.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />
@@ -277,7 +277,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             )}
                                             {module?.params?.DocumentsEntrepriseActif === "1" && documents?.entreprises?.length > 0 && (
                                                 <div className="document-category">
-                                                    <h3>Documents Entreprise</h3>
+                                                    <h3>Documents entreprise</h3>
                                                     {documents.entreprises.map(file => (
                                                         <div className="file-box">
                                                             <FileComponent key={file.id} file={file} />
@@ -303,15 +303,19 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                 <div className="behavior-types">
                     <div className="behavior-type">
                         <span>Retards</span>
-                        <span className={"count" + (!userData.get("sortedSchoolLife")?.delays.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.delays.length ?? <><span style={{ "--index": 0 }}>.</span><span style={{ "--index": 1 }}>.</span><span style={{ "--index": 2 }}>.</span></>}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.delays.length ? " loading" : "")}>{userData.get("sortedSchoolLife")?.delays.length ?? <><span style={{ "--index": 0 }}>.</span><span style={{ "--index": 1 }}>.</span><span style={{ "--index": 2 }}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Absences</span>
-                        <span className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.absences.length ?? <><span style={{ "--index": 3 }}>.</span><span style={{ "--index": 4 }}>.</span><span style={{ "--index": 5 }}>.</span></>}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.absences.length ? " loading" : "")}>{userData.get("sortedSchoolLife")?.absences.length ?? <><span style={{ "--index": 3 }}>.</span><span style={{ "--index": 4 }}>.</span><span style={{ "--index": 5 }}>.</span></>}</span>
                     </div>
                     <div className="behavior-type">
                         <span>Sanctions</span>
-                        <span className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : " loading")}>{userData.get("sortedSchoolLife")?.sanctions.length ?? <><span style={{ "--index": 6 }}>.</span><span style={{ "--index": 7 }}>.</span><span style={{ "--index": 8 }}>.</span></>}</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.sanctions.length ? " loading" : "")}>{userData.get("sortedSchoolLife")?.sanctions.length ?? <><span style={{ "--index": 6 }}>.</span><span style={{ "--index": 7 }}>.</span><span style={{ "--index": 8 }}>.</span></>}</span>
+                    </div>
+                    <div className="behavior-type">
+                        <span>Incidents</span>
+                        <span className={"count" + (!userData.get("sortedSchoolLife")?.incidents.length ? " loading" : "")}>{userData.get("sortedSchoolLife")?.incidents.length ?? <><span style={{ "--index": 9 }}>.</span><span style={{ "--index": 10 }}>.</span><span style={{ "--index": 11 }}>.</span></>}</span>
                     </div>
                 </div>
             </section>

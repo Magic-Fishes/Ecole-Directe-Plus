@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext, useContext, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, createContext, useMemo, lazy, Suspense } from "react";
 import {
     Navigate,
     createBrowserRouter,
@@ -17,16 +17,19 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
-import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
+import { calcAverage, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
+import { createUserLists, getBrowser } from "./utils/utils";
+import { getInitialEcoleDirecteSessions } from "./utils/edpUtils"
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
 import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
 
-import { defaultGlobalSettings, EDPVersion } from "./edpConfig";
+import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfig";
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
+import { Browsers, LocalStorageKeys } from "./utils/constants";
+import { useLocalStorageEffect, useDisplayModeEffect, useDisplayThemeEffect, useBrowserDisplayThemeChange } from "./utils/hooks/useCustomEffect";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -43,39 +46,6 @@ const Account = lazy(() => import("./components/app/CoreApp").then((module) => {
 const Feedback = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Feedback } }));
 const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.LoginBottomSheet } }));
 
-
-function consoleLogEDPLogo() {
-    console.log(`%c
-                   /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-               #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-            /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&%/                                            
-        /&&/                                                
-        %/    /#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        &&&&&&&&&&&&/                                       
-        &&&&&&&&&&&&\\                                       
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           \\&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-              \\%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-    
-                Looking for curious minds. Are you in?      
-          https://github.com/Magic-Fishes/Ecole-Directe-Plus 
-`, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
-    console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
-        `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
-}
-
-consoleLogEDPLogo();
-
-const currentEDPVersion = "0.4.1";
 const apiVersion = "4.64.0";
 
 // secret webhooks
@@ -83,11 +53,12 @@ const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
 const sardineInsolente = "SARDINE_INSOLENTE_WEBHOOK_URL";
 const thonFrustre = "THON_FRUSTRE_WEBHOOK_URL";
 
-// const lsIdName = encrypt("userIds")
 const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 
+
+//default settings
 const defaultSettings = {
     keepLoggedIn: false,
     displayTheme: "auto",
@@ -97,6 +68,7 @@ const defaultSettings = {
     isGrayscaleEnabled: false,
     isPhotoBlurEnabled: false,
     isPartyModeEnabled: true,
+    isPeriodEventEnabled: true,
     isStreamerModeEnabled: false,
     gradeScale: 20,
     isGradeScaleEnabled: false,
@@ -109,36 +81,15 @@ const defaultSettings = {
     shareSettings: true,
     negativeBadges: false,
     allowAnonymousReports: true,
-    isDevChannel: false, 
+    isDevChannel: false,
     selectedChart: 0
-}
-
-const browserExtensionDownloadLink = {
-    Opera: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Chromium: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Chrome: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
-    Firefox: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
-    Edge: "https://microsoftedge.microsoft.com/addons/detail/ecole-directe-plus-unbloc/bghggiemmicjhglgnilchjfnlbcmehgg",
-    Safari: "/edp-unblock"
 }
 
 const userBrowser = getBrowser();
 
-const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-
 // get data from localstorage
-const tokenFromLs = localStorage.getItem("token") ?? "";
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
-const oldActiveAccountFromLs = parseInt(localStorage.getItem("oldActiveAccount") ?? 0);
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
-const keepLoggedInFromLs = getSetting("keepLoggedIn", 0, true);
-const doubleAuthInfoFromLS = JSON.parse((localStorage.getItem("doubleAuthInfo") ?? "{}"));
-let userIdsFromLs;
-if (keepLoggedInFromLs) {
-    userIdsFromLs = JSON.parse(decrypt(localStorage.getItem(lsIdName)) ?? "{}");
-} else {
-    userIdsFromLs = {};
-}
 
 function getSetting(setting, accountIdx, isGlobal = false) {
     if (isGlobal) {
@@ -151,7 +102,7 @@ function getSetting(setting, accountIdx, isGlobal = false) {
     return defaultSettings[setting];
 }
 
-
+/*
 function initSettings(accountList) {
     // comment ajouter un setting :
     // userSettings ici ; defaultSettings
@@ -184,6 +135,9 @@ function initSettings(accountList) {
             },
             isPartyModeEnabled: {
                 value: getSetting("isPartyModeEnabled", i),
+            },
+            isPeriodEventEnabled: {
+                value: getSetting("isPeriodEventEnabled", i),
             },
             isStreamerModeEnabled: {
                 value: getSetting("isStreamerModeEnabled", i),
@@ -218,46 +172,32 @@ function initSettings(accountList) {
                 value: getSetting("negativeBadges", i),
             },
             allowAnonymousReports: {
-                value: getSetting("allowAnonymousReports", i)
+                value: getSetting("allowAnonymousReports", i),
             }
         })
     }
     return userSettings;
 }
-
-function initData(length) {
-    return Array.from({ length: length }, (_) => ({
-        badges: {
-            star: 0,
-            bestStudent: 0,
-            greatStudent: 0,
-            stonks: 0,
-            keepOnFire: 0,
-            meh: 0,
-        },
-    }))
-}
-
+*/
 // optimisation possible avec useCallback
 export const AppContext = createContext(null);
 export const AccountContext = createContext(null);
 export const SettingsContext = createContext(null);
 export const UserDataContext = createContext(null);
-// !:! créer un context only setting et only userData
 
 let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
+consoleLogEDPLogo();
+
 export default function App({ edpFetch }) {
-    // global account data
-    // const userSession = useUserSession(localStorageSession);
-    const userSession = useEcoleDirecteSession();
+    const userSession = useEcoleDirecteSession(getInitialEcoleDirecteSessions());
+
     const {
         userData,
-        get,
-        account,
     } = userSession;
+
     const {
         userCredentials,
         token,
@@ -268,9 +208,10 @@ export default function App({ edpFetch }) {
         loginStates,
         selectedUserIndex,
         selectedUser,
-    } = account;
+        users,
+    } = userSession.Account;
 
-    const { /*requireLogin, */isLoggedIn, requireDoubleAuth, requireNewToken, doubleAuthAcquired } = loginStates;
+    const { isLoggedIn, requireDoubleAuth, doubleAuthAcquired } = loginStates;
 
     const tokenState = token.value;
     const setTokenState = token.set;
@@ -283,14 +224,13 @@ export default function App({ edpFetch }) {
     // paramètres propre à chaque profil du compte
     const userSettings = useAccountSettings(selectedUserIndex.value != null ? selectedUserIndex.value : 0, [Object.fromEntries(Object.keys(defaultSettings).map((setting) => [setting, { value: defaultSettings[setting], properties: {} }]))]); // !:! Il faut ettre un default pertinent
 
-    const { displayTheme } = userSettings;
+    const { displayTheme, displayMode } = userSettings;
 
     // user data (chaque information relative à l'utilisateur est stockée dans un State qui lui est propre)
     const [timeline, setTimeline] = useState([]);
     const [schoolLife, setSchoolLife] = useState([]);
 
     // utils
-    const [oldTimeoutId, setOldTimeoutId] = useState(null);
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches); // permet de modifier le layout en fonction du type d'écran pour améliorer le responsive
     const [isTabletLayout, setIsTabletLayout] = useState(() => window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -302,19 +242,22 @@ export default function App({ edpFetch }) {
 
     // diverse
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
-    const loginAbortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
-    const actualDisplayTheme = getActualDisplayTheme(); // thème d'affichage réel (ex: dark ou light, et non pas auto)
+    const actualDisplayTheme = displayTheme.value === "auto" // thème d'affichage réel (ex: dark ou light, et non pas auto)
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? "dark"
+            : "light"
+        : displayTheme.value;
     const createNotification = useCreateNotification();
 
     class File {
+        /** @param id : 5018 / "654123546545612654984.pdf"
+         * type : NODEVOIR / FICHIER_CDT
+         * file : "file.pdf" / "TEST.txt"
+         * name : "the_name_of_the_file_downloaded_without_extension"
+         * specialParams : params needed in the URL in certains cases
+        */
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
-            /**id : 5018 / "654123546545612654984.pdf"
-             * type : NODEVOIR / FICHIER_CDT
-             * file : "file.pdf" / "TEST.txt"
-             * name : "the_name_of_the_file_downloaded_without_extension"
-             * specialParams : params needed in the URL in certains cases
-             */
             this.id = id
             this.type = type
             this.name = name
@@ -370,6 +313,7 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    useLocalStorageEffect(userSession, keepLoggedIn);
 
     // !:! IL faut gérer le changement de storage
 
@@ -425,10 +369,6 @@ export default function App({ edpFetch }) {
     // }, [accountsListState, userSettings, tokenState]);
 
     useEffect(() => {
-        localStorage.setItem("oldActiveAccount", selectedUserIndex.value)
-    }, [selectedUserIndex.value]);
-
-    useEffect(() => {
         const handleMessage = (event) => {
             if (event.data.type === "EDP_UNBLOCK") {
                 console.log("EDP Unblock v" + event.data.payload.version + " installed");
@@ -444,31 +384,6 @@ export default function App({ edpFetch }) {
 
     /////////// USER DATA ///////////
 
-    useEffect(() => {
-        // gestion synchronisatin du localStorage s'il est modifié dans un autre onglet
-
-        // Gestion thème
-        const handleOSThemeChange = () => {
-            console.clear();
-            consoleLogEDPLogo();
-            if (displayTheme.value === "auto") {
-                document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
-                document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
-                toggleThemeTransitionAnimation();
-            }
-        }
-        prefersDarkMode.addEventListener('change', handleOSThemeChange);
-
-        return (() => {
-            prefersDarkMode.removeEventListener('change', handleOSThemeChange);
-        });
-    }, []);
-
-    // Applique les informations du localStorage dès la première frame pour éviter certains bugs
-    const isFirstFrame = useRef(true);
-    if (isFirstFrame.current) {
-        isFirstFrame.current = false;
-    }
 
     // TABLET / MOBILE LAYOUT MANAGEMENT
     useEffect(() => {
@@ -479,7 +394,7 @@ export default function App({ edpFetch }) {
             setIsMobileLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT}px)`).matches);
             setIsTabletLayout(window.matchMedia(`(max-width: ${WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT}px)`).matches);
 
-            if (getBrowser() !== "Firefox") {
+            if (userBrowser !== Browsers.FIREFOX) {
                 // gestion du `zoom` sur petits écrans afin d'améliorer la lisibilité et le layout global
                 if (window.innerWidth >= 869 && window.innerWidth < 1250) {
                     if (window.innerWidth >= 995) {
@@ -488,8 +403,7 @@ export default function App({ edpFetch }) {
                         document.documentElement.style.zoom = .7;
                     }
 
-                    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                    if (isSafari) {
+                    if (userBrowser === Browsers.SAFARI) {
                         const newFontSize = (.125 / 170) * window.innerWidth - .294;
                         if (newFontSize < 8) {
                             document.documentElement.style.fontSize = "8px";
@@ -527,21 +441,18 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function addNewGrade({ value, coef, scale, name, type, subjectKey, periodKey }) {
+    function addNewGrade(periodKey, subjectKey, newValues) {
         /** 
          * Ajoute une nouvelle note à l'utilisateur (simulation)
-         * - value : valeur de la note
-         * - coef : coefficient de la note
-         * - scale : note maximum posible
-         * - name : nom du devoir
-         * - type : type de devoir (DS, DM, ...)
+         * - @param newValues.value : valeur de la note
+         * - @param newValues.coef : coefficient de la note
+         * - @param newValues.scale : note maximum posible
+         * - @param newValues.name : nom du devoir
+         * - @param newValues.type : type de devoir (DS, DM, ...)
          */
         const grades = userData.grades;
         grades[periodKey].subjects[subjectKey].grades.push({
-            value: value,
-            coef: coef,
-            scale: scale,
-            name: name,
+            ...newValues,
             badges: [],
             classAverage: "N/A",
             classMin: "N/A",
@@ -555,7 +466,6 @@ export default function App({ edpFetch }) {
             isReal: false,
             skill: [],
             subjectName: grades[periodKey].subjects[subjectKey].name,
-            type: type,
             upTheStreak: false,
             subjectKey: subjectKey,
             periodKey: periodKey,
@@ -585,348 +495,6 @@ export default function App({ edpFetch }) {
         period.generalAverage = calcGeneralAverage(period)
         sortedGrades[periodKey] = period;
         changeUserData("sortedGrades", sortedGrades);
-    }
-
-    function setDefaultPeriod(sortedGrades = getUserData("sortedGrades")) {
-        let currentPeriod = 0;
-        for (let periodCode in sortedGrades) {
-            if (Date.now() > sortedGrades[periodCode].endDate) {
-                if (currentPeriod < Object.keys(sortedGrades).length - 1) {
-                    currentPeriod++;
-                }
-            }
-        }
-        changeUserData("activePeriod", Object.keys(sortedGrades)[currentPeriod]);
-    }
-
-    function sortGrades(grades, activeAccount) {
-        /**
-         * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
-         */
-        const periodsFromJson = grades[activeAccount].periodes;
-        const periods = {};
-        const generalAverageHistory = {}; // used for charts
-        const classGeneralAverageHistory = {}; // used for charts
-        const streakScoreHistory = {}; // used for charts
-        const subjectsComparativeInformation = {};
-        const totalBadges = {
-            "star": 0,
-            "bestStudent": 0,
-            "greatStudent": 0,
-            "stonks": 0,
-            "keepOnFire": 0,
-            "meh": 0,
-        };
-        const newLastGrades = []
-        if (periodsFromJson !== undefined) {
-            for (let period of periodsFromJson) {
-                if (period) {
-                    const newPeriod = {};
-                    subjectsComparativeInformation[period.codePeriode] = [];
-
-                    newPeriod.streak = 0;
-                    newPeriod.maxStreak = 0;
-                    newPeriod.name = period.periode;
-                    newPeriod.code = period.codePeriode;
-                    newPeriod.startDate = new Date(period.dateDebut);
-                    newPeriod.endDate = new Date(period.dateFin);
-                    newPeriod.isMockExam = period.examenBlanc;
-                    newPeriod.MTname = period.ensembleMatieres.nomPP;
-                    newPeriod.MTapreciation = period.ensembleMatieres.appreciationPP;
-                    newPeriod.classGeneralAverage = period.ensembleMatieres.moyenneClasse;
-                    newPeriod.subjects = {};
-                    let i = 0;
-                    for (let matiere of period.ensembleMatieres.disciplines) {
-                        // if (matiere.sousMatiere) {
-                        //     continue;
-                        // }
-                        let subjectCode = matiere.codeMatiere + matiere.codeSousMatiere;
-                        if (matiere.groupeMatiere) {
-                            subjectCode = "category" + i.toString();
-                            i++;
-                        }
-                        const newSubject = {};
-                        newSubject.code = subjectCode;
-                        newSubject.elementType = "subject";
-                        newSubject.id = matiere.id.toString();
-                        if (matiere.sousMatiere) {
-                            newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
-                        } else {
-                            newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
-                        }
-                        newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
-                        newSubject.minAverage = safeParseFloat(matiere.moyenneMin);
-                        newSubject.maxAverage = safeParseFloat(matiere.moyenneMax);
-                        newSubject.coef = matiere.coef;
-                        newSubject.size = matiere.effectif;
-                        newSubject.rank = matiere.rang;
-                        newSubject.isCategory = matiere.groupeMatiere;
-                        newSubject.isSubSubject = matiere.sousMatiere;
-                        newSubject.teachers = matiere.professeurs;
-                        newSubject.appreciations = matiere.appreciations;
-                        newSubject.grades = [];
-                        newSubject.average = "N/A";
-                        newSubject.streak = 0;
-                        newSubject.badges = {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                        newPeriod.subjects[subjectCode] = newSubject;
-                        subjectsComparativeInformation[period.codePeriode].push({
-                            subjectFullname: newSubject.name,
-                            classAverage: newSubject.classAverage,
-                            minAverage: newSubject.minAverage,
-                            maxAverage: newSubject.maxAverage
-                        });
-                    }
-                    periods[period.codePeriode] = newPeriod;
-                    generalAverageHistory[period.codePeriode] = { generalAverages: [], dates: [] };
-                    classGeneralAverageHistory[period.codePeriode] = { classGeneralAverages: [], dates: [] };
-                    streakScoreHistory[period.codePeriode] = [];
-                }
-            }
-            const gradesFromJson = grades[activeAccount].notes;
-            const subjectDatas = {};
-
-            const lastGrades = [...gradesFromJson].sort((elA, elB) => (new Date(elA.dateSaisie)).getTime() - (new Date(elB.dateSaisie)).getTime()).slice(-3);
-
-            for (let grade of (gradesFromJson ?? [])) {
-                // handle mock exam periods
-                let tempPeriodCode = grade.codePeriode;
-                let newPeriodCode = tempPeriodCode;
-                if (periods[tempPeriodCode].isMockExam) {
-                    newPeriodCode = tempPeriodCode.slice(0, 4);
-                    if (periods[newPeriodCode] === undefined) {
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                        newPeriodCode = Object.keys(periods)[Object.keys(periods).indexOf(tempPeriodCode) - 1];
-                    }
-                }
-
-                const periodCode = newPeriodCode;
-                const subjectCode = grade.codeMatiere + grade.codeSousMatiere;
-                // try to rebuild the subject if it doesn't exist (happen when changing school year)
-                if (periods[periodCode].subjects[subjectCode] === undefined) {
-                    periods[periodCode].subjects[subjectCode] = {
-                        code: subjectCode,
-                        elementType: "subject",
-                        name: subjectCode,
-                        classAverage: "N/A",
-                        minAverage: "N/A",
-                        maxAverage: "N/A",
-                        coef: 1,
-                        size: "N/A",
-                        isCategory: false,
-                        teachers: [],
-                        appreciations: [],
-                        grades: [],
-                        average: 20,
-                        streak: 0,
-                        badges: {
-                            star: 0,
-                            bestStudent: 0,
-                            greatStudent: 0,
-                            stonks: 0,
-                            keepOnFire: 0,
-                            meh: 0,
-                        }
-                    }
-                }
-
-                const newGrade = {};
-                newGrade.elementType = "grade";
-                newGrade.id = grade.id.toString();
-                newGrade.name = grade.devoir;
-                newGrade.type = grade.typeDevoir;
-                newGrade.date = new Date(grade.date);
-                newGrade.entryDate = new Date(grade.dateSaisie);
-                newGrade.coef = safeParseFloat(grade.coef);
-                newGrade.scale = safeParseFloat(grade.noteSur);
-                newGrade.value = getGradeValue(grade.valeur);
-                newGrade.classMin = safeParseFloat(grade.minClasse);
-                newGrade.classMax = safeParseFloat(grade.maxClasse);
-                newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
-                newGrade.subjectName = grade.libelleMatiere;
-                newGrade.isSignificant = !grade.nonSignificatif;
-                newGrade.examSubjectSRC = grade.uncSujet;
-                newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-                newGrade.isReal = true;
-                /* Si newGrade.isReal est faux :
-                    pas de :
-                        - badges
-                        - streak
-                        - moyenne de classe/min/max
-                        - correction ni sujet
-                        - date
-                    différences : 
-                        - id = randomUUID
-                    choisit par l'utilisateur : 
-                        - name
-                        - coef
-                        - scale
-                        - value
-                        - type
-                */
-                if (!subjectDatas.hasOwnProperty(periodCode)) {
-                    subjectDatas[periodCode] = {};
-                }
-                if (!subjectDatas[periodCode].hasOwnProperty(subjectCode)) {
-                    subjectDatas[periodCode][subjectCode] = [];
-                }
-                subjectDatas[periodCode][subjectCode].push({ value: newGrade.value, coef: newGrade.coef, scale: newGrade.scale, isSignificant: newGrade.isSignificant, classAverage: newGrade.classAverage });
-                const nbSubjectGrades = periods[periodCode].subjects[subjectCode]?.grades.filter((el) => el.isSignificant).length ?? 0;
-                const subjectAverage = periods[periodCode].subjects[subjectCode].average;
-                const oldGeneralAverage = isNaN(periods[periodCode].generalAverage) ? 10 : periods[periodCode].generalAverage;
-                const average = calcAverage(subjectDatas[periodCode][subjectCode]);
-                const classAverage = calcClassAverage(subjectDatas[periodCode][subjectCode]);
-
-                // streak management
-                newGrade.upTheStreak = (!isNaN(newGrade.value) && newGrade.isSignificant && (nbSubjectGrades > 0 ? subjectAverage : oldGeneralAverage) <= average);
-                if (newGrade.upTheStreak) {
-                    periods[periodCode].streak += 1;
-                    if (periods[periodCode].streak > periods[periodCode].maxStreak) {
-                        periods[periodCode].maxStreak = periods[periodCode].streak;
-                    }
-                    periods[periodCode].totalStreak += 1;
-                    periods[periodCode].subjects[subjectCode].streak += 1;
-                } else {
-                    if (newGrade.isSignificant && !["Abs", "Disp", "NE", "EA", "Comp"].includes(newGrade.value)) {
-                        periods[periodCode].streak -= periods[periodCode].subjects[subjectCode].streak;
-                        periods[periodCode].subjects[subjectCode].streak = 0;
-
-                        // enlève le "upTheStreak" des notes précédant celle qu'on considère
-                        for (let grade of periods[periodCode].subjects[subjectCode].grades) {
-                            if (grade.upTheStreak) {
-                                grade.upTheStreak = "maybe";
-                            }
-                        }
-                    }
-                }
-                streakScoreHistory[periodCode].push(periods[periodCode].streak);
-
-                periods[periodCode].subjects[subjectCode].average = average;
-                periods[periodCode].subjects[subjectCode].classAverage = classAverage;
-
-                const category = findCategory(periods[periodCode], subjectCode);
-                if (category !== null) {
-                    const categoryAverage = calcCategoryAverage(periods[periodCode], category);
-                    periods[periodCode].subjects[category.code].average = categoryAverage;
-                }
-                const generalAverage = calcGeneralAverage(periods[periodCode]);
-                generalAverageHistory[periodCode].generalAverages.push(generalAverage);
-                generalAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].generalAverage = generalAverage;
-
-                const classGeneralAverage = calcClassGeneralAverage(periods[periodCode]);
-                classGeneralAverageHistory[periodCode].classGeneralAverages.push(classGeneralAverage);
-                classGeneralAverageHistory[periodCode].dates.push(newGrade.date);
-                periods[periodCode].classGeneralAverage = classGeneralAverage;
-
-                // création des badges
-                const gradeBadges = [];
-                if (!isNaN(newGrade.value)) {
-                    if (newGrade.value === newGrade.scale) { // si la note est au max on donne l'étoile (le parfait)
-                        gradeBadges.push("star");
-                        periods[periodCode].subjects[subjectCode].badges.star++
-                        totalBadges.star++
-                    }
-                    if (newGrade.value === newGrade.classMax) { // si la note est la meilleure de la classe on donne le plus
-                        gradeBadges.push("bestStudent");
-                        periods[periodCode].subjects[subjectCode].badges.bestStudent++
-                        totalBadges.bestStudent++
-                    }
-                    if (newGrade.value > newGrade.classAverage) { // si la note est > que la moyenne de la classe on donne le badge checkBox tier
-                        gradeBadges.push("greatStudent");
-                        periods[periodCode].subjects[subjectCode].badges.greatStudent++
-                        totalBadges.greatStudent++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) > subjectAverage) { // si la note est > que la moyenne de la matiere on donne le badge stonks tier
-                        gradeBadges.push("stonks");
-                        periods[periodCode].subjects[subjectCode].badges.stonks++
-                        totalBadges.stonks++
-                    }
-                    if (newGrade.upTheStreak) { // si la note up la streak on donne le badge de streak
-                        gradeBadges.push("keepOnFire");
-                        periods[periodCode].subjects[subjectCode].badges.keepOnFire++
-                        totalBadges.keepOnFire++
-                    }
-                    if ((newGrade.value / newGrade.scale * 20) === subjectAverage) { // si la note est = à la moyenne de la matiere on donne le badge = tier
-                        gradeBadges.push("meh");
-                        periods[periodCode].subjects[subjectCode].badges.meh++
-                        totalBadges.meh++
-                    }
-                }
-                newGrade.badges = gradeBadges;
-                newGrade.skill = formatSkills(grade.elementsProgramme)
-
-                periods[periodCode].subjects[subjectCode].grades.push(newGrade);
-                if (lastGrades.includes(grade)) {
-                    newLastGrades.push(newGrade)
-                }
-            }
-        }
-
-        // supprime les périodes vides et examens blancs
-        let i = 0;
-        let firstPeriod;
-        for (const key in periods) {
-            if (i === 0) {
-                firstPeriod = { key: key, value: periods[key] }
-            }
-            i++;
-            let isEmpty = true;
-            if (periods[key])
-                for (const subject in periods[key].subjects) {
-                    if (periods[key].subjects[subject].grades.length !== 0) {
-                        isEmpty = false;
-                    }
-                }
-            if (isEmpty || periods[key].isMockExam) {
-                delete periods[key];
-            }
-        }
-        // Ajoute une première période si c'est le début de l'année et que toutes les périodes sont vides
-        if (firstPeriod !== undefined && Object.keys(periods).length < 1) {
-            periods[firstPeriod.key] = firstPeriod.value;
-        }
-
-        const settings = grades[activeAccount].parametrage;
-        const enabledFeatures = {};
-
-        enabledFeatures.moyenneMin = settings.moyenneMin;
-        enabledFeatures.moyenneMax = settings.moyenneMax;
-        enabledFeatures.coefficient = settings.coefficientNote;
-
-        // add the average of all subjects a special type of chart
-        for (const period in periods) {
-            for (const subject in periods[period].subjects) {
-                for (const subjectID in subjectsComparativeInformation[period]) {
-                    if (periods[period].subjects[subject].name === subjectsComparativeInformation[period][subjectID].subjectFullname) {
-                        const newAverage = periods[period].subjects[subject].average;
-                        if (newAverage === "N/A" || periods[period].subjects[subject].classAverage === "N/A" || periods[period].subjects[subject].code.includes("category")) {
-                            subjectsComparativeInformation[period].splice(subjectID, 1);
-                            break;
-                        }
-                        subjectsComparativeInformation[period][subjectID].average = newAverage;
-                        break;
-                    }
-                }
-            }
-        }
-
-        changeUserData("totalBadges", totalBadges);
-        changeUserData("sortedGrades", periods);
-        changeUserData("generalAverageHistory", generalAverageHistory); // used for charts
-        changeUserData("classGeneralAverageHistory", classGeneralAverageHistory); // used for charts
-        changeUserData("streakScoreHistory", streakScoreHistory); // used for charts
-        changeUserData("subjectsComparativeInformation", subjectsComparativeInformation); // used for charts
-        changeUserData("gradesEnabledFeatures", enabledFeatures);
-        changeUserData("lastGrades", newLastGrades.reverse());
-        setDefaultPeriod(periods)
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -1122,7 +690,8 @@ export default function App({ edpFetch }) {
         const sortedSchoolLife = {
             delays: [],
             absences: [],
-            sanctions: []
+            sanctions: [],
+            incidents: []
         };
         schoolLife[activeAccount]?.absencesRetards.concat(schoolLife[activeAccount].sanctionsEncouragements ?? []).forEach((item) => {
             const newItem = {};
@@ -1148,6 +717,9 @@ export default function App({ edpFetch }) {
                 case "Punition":
                     sortedSchoolLife.sanctions.push(newItem);
                     break;
+                case "Incident":
+                    sortedSchoolLife.incidents.push(newItem);
+                    break;
 
                 default:
                     break;
@@ -1163,37 +735,6 @@ export default function App({ edpFetch }) {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function requireLogin() {
-    }
-
-    function loginFromOldAuthInfo(token, accountsList) {
-        // En cas de rafraichissement de la page, recovery des informations à partir du token s'il n'a pas expiré
-        if (!!token && token !== "none" && accountsList.length > 0) {
-            console.log("LOGGED IN FROM OLD TOKEN & ACCOUNTSLIST");
-            setUserInfo(token, accountsList);
-        } else {
-            console.log("NO ACCOUNTSLIST: LOGGED OUT");
-            logout();
-        }
-    }
-
-    const fakeLogin = () => {
-        const fakeToken = "thisisafaketoken";
-        const fakeAccountsList = [
-            {
-                accountType: "E",
-                id: "0001",
-                firstName: "Guest",
-                lastName: "",
-                email: "ecole.directe.plus@gmail.com",
-                picture: "https://i.ibb.co/GC5f9RL/IMG-1124.jpg",
-                schoolName: "École de la République",
-                class: ["Pcpt", "Précepteur d'exception"]
-            },
-        ];
-        resetUserData()
-        setUserInfo(fakeToken, fakeAccountsList)
-    }
 
     function handleEdBan() {
         // Will summon a notification with JSX in it
@@ -1209,7 +750,7 @@ export default function App({ edpFetch }) {
             <hr />
             <div className="extension-download-link">
                 <a href="/edp-unblock#about">En savoir plus</a>
-                <a href={browserExtensionDownloadLink[userBrowser]} target={(!["Safari", "Firefox"].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
+                <a href={browserExtensionDownloadLink[userBrowser]} target={(![Browsers.SAFARI, Browsers.FIREFOX].includes(userBrowser) ? "_blank" : "")}>Télécharger</a>
             </div>
         </>, { customClass: "extension-warning", timer: "infinite" })
     }
@@ -1890,111 +1431,37 @@ export default function App({ edpFetch }) {
 
     /* ################################ CONNEXION/DÉCONNEXION ################################ */
 
-    function setUserInfo(token, accountsList) {
-        console.log("LOGGED IN ; TOKEN & ACCOUNTSLIST GOT");
-        setTokenState(token);
-        setAccountsListState(accountsList);
-        setTimeline(createUserLists(accountsList.length));
-        setSchoolLife(createUserLists(accountsList.length));
-        // !:! setUserSettings(initSettings(accountsList));
-        // !:! setUserData(initData(accountsList.length));
-        // localStorage.setItem("token", token);
-        // localStorage.setItem("accountsList", JSON.stringify(accountsList));
-    }
-
     function resetUserData(hard = true) {
         if (hard) {
             selectedUserIndex.set(0);
             // localStorage.removeItem(lsIdName);
             localStorage.removeItem("encryptedUserIds");
         }
-        setUserData([])
+        setUserData([]);
         setTimeline([]);
         setSchoolLife([]);
-        // setKeepLoggedIn(false);
     }
 
     function logout() {
+        userSession.logout();
         // suppression des informations de connexion
-        localStorage.removeItem("token");
-        localStorage.removeItem("accountsList");
-        localStorage.removeItem("oldActiveAccount");
-        // suppression des paramètres locaux et globaux
-        localStorage.removeItem("userSettings");
-        localStorage.removeItem("keepLoggedIn");
-        // réinitialisation des States
-        setTokenState("");
-        setAccountsListState([]);
-        resetUserData();
-        keepLoggedIn.set(false);
-        // abort tous les fetch en cours pour éviter une reconnexion à partir du nouveau token renvoyé par l'API
-        for (let controller of abortControllers.current) {
-            controller.abort();
-        }
-        abortControllers.current = [];
+        localStorage.removeItem(LocalStorageKeys.TOKEN);
+        localStorage.removeItem(LocalStorageKeys.USERS);
+        localStorage.removeItem(LocalStorageKeys.LAST_SELECTED_USER);
     }
-
 
     /* ################################ THEME ################################ */
 
-    useEffect(() => {
-        const metaThemeColor = document.getElementById("theme-color");
-        if (displayTheme.value === "dark") {
-            document.documentElement.classList.add("dark");
-            document.documentElement.classList.remove("light");
-            metaThemeColor.content = "#181829";
-        } else if (displayTheme.value === "light") {
-            document.documentElement.classList.add("light");
-            document.documentElement.classList.remove("dark");
-            metaThemeColor.content = "#e4e4ff";
-        } else {
-            document.documentElement.classList.add(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");
-            document.documentElement.classList.remove(window.matchMedia('(prefers-color-scheme: dark)').matches ? "light" : "dark");
-            metaThemeColor.content = (window.matchMedia('(prefers-color-scheme: dark)').matches ? "#181829" : "#e4e4ff");
-        }
-        toggleThemeTransitionAnimation();
-    }, [displayTheme.value]);
-
-
-    function getActualDisplayTheme() {
-        if (displayTheme.value === "auto") {
-            return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
-        }
-        return displayTheme.value;
-    }
-
-
-
-    function toggleThemeTransitionAnimation() {
-        if (userSettings.displayMode.value === "balanced" || userSettings.displayMode.value === "performance") {
-            return 0;
-        }
-        //  vérifie l'existence d'un timeout actif
-        if (oldTimeoutId) {
-            // un timeout était déjà en cours, on le supprime
-            clearTimeout(oldTimeoutId);
-        }
-        document.documentElement.classList.add("switching-theme");
-        const timeoutId = setTimeout(() => { document.documentElement.classList.remove("switching-theme") }, 500);
-        setOldTimeoutId(timeoutId);
-    }
+    useDisplayThemeEffect(displayTheme, displayMode);
+    useBrowserDisplayThemeChange(displayMode);
 
     /* ################################ MODE D'AFFICHAGE ################################ */
 
-    useEffect(() => {
-        document.documentElement.classList.remove("quality");
-        document.documentElement.classList.remove("balanced");
-        document.documentElement.classList.remove("performance");
-
-        document.documentElement.classList.add(userSettings.displayMode.value);
-    }, [userSettings.displayMode.value]);
+    useDisplayModeEffect(displayMode);
 
     /* ################################################################################### */
 
-    function refreshApp() {
-        // permet de refresh l'app sans F5
-        setAppKey(crypto.randomUUID());
-    }
+    const refreshApp = () => { setAppKey(crypto.randomUUID()) } // permet de refresh l'app sans F5
 
     // routing system
     const router = createBrowserRouter([
@@ -2005,15 +1472,14 @@ export default function App({ edpFetch }) {
                     isLoggedIn={isLoggedIn}
                     token={tokenState}
                     accountsList={accountsListState}
-                    fakeLogin={fakeLogin}
                     resetUserData={resetUserData}
 
-                    get={get}
+                    get={userSession.get}
 
                     displayTheme={displayTheme}
 
                     setDisplayModeState={(value) => { displayMode.set(value) }}
-                    displayMode={userSettings.displayMode.value}
+                    displayMode={displayMode.value}
 
                     activeAccount={selectedUserIndex.value}
                     setActiveAccount={selectedUserIndex.set}
@@ -2041,7 +1507,7 @@ export default function App({ edpFetch }) {
             errorElement: <ErrorPage sardineInsolente={sardineInsolente} />,
             children: [
                 {
-                    element: <LandingPage token={tokenState} accountsList={accountsListState} />,
+                    element: <LandingPage token={tokenState} isLoggedIn={isLoggedIn} />,
                     path: "/",
                 },
                 {
@@ -2057,7 +1523,7 @@ export default function App({ edpFetch }) {
                     path: "quackquack",
                 },
                 {
-                    element: <Lab account={account} />,
+                    element: <Lab account={userSession.Account} />,
                     path: "lab",
                 },
                 {
@@ -2071,7 +1537,7 @@ export default function App({ edpFetch }) {
                 {
                     element: (isLoggedIn
                         ? <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} />
-                        : <Login logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
+                        : <Login logout={logout} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
                     path: "login",
                 },
                 {
@@ -2094,7 +1560,7 @@ export default function App({ edpFetch }) {
                                 isFullScreen={isFullScreen}
                                 logout={logout}
                             />
-                            {(!isLoggedIn && <LoginBottomSheet logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} onClose={() => { }} close={true} />)} {/* // !:! changer le true ofc*/}
+                            {(!isLoggedIn && <LoginBottomSheet logout={logout} onClose={() => { }} close={true} />)} {/* // !:! changer le true ofc*/}
                         </>),
                     path: "app",
                     children: [
