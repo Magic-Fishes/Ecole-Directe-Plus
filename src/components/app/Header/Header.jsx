@@ -156,7 +156,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: `/app/${activeAccount}/dashboard`,
             icon: <DashboardIcon />,
             notifications: notifications?.dashboard || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "NOTES").map((item) => item.enable).includes(true) ?? true,
@@ -166,7 +167,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: `/app/${activeAccount}/grades`,
             icon: <GradesIcon />,
             notifications: notifications?.grades || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "CAHIER_DE_TEXTES").map((item) => item.enable).includes(true) ?? true,
@@ -176,7 +178,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: `/app/${activeAccount}/homeworks`,
             icon: <HomeworksIconOfficial />,
             notifications: notifications?.homeworks || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "EDT").map((item) => item.enable).includes(true) ?? true,
@@ -186,7 +189,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: `/app/${activeAccount}/timetable`,
             icon: <TimetableIcon />,
             notifications: notifications?.timetable || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "MESSAGERIE").map((item) => item.enable).includes(true) ?? true,
@@ -196,7 +200,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: `/app/${activeAccount}/messaging`,
             icon: <MessagingIcon />,
             notifications: notifications?.messaging || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: false
         },
         {
             enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "CANAL_CHANGE").map((item) => item.enable).includes(true) ?? true,
@@ -206,7 +211,8 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             link: window.location.href.search("dev")>-1 ? `//ecole-directe.plus/?verifiedOrigin=true` : `//dev.ecole-directe.plus/?verifiedOrigin=true`,
             icon: <svg viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><path d="M1016.47 56C1514.655 56 1920 461.346 1920 959.53c0 498.183-405.346 903.529-903.53 903.529-273.204 0-528.338-121.412-699.896-333.29l175.51-142.08c128.528 158.57 319.737 249.487 524.387 249.487 373.722 0 677.647-303.924 677.647-677.647 0-373.722-303.925-677.647-677.647-677.647-204.65 0-395.86 90.918-524.386 249.487l-175.51-142.08C488.131 177.412 743.264 56 1016.47 56Zm-89.54 428.408 475.031 475.144-475.03 475.144-159.699-159.812 202.504-202.39H.023V846.61h969.713L767.232 644.107l159.699-159.699Z" fill-rule="evenodd" class="fill-text-main"></path></svg>,
             notifications: notifications?.canalchange || 0,
-            isNew: false
+            isNew: false,
+            isNewFeature: true
         }
     ];
     // Behavior
@@ -237,7 +243,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
                         <ul className="header-button-list">
                             {headerNavigationButtons.map((headerButton) => (headerButton.enabled &&
                                 <li className={`header-button-container`} key={headerButton.id} id={headerButton.name}>
-                                    <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} isNew={headerButton.isNew} />
+                                    <HeaderNavigationButton className={location.pathname === headerButton.link ? " selected" : ""} link={headerButton.link} icon={headerButton.icon} title={headerButton.title} notifications={headerButton.notifications} isNew={headerButton.isNew} isNewFeature={headerButton.isNewFeature} />
                                 </li>
                             )
                             )}
