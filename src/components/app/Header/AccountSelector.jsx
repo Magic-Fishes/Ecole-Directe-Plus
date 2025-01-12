@@ -109,7 +109,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
         if (isTabletLayout) {
             siteMap = ["grades", "homeworks", "dashboard", "timetable", "messaging", "settings"];
         } else {
-            siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging", "settings"];
+            siteMap = ["dashboard", "grades", "homeworks", "timetable", "messaging", "canalchange", "settings"];
         }
 
         return siteMap
@@ -172,7 +172,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                         <div className="links">
                             <Link to={`/app/${activeAccount}/settings`} id="settings-page" onClick={handleClose}><SettingsIcon /> <span className="link-text">Paramètres</span></Link>
                             <Link to={`/app/${activeAccount}/account`} id="account-page" onClick={handleClose}><AccountIcon /> <span className="link-text">Compte</span></Link>
-                            {/* TODO: REMOVE THAT SHIT ↓ */}
+                            <!-- TODO: REMOVE THAT SHIT ↓ -->
                             <Link to={(location.pathname.endsWith("dashboard") || location.pathname.endsWith("homeworks")) ? "/feedback" : "#feedback"} replace={true} id="feedback" onClick={handleClose}><FeedbackIcon /> <span className="link-text">Faire un retour</span></Link>
                             <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
                         </div>
