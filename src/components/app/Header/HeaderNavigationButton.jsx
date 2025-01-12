@@ -9,6 +9,7 @@ export default function HeaderNavigationButton({ link, title, icon, notification
             <div className="icon-container">
                 {icon}
                 {(notifications !== 0 || isNew) && <div className={`notifications ${isNew ? "new" : ""}`}>{isNew ? "NEW" : notifications}</div>}
+                {(<div className={`notifications ${isNewFeature ? "new" : ""}`}>{isNewFeature ? "NEW FEATURE" : notifications}</div>}
             </div>
             <span className="header-button-title">{title}</span>
         </Link>
