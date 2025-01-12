@@ -230,6 +230,10 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     <CheckBox id="allow-windows-arrangement-cb" label={<span>Permettre le réarrangement des fenêtres</span>} checked={settings.get("allowWindowsArrangement")} onChange={(event) => settings.set("allowWindowsArrangement", event.target.checked)} />
                 </div>
 
+                <div className="setting" id="input-canaux">
+                    <CheckBox id="checkbox-change-canal" label={<span>Afficher le bouton de basculement entre les canaux sur le panneau horizontal</span>} checked={document.querySelector(".canal-dev-li").hidden=false;} onChange={if(document.querySelector("#checkbox-change-canal").checked){document.querySelector(".canal-dev-li").hidden=false;}else{document.querySelector(".canal-dev-li").hidden=true;}}
+                </div>
+
 
                 {/^((?!chrome|android).)*safari/i.test(navigator.userAgent) && isStandaloneApp
                     ? <div className="setting" id="refresh-user-data">
@@ -264,7 +268,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                     </div>
 
                     <div className="setting" id="streamer-mode">
-                        <CheckBox id="streamer-mode-cb" label={<span>Activer le mode streamer (bêta)</span>} checked={settings.get("isStreamerModeEnabled")} onChange={(event) => { settings.set("isStreamerModeEnabled", event.target.checked) }} /><InfoButton className="setting-tooltip">Anonymise les informations sensibles. Les données scolaires seront tout de même affichées. (Bêta : certaines informations qui devraient être masquées ne le seront peut-être pas.)</InfoButton>
+                        <CheckBox id="streamer-mode-cb" label={<span>Activer le mode streamer</span>} checked={settings.get("isStreamerModeEnabled")} onChange={(event) => { settings.set("isStreamerModeEnabled", event.target.checked) }} /><InfoButton className="setting-tooltip">Anonymise les informations sensibles. Les données scolaires seront tout de même affichées. (Bêta : certaines informations qui devraient être masquées ne le seront peut-être pas.)</InfoButton>
                     </div>
 
                     <div className="setting" id="allow-anonymous-reports">
