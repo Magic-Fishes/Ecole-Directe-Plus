@@ -197,6 +197,16 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             icon: <MessagingIcon />,
             notifications: notifications?.messaging || 0,
             isNew: false
+        },
+        {
+            enabled: accountsList[activeAccount]?.modules?.filter((item) => item.code === "CANAL_CHANGE").map((item) => item.enable).includes(true) ?? true,
+            id: 6,
+            name: "canalchange",
+            title: window.location.href.search("dev")>-1 ? "Canal Stable" : "Canal DEV",
+            link: window.location.href.search("dev")>-1 ? `//ecole-directe.plus/?verifiedOrigin=true` : `//dev.ecole-directe.plus/?verifiedOrigin=true`,
+            icon: <CanalChangeIcon />,
+            notifications: notifications?.canalchange || 0,
+            isNew: false
         }
     ];
     // Behavior
