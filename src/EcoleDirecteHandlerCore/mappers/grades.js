@@ -1,4 +1,14 @@
-import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat, calcClassGeneralAverage, calcClassAverage } from "../../utils/gradesTools";
+import {
+    getGradeValue,
+    calcAverage,
+    findCategory,
+    calcCategoryAverage,
+    calcGeneralAverage,
+    formatSkills,
+    safeParseFloat,
+    calcClassGeneralAverage,
+    calcClassAverage
+} from "../../utils/gradesTools";
 
 export default function mapGrades(grades) {
     /**

@@ -9,10 +9,10 @@ import { AppContext } from "../../../App";
 
 const simulationContext = createContext();
 
-export function GradeSimulationTrigger( {subjectKey, selectedPeriod} ) {
+export function GradeSimulationTrigger({ subjectKey, selectedPeriod }) {
     const openGradeSimulation = useContext(simulationContext)
     return (
-        <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(subjectKey, selectedPeriod) }} role="button" tabIndex={0} onKeyDown={(event) => event.key === "Enter" && openGradeSimulation(subjectKey, selectedPeriod) } />
+        <Plus className="grade-simulation-trigger" onClick={() => { openGradeSimulation(subjectKey, selectedPeriod) }} role="button" tabIndex={0} onKeyDown={(event) => event.key === "Enter" && openGradeSimulation(subjectKey, selectedPeriod)} />
     )
 }
 
@@ -39,13 +39,13 @@ export default function DOMSimulation({ children }) {
         setGradeSimulationPopUpClosing(true);
     }
 
-    function changeGradeSimulationValues(setting, value) {
-        setGradeSimulationValues(old => ({...old, [setting]: value}))
+    function changeGradeSimulationSettings(setting, value) {
+        setGradeSimulationSettings(old => ({ ...old, [setting]: value }))
     }
-    
+
     function closeSimulationPopUp() {
         setGradeSimulationPopUpClosing(false);
-        setTimeout(() => {setGradeSimulationPopUp(false)}, 500);
+        setTimeout(() => { setGradeSimulationPopUp(false) }, 500);
     }
     
     function handleSubmit(event) {
@@ -66,7 +66,10 @@ export default function DOMSimulation({ children }) {
                         <div className="grade-simulation-field">Coefficient : <NumberInput className="simulation-input" min={0.1} max={100} step={0.1} value={gradeSimulationValues.coef} onChange={value => { changeGradeSimulationValues("coef", value) }} displayArrowsControllers={false} /></div>
                         <p>Cette note disparaîtra au rechargement de la page</p>
                     </div>
-                    <div className="grade-simulation-buttons"><Button className="close simulation-form-button" value="Annuler" onClick={closeSimulationPopUp} /><Button className="submit simulation-form-button" value="Valider" type="submit" /></div>
+                    <div className="grade-simulation-buttons">
+                        <Button className="close simulation-form-button" value="Annuler" onClick={closeSimulationPopUp} />
+                        <Button className="submit simulation-form-button" value="Valider" type="submit" />
+                    </div>
                 </form>
             </PopUp>}
         </simulationContext.Provider>

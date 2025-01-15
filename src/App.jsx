@@ -251,13 +251,13 @@ export default function App({ edpFetch }) {
     const createNotification = useCreateNotification();
 
     class File {
-        /** @param id : 5018 / "654123546545612654984.pdf"
-         * type : NODEVOIR / FICHIER_CDT
-         * file : "file.pdf" / "TEST.txt"
-         * name : "the_name_of_the_file_downloaded_without_extension"
-         * specialParams : params needed in the URL in certains cases
-        */
         constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
+            /**id : 5018 / "654123546545612654984.pdf" it depends of ED's response
+             * type : NODEVOIR / FICHIER_CDT / ...     it depends of where you get the file in ED (homeworks, messsages or somewhere else)
+             * file : "file.pdf" / "TEST.txt"
+             * name : "the_name_of_the_file_downloaded_without_extension"
+             * specialParams : params needed in the URL in certain cases
+             */
             this.id = id
             this.type = type
             this.name = name

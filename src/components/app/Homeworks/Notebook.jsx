@@ -17,8 +17,7 @@ export default function Notebook({ hideDateController = false }) {
     const { isLoggedIn, actualDisplayTheme } = useContext(AppContext);
     
     const userData = useContext(UserDataContext);
-    const { homeworks } = userData;
-
+    const { homeworks: {value: homeworks} } = userData;
     const settings = useContext(SettingsContext);
     const { displayMode } = settings.user;
 

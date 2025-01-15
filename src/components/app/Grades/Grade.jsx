@@ -20,8 +20,8 @@ export default function Grade({ grade, subject, className = "", ...props }) {
 
     const gradeRef = useRef(null);
 
-    const generalAverage = grades[activePeriod]?.generalAverage;
-    const coefficientEnabled = gradesEnabledFeatures?.coefficient;
+    const generalAverage = grades.value[activePeriod.value]?.generalAverage;
+    const coefficientEnabled = gradesEnabledFeatures.value?.coefficient;
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -42,7 +42,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     // Use subject coef if subject is provided, otherwise use grade's coef
     const gradeCoef = grade.coef ?? 1;
     let subjectCoef = grade?.subject?.coef ?? gradeCoef;
-    let subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
+    let subjectsSummedCoefs = getSummedCoef(grades.value[activePeriod.value].subjects);
     // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
     const gradeScore = (subjectCoef * (grade.value - (generalAverage ?? grade.value))) / ((subjectsSummedCoefs - subjectCoef) || 1);
 

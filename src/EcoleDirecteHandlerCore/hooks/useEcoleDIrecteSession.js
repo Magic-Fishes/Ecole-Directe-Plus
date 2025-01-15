@@ -13,6 +13,8 @@ import fetchTimeline from "../requests/fetchTimeline";
 import mapTimeline from "../mappers/timeline";
 import fetchHomeworks from "../requests/fetchHomeworks";
 import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
+import { testISODate, textPlacehodler } from "../utils/utils";
+import { dataList } from "../constants/constants"
 
 /**
  * Each fetch function will return a code, and other data such as messages, display text, ...
@@ -32,20 +34,23 @@ import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
  * )
  */
 
-export default function useEcoleDirecteSession(initialSession) {
-    const [userData, {
-        initialize: initializeUserData,
-        reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
-        set: setUserData,
-        setSelectedUserDataIndex,
-    }] = useAccountData();
-
-    const Account = useEcoleDirecteAccount(initialSession.Account);
-    const { token, users, selectedUser, selectedUserIndex, loginStates } = Account;
+export default function useEcoleDirecteSession(localStorageSession = {}) {
+    const [
+        userData,
+        {
+            initialize: initializeUserData,
+            reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
+            setSelectedUserDataIndex,
+        },
+        caca,
+        pipi
+    ] = useAccountData();
+    const account = useEcoleDirecteAccount({});
+    const { token, users, selectedUser, selectedUserIndex, loginStates } = account;
 
     useEffect(() => {
         if (loginStates.isLoggedIn) {
-            initializeUserData(users.length);
+            initializeUserData(users.length, dataList);
         } else if (loginStates.requireLogin) {
             resetUserData();
         }
@@ -70,7 +75,7 @@ export default function useEcoleDirecteSession(initialSession) {
                 case 200:
                     const mappedResponse = mapGrades(response.data)
                     Object.keys(mappedResponse).forEach((data) => {
-                        setUserData(data, mappedResponse[data], requestUserIndex);
+                        userData[data].set(mappedResponse[data], requestUserIndex);
                     })
                     return GradesCodes.SUCCESS;
                 default:
@@ -118,11 +123,26 @@ export default function useEcoleDirecteSession(initialSession) {
                 case 200:
                     if (date === null) {
                         const { mappedHomeworks, mappedUpcomingAssignments } = mapUpcomingHomeworks(response.data);
-                        setUserData("homeworks", mappedHomeworks, requestUserIndex);
-                        setUserData("upcomingAssignments", mappedUpcomingAssignments, requestUserIndex);
+                        userData.homeworks.set(mappedHomeworks, requestUserIndex);
+                        userData.upcomingAssignments.set(mappedUpcomingAssignments, requestUserIndex);
                     } else {
                         const { mappedDay } = mapDayHomeworks(response.data);
-                        setUserData("homeworks", { ...userData.homeworks, ...mappedDay }, requestUserIndex);
+                        if (users[requestUserIndex].id < 0) {
+                            const guestDetailedTaskDate = Object.keys(mappedDay)[0];
+                            userData.homeworks.set({
+                                ...userData.homeworks,
+                                [date]: [
+                                    ...mappedDay[guestDetailedTaskDate].map((el, index) => ({
+                                        ...el,
+                                        ...userData.homeworks[date][index],
+                                        content: textPlacehodler(),
+                                        sessionContent: textPlacehodler()
+                                    })),
+                                ]
+                            }, requestUserIndex);
+                        } else {
+                            userData.homeworks.set({ ...userData.homeworks, ...mappedDay }, requestUserIndex);
+                        }
                     }
                     return HomeworksCodes.SUCCESS;
                 default:
@@ -162,7 +182,7 @@ export default function useEcoleDirecteSession(initialSession) {
             switch (response.code) {
                 case 200:
                     const { notifications } = mapTimeline(response.data)
-                    setUserData("notifications", notifications, requestUserIndex);
+                    userData.notifications.set(notifications, requestUserIndex);
                     return GradesCodes.SUCCESS;
                 default:
                     return { code: -1, message: response.message };
@@ -196,7 +216,6 @@ export default function useEcoleDirecteSession(initialSession) {
     return {
         userData: {
             ...userData,
-            set: setUserData,
             get: {
                 grades: getGrades,
                 timeline: getTimeline,

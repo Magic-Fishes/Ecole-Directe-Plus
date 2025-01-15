@@ -1,3 +1,5 @@
+import { decodeBase64 } from "../utils/utils";
+
 export function mapUpcomingHomeworks(homeworks) {
     // This function will map (I would rather call it translate) the EcoleDirecte response to a better js object
     const mappedUpcomingAssignments = []
@@ -69,9 +71,9 @@ export function mapDayHomeworks(homeworks) { // This function will sort (I would
                 isInterrogation: interrogation,
                 isDone: effectue,
                 teacher: nomProf,
-                content: contenu,
+                content: decodeBase64(contenu),
                 files: documents.map((e) => (new File(e.id, e.type, e.libelle))),
-                sessionContent: contenuDeSeance.contenu,
+                sessionContent: decodeBase64(contenuDeSeance.contenu),
                 sessionContentFiles: contenuDeSeance.documents.map((e) => (new File(e.id, e.type, e.libelle)))
             }
         } else {

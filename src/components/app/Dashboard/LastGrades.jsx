@@ -34,9 +34,9 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
         </WindowHeader>
         <WindowContent>
             <ol className="last-grades-container">
-                {lastGrades !== undefined
-                    ? lastGrades.length > 0
-                        ? lastGrades.map((el) => <li key={el.id} className="last-grade-container">
+                {lastGrades.value !== undefined
+                    ? lastGrades.value.length > 0
+                        ? lastGrades.value.map((el) => <li key={el.id} className="last-grade-container">
                         <Link to={`/app/${activeAccount}/grades#` + el.id} className="last-grade-wrapper">
                             <span className="last-grade-value"><Grade grade={{ value: el.value ?? "N/A", scale: el.scale }} /></span>
                             <span className="last-grade-name">{el.subjectName}</span>

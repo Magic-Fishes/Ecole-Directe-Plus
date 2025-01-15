@@ -1,0 +1,17 @@
+export const dataList = [
+    "grades",
+    "homeworks",
+    "upcomingAssignments",
+    "schoolLife",
+    "messageFolders",
+    "messages",
+    "activePeriod",
+    "administrativeDocuments",
+    "totalBadges",
+    "generalAverageHistory",
+    "classGeneralAverageHistory",
+    "streakScoreHistory",
+    "subjectsComparativeInformation",
+    "gradesEnabledFeatures",
+    "lastGrades",
+]

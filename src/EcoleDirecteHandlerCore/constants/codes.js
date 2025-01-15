@@ -34,6 +34,7 @@ export const HomeworksCodes = {
     SUCCESS:        { code: 0, message: "Homeworks Fetched" },
     INVALID_TOKEN:  { code: 1, message: "Invalid token" },
     EXPIRED_TOKEN:  { code: 2, message: "Expired token" },
+    INVALID_DATE:  { code: 3, message: "The date neither in ISO format nor null" },
 }
 
 export const FetchErrorBuilders = {

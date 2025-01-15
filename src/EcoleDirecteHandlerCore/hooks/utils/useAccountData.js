@@ -7,8 +7,11 @@ export default function useAccountData() {
         switch (action) {
             case "INITIALIZE":
                 {
-                    const { userNumber } = params;
-                    return Array.from({ length: userNumber }, () => ({}));
+                    const { userNumber, dataList } = params;
+                    return Array.from({ length: userNumber }, () => (Object.fromEntries(dataList.map((dataName) => [
+                        dataName,
+                        undefined,
+                    ]))));
                 }
             case "RESET":
                 {
@@ -25,10 +28,10 @@ export default function useAccountData() {
         }
     }, null)
 
-    function initialize(userNumber) {
+    function initialize(userNumber, dataList) {
         dispatch({
             action: "INITIALIZE",
-            params: { userNumber }
+            params: { userNumber, dataList }
         });
     }
 
@@ -39,7 +42,8 @@ export default function useAccountData() {
         });
     }
 
-    function set(data, value, userIndex = selectedUserDataIndex) {
+    function set(data, value, userIndex) {
+        console.log(value);
         /**This si the function you'll mainly use to change and initialize data of an account with mutiple users.
          * Here is an explanations of the params :
          *  @param data      is the "key" of the data, its identifier in the object "userData" returned bah the hook
@@ -59,14 +63,30 @@ export default function useAccountData() {
         });
     }
 
+    const returnedData = accountData !== null 
+        ? accountData.map(data => Object.fromEntries(Object.keys(accountData[selectedUserDataIndex]).map((dataName) => [
+            dataName,
+            {
+                value: data[dataName],
+                set: (value, userIndex = selectedUserDataIndex) => {
+                    set(dataName, value, userIndex);
+                },
+            }
+        ])))
+        : null;
+
+        console.log(returnedData);
+
     return [
-        accountData !== null ? accountData[selectedUserDataIndex] : null,
+        returnedData !== null
+            ? returnedData[selectedUserDataIndex]
+            : null,
         {
-            set,
             initialize,
             reset,
             setSelectedUserDataIndex
         },
-        accountData
+        returnedData,
+        accountData,
     ];
 }

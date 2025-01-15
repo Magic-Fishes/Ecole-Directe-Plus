@@ -34,7 +34,7 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
     const location = useLocation()
 
     const hashParameters = location.hash.split(";")
-    const selectedTask = hashParameters.length > 1 && homeworks && homeworks[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
+    const selectedTask = hashParameters.length > 1 && homeworks.value && homeworks.value[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
 
     // Behavior
     useEffect(() => {
@@ -43,25 +43,25 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn && grades === undefined) {
+        if (isLoggedIn && grades.value === undefined) {
             userData.get.grades(null, controller);
         }
 
         return () => {
             controller.abort();
         }
-    }, [grades, isLoggedIn, activeAccount]);
+    }, [grades.value, isLoggedIn, activeAccount]);
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn && homeworks === undefined) {
+        if (isLoggedIn && homeworks.value === undefined) {
             userData.get.homeworks(null, controller);
         }
 
         return () => {
             controller.abort();
         }
-    }, [homeworks, isLoggedIn, activeAccount]);
+    }, [homeworks.value, isLoggedIn, activeAccount]);
 
     useEffect(() => {
         if (hashParameters.length > 2 && (hashParameters[2] === "s" && !selectedTask?.sessionContent)) {
@@ -91,7 +91,7 @@ export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, i
                                     <h2>Prochains devoirs surveillés</h2>
                                 </WindowHeader>
                                 <WindowContent className="upcoming-assignments-container">
-                                    <UpcomingAssignments homeworks={homeworks} />
+                                    <UpcomingAssignments homeworks={homeworks.value} />
                                 </WindowContent>
                             </Window>
                         </WindowsLayout>
