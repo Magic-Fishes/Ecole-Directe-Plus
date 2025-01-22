@@ -6,7 +6,7 @@ export function encodeSettings(setting) {
         "isPhotoBlurEnabled",
         "gradeScale",
         "isGradeScaleEnabled",
-        "lucioleFont",
+        "isLucioleFontEnabled",
         "allowWindowsArrangement",
         "dynamicLoading",
         "negativeBadges",
@@ -52,7 +52,7 @@ export function decodeSettings(encodedSettings, initSettingsCallback) {
         "isPhotoBlurEnabled",
         "gradeScale",
         "isGradeScaleEnabled",
-        "lucioleFont",
+        "isLucioleFontEnabled",
         "allowWindowsArrangement",
         "dynamicLoading",
         "negativeBadges",
@@ -63,7 +63,7 @@ export function decodeSettings(encodedSettings, initSettingsCallback) {
         "displayTheme",
         "displayMode",
     ];
-    
+    // !:! replace "Order" by "Table"
     const intOrder = [
         "gradeScale",
     ];

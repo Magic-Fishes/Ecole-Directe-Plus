@@ -1,5 +1,5 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import EDPVersion from "../generic/buttons/EDPVersion";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import EDPVersionButton from "../generic/buttons/EDPVersionButton";
 import Policy from "../generic/Policy";
 import LoginForm from "./LoginForm";
 import InfoButton from "../generic/Informative/InfoButton";
@@ -12,17 +12,20 @@ import EDPLogoFullWidth from "../graphics/EDPLogoFullWidth";
 import "./Login.css";
 import ExtensionIcon from "../graphics/ExtensionIcon";
 
-if (sessionStorage.getItem('april') === "true") {
-    import("./april.css").then((something) => {
+const today = new Date;
+const april = (today.getMonth() === 3) && (today.getDate() < 2)
+
+if (april) {
+    import("./april.css").then((_) => {
         console.log("April fools styles loaded");
     })
 }
 
-export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequireA2F, bufferUserIds, fetchLogin, logout, loginFromOldAuthInfo, isEDPUnblockInstalledActuallyInstalled, currentEDPVersion }) {
+export default function Login({ logout, isEDPUnblockInstalledActuallyInstalled }) {
     const location = useLocation();
 
     if (localStorage.userSettings) {
-        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (localStorage.getItem('april') === "true")) {
+        if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && april) {
             document.body.style.backgroundColor = "white";
         } else {
             document.body.style.backgroundColor = "";
@@ -51,7 +54,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 <EDPLogo className="login-logo" id="inside-container" alt="Logo Ecole Directe Plus" />
                 <InfoButton>Pour vous connecter, utilisez vos identifiants EcoleDirecte</InfoButton>
                 <h1>Connexion</h1>
-                <LoginForm keepLoggedIn={keepLoggedIn} setKeepLoggedIn={setKeepLoggedIn} A2FInfo={A2FInfo} setRequireA2F={setRequireA2F} bufferUserIds={bufferUserIds} fetchLogin={fetchLogin} logout={logout} loginFromOldAuthInfo={loginFromOldAuthInfo} />
+                <LoginForm logout={logout} />
             </div>
             <p className="not-affiliated-mention">
                 Service non-affilié à Aplim
@@ -60,7 +63,7 @@ export default function Login({ keepLoggedIn, setKeepLoggedIn, A2FInfo, setRequi
                 En vous connectant, vous confirmez avoir lu et accepté notre <Link to="#policy" replace={true} className="policy-link" id="legal-notice">Politique de confidentialité et Conditions d'utilisation</Link>.
             </p>
             {location.hash === "#policy" && <Policy onCloseNavigateURL={""} />}
-            <EDPVersion currentEDPVersion={currentEDPVersion} />
+            <EDPVersionButton />
             <Outlet />
         </div>
     );

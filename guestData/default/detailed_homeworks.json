@@ -1,0 +1,40 @@
+{
+  "code": 200,
+  "token": "f2824db4-6057-4d9a-9d5c-8ac7d0a389fb",
+  "host": "HTTP162",
+  "data": {
+    "date": "2024-11-12",
+    "matieres": [
+      {
+        "entityCode": "3D",
+        "entityLibelle": "3D",
+        "entityType": "C",
+        "matiere": "ANGLAIS LV1",
+        "codeMatiere": "AGL1",
+        "nomProf": "M. DREVON D.",
+        "id": 6477,
+        "interrogation": false,
+        "blogActif": false,
+        "nbJourMaxRenduDevoir": 0,
+        "aFaire": {
+          "idDevoir": 6477,
+          "contenu": "PHA+ZmluaXIgZXggMiBmaWNoZSBjYWhpZXI8L3A+Cgo8cD5yJmVhY3V0ZTt2aXNlciBsZXMgdmVyYmVzIGlyciZlYWN1dGU7Z3VsaWVycyBwcCAxNzQtMTc1PC9wPgo=",
+          "rendreEnLigne": false,
+          "donneLe": "2024-11-08",
+          "effectue": true,
+          "ressource": "",
+          "documentsRendusDeposes": false,
+          "ressourceDocuments": [],
+          "documents": [],
+          "elementsProg": [],
+          "liensManuel": [],
+          "documentsRendus": [],
+          "contenuDeSeance": {
+            "contenu": "PHA+c29jaWFsaXppbmcgKyBCcml0aXNoIGNpdmlsaXNhdGlvbiA6IHdlYXIgYSBwb3BweSE8L3A+Cgo8cD5jb3JyZWN0aW9uIHRlc3Q8L3A+Cgo8cD53YXJtIHVwIDogMiBhY3Rpdml0JmVhY3V0ZTtzIHN1ciBMZWFybmluZyBBcHBzIChyJmVhY3V0ZTtlbXBsb2kpPC9wPgoKPHA+ZmljaGUgZHUgV0IgOiBwciZlYWN1dGU7c2VudCBwZXJmZWN0IC4uLi8uLi48L3A+Cg==",
+            "documents": []
+          }
+        }
+      }
+    ]
+  }
+}

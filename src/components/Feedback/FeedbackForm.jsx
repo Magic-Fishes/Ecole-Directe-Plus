@@ -1,5 +1,8 @@
 
 import { useState, useEffect, useRef, useContext } from "react";
+import { getBrowser, getOS } from "../../utils/utils";
+import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants";
+
 import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import DropDownMenu from "../generic/UserInputs/DropDownMenu";
 import TextInput from "../generic/UserInputs/TextInput";
@@ -8,7 +11,7 @@ import CheckBox from "../generic/UserInputs/CheckBox";
 import WarningMessage from "../generic/Informative/WarningMessage";
 import InfoButton from "../generic/Informative/InfoButton";
 
-import { AppContext } from "../../App";
+import { AppContext, SettingsContext } from "../../App";
 
 // graphics
 import PasteIcon from "../graphics/PasteIcon"
@@ -16,7 +19,6 @@ import AtWhite from "../graphics/AtWhite"
 import { getProxiedURL } from "../../utils/requests";
 
 import "./FeedbackForm.css";
-import { getBrowser, getOS } from "../../utils/utils";
 
 
 export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() => {} }) {
@@ -29,7 +31,7 @@ export default function FeedbackForm({ activeUser, carpeConviviale, onSubmit=() 
 ### Étapes pour reproduire :
 
 ### Navigateur/OS/Appareil :
-${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable)
+${BrowserLabels[getBrowser()]} ; ${OperatingSystemLabels[getOS()]} ; <inconnu> (Complété automatiquement. Modifiable)
 `,
         `### Description de la fonctionnalité :
 
@@ -72,9 +74,9 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
     const [allowSharing, setAllowSharing] = useState(true);
 
-    const { isDevChannel, currentEDPVersion, useUserSettings } = useContext(AppContext);
+    const { isDevChannel, EDPVersion } = useContext(AppContext);
 
-    const settings = useUserSettings();
+    const settings = useContext(SettingsContext);
 
     // Refs
     const imgRef = useRef(null);
@@ -309,7 +311,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
                                 url: (data && data.display_url)
                             },
                             footer: {
-                                text: readableDate + " - v" + currentEDPVersion + (isDevChannel ? " - DEV CHANNEL" : ""),
+                                text: readableDate + " - v" + EDPVersion + (isDevChannel ? " - DEV CHANNEL" : ""),
                             },
                         }
                     ]
@@ -359,7 +361,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
             </div>
             <div id="contact">
                 <CheckBox id="remain-anonymous" label="Rester anonyme" checked={isAnonymous} onChange={updateIsAnonymous} />
-                <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser && !settings.get("isStreamerModeEnabled") ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
+                <TextInput id="user-email" isRequired={isAnonymous ? false : ((!userEmail && activeUser) ? false : true)} warningMessage="Veuillez saisir une adresse email de contact correcte" textType="email" placeholder={activeUser && !isStreamerModeEnabled.value ? activeUser.email : "Adresse email"} icon={<AtWhite/>} value={userEmail} onChange={updateUserEmail} disabled={isAnonymous} onWarning={() => { setSubmitButtonText("Invalide") }} />
             </div>
             <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
             {errorMessage && <p className="error-message">{errorMessage}</p>}

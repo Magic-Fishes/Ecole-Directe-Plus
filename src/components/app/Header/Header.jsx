@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect, useContext, Suspense } from "react";
-import { Link, useLocation, useNavigate, useParams, useMatch, useMatches, Outlet } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, Outlet } from "react-router-dom";
 
 import HeaderNavigationButton from "./HeaderNavigationButton";
 import AccountSelector from "./AccountSelector";
@@ -16,8 +16,9 @@ import FeedbackForm from "../../Feedback/FeedbackForm";
 import PatchNotes from "../../generic/PatchNotes";
 import Policy from "../../generic/Policy";
 
+import { EDPVersion } from "../../../edpConfig";
 
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import { currentPeriodEvent } from "../../generic/events/setPeriodEvent";
 import Snowfall from "../../generic/events/christmas/Snowfall";
@@ -26,19 +27,21 @@ import "../../generic/events/christmas/garland.css";
 import "./Header.css";
 
 
-export default function Header({ currentEDPVersion, accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, fetchUserTimeline, timeline, isFullScreen, isTabletLayout, logout }) {
+export default function Header({ accountsList, setActiveAccount, activeAccount, carpeConviviale, isLoggedIn, timeline, isFullScreen, isTabletLayout, logout }) {
+    const { globalSettings, isStandaloneApp } = useContext(AppContext);
+
+    const userData = useContext(UserDataContext);
+    const { notifications } = userData;
+    
+    const settings = useContext(SettingsContext);
+    const { isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
+
+    const isChristmasEventEnabled = isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent
+
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { globalSettings, useUserData, isStandaloneApp, useUserSettings } = useContext(AppContext);
-
     const { userId } = useParams();
-
-    const settings = useUserSettings();
-
-    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
-
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     const [easterEggCounter, setEasterEggCounter] = useState(0);
     const [easterEggTimeoutId, setEasterEggTimeoutId] = useState(null);
@@ -63,50 +66,11 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
     }, [userId]);
 
     // handle notifications
-    function calculateNotificationsNumber(timeline) {
-        const notifications = useUserData().get("notifications") ?? {};
-        // reset notifications
-        notifications.grades = 0;
-        notifications.messaging = 0;
-        notifications.account = 0;
-
-        for (const eventKey in timeline[activeAccount]) {
-            const event = timeline[activeAccount][eventKey];
-            // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() > (new Date(event.date)).getTime()) {
-            //     continue;
-            // }
-            switch (event.typeElement) {
-                case "Note":
-                    // if ((new Date(accountsList[activeAccount].lastConnection)).getTime() < (new Date(event.date)).getTime()) {
-                    if ((Date.now() - (new Date(event.date)).getTime()) < (3 * 1000 * 60 * 60 * 24)) {
-                        let newGradesNb = 1;
-                        if (event.titre === "Nouvelles évaluations") {
-                            newGradesNb = event.contenu.split("/").length;
-                        }
-                        notifications.grades = (notifications.grades ?? 0) + newGradesNb;
-                    }
-                    break;
-
-                case "Messagerie":
-                    notifications.messaging = (notifications.messaging ?? 0) + 1;
-                    break;
-
-                case "VieScolaire":
-                case "Document":
-                    notifications.account = (notifications.account ?? 0) + 1;
-                    break;
-            }
-        }
-        useUserData().set("notifications", notifications)
-    }
-
     useEffect(() => {
         const controller = new AbortController();
         if (isLoggedIn) {
-            if (timeline.length < 1 || timeline[activeAccount] === undefined) {
-                fetchUserTimeline(controller);
-            } else {
-                calculateNotificationsNumber(timeline);
+            if (timeline === undefined) {
+                userData.get.timeline(controller);
             }
         }
 
@@ -145,8 +109,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
             audio.play();
         }
     }, [easterEggCounter]);
-
-    const notifications = useUserData().get("notifications");
+    
     const headerNavigationButtons = [
         {
             enabled: true,
@@ -209,7 +172,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
     // JSX
     return (
         <div id="app">
-            {isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" && (
+            {isChristmasEventEnabled && (
                 <ul className="lightrope">
                     {Array(150).fill(0).map((_, index) => <li key={index} />)}
                 </ul>
@@ -219,7 +182,7 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
                     <div className="header-logo-container">
                         <Link to="dashboard" tabIndex="-1" ref={headerLogoRef} onClick={handleClick}>
                             <EDPLogo id="header-logo" />
-                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : currentEDPVersion}</div>
+                            <div id="version-tag">{globalSettings.isDevChannel.value ? "DEV" : EDPVersion}</div>
                         </Link>
                     </div>
 
@@ -252,12 +215,10 @@ export default function Header({ currentEDPVersion, accountsList, setActiveAccou
                 </Suspense>
             </main>
             {location.hash === "#feedback" && <BottomSheet className="feedback-bottom-sheet" heading="Faire un retour" onClose={handleCloseAnchorLinks} close={closeFeedbackBottomSheet} ><FeedbackForm activeUser={accountsList[activeAccount]} onSubmit={() => setCloseFeedbackBottomSheet(true)} carpeConviviale={carpeConviviale} /></BottomSheet>}
-            {location.hash === "#patch-notes" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { handleCloseAnchorLinks(); localStorage.setItem("EDPVersion", currentEDPVersion) }} />}
+            {location.hash === "#patch-notes" && <PatchNotes version={EDPVersion} onClose={() => { handleCloseAnchorLinks(); localStorage.setItem("EDPVersion", EDPVersion) }} />}
             {location.hash === "#policy" && <Policy onCloseNavigateURL="#" />}
             {
-                isPartyModeEnabled
-                && isPeriodEventEnabled
-                && currentPeriodEvent === "christmas"
+                isChristmasEventEnabled
                 && <Snowfall />
             }
         </div>

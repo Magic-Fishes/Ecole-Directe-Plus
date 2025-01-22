@@ -1,19 +1,29 @@
 
-import { useState, useEffect, useRef } from "react";
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef, useContext } from "react";
+import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 import PatchNotes from "./generic/PatchNotes";
 import WelcomePopUp from "./generic/WelcomePopUp";
 import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 
 import { useCreateNotification } from "./generic/PopUps/Notification";
-import A2FLogin from "./Login/A2FLogin";
+import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 
-export default function Root({ currentEDPVersion, token, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, setDisplayTheme, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, useUserSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled, requireA2F, setRequireA2F, fetchA2F }) {
+import { EDPVersion } from "../edpConfig";
+import { AccountContext, SettingsContext } from "../App";
+
+export default function Root({ get, accountsList, fakeLogin, resetUserData, syncSettings, createFolderStorage, displayTheme, displayMode, setDisplayModeState, activeAccount, setActiveAccount, setIsFullScreen, globalSettings, entryURL, logout, isStandaloneApp, isTabletLayout, proxyError, fetchHomeworks, handleEdBan, isEDPUnblockInstalled, setIsEDPUnblockInstalled, setRequireDoubleAuth, isEDPUnblockActuallyInstalled, setIsEDPUnblockActuallyInstalled, }) {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const settings = useUserSettings();
+    const { requireDoubleAuth } = useContext(AccountContext)
+    const {
+        isSepiaEnabled: { value: isSepiaEnabled },
+        isHighContrastEnabled: { value: isHighContrastEnabled },
+        isGrayscaleEnabled: { value: isGrayscaleEnabled },
+        isLucioleFontEnabled: { value: isLucioleFontEnabled },
+    } = useContext(SettingsContext).user;
+
 
     const createNotification = useCreateNotification();
 
@@ -93,17 +103,18 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 return 0;
             } else {
                 localStorage.clear();
-                localStorage.setItem("EDPVersion", currentEDPVersion);
+                localStorage.setItem("EDPVersion", EDPVersion);
             }
         }
 
         // localStorage.clear();
-        if (localStorage.getItem("EDPVersion") !== currentEDPVersion) {
+        if (localStorage.getItem("EDPVersion") !== EDPVersion) {
             if (localStorage.getItem("EDPVersion") === null) {
                 if (location.pathname !== "/") {
                     setIsNewUser(true);
                 } else {
-                    localStorage.setItem("EDPVersion", currentEDPVersion);
+                    localStorage.setItem("EDPVersion", EDPVersion);
+                    setIsNewEDPVersion(true);
                     necessaryResets(localStorage.getItem("EDPVersion"));
                 }
             } else {
@@ -122,16 +133,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
             setPopUp(false);
         }
     }, [isNewUser, isNewEDPVersion]);
-
-
-    // re-login
-
-    useEffect(() => {
-        if ((location.pathname === "/login") && (location.hash !== "#policy") && (token && accountsList.length > 0)) {
-            redirectToApp();
-            console.log("redirected to app")
-        }
-    }, [location, token, accountsList])
 
     // redirect to /edp-unblock
     useEffect(() => {
@@ -188,11 +189,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
 
     // filters management
     useEffect(() => {
-        const isSepiaEnabled = settings.get("isSepiaEnabled");
-        const isHighContrastEnabled = settings.get("isHighContrastEnabled");
-        const isGrayscaleEnabled = settings.get("isGrayscaleEnabled");
-        const isLucioleFontEnabled = settings.get("lucioleFont");
-
         let filters = "";
         let fontFamily = ""
         if (isSepiaEnabled) {
@@ -211,7 +207,7 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
 
         document.documentElement.style.setProperty("--font-family", fontFamily);
         document.documentElement.style.filter = filters;
-    }, [settings.get("isSepiaEnabled"), settings.get("isHighContrastEnabled"), settings.get("isGrayscaleEnabled"), settings.get("lucioleFont"), settings.get("isPhotoBlurEnabled")])
+    }, [isSepiaEnabled, isHighContrastEnabled, isGrayscaleEnabled, isLucioleFontEnabled])
 
 
     // - - - - - - - - - - - - - - - - - - - - //
@@ -348,24 +344,24 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
     // thème
     const switchDisplayTheme = () => {
         if (displayTheme === "dark") {
-            setDisplayTheme("light");
+            displayTheme.set("light");
             return "clair";
         } else if (displayTheme === "light") {
-            setDisplayTheme("dark");
+            displayTheme.set("dark");
             return "sombre";
         } else {
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setDisplayTheme("light");
+                displayTheme.set("light");
                 return "clair";
             } else {
-                setDisplayTheme("dark");
+                displayTheme.set("dark");
                 return "sombre";
             }
         }
     }
 
     const updateDisplayTheme = (event) => {
-        setDisplayTheme(event.target.value);
+        displayTheme.set(event.target.value);
     }
 
     // display mode
@@ -410,12 +406,6 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
         }
     }
 
-    const date = new Date();
-    if ((!sessionStorage.getItem('april')) && ((date.getMonth() === 3) && (date.getDate() < 2))) {
-        sessionStorage.setItem('april', 'true');
-        window.location.reload(false);
-    }
-
     return (
         <>
             <div id="admin-controls" style={{ position: "fixed", zIndex: "999", top: "0", left: "0" }}>
@@ -453,11 +443,14 @@ export default function Root({ currentEDPVersion, token, accountsList, fakeLogin
                 {isAdmin && <input type="button" onClick={() => { setIsAdmin(false) }} value="HIDE CONTROLS" />}
                 {(!isAdmin && (!process.env.NODE_ENV || process.env.NODE_ENV === "development")) && <input type="button" onClick={() => { setIsAdmin(true) }} value="-->" style={(!isAdmin ? { opacity: 0.2 } : {})} />}
             </div>
-            {popUp === "newUser" && <WelcomePopUp currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
-            {popUp === "newEDPVersion" && <PatchNotes currentEDPVersion={currentEDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", currentEDPVersion); }} />}
+            {/* {isLoggedIn && location.pathname.endsWith("/login") && <Navigate to="/dashboard"/>}
+            {isLoggedIn ? "true" : "false"}
+            {location.pathname.endsWith("/login") ? "true" : "false"} */}
+            {popUp === "newUser" && <WelcomePopUp EDPVersion={EDPVersion} onClose={() => { setIsNewUser(false); localStorage.setItem("EDPVersion", EDPVersion); }} />}
+            {popUp === "newEDPVersion" && <PatchNotes EDPVersion={EDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", EDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}
             <Outlet />
-            {requireA2F && <A2FLogin fetchA2F={fetchA2F} onClose={() => setRequireA2F(false)} />}
+            {requireDoubleAuth && <DoubleAuthLogin onClose={() => setRequireDoubleAuth(false)} />}
         </>
     );
 }

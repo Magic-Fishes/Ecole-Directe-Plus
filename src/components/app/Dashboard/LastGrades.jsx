@@ -1,5 +1,5 @@
 import { useRef, useContext } from "react"
-import { AppContext } from "../../../App"
+import { AppContext, SettingsContext, UserDataContext } from "../../../App"
 import Grade from "../Grades/Grade"
 import { Link, useNavigate } from "react-router-dom"
 import { Window, WindowHeader, WindowContent } from "../../generic/Window"
@@ -17,14 +17,18 @@ import { formatDateRelative } from "../../../utils/date";
 import ContentLoader from "react-content-loader"
 
 export default function LastGrades({ activeAccount, className = "", ...props }) {
+    const { actualDisplayTheme } = useContext(AppContext)
+    
+    const { lastGrades } = useContext(UserDataContext);
+
+    const settings = useContext(SettingsContext);
+    const { displayMode } = settings.user;
+    
     const navigate = useNavigate();
     const contentLoadersRandomValues = useRef({ subjectNameWidth: Array.from({ length: 3 }, (_, i) => Math.floor(Math.random() * 75) + 75), badgesNumber: Array.from({ length: 3 }, (_, i) => Math.floor(Math.random() * 3) + 1), datesWidth: Array.from({ length: 3 }, (_, i) => Math.floor(Math.random() * 25) + 85) })
 
-    const { actualDisplayTheme, useUserData, useUserSettings } = useContext(AppContext)
-    const lastGrades = useUserData().get("lastGrades");
-    const settings = useUserSettings();
 
-    return (<Window className={`last-grades ${className}`}>
+    return (<Window className={`last-grades ${className}`} {...props}>
         <WindowHeader onClick={() => navigate("../grades")}>
             <h2>Dernières notes</h2>
         </WindowHeader>
@@ -50,7 +54,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                     : Array.from({ length: 3 }, (_, i) => <li key={i} className="last-grade-container">
                         <div className="last-grade-wrapper">
                             <ContentLoader
-                                animate={settings.get("displayMode") === "quality"}
+                                animate={displayMode.value === "quality"}
                                 speed={1}
                                 backgroundColor={'#4b48d9'}
                                 foregroundColor={'#6354ff'}
@@ -61,7 +65,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                                 <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
                             </ContentLoader>
                             <ContentLoader
-                                animate={settings.get("displayMode") === "quality"}
+                                animate={displayMode.value === "quality"}
                                 speed={1}
                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -72,7 +76,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                             </ContentLoader>
                             <span className="badges-container">
                                 {Array.from({ length: contentLoadersRandomValues.current.badgesNumber[i] }, (_, i) => <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={displayMode.value === "quality"}
                                     key={i}
                                     speed={1}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
@@ -85,7 +89,7 @@ export default function LastGrades({ activeAccount, className = "", ...props }) 
                             </span>
                             <span className="last-grade-date">
                                 <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={displayMode.value === "quality"}
                                     speed={1}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                     foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}

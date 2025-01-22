@@ -13,7 +13,7 @@ import FeedbackIcon from "../../graphics/FeedbackIcon";
 import PatchNotesIcon from "../../graphics/PatchNotesIcon";
 import LogoutIcon from "../../graphics/LogoutIcon";
 
-import { AppContext } from "../../../App";
+import { AccountContext, AppContext, SettingsContext } from "../../../App";
 
 import "./AccountSelector.css";
 import { getProxiedURL } from "../../../utils/requests";
@@ -23,10 +23,9 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { useUserSettings } = useContext(AppContext);
-
-    const settings = useUserSettings();
-    
+    const { selectedUser } = useContext(AccountContext);
+    const settings = useContext(SettingsContext)
+    const { isPhotoBlurEnabled, isStreamerModeEnabled, displayTheme } = settings.user;
     const [isOpen, setIsOpen] = useState(false);
 
     const accountSelectorRef = useRef(null);
@@ -36,8 +35,6 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
     useEffect(() => {
         profilePictureRefs.current = [...profilePictureRefs.current]; // Met à jour les références
 
-        const isPhotoBlurEnabled = settings.get("isPhotoBlurEnabled");
-
         for (let profilePictureRef of profilePictureRefs.current) {
             const imageLoaded = () => {
                 profilePictureRef?.classList.add("loaded");
@@ -46,7 +43,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
             profilePictureRef?.addEventListener("load", imageLoaded);
 
             if (profilePictureRef) {
-                if (isPhotoBlurEnabled) {
+                if (isPhotoBlurEnabled.value) {
                     profilePictureRef.style.filter = "blur(5px)";
                 } else {
                     profilePictureRef.style.filter = "";
@@ -54,7 +51,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
             }
         }
 
-    }, [profilePictureRefs.current, settings.get("isPhotoBlurEnabled")]);
+    }, [profilePictureRefs.current, isPhotoBlurEnabled.value]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -136,15 +133,15 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                 <div id="active-account" onClick={handleClick} role="button" tabIndex="0" onKeyDown={handleKeyDown}>
                     <div className="account">
                         <div className="pp-container">
-                            <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
-                                ? settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : getProxiedURL("https:" + accountsList[activeAccount].picture)
-                                : accountsList[activeAccount].picture
-                            )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
+                            <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((selectedUser.id !== -1)
+                                ? isStreamerModeEnabled.value ? "/images/scholar-canardman.png" : getProxiedURL("https:" + selectedUser.picture)
+                                : selectedUser.picture
+                            )} alt={"Photo de profil de " + selectedUser.firstName} />
                         </div>
                         <address className="account-info">
-                            <span className="school-name">{settings.get("isStreamerModeEnabled") ? "ÉTABLISSEMENT" : accountsList[activeAccount].schoolName}</span>
-                            <span className="name"><span className="first-name">{settings.get("isStreamerModeEnabled") ? "Canardman" : accountsList[activeAccount].firstName}</span> <span className="last-name">{settings.get("isStreamerModeEnabled") ? "" : accountsList[activeAccount].lastName.toUpperCase()}</span></span>
-                            <span className="class">{settings.get("isStreamerModeEnabled") ? "Classe" : accountsList[activeAccount].class[1]}</span>
+                            <span className="school-name">{isStreamerModeEnabled.value ? "ÉTABLISSEMENT" : selectedUser.schoolName}</span>
+                            <span className="name"><span className="first-name">{isStreamerModeEnabled.value ? "Canardman" : selectedUser.firstName}</span> <span className="last-name">{isStreamerModeEnabled.value ? "" : selectedUser.lastName.toUpperCase()}</span></span>
+                            <span className="class">{isStreamerModeEnabled.value ? "Classe" : selectedUser.class[1]}</span>
                         </address>
                         <DropDownArrow className="drop-down-arrow" />
                     </div>
@@ -177,7 +174,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                             <Link to="#patch-notes" replace={true} id="patch-notes" onClick={handleClose}><PatchNotesIcon /> <span className="link-text">Patch Notes</span></Link>
                         </div>
                         <div className="change-display-theme-shortcut">
-                            <DisplayThemeController selected={settings.get("displayTheme")} onChange={(newValue) => settings.set("displayTheme", newValue)} fieldsetName="display-theme-shortcut" />
+                            <DisplayThemeController selected={displayTheme.value} onChange={(newValue) => displayTheme.set(newValue)} fieldsetName="display-theme-shortcut" />
                         </div>
                         <div className="logout">
                             <button id="logout-button" onClick={logout}><span>Se déconnecter</span><LogoutIcon className="logout-icon" /></button>

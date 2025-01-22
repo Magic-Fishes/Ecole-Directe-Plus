@@ -41,14 +41,18 @@ import EncodedHTMLDiv from "../generic/CustomDivs/EncodedHTMLDiv";
 import { textToHSL } from "../../utils/utils"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon"
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
+import useInitializer from "../../EcoleDirecteHandlerCore/hooks/utils/useInitializer";
+import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants";
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
     // States
+    const [jsp, rerenderer] = useState(0);
     const [test, setTest] = useState(["Signaler un bug", "Suggestion", "Retour d'expérience", "Autre", "Celui qui ne se souvient pas du passé est condamné à le répéter.", "option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option10 OH non j'ai oublié option9"]);
     const [test2, setTest2] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [testState, setTestState] = useState(false);
+    const [initializer, setInitializer] = useInitializer("StartValue", "defaultValue", (old, newValue) => { console.log("state has been initialized to", newValue); return newValue });
 
     const [isInputPopUpOpen, setIsInputPopUpOpen] = useState(false);
     const [number1, setNumber1] = useState(0)
@@ -61,7 +65,14 @@ export default function Lab({ fetchGrades }) {
     const [targetURL, setTargetURL] = useState("");
     const [testHash, setTestHash] = useState("");
     const [fileExtension, setFileExtension] = useState("PNG");
-
+    
+    const initialTestState2 = {
+        a: {
+            b: "123"
+        },
+        b: 123
+    }
+    const [testState2, setTestState2] = useState(initialTestState2);
     const navigate = useNavigate();
 
     // Behavior
@@ -213,7 +224,7 @@ export default function Lab({ fetchGrades }) {
             <br />
             <KeyboardKey keyName="AltGraph">Alt gr</KeyboardKey>
             <h3 id="lab-app-loading">AppLoading</h3>
-            <AppLoading currentEDPVersion={"0.6.9"} />
+            <AppLoading EDPVersion={"0.6.9"} />
             <h3>ShiningDiv</h3>
             {/* Juste prcq le border radius de l'écran de mon tel m'empêche de tout voir bien*/}
             <div id="shining-test">
@@ -295,8 +306,8 @@ export default function Lab({ fetchGrades }) {
             <ToggleSwitch value={toggleSwitchState} onChange={(value) => setToggleSwitchState(!value)} />
 
             <h2>OS - BROWSER</h2>
-            <p>userOs: {getOS()}</p>
-            <p>userBrowser: {getBrowser()}</p>
+            <p>userOs: {OperatingSystemLabels[getOS()]}</p>
+            <p>userBrowser: {BrowserLabels[getBrowser()]}</p>
 
             <h3>Dynamic navigate</h3>
             <TextInput textType="text" placeholder="Target url" value={targetURL} onChange={(e) => setTargetURL(e.target.value)} />
@@ -321,6 +332,28 @@ export default function Lab({ fetchGrades }) {
             <OutlineEffectDiv className="outline-effect-div-test">
             ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed
             </OutlineEffectDiv>
+
+            <h4>InitializerHook</h4>
+            <Button onClick={() => {
+                const newValue = ["test0", "test1", "test2", "defaultValue"][Math.floor(Math.random() * 4)];
+                setInitializer(() => newValue);
+                console.log(newValue);
+            }}>Change initializer value</Button>
+            {initializer}
+            <Button onClick={() => {
+                initialTestState2.b += 1;
+                setTestState2(testState2)
+            }}>change initial value</Button>
+            <Button onClick={() => {
+                setTestState2((old) => {
+                    const next = {...old};
+                    next.a.b += "+";
+                    return next;
+                });
+            }}>set value</Button>
+            {JSON.stringify(initialTestState2)}
+            <br/>
+            {JSON.stringify(testState2)}
 
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>

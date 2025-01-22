@@ -1,0 +1,133 @@
+{
+  "code": 200,
+  "token": "FAKE_TOKEN",
+  "host": "HTTP93",
+  "data": {
+    "2024-11-12": [
+      {
+        "matiere": "ANGLAIS LV1",
+        "codeMatiere": "AGL1",
+        "aFaire": true,
+        "idDevoir": 6477,
+        "documentsAFaire": false,
+        "donneLe": "2024-11-08",
+        "effectue": true,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-11-13": [
+      {
+        "matiere": "FRANCAIS",
+        "codeMatiere": "FRANC",
+        "aFaire": true,
+        "idDevoir": 6363,
+        "documentsAFaire": false,
+        "donneLe": "2024-11-08",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-11-14": [
+      {
+        "matiere": "ALLEMAND LV2",
+        "codeMatiere": "ALL2",
+        "aFaire": true,
+        "idDevoir": 6453,
+        "documentsAFaire": false,
+        "donneLe": "2024-11-08",
+        "effectue": false,
+        "interrogation": true,
+        "rendreEnLigne": false
+      },
+      {
+        "matiere": "ED.PHYSIQUE & SPORT.",
+        "codeMatiere": "EPS",
+        "aFaire": true,
+        "idDevoir": 5510,
+        "documentsAFaire": false,
+        "donneLe": "2024-10-17",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      },
+      {
+        "matiere": "SCIENCES VIE & TERRE",
+        "codeMatiere": "SVT",
+        "aFaire": true,
+        "idDevoir": 6282,
+        "documentsAFaire": true,
+        "donneLe": "2024-11-07",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-11-15": [
+      {
+        "matiere": "LCA LATIN",
+        "codeMatiere": "LCALA",
+        "aFaire": true,
+        "idDevoir": 5864,
+        "documentsAFaire": false,
+        "donneLe": "2024-11-04",
+        "effectue": false,
+        "interrogation": true,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-11-21": [
+      {
+        "matiere": "PHYSIQUE-CHIMIE",
+        "codeMatiere": "PH-CH",
+        "aFaire": true,
+        "idDevoir": 4972,
+        "documentsAFaire": false,
+        "donneLe": "2024-10-12",
+        "effectue": false,
+        "interrogation": true,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-12-05": [
+      {
+        "matiere": "PHYSIQUE-CHIMIE",
+        "codeMatiere": "PH-CH",
+        "aFaire": true,
+        "idDevoir": 4988,
+        "documentsAFaire": false,
+        "donneLe": "2024-10-12",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-12-12": [
+      {
+        "matiere": "PHYSIQUE-CHIMIE",
+        "codeMatiere": "PH-CH",
+        "aFaire": true,
+        "idDevoir": 5752,
+        "documentsAFaire": false,
+        "donneLe": "2024-10-30",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ],
+    "2024-12-18": [
+      {
+        "matiere": "FRANCAIS",
+        "codeMatiere": "FRANC",
+        "aFaire": true,
+        "idDevoir": 6131,
+        "documentsAFaire": false,
+        "donneLe": "2024-11-06",
+        "effectue": false,
+        "interrogation": false,
+        "rendreEnLigne": false
+      }
+    ]
+  }
+}

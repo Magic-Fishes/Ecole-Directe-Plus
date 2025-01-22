@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import EDPLogoFullWidth from "../../graphics/EDPLogoFullWidth";
 import WalkingCanardman from "../../graphics/WalkingCanardman";
-import EDPVersion from "../buttons/EDPVersion";
+import EDPVersionButton from "../buttons/EDPVersionButton";
 import KeyboardKey from "../KeyboardKey";
 
 import "./AppLoading.css";
@@ -84,7 +84,7 @@ function pickRandomSentence() {
     return loadingScreenTips[getRandomInt(0, loadingScreenTips.length - 1)].message;
 }
 
-export default function AppLoading({ currentEDPVersion }) {
+export default function AppLoading() {
     // States
 
     // const [randomSentences, setRandomSentences] = useState(loadingScreenTips[1].message);
@@ -130,7 +130,7 @@ export default function AppLoading({ currentEDPVersion }) {
                 {/* {loadingScreenTips.map((tip, index) => <p key={index} id="loading-screen-tip">{tip.message}</p>)} */}
                 {/* à décommenter pour display tous les msg de manière clean (plus les 2 lignes css dans #loading-box) */}
             </div>
-            <EDPVersion currentEDPVersion={currentEDPVersion} />
+            <EDPVersionButton />
         </div>
     )
 }

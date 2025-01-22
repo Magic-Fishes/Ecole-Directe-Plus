@@ -1,21 +1,26 @@
 import { useRef, useContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import CheckBox from "../../generic/UserInputs/CheckBox";
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 
 import "./Task.css";
 import ContentLoader from "react-content-loader";
 
-export default function Task({ day, task, userHomeworks, ...props }) {
+export default function Task({ task, day, ...props }) {
     const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
-    const settings = useUserSettings();
-    const isMouseInCheckBoxRef = useRef(false);
-    const taskCheckboxRef = useRef(null);
 
-    const homeworks = userHomeworks.get()
+    const userData = useContext(UserDataContext);
+    const { homeworks } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { isPartyModeEnabled, displayMode } = settings.user;
+
     const navigate = useNavigate();
     const location = useLocation();
+
+    const isMouseInCheckBoxRef = useRef(false);
+    const taskCheckboxRef = useRef(null);
 
     function completedTaskAnimation() {
         const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
@@ -33,7 +38,6 @@ export default function Task({ day, task, userHomeworks, ...props }) {
         });
     }
 
-
     function checkTask(date, task) {
         const tasksToUpdate = (task.isDone ? {
             tasksNotDone: [task.id],
@@ -42,12 +46,12 @@ export default function Task({ day, task, userHomeworks, ...props }) {
         })
         fetchHomeworksDone(tasksToUpdate);
         if (tasksToUpdate.tasksDone !== undefined) {
-            if (settings.get("isPartyModeEnabled") && settings.get("displayMode") === "quality") {
+            if (isPartyModeEnabled.value && displayMode.value === "quality") {
                 completedTaskAnimation();
             }
         }
         homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
-        userHomeworks.set(homeworks);
+        userData.set("homeworks", homeworks);
     }
 
     function handleTaskClick(event) {
@@ -79,7 +83,7 @@ export default function Task({ day, task, userHomeworks, ...props }) {
                 </div>
             </div>
             : <ContentLoader
-                animate={settings.get("displayMode") === "quality"}
+                animate={displayMode.value === "quality"}
                 speed={1}
                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}

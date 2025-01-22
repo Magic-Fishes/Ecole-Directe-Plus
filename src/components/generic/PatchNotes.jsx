@@ -12,11 +12,11 @@ const contributors = [
     "TruiteSeche",
 ]
 
-export default function PatchNotes({ currentEDPVersion, onClose }) {
+export default function PatchNotes({ version, onClose }) {
 
     return (
         <div id="patch-notes">
-            <InfoPopUp type="info" header={"Nouvelle mise à jour EDP ! 🎊 v" + currentEDPVersion} subHeader={"14 Novembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
+            <InfoPopUp type="info" header={"Nouvelle mise à jour EDP ! 🎊 v" + version} subHeader={"14 Novembre 2024"} contentTitle={"Patch notes :"} onClose={onClose} >
                 <div>
                     <hr />
                     <p className="first-paragraph">
@@ -119,13 +119,13 @@ export default function PatchNotes({ currentEDPVersion, onClose }) {
                             ? contributors.reduce((acc, element, index) => {
                                 if (index == 1) {
                                     return [
-                                        <a className="contributor" href={`https://github.com/${acc}`} target="_blank">{acc}</a>,
+                                        <a key={acc} className="contributor" href={`https://github.com/${acc}`} target="_blank">{acc}</a>,
                                         ", ",
-                                        <a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>
+                                        <a key={element} className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>
                                     ]
                                 } else {
                                     acc.push(", ");
-                                    acc.push(<a className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>);
+                                    acc.push(<a key={element} className="contributor" href={`https://github.com/${element}`} target="_blank">{element}</a>);
                                     return acc;
                                 }
                             })

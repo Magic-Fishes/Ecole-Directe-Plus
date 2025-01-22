@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { disableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
-import { AppContext } from "../../App";
+import { AppContext, SettingsContext } from "../../App";
 import { applyZoom, getZoomedBoudingClientRect } from "../../utils/zoom";
 import { currentPeriodEvent } from "./events/setPeriodEvent";
 import SnowCap from "../graphics/snowCap";
@@ -49,11 +49,10 @@ function useWindowsContainerContext() {
 
 
 export function WindowsContainer({ children, name = "", className = "", id = "", animateWindows = true, allowWindowsManagement = true, ...props }) {
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement");
-    const displayMode = useUserSettings("displayMode");
-    const allowWindowsArrangement = useUserSettings("allowWindowsArrangement");
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting, displayMode } = settings.user;
 
     name = (isTabletLayout ? "tablet-" : "") + name;
     const windowsContainer = useRef({
@@ -144,7 +143,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
          */
         if (name) {
             // windowArrangementSetting.set((oldWindowArrangement) => [...oldWindowArrangement.filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
-            windowArrangementSetting.set([...windowArrangementSetting.get().filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
+            windowArrangementSetting.set([...windowArrangementSetting.value.filter((windowArrangement) => windowArrangement.name !== name), { name, windowArrangement }]);
         }
     }
 
@@ -427,7 +426,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 
             targetWindow.classList.remove("moving")
             floatingWindow.remove()
-        }, displayMode.get() === "quality" ? 400 : 0);
+        }, displayMode.value === "quality" ? 400 : 0);
     }
 
     const handleFullscreen = (targetWindow) => {
@@ -592,10 +591,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
             }
             // console.log("scrollableParentElement", scrollableParentElement);
 
-            
+
             floatingWindow = targetWindow.cloneNode(true);
             // console.log("floatingWindow:", floatingWindow)
-            
+
             // reapply scroll levels of each scrollable container to the new cloned floatingWindow
             const scrollableChildren = digChildren(targetWindow, (() => 0), ((el) => (el.scrollTop > 0)));
             setTimeout(() => scrollableChildren.forEach(element => {
@@ -800,7 +799,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
     useEffect(() => {
         // load and apply old windowArrangement
         if (name) {
-            const buffer = windowArrangementSetting.get();
+            const buffer = windowArrangementSetting.value;
             let windowArrangement;
             for (let item of buffer) {
                 if (item.name === name) {
@@ -814,7 +813,7 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
                 console.error("windowsContainer has no \"name\" attribute but you have allowed window management: window rearrangements will not be saved");
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout, allowWindowsManagement]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout, allowWindowsManagement]);
 
 
     useEffect(() => {
@@ -932,9 +931,10 @@ export function WindowsContainer({ children, name = "", className = "", id = "",
 export function WindowsLayout({ children, direction = "row", growthFactor = 1, ultimateContainer = false, className = "", ...props }) {
     // available directions: row, column
 
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement")
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting } = settings.user;
 
     const context = useWindowsContainerContext();
 
@@ -952,7 +952,7 @@ export function WindowsLayout({ children, direction = "row", growthFactor = 1, u
                 context.windowsLayouts.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
     if (isTabletLayout && !ultimateContainer) {
         return children;
@@ -968,9 +968,10 @@ export function WindowsLayout({ children, direction = "row", growthFactor = 1, u
 
 export function MoveableContainer({ children, className = "", ...props }) {
 
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
 
-    const windowArrangementSetting = useUserSettings("windowArrangement")
+    const settings = useContext(SettingsContext);
+    const { windowArrangement: windowArrangementSetting } = settings.user;
 
     const context = useWindowsContainerContext();
 
@@ -989,7 +990,7 @@ export function MoveableContainer({ children, className = "", ...props }) {
                 context.moveableContainers.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
 
     return (
@@ -1000,21 +1001,14 @@ export function MoveableContainer({ children, className = "", ...props }) {
 }
 
 
-export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName="self", WIP = false, className = "", ...props }) {
-
-    const { activeAccount, useUserSettings, isTabletLayout } = useContext(AppContext);
-
-    const windowArrangementSetting = useUserSettings("windowArrangement");
-
+export function Window({ children, growthFactor = 1, allowFullscreen = false, fullscreenTargetName = "self", WIP = false, className = "", ...props }) {
     const context = useWindowsContainerContext();
+    const { activeAccount, isTabletLayout } = useContext(AppContext);
+    const settings = useContext(SettingsContext);
+
+    const { windowArrangement: windowArrangementSetting, isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
 
     const windowRef = useRef(null);
-
-    const settings = useUserSettings();
-
-    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
-
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
 
     useEffect(() => {
         // console.log("context.windows", context.windows)
@@ -1032,11 +1026,11 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
                 context.fullscreenInfo.splice(index, 1);
             }
         }
-    }, [windowArrangementSetting.get(), activeAccount, isTabletLayout]);
+    }, [windowArrangementSetting.value, activeAccount, isTabletLayout]);
 
 
     return (
-        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "allow-overflow-event" : ""}`}
+        <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent === "christmas" ? "allow-overflow-event" : ""}`}
             style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
             {WIP ? <p className="wip-info">Fonctionnalité en cours de développement...<br/>Rejoins le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'EDP</a> pour en suivre l'avancée !</p> : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
@@ -1045,17 +1039,13 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
 }
 
 export function WindowHeader({ children, className = "", ...props }) {
-    const { useUserSettings } = useContext(AppContext);
-    const settings = useUserSettings();
-
-    const isPartyModeEnabled = settings.get("isPartyModeEnabled");
-
-    const isPeriodEventEnabled = settings.get("isPeriodEventEnabled");
-
+    const settings = useContext(SettingsContext);
+    
+    const { isPartyModeEnabled, isPeriodEventEnabled } = settings.user;
 
     return (
-        <div className={`window-header ${className} ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "snowy-element-window" : ""}`} {...props}>
-            {isPeriodEventEnabled !== false && currentPeriodEvent === "christmas" && (
+        <div className={`window-header ${className} ${isPartyModeEnabled.value && isPeriodEventEnabled.value && currentPeriodEvent === "christmas" ? "snowy-element-window" : ""}`} {...props}>
+            {isPeriodEventEnabled.value !== false && currentPeriodEvent === "christmas" && (
                 <SnowCap className="snow-cap"/>
             )}
             {children}

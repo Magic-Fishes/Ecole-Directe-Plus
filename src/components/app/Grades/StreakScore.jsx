@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from 'react'
 
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext } from "../../../App";
 import {
     Window,
     WindowHeader,
@@ -18,11 +18,11 @@ import "./StreakScore.css";
 
 
 export default function StreakScore({ streakScore, streakHighScore=0, className="", ...props }) {
+    const settings = useContext(SettingsContext);
+    const { displayMode } = settings.user;
+    
     const [displayedStreakScore, setDisplayedStreakScore] = useState(0);
     const [arrowsNumber, setArrowsNumber] = useState(0); // arrowsNumber on one side only
-
-    const { useUserSettings } = useContext(AppContext);
-    const displayMode = useUserSettings("displayMode");
 
     const containerRef = useRef(null);
     const scoreRef = useRef(null);
@@ -46,7 +46,7 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
             }
         }
 
-        if (displayMode.get() === "quality" && streakScore) {
+        if (displayMode.value === "quality" && streakScore) {
             const STEP_NUMBER = (streakScore < 15 ? streakScore : 12 + Math.floor(streakScore / 5)); // à ne pas confondre avec le sport qui consiste à monter et descendre des dizaines de fois par minutes
             const STEP_DURATION = 50;
             intervalId.current = setInterval(() => newStep(STEP_NUMBER), STEP_DURATION);

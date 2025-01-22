@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { Link, useLocation } from "react-router-dom";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
-import { AppContext } from "../../../App";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 import {
     MoveableContainer,
     Window,
@@ -20,12 +20,19 @@ import { GradeSimulationTrigger } from "./GradeSimulation"
 
 import "./Results.css";
 
-export default function Results({ activeAccount, sortedGrades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
-    const { isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
-    const settings = useUserSettings();
+export default function Results({ selectedDisplayType, setSelectedDisplayType, ...props }) {
+    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+
+    const userData = useContext(UserDataContext);
+    const { grades, activePeriod } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { displayMode } = settings.user;
+
     const contentLoadersRandomValues = useRef({ subjectNameWidth: Array.from({ length: 13 }, (_) => Math.round(Math.random() * 100) + 100), gradeNumbers: Array.from({ length: 13 }, (_) => Math.floor(Math.random() * 8) + 2) })
     const location = useLocation();
 
+    const isDisplayModeQuality = displayMode === "quality";
 
     useEffect(() => {
         if (location.hash) {
@@ -38,9 +45,13 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                 }
             }
         }
-    }, [location, sortedGrades]);
+    }, [location, grades]);
 
+    function onActivePeriodChange(value) {
+        userData.set("activePeriod", value);
+    }
 
+    console.log(userData);
 
     return (
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} name="results-utimate-container" {...props}>
@@ -51,9 +62,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
             <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "column nowrap", gap: "20px" }}>
                 <MoveableContainer>
                     {!isTabletLayout
-                        ? <Tabs contentLoader={sortedGrades === undefined} tabs={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedTabs={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} fieldsetName="period" dir="row" />
+                        ? <Tabs contentLoader={grades === undefined} tabs={grades ? Object.keys(grades) : [""]} displayedTabs={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={onActivePeriodChange} fieldsetName="period" dir="row" />
                         : <div className="results-options-container">
-                            <DropDownMenu name="periods" options={sortedGrades ? Object.keys(sortedGrades) : [""]} displayedOptions={sortedGrades ? Object.values(sortedGrades).map((period) => period.name) : [""]} selected={selectedPeriod} onChange={setSelectedPeriod} />
+                            <DropDownMenu name="periods" options={grades ? Object.keys(grades) : [""]} displayedOptions={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={onActivePeriodChange } />
                             <DropDownMenu name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
                         </div>
                     }
@@ -108,43 +119,41 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                         </div>
                         <div className="general-average">
                             <span>Moyenne Générale</span>
-                            {sortedGrades && sortedGrades[selectedPeriod] && sortedGrades[selectedPeriod].classGeneralAverage !== undefined && sortedGrades[selectedPeriod].classGeneralAverage !== null && sortedGrades[selectedPeriod].classGeneralAverage !== ""
-                                ? <Tooltip >
-                                    <TooltipTrigger>
-                                        <span>
-                                            {sortedGrades && sortedGrades[selectedPeriod]
-                                                ? <Grade grade={{ value: sortedGrades[selectedPeriod]?.generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
-                                                : <ContentLoader
-                                                    animate={settings.get("displayMode") === "quality"}
-                                                    speed={1}
-                                                    backgroundColor={'#4b48d9'}
-                                                    foregroundColor={'#6354ff'}
-                                                    viewBox="0 0 80 32"
-                                                    height="32"
-                                                >
-                                                    <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
-                                                </ContentLoader>}
-                                        </span>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <span>
-                                            Moyenne de classe :{" "}
-                                            <Grade
-                                                grade={{
-                                                    value:
-                                                        sortedGrades[selectedPeriod].classGeneralAverage ?? "N/A",
-                                                    scale: 20,
-                                                    coef: 1,
-                                                    isSignificant: true,
-                                                }}
-                                            />
-                                        </span>
-                                    </TooltipContent>
-                                </Tooltip>
-                                : sortedGrades && sortedGrades[selectedPeriod]
-                                    ? <Grade grade={{ value: sortedGrades[selectedPeriod]?.generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
+                            <Tooltip enableHover={grades?.[activePeriod]?.classGeneralAverage || grades?.[activePeriod]?.classGeneralAverage === 0} >
+                                <TooltipTrigger>
+                                    <span>
+                                        {grades && grades[activePeriod]
+                                            ? <Grade grade={{ value: grades[activePeriod]?.generalAverage ?? "N/A", scale: 20, coef: 1, isSignificant: true }} />
+                                            : <ContentLoader
+                                                animate={isDisplayModeQuality}
+                                                speed={1}
+                                                backgroundColor={'#4b48d9'}
+                                                foregroundColor={'#6354ff'}
+                                                viewBox="0 0 80 32"
+                                                height="32"
+                                            >
+                                                <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
+                                            </ContentLoader>}
+                                    </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <span>
+                                        Moyenne de classe :{" "}
+                                        <Grade
+                                            grade={{
+                                                value: grades?.[activePeriod].classGeneralAverage ?? "N/A", // !:! bzr undefined ici si pas le "?."
+                                                scale: 20,
+                                                coef: 1,
+                                                isSignificant: true,
+                                            }}
+                                        />
+                                    </span>
+                                </TooltipContent>
+                            </Tooltip>
+                            {/* : grades && grades[activePeriod]
+                                    ? <Grade grade={{ value: grades[activePeriod]?.generalAverage ?? "-", scale: 20, coef: 1, isSignificant: true }} />
                                     : <ContentLoader
-                                        animate={settings.get("displayMode") === "quality"}
+                                        animate={isDisplayModeQuality}
                                         speed={1}
                                         backgroundColor={'#4b48d9'}
                                         foregroundColor={'#6354ff'}
@@ -153,7 +162,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     >
                                         <rect x="0" y="0" rx="10" ry="10" width="80" height="32" />
                                     </ContentLoader>
-                            }
+                            } */}
                         </div>
                     </WindowHeader>
                     <WindowContent className="results">
@@ -172,9 +181,9 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedGrades && sortedGrades[selectedPeriod]
-                                        ? Object.keys(sortedGrades[selectedPeriod].subjects).map((idx) => {
-                                            const el = sortedGrades[selectedPeriod].subjects[idx]
+                                    {grades && grades[activePeriod]
+                                        ? Object.keys(grades[activePeriod].subjects).map((idx) => {
+                                            const el = grades[activePeriod].subjects[idx]
                                             return (
                                                 <tr key={el.id} className={el.isCategory ? "category-row" : "subject-row"}>
                                                     <th className="head-cell">
@@ -187,7 +196,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                     <td className="moyenne-cell">
                                                         {el.isCategory ? <Grade grade={{ value: el.average }} />
                                                             : <Grade grade={{ value: el.average, subject: el }} />}
-                                                    
+
                                                     </td>
                                                     <td className="grades-cell">
                                                         {el.isCategory ? <div className="category-info">
@@ -200,7 +209,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                     )
                                                                 })}
-                                                                <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod} />
+                                                                <GradeSimulationTrigger subjectKey={idx} activePeriod={activePeriod} />
                                                                 {el.grades.filter(el => !el.isReal).map((grade) => {
                                                                     return (
                                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
@@ -216,7 +225,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                             return <tr key={crypto.randomUUID()} className={index % 7 < 1 ? "category-row" : "subject-row"}>
                                                 <th className="head-cell">
                                                     <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
+                                                        animate={isDisplayModeQuality}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                         foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -227,7 +236,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                 </th>
                                                 <td className="moyenne-cell">
                                                     <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
+                                                        animate={isDisplayModeQuality}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ? "#7878ae" : "#75759a"}
                                                         foregroundColor={actualDisplayTheme === "dark" ? "#9292d4" : "#9292c0"}
@@ -241,7 +250,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                     {index % 7 < 1
                                                         ? <div className="category-info">
                                                             <ContentLoader
-                                                                animate={settings.get("displayMode") === "quality"}
+                                                                animate={isDisplayModeQuality}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -250,7 +259,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
-                                                                animate={settings.get("displayMode") === "quality"}
+                                                                animate={isDisplayModeQuality}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -259,7 +268,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
                                                             </ContentLoader>
                                                             <ContentLoader
-                                                                animate={settings.get("displayMode") === "quality"}
+                                                                animate={isDisplayModeQuality}
                                                                 speed={1}
                                                                 backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                 foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -272,7 +281,7 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                                             {Array.from({ length: contentLoadersRandomValues.current.gradeNumbers[index] }, (_) => {
                                                                 return (
                                                                     <ContentLoader
-                                                                        animate={settings.get("displayMode") === "quality"}
+                                                                        animate={isDisplayModeQuality}
                                                                         speed={1}
                                                                         backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
                                                                         foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
@@ -292,10 +301,10 @@ export default function Results({ activeAccount, sortedGrades, selectedPeriod, s
                                     }
                                 </tbody>
                             </table>
-                            : sortedGrades && sortedGrades[selectedPeriod]
-                                ? <Charts selectedPeriod={selectedPeriod} />
+                            : grades && grades[activePeriod]
+                                ? <Charts activePeriod={activePeriod} />
                                 : <ContentLoader
-                                    animate={settings.get("displayMode") === "quality"}
+                                    animate={isDisplayModeQuality}
                                     speed={1}
                                     style={{ width: "100%", height: "100%", padding: "25px" }}
                                     backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}

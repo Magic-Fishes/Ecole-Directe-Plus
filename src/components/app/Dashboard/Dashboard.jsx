@@ -1,6 +1,7 @@
 
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import {
     WindowsContainer,
@@ -20,16 +21,20 @@ import "./Dashboard.css";
 import { formatDateRelative } from "../../../utils/date";
 import FileComponent from "../../generic/FileComponent";
 
-export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, activeAccount, isLoggedIn, useUserData, sortGrades, isTabletLayout }) {
+export default function Dashboard({ fetchHomeworks, activeAccount, isLoggedIn, isTabletLayout }) {
+    const userData = useContext(UserDataContext);
+    const { grades, homeworks } = userData;
+
+    const settings = useContext(SettingsContext);
+    const { isSchoolYearEnabled, schoolYear } = settings.user;
+
+    const fetchSchoolYear = isSchoolYearEnabled.value ? schoolYear.value.join("-") : ""
+
     const navigate = useNavigate();
-    const userData = useUserData();
     const location = useLocation()
 
-    const sortedGrades = userData.get("sortedGrades");
-    const homeworks = useUserData("sortedHomeworks");
-
     const hashParameters = location.hash.split(";")
-    const selectedTask = hashParameters.length > 1 && homeworks.get() && homeworks.get()[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
+    const selectedTask = hashParameters.length > 1 && homeworks && homeworks[hashParameters[0].slice(1)]?.find(e => e.id == hashParameters[1])
 
     // Behavior
     useEffect(() => {
@@ -38,12 +43,8 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (grades.length < 1 || grades[activeAccount] === undefined) {
-                fetchUserGrades(controller);
-            } else if (!sortedGrades) {
-                sortGrades(grades, activeAccount);
-            }
+        if (isLoggedIn && grades === undefined) {
+            userData.get.grades(null, controller);
         }
 
         return () => {
@@ -53,16 +54,14 @@ export default function Dashboard({ fetchUserGrades, grades, fetchHomeworks, act
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (homeworks.get() === undefined) {
-                fetchHomeworks(controller);
-            }
+        if (isLoggedIn && homeworks === undefined) {
+            userData.get.homeworks(null, controller);
         }
 
         return () => {
             controller.abort();
         }
-    }, [homeworks.get(), isLoggedIn, activeAccount]);
+    }, [homeworks, isLoggedIn, activeAccount]);
 
     useEffect(() => {
         if (hashParameters.length > 2 && (hashParameters[2] === "s" && !selectedTask?.sessionContent)) {

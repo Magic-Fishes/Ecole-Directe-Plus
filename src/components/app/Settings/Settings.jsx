@@ -181,7 +181,7 @@ export default function Settings({ usersSettings, accountsList, getCurrentSchool
                 </div>
 
                 <div className="setting" id="luciole-font">
-                    <CheckBox id="luciole-font-cb" checked={settings.get("lucioleFont")} onChange={(event) => { settings.set("lucioleFont", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
+                    <CheckBox id="luciole-font-cb" checked={settings.get("isLucioleFontEnabled")} onChange={(event) => { settings.set("isLucioleFontEnabled", event.target.checked) }} label={<span>Police d'écriture optimisée pour les malvoyants (Luciole)</span>} />
                 </div>
 
                 <div className="setting">

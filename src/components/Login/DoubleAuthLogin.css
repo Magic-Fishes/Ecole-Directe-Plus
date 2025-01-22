@@ -1,10 +1,10 @@
 
-#pop-up-background:has(#A2F-login-form) {
+#pop-up-background:has(#double-auth-login-form) {
     max-width: 435px;
     /* padding: 25px; */
 }
 
-.A2F-login h2 {
+.double-auth-login h2 {
     font-size: var(--font-size-20);
     text-align: center;
     padding: 20px;
@@ -13,30 +13,30 @@
     /* margin-bottom: 20px; */
 }
 
-.A2F-login .explanation {
+.double-auth-login .explanation {
     color: rgb(var(--text-color-alt));
     padding: 10px 20px;
     font-size: var(--font-size-14);
 }
 
-.A2F-login #A2F-login-form {
+.double-auth-login #double-auth-login-form {
     margin-top: 15px;
 }
 
-.A2F-login h3 {
+.double-auth-login h3 {
     font-size: var(--font-size-16);
     margin-bottom: 25px;
     padding-inline: 20px;
     text-align: center;
 }
 
-.A2F-login .A2F-answers-container {
+.double-auth-login .double-auth-answers-container {
     width: 100%;
     height: 100%;
     overflow: auto;
 }
 
-.A2F-login .A2F-answers {
+.double-auth-login .double-auth-answers {
     display: flex;
     flex-flow: column nowrap;
     gap: 5px 20px;
@@ -48,28 +48,28 @@
     text-align: left;
 }
 
-.A2F-login .A2F-answers > .radio-button:first-child {
+.double-auth-login .double-auth-answers > .radio-button:first-child {
     padding-top: 10px;
 }
-.A2F-login .A2F-answers > .radio-button:last-child {
+.double-auth-login .double-auth-answers > .radio-button:last-child {
     padding-bottom: 10px;
 }
 
-.A2F-login .A2F-content-loader-container {
+.double-auth-login .double-auth-content-loader-container {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
     gap: 5px;
 }
 
-.A2F-login .A2F-error-message {
+.double-auth-login .double-auth-error-message {
     margin-inline: 20px;
     margin-bottom: 20px;
     color: rgb(var(--text-color-error));
     text-align: center;
 }
 
-.A2F-login .A2F-buttons {
+.double-auth-login .double-auth-buttons {
     font-size: var(--font-size-13);
     padding: 12px;
     background-color: rgb(var(--background-color-0), .5);
@@ -80,7 +80,7 @@
     gap: 10px;
 }
 
-.A2F-login .A2F-buttons > * {
+.double-auth-login .double-auth-buttons > * {
     margin: 0;
     font-size: var(--font-size-15);
     border: none;
@@ -89,24 +89,24 @@
     border: 2px solid transparent;
 }
 
-.A2F-login .A2F-buttons .cancel-A2F {
+.double-auth-login .double-auth-buttons .cancel-double-auth {
     color: rgb(var(--text-color-alt));
 }
-.A2F-login .A2F-buttons .cancel-A2F:is(:hover, :focus-visible) {
+.double-auth-login .double-auth-buttons .cancel-double-auth:is(:hover, :focus-visible) {
     background-color: transparent;
     border-color: rgb(var(--text-color-alt));
 }
-.A2F-login .A2F-buttons .cancel-A2F:active {
+.double-auth-login .double-auth-buttons .cancel-double-auth:active {
     background-color: rgb(var(--text-color-alt), .2);
 }
 
-.A2F-login .A2F-buttons .submit-A2F {
+.double-auth-login .double-auth-buttons .submit-double-auth {
     background-color: rgb(var(--border-color-0));
 }
-.A2F-login .A2F-buttons .submit-A2F:is(:hover, :focus-visible) {
+.double-auth-login .double-auth-buttons .submit-double-auth:is(:hover, :focus-visible) {
     filter: brightness(1.15);
 }
-.A2F-login .A2F-buttons .submit-A2F:active {
+.double-auth-login .double-auth-buttons .submit-double-auth:active {
     filter: brightness(0.9);
 }
 
