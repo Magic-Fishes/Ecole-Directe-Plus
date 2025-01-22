@@ -85,7 +85,6 @@
 
         const request = new Request(url, init);
 
-        
         fetch(request, { redirect: "follow"})
             .then((response) => response.text())
             .then((html) => {
