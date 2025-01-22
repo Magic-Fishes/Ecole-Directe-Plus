@@ -1,4 +1,3 @@
-
 function isWeekdayAndBusinessHours() {
     const now = new Date();
     const day = now.getDay();
@@ -20,7 +19,6 @@ function isWeekdayAndBusinessHours() {
 
     return isWeekday && isBusinessHours;
 }
-
 
 export function getProxiedURL(url, bait = false) {
     const proxyURL = "https://api.ecole-directe.plus/proxy?url=";
