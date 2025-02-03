@@ -54,10 +54,6 @@ export default function FileComponent({ file, ...props }) {
     }
   };
 
-  function iOS() {
-    return getOS() === "iOS";
-  }
-
   return (
     <div
       className="file-component"
@@ -70,7 +66,7 @@ export default function FileComponent({ file, ...props }) {
       <span className="file-name">
         {file.name}.{file.extension}
       </span>
-      {iOS() ? (
+      {getOS() === "iOS" ? (
         <DownloadIcon
           onMouseDown={handleMouseDown}
           onMouseUp={quitActive}
