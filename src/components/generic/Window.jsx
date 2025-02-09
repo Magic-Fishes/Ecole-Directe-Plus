@@ -1038,7 +1038,7 @@ export function Window({ children, growthFactor = 1, allowFullscreen = false, fu
     return (
         <section className={`window ${className} ${WIP ? "work-in-progress" : ""} ${isPartyModeEnabled && isPeriodEventEnabled && currentPeriodEvent === "christmas" ? "allow-overflow-event" : ""}`}
             style={{ flexGrow: growthFactor }} ref={windowRef} {...props}>
-            {WIP ? <p className="wip-info">Fonctionnalité en cours de développement...<br/>Rejoins le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'EDP</a> pour en suivre l'avancée !</p> : children}
+            {WIP ? <p className="wip-info">Fonctionnalité en cours de développement...<br/>Rejoignez le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'EDP</a> pour en suivre l'avancée !</p> : children}
             {/* <span style={{ color: "lime", fontWeight: "600", position: "relative", zIndex: "999" }}>{windowRef?.current?.name}</span> */}
         </section>
     )
