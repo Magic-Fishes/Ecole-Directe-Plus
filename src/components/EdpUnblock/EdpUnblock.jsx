@@ -21,7 +21,7 @@ const browserLogosInfos = {
     Firefox: {
         logo: <FirefoxLogo />,
         available: true,
-        url: "https://unblock.ecole-directe.plus/edpu-0.1.4.xpi",
+        url: "https://unblock.ecole-directe.plus/ecole_directe_plus_unblock-0.2.1.xpi",
     },
     Chrome: {
         logo: <ChromeLogo />,
