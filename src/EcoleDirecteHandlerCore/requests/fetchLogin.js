@@ -22,7 +22,7 @@ export default function fetchLogin(username, password, A2FKey, controller = unde
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options, "text")
+    return fetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options)
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;

@@ -191,7 +191,7 @@ window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
 consoleLogEDPLogo();
 
-export default function App({ edpFetch }) {
+export default function App({ }) {
     const userSession = useEcoleDirecteSession(getInitialEcoleDirecteSessions());
 
     const {
@@ -780,7 +780,7 @@ export default function App({ edpFetch }) {
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
             try {
-                const response = await edpFetch(
+                const response = await fetch(
                     getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
                     {
                         method: "POST",
@@ -829,7 +829,7 @@ export default function App({ edpFetch }) {
         abortControllers.current.push(controller);
         const userId = selectedUserIndex.value;
 
-        return edpFetch(
+        return fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -890,7 +890,7 @@ export default function App({ edpFetch }) {
             specialFolderType = "draft";
             folderId = 0;
         }
-        edpFetch(
+        fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -964,7 +964,7 @@ export default function App({ edpFetch }) {
 
         const mode = (oldSortedMessages.find((item) => item.id === id).folderId === -1 || oldSortedMessages.find((item) => item.id === id).folderId === -4) ? "expediteur" : "destinataire";
 
-        edpFetch(
+        fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1013,7 +1013,7 @@ export default function App({ edpFetch }) {
             action: "marquerCommeNonLu",
             ids: ids
         }
-        edpFetch(
+        fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1098,7 +1098,7 @@ export default function App({ edpFetch }) {
         const data = {
             libelle: name,
         }
-        edpFetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
+        fetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
             {
                 method: "POST",
                 headers: {
@@ -1130,7 +1130,7 @@ export default function App({ edpFetch }) {
 
     async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
             {
                 method: "POST",
@@ -1186,7 +1186,7 @@ export default function App({ edpFetch }) {
 
     async function renameFolder(id, name, controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1217,7 +1217,7 @@ export default function App({ edpFetch }) {
 
     async function deleteFolder(id, controller = new AbortController()) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/messagerie/classeur/${id}.awp?verbe=delete&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1245,7 +1245,7 @@ export default function App({ edpFetch }) {
 
     async function createFolder(name, controller = new AbortController()) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1277,7 +1277,7 @@ export default function App({ edpFetch }) {
 
     async function archiveMessage(id, controller = new AbortController()) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1312,7 +1312,7 @@ export default function App({ edpFetch }) {
 
     async function unarchiveMessage(id, controller = new AbortController()) {
         abortControllers.current.push(controller);
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves/" + accountsListState[activeAccount].id : "familles/" + accountsListState[activeAccount].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1349,7 +1349,7 @@ export default function App({ edpFetch }) {
     async function moveMessage(ids, folderId, controller = new AbortController()) {
         abortControllers.current.push(controller);
         const userId = activeAccount;
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
@@ -1394,7 +1394,7 @@ export default function App({ edpFetch }) {
         //     "idDossier": -5
         // }
         const userId = activeAccount;
-        return edpFetch(
+        return fetch(
             `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",

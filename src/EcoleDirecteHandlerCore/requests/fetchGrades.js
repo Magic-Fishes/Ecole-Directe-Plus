@@ -17,7 +17,7 @@ export default function fetchGrades(schoolYear, userId, token, controller = unde
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/notes.awp?verbe=get&v=${apiVersion}`, options, "text")
+    return fetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/notes.awp?verbe=get&v=${apiVersion}`, options)
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;

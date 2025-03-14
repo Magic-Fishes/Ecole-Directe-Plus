@@ -17,7 +17,7 @@ export default function fetchDoubleAuthAnswer(token, choice, controller = undefi
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=post&v=${apiVersion}`, options, "text")
+    return fetch(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=post&v=${apiVersion}`, options)
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;

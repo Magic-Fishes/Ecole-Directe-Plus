@@ -17,7 +17,7 @@ export default function fetchTimeline(schoolYear, token, userId, controller = un
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/timeline.awp?verbe=get&v=${apiVersion}`, options, "text")
+    return fetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/timeline.awp?verbe=get&v=${apiVersion}`, options)
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;
