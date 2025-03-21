@@ -1,17 +1,35 @@
 import "./Button.css";
 
-export default function Button({ buttonType="button", children, value, onClick, disabled=false, state="", className="", id="", ...props }) {
-    const allowedButtonTypes = ["button", "submit"];
-    if (!allowedButtonTypes.includes(buttonType)) {
-        buttonType = "button";
+export const ButtonTypes = Object.freeze({
+    BUTTON: 0,
+    SUBMIT: 1
+})
+
+export const ButtonStates = Object.freeze({
+    NEUTRAL: 0,
+    SUBMITTED: 1,
+    SUBMITTING: 2,
+    INVALID: 3
+})
+
+const stateClasses = [
+    "",
+    "submitted",
+    "submitting",
+    "invalid",
+]
+
+export default function Button({ type=ButtonTypes.BUTTON, children, value, onClick, disabled=false, state=ButtonStates.NEUTRAL, className="", id="", ...props }) {
+    if (!Object.values(ButtonTypes).includes(type)) {
+        type = ButtonTypes.BUTTON;
     }
 
     return (
         <button
-            type={buttonType}
+            type={type}
             value={value}
             onClick={onClick}
-            className={`button ${className} ${(buttonType === "submit" ? "submitter" : "")} ${state} ${disabled ? "disabled" : ""}`}
+            className={`button ${className} ${(type === "submit" ? "submitter" : "")} ${stateClasses[state]} ${disabled ? "disabled" : ""}`}
             id={id}
             disabled={disabled}
             {...props}

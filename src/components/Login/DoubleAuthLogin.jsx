@@ -93,7 +93,7 @@ export default function DoubleAuthLogin({ ...props }) {
                 <ScrollShadedDiv className="double-auth-answers-container">
                     {Object.keys(doubleAuthForm).length > 0
                         ? <div className="double-auth-answers">
-                            {doubleAuthForm.propositions.map((answer, index) => <RadioButton id={`double-auth-login-${index}`} name="double-auth-fieldset" key={answer} data-value={answer} onChange={(event) => setChoice(event.target.dataset.value)}>{decodeBase64(answer)}</RadioButton>)}
+                            {doubleAuthForm.choices.map((choice, index) => <RadioButton id={`double-auth-login-${index}`} name="double-auth-fieldset" key={choice.value} data-value={choice.value} onChange={(event) => setChoice(event.target.dataset.value)}>{choice.display}</RadioButton>)}
                         </div>
                         : <div className="double-auth-answers">
                             {Array.from({ length: 11 }, (_, index) => <div className="double-auth-content-loader-container" key={crypto.randomUUID()}>

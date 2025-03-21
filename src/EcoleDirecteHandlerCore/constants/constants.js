@@ -5,7 +5,6 @@ export const dataList = [
     "schoolLife",
     "messageFolders",
     "messages",
-    "activePeriod",
     "administrativeDocuments",
     "totalBadges",
     "generalAverageHistory",
@@ -14,4 +13,8 @@ export const dataList = [
     "subjectsComparativeInformation",
     "gradesEnabledFeatures",
     "lastGrades",
+
+    "activePeriod",
+    "activeGradeElement",
+    "activeHomework"
 ]

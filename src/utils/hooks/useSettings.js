@@ -39,7 +39,7 @@ export default function useSettings(defaultSettings) {
         setting,
         {
             ...settings[setting],
-            set: (value) => {console.trace(); dispatch({ action: "SET", params: { setting, value } })},
+            set: (value) => {dispatch({ action: "SET", params: { setting, value } })},
             setProperty: (property, value) => dispatch({ action: "SET_PROPERTY", params: { setting, property, value } })
         }
     ]));

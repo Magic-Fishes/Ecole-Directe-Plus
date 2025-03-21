@@ -3,7 +3,6 @@ import { useReducer, useState } from "react";
 export default function useAccountData() {
     const [selectedUserDataIndex, setSelectedUserDataIndex] = useState(0);
     const [accountData, dispatch] = useReducer((current, { action, params }) => {
-
         switch (action) {
             case "INITIALIZE":
                 {
@@ -26,7 +25,7 @@ export default function useAccountData() {
                     return next;
                 }
         }
-    }, null)
+    }, null);
 
     function initialize(userNumber, dataList) {
         dispatch({
@@ -42,15 +41,14 @@ export default function useAccountData() {
         });
     }
 
+    /**This is the function you'll mainly use to change and initialize data of an account with mutiple users.
+     * Here is an explanations of the params :
+     *  @param data      is the "key" of the data, its identifier in the object "userData" returned bah the hook
+     *  @param value     is the value you want to assign to the key above
+     *  @param userIndex is the index of a specific user, this may be important in cases where you work with
+     *                   async threads and you get data for a user after that the sekected user changed.
+     */
     function set(data, value, userIndex) {
-        console.log(value);
-        /**This si the function you'll mainly use to change and initialize data of an account with mutiple users.
-         * Here is an explanations of the params :
-         *  @param data      is the "key" of the data, its identifier in the object "userData" returned bah the hook
-         *  @param value     is the value you want to assign to the key above
-         *  @param userIndex is the index of a specific user, this may be important in cases where you work with
-         *                   async threads and you get data for a user after that the sekected user changed.
-         */
         if (accountData === null) {
             throw new Error("Cannot set data in uninitialized accountData")
         }
@@ -74,8 +72,6 @@ export default function useAccountData() {
             }
         ])))
         : null;
-
-        console.log(returnedData);
 
     return [
         returnedData !== null

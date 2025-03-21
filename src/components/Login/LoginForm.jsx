@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 
 import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
-import Button from "../generic/UserInputs/Button";
+import Button, { ButtonStates, ButtonTypes } from "../generic/UserInputs/Button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../generic/PopUps/Tooltip";
 
 import AccountIcon from "../graphics/AccountIcon"
@@ -25,7 +25,7 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
     } = useContext(AccountContext);
 
     const [displayState, setDisplayState] = useState({
-        submitState: "",
+        submitState: ButtonStates.NEUTRAL,
         submitButtonText: "Se connecter",
         errorMessage: "",
     })
@@ -33,7 +33,7 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
     function resetDisplayState() {
         setDisplayState((old) => ({
             ...old,
-            submitState: "",
+            submitState: ButtonStates.NEUTRAL,
             submitButtonText: "Se connecter",
         }))
     }
@@ -55,12 +55,12 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
     function handleSubmit(event) {
         event.preventDefault();
         // empêche la connexion si déjà connecté ou formulaire invalide
-        if (displayState.submitState === "submitted") {
+        if (displayState.submitState === ButtonStates.SUBMITTED) {
             return 0
         }
         // UI
         setDisplayState({
-            submitState: "submitting",
+            submitState: ButtonStates.SUBMITTING,
             submitButtonText: "Connexion...",
             errorMessage: "",
         })
@@ -71,49 +71,49 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
                 switch (result.code) {
                     case 0:
                         setDisplayState({
-                            submitState: "submitted",
+                            submitState: ButtonStates.SUBMITTED,
                             submitButtonText: "Connecté",
                             errorMessage: "",
                         })
                         return;
                     case 1:
                         setDisplayState({
-                            submitState: "invalid",
+                            submitState: ButtonStates.INVALID,
                             submitButtonText: "Échec de la connexion",
                             errorMessage: "Identifiant et/ou mot de passe invalide",
                         });
                         return;
                     case 2:
                         setDisplayState({
-                            submitState: "submitting",
+                            submitState: ButtonStates.SUBMITTING,
                             submitButtonText: "A2F requise",
                             errorMessage: "",
                         });
                         return;
                     case 3:
                         setDisplayState({
-                            submitState: "invalid",
+                            submitState: ButtonStates.INVALID,
                             submitButtonText: "Échec de la connexion",
                             errorMessage: "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
                         });
                         return;
                     case 4:
                         setDisplayState({
-                            submitState: "invalid",
+                            submitState: ButtonStates.INVALID,
                             submitButtonText: "Échec de la connexion",
                             errorMessage: "Il semblerait que votre compte EcoleDirecte ne soit pas encore valide, renseignez vous auprès de votre établissement ou d'EcoleDirecte. On vous attend avec impatience !",
                         });
                         return;
                     case 5:
                         setDisplayState({
-                            submitState: "invalid",
+                            submitState: ButtonStates.INVALID,
                             submitButtonText: "Échec de la connexion",
                             errorMessage: "La connexion avec le serveur nécessite l'extension EDPUnblock",
                         });
                         return;
                     case -1:
                         setDisplayState({
-                            submitState: "invalid",
+                            submitState: ButtonStates.INVALID,
                             submitButtonText: "Échec de la connexion",
                             errorMessage: "Une erreur inattendue s'est produite",
                         });
@@ -128,7 +128,7 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
                 .then((result) => {
                     // !:!
                     setDisplayState({
-                        submitState: result.code ? "invalid" : "submitted",
+                        submitState: result.code ? ButtonStates.INVALID : ButtonStates.SUBMITTED,
                         submitButtonText: result.code ? "Échec de la connexion" : "Connecté",
                         errorMessage: result.message ?? "",
                     });
@@ -150,8 +150,8 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
 
     return (
         <form onSubmit={handleSubmit} {...props} id="login-form">
-            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setDisplayState((old) => ({submitState: "invalid", ...old}))} />
-            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setDisplayState((old) => ({submitState: "invalid", ...old}))} />
+            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setDisplayState((old) => ({submitState: ButtonStates.INVALID, ...old}))} />
+            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setDisplayState((old) => ({submitState: ButtonStates.INVALID, ...old}))} />
             <p className="error-message">{displayState.errorMessage}</p>
             <div className="login-option">
                 <Tooltip delay={400}>
@@ -164,7 +164,9 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
                 </Tooltip>
                 <a id="password-forgotten-link" href="https://api.ecoledirecte.com/mot-de-passe-oublie.awp" target="blank">Mot de passe oublié ?</a>
             </div>
-            <Button id="submit-login" state={displayState.submitState} buttonType="submit" value={april ? "Ok" : displayState.submitButtonText} />
+            <Button id="submit-login" state={displayState.submitState} type={ButtonTypes.SUBMIT} >
+                {april ? "Ok" : displayState.submitButtonText}
+            </Button>
         </form>
     )
 }

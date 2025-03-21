@@ -199,17 +199,11 @@ export default function App({ }) {
     } = userSession;
 
     const {
-        userCredentials,
         token,
-        doubleAuthInfo,
-        requestLogin,
-        getDoubleAuthQuestions,
-        sendDoubleAuthAnswer,
         loginStates,
         selectedUserIndex,
         selectedUser,
-        users,
-    } = userSession.Account;
+    } = userSession.account;
 
     const { isLoggedIn, requireDoubleAuth, doubleAuthAcquired } = loginStates;
 
@@ -249,63 +243,6 @@ export default function App({ }) {
             : "light"
         : displayTheme.value;
     const createNotification = useCreateNotification();
-
-    class File {
-        constructor(id, type, file, name = file.slice(0, file.lastIndexOf(".")), specialParams = {}) {
-            /**id : 5018 / "654123546545612654984.pdf" it depends of ED's response
-             * type : NODEVOIR / FICHIER_CDT / ...     it depends of where you get the file in ED (homeworks, messsages or somewhere else)
-             * file : "file.pdf" / "TEST.txt"
-             * name : "the_name_of_the_file_downloaded_without_extension"
-             * specialParams : params needed in the URL in certain cases
-             */
-            this.id = id
-            this.type = type
-            this.name = name
-            this.extension = file.slice(file.lastIndexOf(".") + 1)
-            this.specialParams = specialParams
-            this.state = "inactive"
-        }
-
-        fetch() {
-            if (!this.blob) {
-                if (this.state !== "requestForInstall") {
-                    this.state = "fetching"
-                }
-                fetchFile(this.id, this.type, this.specialParams)
-                    .then(blob => {
-                        this.blob = blob;
-                        if (this.state === "requestForInstall") {
-                            this.install()
-                        }
-                    })
-            }
-        }
-
-        download() {
-            if (this.blob) {
-                this.install();
-            } else if (this.state === "fetching") {
-                this.state = "requestForInstall"
-            } else {
-                this.state = "requestForInstall"
-                this.fetch()
-            }
-        }
-
-        async install() {
-            const url = URL.createObjectURL(this.blob);
-            const a = document.createElement('a');
-
-            a.href = url;
-            a.download = `${this.name}.${this.extension}`;
-
-            document.body.appendChild(a);
-            a.click();
-
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -450,7 +387,7 @@ export default function App({ }) {
          * - @param newValues.name : nom du devoir
          * - @param newValues.type : type de devoir (DS, DM, ...)
          */
-        const grades = userData.grades;
+        const grades = userData.grades.value;
         grades[periodKey].subjects[subjectKey].grades.push({
             ...newValues,
             badges: [],
@@ -1046,54 +983,6 @@ export default function App({ }) {
             })
     }
 
-    async function fetchSchoolLife(controller = (new AbortController())) {
-        abortControllers.current.push(controller);
-        const data = {
-            anneeScolaire: userSettings.isSchoolYearEnabled.value ? userSettings.schoolYear.value.join("-") : ""
-        }
-
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[selectedUserIndex.value].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
-            {
-                method: "POST",
-                headers: {
-                    // "user-agent": navigator.userAgent,
-                    "x-token": tokenState,
-                },
-                body: `data=${JSON.stringify(data)}`,
-                signal: controller.signal,
-                referrerPolicy: "no-referrer"
-            },
-            "json")
-            .then((response) => {
-                let code;
-                if (selectedUser.id === -1) {
-                    code = 403;
-                } else {
-                    code = response.code;
-                }
-                if (code === 200 || code === 210) { // 210: quand l'utilisateur n'a pas de retard/absence/sanction
-                    const oldSchoolLife = structuredClone(schoolLife);
-                    oldSchoolLife[selectedUserIndex.value] = response.data;
-                    setSchoolLife(oldSchoolLife);
-                    setTokenState(response.token);
-                } else if (code === 520 || code === 525) {
-                    // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
-                    requireLogin();
-                } else if (code === 403) {
-                    setTokenState((old) => (response.token || old));
-                }
-            })
-            .catch((error) => {
-                if (error.message === "Unexpected token 'P', \"Proxy error\" is not valid JSON") {
-                    setProxyError(true);
-                }
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-    }
-
     async function createFolderStorage(name) {
         const data = {
             libelle: name,
@@ -1108,24 +997,6 @@ export default function App({ }) {
                 referrerPolicy: "no-referrer"
             },
         )
-    }
-
-    async function fetchFile(id, type, specialParams) {
-        const { idDevoir } = specialParams
-        return await edpFetch(
-            `https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get&fichierId=${id}&leTypeDeFichier=${type}${idDevoir ? `&idDevoir=${idDevoir}` : ""}`,
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
-                },
-                cors: "no-cors",
-                body: `data=${JSON.stringify({ forceDownload: 0 })}`,
-                referrerPolicy: "no-referrer"
-            },
-            "blob"
-        )
-            .catch(error => console.error('Erreur lors du téléchargement du fichier:', error))
     }
 
     async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
@@ -1523,7 +1394,7 @@ export default function App({ }) {
                     path: "quackquack",
                 },
                 {
-                    element: <Lab account={userSession.Account} />,
+                    element: <Lab account={userSession.account} />,
                     path: "lab",
                 },
                 {
@@ -1569,7 +1440,7 @@ export default function App({ }) {
                             path: "account",
                         },
                         {
-                            element: <Account schoolLife={schoolLife} fetchSchoolLife={fetchSchoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} />,
+                            element: <Account schoolLife={schoolLife} fetchAdministrativeDocuments={fetchAdministrativeDocuments} sortSchoolLife={sortSchoolLife} isLoggedIn={isLoggedIn} activeAccount={selectedUserIndex.value} />,
                             path: ":userId/account"
                         },
                         {
@@ -1666,16 +1537,11 @@ export default function App({ }) {
     ]);
 
     const accountContextValue = {
-        userCredentials,
+        ...userSession.account,
         keepLoggedIn,
-        doubleAuthInfo,
         doubleAuthAcquired,
-        requestLogin,
         requireDoubleAuth,
-        getDoubleAuthQuestions,
-        sendDoubleAuthAnswer,
-        selectedUser,
-    }
+    };
 
     const settingsContextValue = {
         global: globalSettings,

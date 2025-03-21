@@ -19,12 +19,16 @@ import Charts from "./Charts";
 import { GradeSimulationTrigger } from "./GradeSimulation"
 
 import "./Results.css";
+import { DisplayTypes } from "./Grades";
 
 export default function Results({ selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
 
     const userData = useContext(UserDataContext);
-    const { grades, activePeriod } = userData;
+    const {
+        grades: { value: grades },
+        activePeriod: { value: activePeriod, set: setActivePeriod }
+    } = userData;
 
     const settings = useContext(SettingsContext);
     const { displayMode } = settings.user;
@@ -47,25 +51,21 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
         }
     }, [location, grades]);
 
-    function onActivePeriodChange(value) {
-        userData.set("activePeriod", value);
-    }
-
-    console.log(userData);
+    console.log(grades);
 
     return (
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} name="results-utimate-container" {...props}>
             {!isTabletLayout ? <MoveableContainer style={{ display: "flex", flexFlow: "column nowrap", gap: "20px" }} >
                 <GradeScaleToggle />
-                <Tabs tabs={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} fieldsetName="displayType" dir="column" style={{ flex: 1 }} />
+                <Tabs tabs={Object.values(DisplayTypes)} displayedTabs={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} fieldsetName="displayType" dir="column" style={{ flex: 1 }} />
             </MoveableContainer> : null}
             <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "column nowrap", gap: "20px" }}>
                 <MoveableContainer>
                     {!isTabletLayout
-                        ? <Tabs contentLoader={grades === undefined} tabs={grades ? Object.keys(grades) : [""]} displayedTabs={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={onActivePeriodChange} fieldsetName="period" dir="row" />
+                        ? <Tabs contentLoader={grades === undefined} tabs={grades ? Object.keys(grades) : [""]} displayedTabs={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={setActivePeriod} fieldsetName="period" dir="row" />
                         : <div className="results-options-container">
-                            <DropDownMenu name="periods" options={grades ? Object.keys(grades) : [""]} displayedOptions={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={onActivePeriodChange } />
-                            <DropDownMenu name="displayType" options={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
+                            <DropDownMenu name="periods" options={grades ? Object.keys(grades) : [""]} displayedOptions={grades ? Object.values(grades).map((period) => period.name) : [""]} selected={activePeriod} onChange={setActivePeriod} />
+                            <DropDownMenu name="displayType" options={Object.values(DisplayTypes)} displayedOptions={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} />
                         </div>
                     }
                 </MoveableContainer>
@@ -166,7 +166,7 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                         </div>
                     </WindowHeader>
                     <WindowContent className="results">
-                        {selectedDisplayType === "Évaluations"
+                        {selectedDisplayType === DisplayTypes.EVALUATIONS
                             ? <table className="grades-table">
                                 <colgroup>
                                     <col className="subjects-col" />
@@ -190,30 +190,26 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                         {el.isCategory
                                                             ? <div className="head-name">{el.name}</div>
                                                             : <Link to={"#" + (el.id ?? "")} id={(el.id ?? "")} className={`head-name${(el.id && location.hash === "#" + el.id) ? " selected" : ""}`} replace={true}>{el.name}</Link>
-
                                                         }
                                                     </th>
                                                     <td className="moyenne-cell">
-                                                        {el.isCategory ? <Grade grade={{ value: el.average }} />
-                                                            : <Grade grade={{ value: el.average, subject: el }} />}
-
+                                                        {el.isCategory
+                                                            ? <Grade grade={{ value: el.average }} />
+                                                            : <Grade grade={{ value: el.average, subject: el }} />
+                                                        }
                                                     </td>
                                                     <td className="grades-cell">
-                                                        {el.isCategory ? <div className="category-info">
-                                                            <span>Classe : <Grade grade={{ value: el.classAverage }} /></span><span>Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} /></span><span>Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} /></span>
-                                                        </div>
-                                                            :
-                                                            <div className="grades-values">
+                                                        {el.isCategory
+                                                            ? <div className="category-info">
+                                                                <span>Classe : <Grade grade={{ value: el.classAverage }} /></span><span>Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} /></span><span>Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} /></span>
+                                                            </div>
+                                                            : <div className="grades-values">
                                                                 {el.grades.filter(el => el.isReal).map((grade) => {
-                                                                    return (
-                                                                        <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
-                                                                    )
+                                                                    return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}
                                                                 <GradeSimulationTrigger subjectKey={idx} activePeriod={activePeriod} />
                                                                 {el.grades.filter(el => !el.isReal).map((grade) => {
-                                                                    return (
-                                                                        <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
-                                                                    )
+                                                                    return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}
                                                             </div>}
                                                     </td>

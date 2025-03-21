@@ -8,13 +8,13 @@ import { LoginStates, GradesCodes, HomeworksCodes } from "../constants/codes";
 // split
 import useAccountData from "./utils/useAccountData";
 import fetchGrades from "../requests/fetchGrades";
-import mapGrades from "../mappers/grades";
+import { mapGrades } from "../mappers/grades";
 import fetchTimeline from "../requests/fetchTimeline";
-import mapTimeline from "../mappers/timeline";
+import { mapTimeline } from "../mappers/timeline";
 import fetchHomeworks from "../requests/fetchHomeworks";
 import { mapUpcomingHomeworks, mapDayHomeworks } from "../mappers/homeworks";
 import { testISODate, textPlacehodler } from "../utils/utils";
-import { dataList } from "../constants/constants"
+import { dataList } from "../constants/constants" // !:! faire passer ca en paramètre (relatif à l'application qui utilise (potentiellement merge ceux nécessaires + ceux personnalisées))
 
 /**
  * Each fetch function will return a code, and other data such as messages, display text, ...
@@ -102,12 +102,12 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
             })
     }
 
+    /**
+     * @brief Fetch user homeworks
+     * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
+     * @param controller AbortController
+     */
     async function getHomeworks(date = null, controller = (new AbortController())) {
-        /**
-         * Fetch user homeworks
-         * @param controller AbortController
-         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
-         */
         const requestUserIndex = selectedUserIndex.value;
         let response;
         if (selectedUser.id === -1) {
@@ -122,26 +122,32 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
             switch (response.code) {
                 case 200:
                     if (date === null) {
-                        const { mappedHomeworks, mappedUpcomingAssignments } = mapUpcomingHomeworks(response.data);
+                        const { mappedHomeworks, mappedUpcomingAssignments, activeHomework } = mapUpcomingHomeworks(response.data);
                         userData.homeworks.set(mappedHomeworks, requestUserIndex);
                         userData.upcomingAssignments.set(mappedUpcomingAssignments, requestUserIndex);
+                        console.log(userData.activeHomework)
+                        userData.activeHomework.set(activeHomework, requestUserIndex);
                     } else {
                         const { mappedDay } = mapDayHomeworks(response.data);
                         if (users[requestUserIndex].id < 0) {
                             const guestDetailedTaskDate = Object.keys(mappedDay)[0];
-                            userData.homeworks.set({
-                                ...userData.homeworks,
-                                [date]: [
-                                    ...mappedDay[guestDetailedTaskDate].map((el, index) => ({
-                                        ...el,
-                                        ...userData.homeworks[date][index],
-                                        content: textPlacehodler(),
-                                        sessionContent: textPlacehodler()
-                                    })),
-                                ]
-                            }, requestUserIndex);
+                            if (userData.homeworks.value[date]) {
+                                userData.homeworks.set({
+                                    ...userData.homeworks.value,
+                                    [date]: [
+                                        ...mappedDay[guestDetailedTaskDate].map((el, index) => ({
+                                            ...el,
+                                            ...userData.homeworks.value[date][index],
+                                            content: textPlacehodler(),
+                                            sessionContent: textPlacehodler()
+                                        })),
+                                    ]
+                                }, requestUserIndex);
+                            }
                         } else {
-                            userData.homeworks.set({ ...userData.homeworks, ...mappedDay }, requestUserIndex);
+                            console.log(userData.homeworks);
+                            console.log(userData.activeHomework);
+                            userData.homeworks.set({ ...userData.homeworks.value, ...mappedDay }, requestUserIndex);
                         }
                     }
                     return HomeworksCodes.SUCCESS;
@@ -210,7 +216,7 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
 
     function logout() {
         resetUserData();
-        Account.logout();
+        account.logout();
     }
 
     return {
@@ -222,7 +228,7 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
                 homeworks: getHomeworks,
             },
         },
-        Account,
+        account,
         logout,
     }
 }

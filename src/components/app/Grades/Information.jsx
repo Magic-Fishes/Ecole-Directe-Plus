@@ -20,8 +20,6 @@ import {
     BadgeMehInfo,
 } from "../../generic/badges/BadgeInfo"
 
-
-
 // graphics
 import CanardmanSearching from "../../graphics/CanardmanSearching";
 import DownloadIcon from "../../graphics/DownloadIcon";
@@ -54,7 +52,7 @@ function findGradesObjectById(list, value) {
 export default function Information({ grades, activeAccount, selectedPeriod, ...props }) {
     const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
 
-    const { gradesEnabledFeatures } = useContext(UserDataContext);
+    const { gradesEnabledFeatures: {value: gradesEnabledFeatures} } = useContext(UserDataContext);
 
     const settings = useContext(SettingsContext);
     const { displayMode, isStreamerModeEnabled } = settings.user;
@@ -72,9 +70,11 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
     if (grades && grades[selectedPeriod]) {
         selectedElement = findGradesObjectById(Object.values(grades && grades[selectedPeriod].subjects), location.hash.slice(1));
     }
-    
+
+    console.log("tst: ", selectedElement);
+
     return (
-        <Window className="information" growthFactor={(isExpanded && !["none", undefined].includes(selectedElement)) ? 2 : 1}>
+        <Window className="information" growthFactor={(isExpanded && !["none", undefined].includes(selectedElement)) ? 2 : 1} {...props} >
             <WindowHeader>
                 <h2>Informations</h2>
                 {!isTabletLayout && <button className="expand-reduce-button" onClick={() => setIsExpanded((old) => !old)} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>{isExpanded ? <ReduceIcon /> : <ExpandIcon />}</button>}

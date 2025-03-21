@@ -15,13 +15,19 @@ import { canScroll } from "../../../utils/DOM";
 import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
     const { isLoggedIn, actualDisplayTheme } = useContext(AppContext);
-    
+
     const userData = useContext(UserDataContext);
-    const { homeworks: {value: homeworks} } = userData;
+    const {
+        homeworks: { value: homeworks },
+        activeHomework: { value: activeHomework, set: setActiveHomework },
+    } = userData;
+
     const settings = useContext(SettingsContext);
     const { displayMode } = settings.user;
 
     const location = useLocation();
+    const urlParams = new URLSearchParams(location.search);
+
     const navigate = useNavigate();
 
     const notebookContainerRef = useRef(null);
@@ -34,28 +40,25 @@ export default function Notebook({ hideDateController = false }) {
     const [hasMouseMoved, setHasMouseMoved] = useState(false);
 
     const hashParameters = location.hash.split(";")
-    const selectedDate = hashParameters[0].slice(1)
+    const homeworkDay = activeHomework?.day;
+    const homeworkId = activeHomework?.day;
 
-    function validDateFormat(dateString) {
-        const date = dateString.split("-");
-        if (date.length !== 3) {
-            return false;
-        }
-        for (let str of date) {
-            if (isNaN(parseInt(str))) {
-                return false;
-            }
-        }
-        if (date[1].length !== 2 || date[2].length !== 2) {
-            return false;
-        }
+    // function validDateFormat(dateString) {
+    //     const date = dateString.split("-");
+    //     if (date.length !== 3) {
+    //         return false;
+    //     }
+    //     for (let str of date) {
+    //         if (isNaN(parseInt(str))) {
+    //             return false;
+    //         }
+    //     }
+    //     if (date[1].length !== 2 || date[2].length !== 2) {
+    //         return false;
+    //     }
 
-        return true;
-    }
-
-    function navigateToDate(newDate, cleanup = false) {
-        navigate(`#${newDate};${(cleanup && hashParameters[1]) || ""}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true });
-    }
+    //     return true;
+    // }
 
     function nearestHomeworkDate(direction, date) {
         /**
@@ -110,20 +113,22 @@ export default function Notebook({ hideDateController = false }) {
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
     }
 
+    /* handle url redirection*/
     useEffect(() => {
-        if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
-            return;
-        }
-        if (validDateFormat(selectedDate)) {
-            const element = anchorElement.current;
-            if (element !== null) {
-                // element.scrollIntoView({ inline: "center" });
-                customScrollIntoView(element);
-            }
-        } else {
-            if (homeworks) {
-                // navigateToDate(getISODate(new Date()));
-                navigateToDate(nearestHomeworkDate(1, getISODate(new Date())))
+        if (homeworks) {
+            const urlParamDate = urlParams.get("homework_date");
+            const urlParamId = parseInt(urlParams.get("homework_id"));
+            if (urlParamDate || urlParamId) {
+
+                const urlActiveHomework = { day: null, id: null }
+                if (Object.keys(homeworks).includes(urlParamDate)) {
+                    urlActiveHomework.day = urlParamDate;
+                    if (homeworks[date].some((task) => task.id === urlParamId)) {
+                        urlActiveHomework.id = urlParamId;
+                    }
+                }
+                setActiveHomework(urlActiveHomework);
+                navigate(location.pathname);
             }
         }
     }, [location, homeworks, anchorElement.current]);
@@ -137,7 +142,7 @@ export default function Notebook({ hideDateController = false }) {
                         notebookContainerRef.current.style.scrollBehavior = "revert";
                         notebookContainerRef.current.scrollLeft += event.deltaY;
                         notebookContainerRef.current.style.scrollBehavior = "";
-                        // const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), selectedDate);
+                        // const newDate = nearestHomeworkDate(1 - 2 * (event.deltaY < 0), homeworkDay);
                         // if (!!newDate) {
                         //     navigateToDate(newDate)
                         // }
@@ -152,7 +157,7 @@ export default function Notebook({ hideDateController = false }) {
                 notebookContainerRef.current.removeEventListener("wheel", verticalToHorizontalScrolling);
             }
         }
-    }, [selectedDate, homeworks, isMouseIntoScrollableContainer]);
+    }, [homeworkDay, homeworks, isMouseIntoScrollableContainer]);
 
     // - - Drag to scroll - -
 
@@ -163,7 +168,7 @@ export default function Notebook({ hideDateController = false }) {
         document.body.style.overscrollBehavior = "contain";
         notebookContainerRef.current.style.scrollSnapType = "none";
     }
-    
+
     function unpreventDraggingIssues() {
         document.body.style.overflow = "";
         document.body.style.userSelect = "";
@@ -203,23 +208,23 @@ export default function Notebook({ hideDateController = false }) {
 
             const handleMouseUp = () => {
                 document.removeEventListener("mousemove", handleMouseMove);
-                    isNotebookGrab.current = false;
-                    const SCROLL_FRICTION = 0.95;
-                    const SCROLL_COEF = 1.05;
-                    function applyInertia() {
-                        if (!isNotebookGrab.current && displayMode.value === "quality" && (mouseSpeed.x < -0.1 || mouseSpeed.x > 0.1) || (mouseSpeed.y < -0.1 && mouseSpeed.y > 0.1)) {
-                            notebookContainerRef.current.scrollBy({ left: mouseSpeed.x * SCROLL_COEF, top: mouseSpeed.y * SCROLL_COEF, behavior: "instant" });
-                            mouseSpeed.x *= SCROLL_FRICTION;
-                            mouseSpeed.y *= SCROLL_FRICTION;
-                            requestAnimationFrame(applyInertia);
-                        }
+                isNotebookGrab.current = false;
+                const SCROLL_FRICTION = 0.95;
+                const SCROLL_COEF = 1.05;
+                function applyInertia() {
+                    if (!isNotebookGrab.current && displayMode.value === "quality" && (mouseSpeed.x < -0.1 || mouseSpeed.x > 0.1) || (mouseSpeed.y < -0.1 && mouseSpeed.y > 0.1)) {
+                        notebookContainerRef.current.scrollBy({ left: mouseSpeed.x * SCROLL_COEF, top: mouseSpeed.y * SCROLL_COEF, behavior: "instant" });
+                        mouseSpeed.x *= SCROLL_FRICTION;
+                        mouseSpeed.y *= SCROLL_FRICTION;
+                        requestAnimationFrame(applyInertia);
                     }
-                    requestAnimationFrame(applyInertia);
-                    unpreventDraggingIssues();
-                    document.removeEventListener("mouseup", handleMouseUp);
-                    timeoutId = setTimeout(() => {
-                        setHasMouseMoved(false);
-                    }, 0);
+                }
+                requestAnimationFrame(applyInertia);
+                unpreventDraggingIssues();
+                document.removeEventListener("mouseup", handleMouseUp);
+                timeoutId = setTimeout(() => {
+                    setHasMouseMoved(false);
+                }, 0);
             }
 
             document.addEventListener("mouseup", handleMouseUp);
@@ -275,22 +280,16 @@ export default function Notebook({ hideDateController = false }) {
             }
         }
 
-    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current, selectedDate])
+    }, [isMouseOverTasksContainer, isMouseIntoScrollableContainer, tasksContainersRefs.current, homeworkDay])
 
     useEffect(() => {
         const controller = new AbortController();
-        console.log(homeworks);
-        console.log((homeworks
-            && (homeworks[selectedDate] === undefined
-                || (homeworks[selectedDate].length
-                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent))))
-            && isLoggedIn);
         if ((homeworks // SI l'objet des devoirs existe MAIS
-            && (homeworks[selectedDate] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
-                || (homeworks[selectedDate].length // que les devoir d'aujourd'hui ont été fetch mais qu'ils ne sont pas vides MAIS
-                    && (!homeworks[selectedDate][0].content && !homeworks[selectedDate][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
+            && (homeworks[homeworkDay] === undefined // que les devoirs de la date selectionnée ne sont pas fetch OU
+                || (homeworks[homeworkDay].length // que les devoir d'aujourd'hui ont été fetch mais qu'ils ne sont pas vides MAIS
+                    && (!homeworks[homeworkDay][0].content && !homeworks[homeworkDay][0].sessionContent)))) // que ni le contenu ni le contenu de séance n'ait été fetch
             && isLoggedIn) {
-            userData.get.homeworks(selectedDate, controller);
+            userData.get.homeworks(homeworkDay, controller);
         }
 
         return () => {
@@ -301,16 +300,16 @@ export default function Notebook({ hideDateController = false }) {
     return <>
         {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
             ? <div className="date-selector">
-                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, selectedDate)) } }} >
+                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, homeworkDay))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, homeworkDay)) } }} >
                     <DropDownArrow />
                 </span>
-                <span className="selected-date" onClick={() => {navigate(`#${nearestHomeworkDate(1, getISODate(new Date()))}`, { replace: true })}}>
+                <span className="selected-date" onClick={() => { navigate(`#${nearestHomeworkDate(1, getISODate(new Date()))}`, { replace: true }) }}>
                     <div>
-                        <time dateTime={selectedDate || null}>{(new Date(selectedDate)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(selectedDate)).toLocaleDateString("fr-FR")}</time>
+                        <time dateTime={homeworkDay || null}>{(new Date(homeworkDay)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(homeworkDay)).toLocaleDateString("fr-FR")}</time>
                         <time dateTime={getISODate(new Date())}>Aujourd'hui</time>
                     </div>
                 </span>
-                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(1, selectedDate))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, selectedDate)) } }} >
+                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(1, homeworkDay))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, homeworkDay)) } }} >
                     <DropDownArrow />
                 </span>
             </div>
@@ -326,7 +325,7 @@ export default function Notebook({ hideDateController = false }) {
                         const progression = tasks.filter((task) => task.isDone).length / tasks.length;
                         const elDate = new Date(el);
                         return (homeworks[el].length
-                            ? <div className={`notebook-day ${selectedDate === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(selectedDate === el ? hashParameters[1] : homeworks[el].find((item) => item.type === "task")?.id ?? homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={selectedDate === el ? anchorElement : null}>
+                            ? <div className={`notebook-day ${homeworkDay === el ? "selected" : ""}`} style={{ "--day-progression": `${progression * 100}%` }} onClick={() => !hasMouseMoved && navigate(`#${el};${(homeworkDay === el ? hashParameters[1] : homeworks[el].find((item) => item.type === "task")?.id ?? homeworks[el][0].id)}${hashParameters.length === 3 ? ";" + hashParameters[2] : ""}`, { replace: true })} key={el} id={el} ref={homeworkDay === el ? anchorElement : null}>
                                 <div className="notebook-day-header" style={{ "--after-opacity": (progression === 1 ? 1 : 0) }}>
                                     <span className="notebook-day-date">
                                         <time dateTime={elDate.toISOString()}>{capitalizeFirstLetter(elDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" }))}</time>
@@ -337,27 +336,27 @@ export default function Notebook({ hideDateController = false }) {
                                 <div className="tasks-container" ref={(el) => (tasksContainersRefs.current[index] = el)}>
                                     {tasks.map((task, taskIndex) => {
                                         const result = [
-                                            selectedDate === el
+                                            homeworkDay === el
                                                 ? <DetailedTask key={"detailed-" + task.id} task={task} day={el} />
                                                 : <Task key={task.id} task={task} day={el} />]
-                                        if (selectedDate === el && taskIndex < tasks.length - 1) {
+                                        if (homeworkDay === el && taskIndex < tasks.length - 1) {
                                             result.push(<hr key={toString(task.id) + "-hr"} className="detailed-task-separator" />)
                                         }
                                         return result.flat();
                                     })}
-                                    {sessionContents.length !== 0 && (selectedDate === el
+                                    {sessionContents.length !== 0 && (homeworkDay === el
                                         ? <div className="detailed-section-separator"><hr /><span>Contenus de Séances</span><hr /></div>
                                         : <hr className="section-separator" />)
                                     }
                                     {sessionContents.map((sessionContent, sessionContentIndex) => {
                                         const result = [
-                                            selectedDate === el
+                                            homeworkDay === el
                                                 ? <DetailedSessionContent key={"detailed-" + sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} />
                                                 : <SessionContent key={sessionContent.id} day={el} sessionContent={sessionContent} sessionContentIndex={sessionContentIndex} />]
-                                        if (selectedDate === el && sessionContentIndex < sessionContents.length - 1) {
+                                        if (homeworkDay === el && sessionContentIndex < sessionContents.length - 1) {
                                             result.push(<hr key={toString(sessionContent.id) + "-hr"} className="detailed-task-separator" />)
                                         }
-                                        return result.flat();   
+                                        return result.flat();
                                     })}
                                 </div>
                             </div>
@@ -365,7 +364,7 @@ export default function Notebook({ hideDateController = false }) {
                     }).filter(e => e)
                     : <p className="no-homework-placeholder">Vous n'avez aucun devoir à venir. Profitez de ce temps libre pour venir discuter sur le <a href="https://discord.gg/AKAqXfTgvE" target="_blank">serveur Discord d'Ecole Directe Plus</a> et contribuer au projet via le <a href="https://github.com/Magic-Fishes/Ecole-Directe-Plus" target="_blank">dépôt Github</a> !</p>
                 : contentLoadersRandomValues.current.days.map((el, index) => {
-                    return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={selectedDate === el ? anchorElement : null}>
+                    return <div className={`notebook-day ${index === 0 ? "selected" : ""}`} key={index} ref={homeworkDay === el ? anchorElement : null}>
                         <div className="notebook-day-header">
                             <span className="notebook-day-date">
                                 <ContentLoader

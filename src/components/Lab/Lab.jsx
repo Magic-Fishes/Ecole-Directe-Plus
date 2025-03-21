@@ -277,7 +277,7 @@ export default function Lab({ fetchGrades }) {
             {isInputPopUp2Open && <PopUp onClose={() => { setIsInputPopUp2Open(false); setIsFormSubmitted(false) }} externalClosing={isFormSubmitted}>
                 <form onSubmit={(event) => { event.preventDefault(); setNumber2(formNumber2); setIsFormSubmitted(true) }}>
                     <NumberInput min={0} max={20} value={formNumber2} onChange={setFormNumber2} />
-                    <Button buttonType="submit" />
+                    <Button type="submit" />
                 </form>
             </PopUp>}
 

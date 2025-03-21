@@ -1,4 +1,4 @@
-export const apiVersion = "4.60.5";
+export const apiVersion = "7.0.1";
 export const guestDataPath = {
     login: "/guestData/default/login.json",
     grades: "/guestData/default/grades.json",

@@ -50,7 +50,6 @@ export default function DOMSimulation({ children }) {
     
     function handleSubmit(event) {
         event.preventDefault();
-        e.preventDefault();
         addNewGrade(gradeSimulationPeriodKey.current, gradeSimulationSubjectKey.current, gradeSimulationValues);
         closeSimulationPopUp();
     }

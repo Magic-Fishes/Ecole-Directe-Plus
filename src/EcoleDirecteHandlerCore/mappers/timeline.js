@@ -1,4 +1,4 @@
-export default function mapTimeline(timeline) {
+export function mapTimeline(timeline) {
 
     const notifications = {
         grades: 0,

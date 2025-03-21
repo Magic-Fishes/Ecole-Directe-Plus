@@ -1,10 +1,11 @@
 import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
-import EdpError from "../utils/edpError";
+import EdpError from "../utils/EdpError";
 
-export default function fetchTimeline(schoolYear, token, userId, controller = undefined) {
+export default async function fetchTimeline(schoolYear, token, userId, controller = null) {
     const headers = new Headers();
     headers.append("x-token", token);
+    headers.append("content-type", "application/x-www-form-urlencoded");
 
     const body = new URLSearchParams();
     body.append("anneeScolaire", schoolYear);
@@ -22,6 +23,7 @@ export default function fetchTimeline(schoolYear, token, userId, controller = un
             error.type = "FETCH_ERROR"
             throw error;
         })
+        .then((response) => response.json())
         .then((response) => {
             if (!response) {
                 throw new EdpError(FetchErrorBuilders.EMPTY_RESPONSE);
@@ -59,17 +61,18 @@ function fetchT2imeline(schoolYear, token, userId, controller = undefined) {
         referrerPolicy: "no-referrer",
     };
 
-    return edpFetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/timeline.awp?verbe=get&v=${apiVersion}`, options, "text")
+    return fetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/timeline.awp?verbe=get&v=${apiVersion}`, options)
         .catch((error) => {
             error.type = "FETCH_ERROR"
             throw error;
         })
+        .then((response) => response.json())
         .then((response) => {
             if (!response) {
                 throw new EdpError(FetchErrorBuilders.EMPTY_RESPONSE);
             }
             if (response.code < 300) {
-                return JSON.parse(response);
+                return response;
             }
             switch (response.code) {
                 case 520:

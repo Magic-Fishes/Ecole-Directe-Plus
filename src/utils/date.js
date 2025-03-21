@@ -1,3 +1,10 @@
+
+export function getToday() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return today;
+}
+
 export function formatDateRelative(date, short=true) {
     const dayMs = 24*3600*1000
     const now = new Date();

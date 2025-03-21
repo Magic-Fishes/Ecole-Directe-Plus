@@ -11,8 +11,8 @@ import fetchLogin from "../requests/fetchLogin";
 import mapLogin from "../mappers/login";
 import fetchDoubleAuthAnswer from "../requests/fetchDoubleAuthAnswer";
 import fetchDoubleAuthQuestions from "../requests/fetchDoubleAuthQuestions";
-import { consoleLogEDPLogo } from "../../edpConfig";
-import { logger } from "../../../devutils/utils";
+import { DefaultEcoleDirecteAccount } from "../constants/default";
+import { mapDoubleAuthQuestion } from "../mappers/doubleAuthQuestions";
 
 /**
  * Each get function (the ones that get parse and store data such as requestLogin of getGrades)
@@ -35,11 +35,11 @@ import { logger } from "../../../devutils/utils";
 
 export default function useEcoleDirecteAccount(initialAccount) {
     const [loginState, setLoginState] = useState(initialAccount.users ? (initialAccount.token ? LoginStates.LOGGED_IN : LoginStates.REQUIRE_NEW_TOKEN) : LoginStates.REQUIRE_LOGIN);
-    const [username, setUsername] = useState(initialAccount.username);
-    const [password, setPassword] = useState(initialAccount.password);
-    const [token, setToken] = useState(initialAccount.token);
-    const [selectedUserIndex, setSelectedUserIndex] = useState(initialAccount.selectedUserIndex ?? 0);
-    const [users, setUsers] = useState(initialAccount.users ?? null);
+    const [username, setUsername] = useState(initialAccount.username ?? DefaultEcoleDirecteAccount.username);
+    const [password, setPassword] = useState(initialAccount.password ?? DefaultEcoleDirecteAccount.password);
+    const [token, setToken] = useState(initialAccount.token ?? DefaultEcoleDirecteAccount.token);
+    const [selectedUserIndex, setSelectedUserIndex] = useState(initialAccount.selectedUserIndex ?? DefaultEcoleDirecteAccount.selectedUserIndex);
+    const [users, setUsers] = useState(initialAccount.users ?? DefaultEcoleDirecteAccount.users);
 
     const doubleAuthKey = useRef(null);
     const selectedUser = users !== null && selectedUserIndex < users.length ? users[selectedUserIndex] : null;
@@ -114,7 +114,7 @@ export default function useEcoleDirecteAccount(initialAccount) {
                 switch (response.code) {
                     case 200:
                         return { // !:! faire un mapper enft
-                            data: response.data,
+                            data: mapDoubleAuthQuestion(response.data),
                             code: 0,
                             message: "",
                         };
@@ -201,15 +201,15 @@ export default function useEcoleDirecteAccount(initialAccount) {
             username: { value: username, set: (value) => { if (requireLogin) setUsername(value) } },
             password: { value: password, set: (value) => { if (requireLogin) setPassword(value) } },
         },
-        token: { value: token, set: logger(setToken) },
-        selectedUserIndex: { value: selectedUserIndex, set: logger(setSelectedUserIndex, false) },
+        token: { value: token, set: setToken },
+        selectedUserIndex: { value: selectedUserIndex, set: setSelectedUserIndex },
         loginStates: {
             requireLogin,
             isLoggedIn,
             requireDoubleAuth,
             requireNewToken,
             doubleAuthAcquired,
-            set: logger(setLoginState),
+            set: setLoginState,
         },
         requestLogin,
         getDoubleAuthQuestions,

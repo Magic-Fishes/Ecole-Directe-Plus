@@ -5,6 +5,7 @@ import CloseButton from "../../graphics/CloseButton";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
 import Arrow from "../../graphics/Arrow";
 import { AppContext, SettingsContext, UserDataContext } from "../../../App";
+
 import "./Grade.css";
 
 export default function Grade({ grade, subject, className = "", ...props }) {
@@ -115,8 +116,6 @@ export default function Grade({ grade, subject, className = "", ...props }) {
         updateClassList();
         handleNewGrade();
     }, [grade]);
-
-
 
     return createElement(
         grade.id === undefined ? "span" : Link,

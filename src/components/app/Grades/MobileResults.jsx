@@ -19,6 +19,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/To
 import { GradeSimulationTrigger } from "./GradeSimulation"
 
 import "./MobileResults.css";
+import { DisplayTypes } from "./Grades";
 
 export default function Results({ activeAccount, grades, selectedPeriod, setSelectedPeriod, selectedDisplayType, setSelectedDisplayType, ...props }) {
     const { isMobileLayout, isTabletLayout, actualDisplayTheme, useUserSettings } = useContext(AppContext);
@@ -39,7 +40,7 @@ export default function Results({ activeAccount, grades, selectedPeriod, setSele
 
     useEffect(() => {
         if (isTabletLayout && selectedDisplayType === "Graphiques") {
-            setSelectedDisplayType("Évaluations");
+            setSelectedDisplayType(DisplayTypes.EVALUATIONS);
         }
     }, [isTabletLayout])
 
@@ -47,7 +48,7 @@ export default function Results({ activeAccount, grades, selectedPeriod, setSele
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} {...props}>
             {!isTabletLayout ? <MoveableContainer style={{ display: "flex", flexFlow: "column nowrap", gap: "20px" }} >
                 <GradeScaleToggle />
-                <Tabs tabs={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} fieldsetName="displayType" dir="column" style={{ flex: 1 }} />
+                <Tabs tabs={Object.values(DisplayTypes)} displayedTabs={["Évaluations", "Graphiques"]} selected={selectedDisplayType} onChange={setSelectedDisplayType} fieldsetName="displayType" dir="column" style={{ flex: 1 }} />
             </MoveableContainer> : null}
             <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "column nowrap", gap: "20px" }}>
                 <MoveableContainer>
@@ -154,7 +155,7 @@ export default function Results({ activeAccount, grades, selectedPeriod, setSele
                         </div>
                     </WindowHeader>
                     <WindowContent className="mobile-results">
-                        {selectedDisplayType === "Évaluations"
+                        {selectedDisplayType === DisplayTypes.EVALUATIONS
                             ? grades && grades[selectedPeriod]
                                 ? Object.keys(grades[selectedPeriod].subjects).map((idx) => {
                                     const el = grades[selectedPeriod].subjects[idx]

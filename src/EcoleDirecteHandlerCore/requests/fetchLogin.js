@@ -1,8 +1,12 @@
 import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
-import EdpError from "../utils/edpError";
+import EdpError from "../utils/EdpError";
 
-export default function fetchLogin(username, password, A2FKey, controller = undefined) {
+export default async function fetchLogin(username, password, A2FKey, controller = null) {
+    const headers = new Headers();
+    headers.append("content-type", "application/x-www-form-urlencoded");
+    headers.append("user-agent", `EDMOBILE v${apiVersion}`);
+
     const body = new URLSearchParams();
     body.append(
         "data",
@@ -10,12 +14,14 @@ export default function fetchLogin(username, password, A2FKey, controller = unde
             identifiant: username,
             motdepasse: password,
             isReLogin: false,
-            uuid: 0,
+            sesouvenirdemoi: true,
+            uuid: "aaa",
             fa: A2FKey ? [A2FKey] : [],
         })
     );
 
     const options = {
+        headers,
         body,
         method: "POST",
         signal: controller?.signal,
@@ -27,11 +33,12 @@ export default function fetchLogin(username, password, A2FKey, controller = unde
             error.type = "FETCH_ERROR"
             throw error;
         })
+        .then((response) => response.json())
         .then((response) => {
             if (!response) {
                 throw new EdpError(FetchErrorBuilders.EMPTY_RESPONSE);
             }
-            response = JSON.parse(response);
+            // response = JSON.parse(response);
             if (response.code < 300) {
                 return response;
             }

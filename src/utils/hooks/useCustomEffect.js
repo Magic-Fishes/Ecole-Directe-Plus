@@ -10,7 +10,7 @@ export function useLocalStorageEffect(userSession, keepLoggedIn) {
         selectedUserIndex,
         users,
         exportInitAccounts,
-    } = userSession.Account;
+    } = userSession.account;
 
     const { isLoggedIn } = loginStates;
 

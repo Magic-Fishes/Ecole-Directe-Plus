@@ -1,5 +1,5 @@
 import { useRef, useEffect, useContext, useState } from "react";
-import { AppContext } from "../../../App";
+import { AccountContext, AppContext, SettingsContext, UserDataContext } from "../../../App";
 
 import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 import Button from "../../generic/UserInputs/Button";
@@ -12,15 +12,24 @@ import ConfusedCanardman from "../../graphics/ConfusedCanardman";
 
 import "./Account.css";
 
-export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrativeDocuments, sortSchoolLife, isLoggedIn, activeAccount }) {
-    const { actualDisplayTheme, accountsListState, useUserData, useUserSettings } = useContext(AppContext)
+export default function Account({ }) {
+    const { actualDisplayTheme } = useContext(AppContext)
 
-    const settings = useUserSettings();
+    const account = useContext(AccountContext);
 
-    const userData = useUserData();
+    const userData = useContext(UserDataContext);
+    const { administrativeDocuments } = userData;
 
-    const moduletype = accountsListState[activeAccount].accountType === "E" ? "DOCUMENTS_ELEVE" : "DOCUMENTS";
-    const module = (accountsListState[activeAccount].modules || []).find(module => module.code === moduletype);
+    const settings = useContext(SettingsContext);
+    const {
+        isSchoolYearEnabled: { value: isSchoolYearEnabled },
+        schoolYear: { value: schoolYear },
+        isStreamerModeEnabled: { value: isStreamerModeEnabled },
+        displayMode: { value: displayMode }
+    } = settings.user;
+
+    const moduletype = account.selectedUser.accountType === "E" ? "DOCUMENTS_ELEVE" : "DOCUMENTS";
+    const module = (account.selectedUser.modules || []).find(module => module.code === moduletype);
     const availableYearsArray = module?.params?.AnneeArchive ? module.params.AnneeArchive.split(",") : [];
     const lastYear = availableYearsArray.length > 0 ? availableYearsArray[availableYearsArray.length - 1] : `${new Date().getFullYear() - 1}-${new Date().getFullYear()}`;
     const [startYear, endYear] = lastYear.split('-').map(Number);
@@ -28,7 +37,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
     availableYearsArray.push(nextYear);
 
     const profilePictureRefs = useRef([]);
-    const contentLoaderRandomValues = useRef({ documentsNumber: Array.from({ length: 3 }, (_) => Math.floor(Math.random() * 10) + 1), fileNameWidth: Array.from({ length: 10 }, (_) => Math.floor(Math.random() * 31) + 60 ) });
+    const contentLoaderRandomValues = useRef({ documentsNumber: Array.from({ length: 3 }, (_) => Math.floor(Math.random() * 10) + 1), fileNameWidth: Array.from({ length: 10 }, (_) => Math.floor(Math.random() * 31) + 60) });
 
     const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
 
@@ -52,10 +61,8 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
         const controller = new AbortController();
         if (isLoggedIn) {
             if (schoolLife.length < 1 || schoolLife[activeAccount] === undefined) {
-                console.log("fetchSchoolLife");
                 fetchSchoolLife(controller);
             } else {
-                console.log("schoolLife:", schoolLife);
                 sortSchoolLife(schoolLife, activeAccount);
             }
         }
@@ -67,7 +74,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
 
     const [oldCurrentYear, setOldCurrentYear] = useState('');
 
-    const [selectedYear, setSelectedYear] = useState(settings.get("isSchoolYearEnabled") ? settings.get("schoolYear").join("-") : availableYearsArray[availableYearsArray.length - 1]);
+    const [selectedYear, setSelectedYear] = useState(isSchoolYearEnabled ? schoolYear.join("-") : availableYearsArray[availableYearsArray.length - 1]);
     const [documents, setDocuments] = useState({ factures: [], notes: [], viescolaire: [], administratifs: [], entreprises: [] });
 
     // handle year change of dropdown
@@ -80,7 +87,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
     // fetch documents on page load and year change
     useEffect(() => {
         if (isLoggedIn && selectedYear) {
-            let data = userData.get("administrativeDocuments");
+            let data = administrativeDocuments;
             if (data === undefined || oldCurrentYear !== selectedYear) {
                 setOldCurrentYear(selectedYear);
                 const fetchDocuments = async () => {
@@ -93,7 +100,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                     } finally {
                         setTimeout(() => {
                             setIsLoadingDocuments(false);
-                        } , 0);
+                        }, 0);
                     }
                 };
                 fetchDocuments();
@@ -112,13 +119,13 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                         <img
                             ref={(el) => (profilePictureRefs.current[0] = el)}
                             className="profile-picture"
-                            src={(settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : ((accountsListState[activeAccount].firstName !== "Guest") ? getProxiedURL("https:" + accountsListState[activeAccount].picture) : accountsListState[activeAccount].picture))}
-                            alt={"Photo de profil de " + accountsListState[activeAccount].firstName}
+                            src={(isStreamerModeEnabled ? "/images/scholar-canardman.png" : ((account.selectedUser.firstName !== "Guest") ? getProxiedURL("https:" + account.selectedUser.picture) : account.selectedUser.picture))}
+                            alt={"Photo de profil de " + account.selectedUser.firstName}
                         />
                     </div>
                     <address id="informations-container">
-                        <span>Dernière connexion : <time dateTime={(new Date(accountsListState[activeAccount].lastConnection ?? Date.now())).toISOString()}>
-                            {new Date(accountsListState[activeAccount].lastConnection ?? Date.now()).toLocaleDateString("fr-FR", {
+                        <span>Dernière connexion : <time dateTime={(new Date(account.selectedUser.lastConnection ?? Date.now())).toISOString()}>
+                            {new Date(account.selectedUser.lastConnection ?? Date.now()).toLocaleDateString("fr-FR", {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric',
@@ -126,9 +133,9 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                 minute: "numeric"
                             }).replace(",", " à")}
                         </time></span>
-                        <span>Email : {settings.get("isStreamerModeEnabled") ? "contact@ecole-directe.plus" : accountsListState[activeAccount].email}</span>
-                        {accountsListState[activeAccount].phoneNumber &&
-                            <span>Num. téléphone : {settings.get("isStreamerModeEnabled") ? "00 00 00 00 00" : accountsListState[activeAccount].phoneNumber}</span>}
+                        <span>Email : {isStreamerModeEnabled ? "contact@ecole-directe.plus" : account.selectedUser.email}</span>
+                        {account.selectedUser.phoneNumber &&
+                            <span>Num. téléphone : {isStreamerModeEnabled ? "00 00 00 00 00" : account.selectedUser.phoneNumber}</span>}
                     </address>
                     <Button disabled={true} id="statistics">Statistiques</Button>
                 </div>
@@ -166,7 +173,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                             <div style={{ padding: "15px" }}>
                                                 <h3 style={{ paddingBottom: "10px" }}>
                                                     <ContentLoader
-                                                        animate={settings.get("displayMode") === "quality"}
+                                                        animate={displayMode === "quality"}
                                                         speed={1}
                                                         backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
                                                         foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
@@ -179,7 +186,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                                 {Array.from({ length: contentLoaderRandomValues.current.documentsNumber[index] }, (_, index) => (
                                                     <div className="file-box-loader " style={{ marginBottom: "10px" }}>
                                                         <ContentLoader
-                                                            animate={settings.get("displayMode") === "quality"}
+                                                            animate={displayMode === "quality"}
                                                             speed={1}
                                                             backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
                                                             foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
@@ -188,17 +195,17 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                                                         >
                                                             <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
                                                         </ContentLoader>
-                                                        <h2 className="file-date" style={{ display: "flex", alignItems: "center"}}>
+                                                        <h2 className="file-date" style={{ display: "flex", alignItems: "center" }}>
                                                             <ContentLoader
-                                                            animate={settings.get("displayMode") === "quality"}
-                                                            speed={1}
-                                                            backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
-                                                            foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
-                                                            height="20"
-                                                            style={{ width: "100%" }}
-                                                        >
-                                                            <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
-                                                        </ContentLoader></h2>
+                                                                animate={displayMode === "quality"}
+                                                                speed={1}
+                                                                backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                                foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                                height="20"
+                                                                style={{ width: "100%" }}
+                                                            >
+                                                                <rect x="0" y="0" rx="5" ry="5" width="100%" height="100%" />
+                                                            </ContentLoader></h2>
                                                     </div>
                                                 ))}
                                             </div>

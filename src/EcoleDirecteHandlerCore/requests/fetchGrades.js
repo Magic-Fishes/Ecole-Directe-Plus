@@ -1,10 +1,11 @@
 import { apiVersion } from "../constants/config";
 import { FetchErrorBuilders } from "../constants/codes";
-import EdpError from "../utils/edpError";
+import EdpError from "../utils/EdpError";
 
-export default function fetchGrades(schoolYear, userId, token, controller = undefined) {
+export default async function fetchGrades(schoolYear, userId, token, controller = null) {
     const headers = new Headers();
     headers.append("x-token", token);
+    headers.append("content-type", "application/x-www-form-urlencoded");
 
     const body = new URLSearchParams();
     body.append("data", JSON.stringify({anneeScolaire: schoolYear}));
@@ -19,14 +20,14 @@ export default function fetchGrades(schoolYear, userId, token, controller = unde
 
     return fetch(`https://api.ecoledirecte.com/v3/eleves/${userId}/notes.awp?verbe=get&v=${apiVersion}`, options)
         .catch((error) => {
-            error.type = "FETCH_ERROR"
+            error.type = "FETCH_ERROR";
             throw error;
         })
+        .then((response) => response.json())
         .then((response) => {
             if (!response) {
                 throw new EdpError(FetchErrorBuilders.EMPTY_RESPONSE);
             }
-            response = JSON.parse(response);
             if (response.code < 300) {
                 return response;
             }

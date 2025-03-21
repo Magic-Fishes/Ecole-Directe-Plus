@@ -13,9 +13,7 @@ import InfoButton from "../../generic/Informative/InfoButton";
 import Star from "../../graphics/Star";
 import ArrowOutline from "../../graphics/ArrowOutline";
 
-
 import "./StreakScore.css";
-
 
 export default function StreakScore({ streakScore, streakHighScore=0, className="", ...props }) {
     const settings = useContext(SettingsContext);

@@ -365,7 +365,7 @@ ${BrowserLabels[getBrowser()]} ; ${OperatingSystemLabels[getOS()]} ; <inconnu> (
             </div>
             <p id="usage-info">Cela nous permettra de vous contacter pour obtenir plus d'informations</p>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <Button state={submitButtonText && submitButtonAvailableStates[submitButtonText]} id="submit-feedback" buttonType="submit" value={submitButtonText} />
+            <Button state={submitButtonText && submitButtonAvailableStates[submitButtonText]} id="submit-feedback" type="submit" value={submitButtonText} />
         </form>
     )
 }

@@ -11,17 +11,25 @@ import Information from "./Information";
 import Strengths from "./Strengths";
 import Results from "./Results";
 import DOMSimulation from "./GradeSimulation";
+
 import "./Grades.css";
 
+export const DisplayTypes = {
+    EVALUATIONS: 0,
+    GRAPHIQUES: 1,
+}
 
 export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
     const userData = useContext(UserDataContext);
-    const { grades, activePeriod } = userData;
+    const {
+        grades: {value: grades},
+        activePeriod: {value: activePeriod}
+    } = userData;
 
     const settings = useContext(SettingsContext);
     const { isSchoolYearEnabled, schoolYear } = settings.user;
     
-    const [selectedDisplayType, setSelectedDisplayType] = useState("Évaluations");
+    const [selectedDisplayType, setSelectedDisplayType] = useState(DisplayTypes.EVALUATIONS);
 
     const fetchSchoolYear = isSchoolYearEnabled.value ? schoolYear.value.join("-") : "";
 

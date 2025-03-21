@@ -10,7 +10,7 @@ import {
     calcClassAverage
 } from "../../utils/gradesTools";
 
-export default function mapGrades(grades) {
+export function mapGrades(grades) {
     /**
      * Filtre le JSON envoyé par l'API d'ED et le tri pour obtenir un objet plus facile d'utilisation
      */
@@ -349,5 +349,6 @@ export default function mapGrades(grades) {
         gradesEnabledFeatures: enabledFeatures,
         lastGrades: newLastGrades.reverse(),
         activePeriod,
+        activeGradeElement: null, // set this will change the default element selected by user when loading grades.
     }
 }

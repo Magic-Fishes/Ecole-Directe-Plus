@@ -23,7 +23,7 @@ export function getInitialEcoleDirecteSessions() {
     const selectedUserIndex = localStorage.getItem(LocalStorageKeys.LAST_SELECTED_USER);
 
     return {
-        Account: {
+        account: {
             username: credentials?.username ? credentials.username : "",
             password: credentials?.password ? credentials.password : "",
             token: token ? token : "",

@@ -451,7 +451,7 @@ export default function Root({ get, accountsList, fakeLogin, resetUserData, sync
             {popUp === "newEDPVersion" && <PatchNotes EDPVersion={EDPVersion} onClose={() => { setIsNewEDPVersion(false); localStorage.setItem("EDPVersion", EDPVersion); }} />}
             {proxyError && <ProxyErrorNotification />}
             <Outlet />
-            {requireDoubleAuth && <DoubleAuthLogin onClose={() => setRequireDoubleAuth(false)} />}
+            {requireDoubleAuth && <DoubleAuthLogin />}
         </>
     );
 }
