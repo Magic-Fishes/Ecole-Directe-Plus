@@ -44,6 +44,7 @@ export const FetchErrorBuilders = {
     login: {
         INVALID_CREDENTIALS:    { name: "InvalidCredentials", code: 505, message: "Invalid credentials" },
         SERVER_ERROR:           { name: "ServerError", code: 74000, message: "Couldn't connect to the server, try again later" },
+        NO_EDPU_RESPONSE:       { name: "NoEDPUResponse", code: 1, message: "The extension needed to use EcoleDirecte's API didn't respond" },
     },
     doubleAuth: {
         INVALID_ANSWER: undefined,
