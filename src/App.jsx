@@ -42,28 +42,28 @@ const LoginBottomSheet = lazy(() => import("./components/app/CoreApp").then((mod
 
 function consoleLogEDPLogo() {
     console.log(`%c
-                   /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-               #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-            /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&%/                                            
-        /&&/                                                
-        %/    /#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-        &&&&&&&&&&&&/                                       
-        &&&&&&&&&&&&\\                                       
-        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-           \\&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-              \\%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&    
-    
-                Looking for curious minds. Are you in?      
-          https://github.com/Magic-Fishes/Ecole-Directe-Plus 
+                   /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+               #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+            /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+           &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+         /&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+         %&&&&%/
+        /&&/
+        %/    /#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+           /%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        &&&&&&&&&&&&/
+        &&&&&&&&&&&&\\
+        (&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+         %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+          %&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+           \\&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+              \\%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+                Looking for curious minds. Are you in?
+          https://github.com/Magic-Fishes/Ecole-Directe-Plus
 `, `color: ${window.matchMedia('(prefers-color-scheme: dark)').matches ? "#B8BEFD" : "#4742df"}`);
     console.log("%cWarning!\n%cUsing this console may allow attackers to impersonate you and steal your information using an attack called Self-XSS. Do not enter or paste code that you do not understand.",
         `color:${window.matchMedia('(prefers-color-scheme: dark)').matches ? "rgb(223, 98, 98)" : "rgb(200, 80, 80)"};font-size:1.5rem;-webkit-text-stroke: 1px black;font-weight:bold`, "");
@@ -72,7 +72,7 @@ function consoleLogEDPLogo() {
 consoleLogEDPLogo();
 
 const currentEDPVersion = "0.4.1";
-const apiVersion = "4.69.1";
+const apiVersion = "4.75.0";
 
 // secret webhooks
 const carpeConviviale = "CARPE_CONVIVIALE_WEBHOOK_URL";
@@ -395,7 +395,7 @@ export default function App({ edpFetch }) {
     function useUserSettings(setting = "") {
         /*
             use as a hook like location
-            
+
             EX :
             userSettings = useUserSettings()
             console.log(userSettings.get("displayTheme"))
@@ -404,7 +404,7 @@ export default function App({ edpFetch }) {
 
             You can pass the setting you want in arguments of useUserSettings
 
-            EX : 
+            EX :
             userDisplayTheme = useUserSettings("displayTheme")
             console.log(userDisplayTheme.get())
             > Value of displayTheme of current user
@@ -684,7 +684,7 @@ export default function App({ edpFetch }) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function addNewGrade({ value, coef, scale, name, type, subjectKey, periodKey }) {
-        /** 
+        /**
          * Ajoute une nouvelle note à l'utilisateur (simulation)
          * - value : valeur de la note
          * - coef : coefficient de la note
@@ -918,9 +918,9 @@ export default function App({ edpFetch }) {
                         - moyenne de classe/min/max
                         - correction ni sujet
                         - date
-                    différences : 
+                    différences :
                         - id = randomUUID
-                    choisit par l'utilisateur : 
+                    choisit par l'utilisateur :
                         - name
                         - coef
                         - scale
@@ -1128,7 +1128,7 @@ export default function App({ edpFetch }) {
         return sortedHomeworks
     }
 
-    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object 
+    function sortDayHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
         const sortedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
             return [day[0], day[1].map((homework) => {
                 const { aFaire, codeMatiere, id, interrogation, matiere, nomProf } = homework;
@@ -1473,6 +1473,21 @@ export default function App({ edpFetch }) {
             return 0;
         }
 
+        await fetch(`https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=${apiVersion}`);
+
+        await new Promise((resolve) => {
+          const cb = (event) => {
+            if (event.data && event.data.type === "FROM_EXTENSION") {
+              if (event.data.action === "gtkRulesUpdated") {
+                window.removeEventListener("message", cb);
+                resolve();
+              }
+            }
+          }
+
+          window.addEventListener("message", cb);
+        });
+
         const payload = {
             identifiant: encodeURIComponent(username),
             motdepasse: encodeURIComponent(password),
@@ -1484,8 +1499,7 @@ export default function App({ edpFetch }) {
         const options = {
             body: "data=" + JSON.stringify(payload),
             method: "POST",
-            signal: controller.signal,
-            referrerPolicy: "no-referrer"
+            signal: controller.signal
         }
 
         const messages = {
@@ -1530,7 +1544,7 @@ export default function App({ edpFetch }) {
                             email: accounts.email, // email du compte
                             picture: accounts.profile.photo, // url de la photo
                             schoolName: accounts.profile.nomEtablissement, // nom de l'établissement
-                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4 
+                            class: (accounts.profile.classe ? [accounts.profile.classe.code, accounts.profile.classe.libelle] : ["inconnu", "inconnu"]), // classe de l'élève, code : 1G4, libelle : Première G4
                             modules: accounts.modules
                         });
                     } else {
@@ -1697,7 +1711,7 @@ export default function App({ edpFetch }) {
         /**
          * Fetch user homeworks
          * @param controller AbortController
-         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks 
+         * @param date fetch the specified date (Date object) ; default value: "incoming": will fetch the incoming homeworks
          */
         abortControllers.current.push(controller);
         const userId = activeAccount;
@@ -1826,9 +1840,9 @@ export default function App({ edpFetch }) {
     async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
         /**
          * Change the state of selected homeworks
-         * @param tasksDone Tasks switched to true 
+         * @param tasksDone Tasks switched to true
          * @param tasksNotDone Tasks switched to false
-         * These two paramerters are in a single object 
+         * These two paramerters are in a single object
          * @param controller AbortController
          */
         abortControllers.current.push(controller);
