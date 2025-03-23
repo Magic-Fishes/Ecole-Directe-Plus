@@ -22,6 +22,7 @@ import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } fr
 import { getCurrentSchoolYear } from "./utils/date";
 import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
+import { tr } from "date-fns/locale";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -168,7 +169,7 @@ function initSettings(accountList) {
                 values: ["light", "auto", "dark"]
             },
             displayMode: {
-                value: getSetting("displayMode", i),
+                value: getSetting("displfayMode", i),
                 values: ["quality", "balanced", "performance"]
             },
             selectedChart: {
@@ -1426,9 +1427,43 @@ export default function App({ edpFetch }) {
         </>, { customClass: "extension-warning", timer: "infinite" })
     }
 
+    async function setupGtkToken() {
+        await new Promise((resolve, reject) => {
+            const handleMessage = (event) => {
+                console.log("MESSAGE RECEIVED");
+                if (event.data && event.data.type === "EDPU_MESSAGE") {
+                    if (event.data.payload.action === "gtkRulesUpdated") {
+                        window.removeEventListener("message", handleMessage);
+                        resolve();
+                    }
+                }
+            }
+
+            window.addEventListener("message", handleMessage);
+            fetch(`https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=${apiVersion}`)
+                .then(() => {
+                    setTimeout(() => {
+                        window.removeEventListener("message", handleMessage);
+                        reject(new Error("NoEDPUResponse"));
+                    }, 3000);
+                });
+        }).catch((error) => {
+            console.error(error);
+            throw error;
+        });
+    }
+
     async function fetchLogin(username, password, keepLoggedIn, callback, controller = (new AbortController())) {
         if (isLoggedIn) {
             return
+        }
+
+        try {
+            await setupGtkToken();
+        } catch (error) {
+            console.error(error);
+            alert("Il semblerait que l'extension Ecole Directe Plus ne soit pas à jour.");
+            throw error;
         }
 
         loginAbortControllers.current.push(controller);
