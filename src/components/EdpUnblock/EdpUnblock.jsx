@@ -44,7 +44,7 @@ const browserLogosInfos = {
         url: "https://chromewebstore.google.com/detail/ecole-directe-plus-unbloc/jglboadggdgnaicfaejjgmnfhfdnflkb?hl=fr",
     },
     Safari: {
-        logo: <span className="sad-emoji">😥</span>,
+        logo: <span className="sad-emoji">🥹</span>,
         available: false,
         url: "",
     },
@@ -111,9 +111,11 @@ export default function EdpUnblock({ isEDPUnblockActuallyInstalled }) {
     }, [location.hash])
 
     useEffect(() => {
-        getFirefoxUrl().then((url) => {
-            setUrl(url);
-        })
+        if (userBrowser == "Firefox") {
+            getFirefoxUrl().then((url) => {
+                setUrl(url);
+            })
+        }
     }, []);
 
     return (<>
