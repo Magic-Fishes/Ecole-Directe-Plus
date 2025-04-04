@@ -1430,11 +1430,14 @@ export default function App({ edpFetch }) {
     async function setupGtkToken() {
         await new Promise((resolve, reject) => {
             const handleMessage = (event) => {
-                console.log("MESSAGE RECEIVED");
                 if (event.data && event.data.type === "EDPU_MESSAGE") {
-                    if (event.data.payload.action === "gtkRulesUpdated") {
-                        window.removeEventListener("message", handleMessage);
+                    window.removeEventListener("message", handleMessage);
+                    const message = event.data.payload;
+                    console.log(message);
+                    if (message.action === "gtkRulesUpdated") {
                         resolve();
+                    } else if (message.action === "noGtkCookie" || message.action === "noCookie") {
+                        reject(new Error("EDPUNoCookie"));
                     }
                 }
             }
@@ -1458,19 +1461,33 @@ export default function App({ edpFetch }) {
             return
         }
 
-        try {
-            await setupGtkToken();
-        } catch (error) {
-            console.error(error);
-            alert("Il semblerait que l'extension Ecole Directe Plus ne soit pas à jour.");
-            throw error;
-        }
-
         loginAbortControllers.current.push(controller);
         // guest management
         if (username === "guest" && password === "secret") {
             fakeLogin();
             return 0;
+        }
+
+        const messages = {
+            submitButtonText: "",
+            submitErrorMessage: ""
+        };
+
+        try {
+            await setupGtkToken();
+        } catch (error) {
+            console.log(Object.entries(error));
+            console.error(error);
+            messages.submitButtonText = "Échec de la connexion";
+            if (error.message === "NoEDPUResponse") {
+                messages.submitErrorMessage = "Nous n'avons pas réussi à communiquer avec l'extension EDP Unblock, vérifiez qu'elle soit à jour et/ou qu'elle ait les permissions nécessaires.";
+            } else if (error.message === "EDPUNoCookie") {
+                messages.submitErrorMessage = "L'extension EDP Unblock n'a pas réussi à accéder aux cookies nécessaires pour votre connexion, vérifiez qu'elle soit à jour et/ou qu'elle ait les permissions nécessaires.";
+            } else {
+                messages.submitErrorMessage = "Il y a eu un problème lors de l'obtention des cookies nécessaires à votre connexion, réessayez plus tard.";
+            }
+            callback(messages);
+            throw error;
         }
 
         const payload = {
@@ -1487,11 +1504,6 @@ export default function App({ edpFetch }) {
             signal: controller.signal,
             referrerPolicy: "no-referrer"
         }
-
-        const messages = {
-            submitButtonText: "",
-            submitErrorMessage: ""
-        };
 
         edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options, "text")
             .then((response) => {
