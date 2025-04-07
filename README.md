@@ -56,7 +56,24 @@ Ecole Directe Plus is built on React. We use VITE development environment to wor
 ```bash
 # install dependencies
 npm install
+```
 
+#### If you want to try and use the website and all its feature, we recommend doing the following. If you just want to test the website without login check the instruction below the following.
+
+First add the line
+```
+127.0.0.1 local.ecole-directe.plus
+```
+to ``/etc/hosts`` (Linux/MacOS) or ``%SystemRoot%/System32/drivers/etc/hosts`` (Windows) and the run the command:
+
+```bash
+# run on local.ecole-directe.plus:3000
+npm run domain
+```
+
+#### If you don't care about login on EDP and making request to EcoleDirecte (why ?) you can still do this:
+
+```bash
 # run on localhost
 npm run dev
 
