@@ -16,7 +16,6 @@ import LogoutIcon from "../../graphics/LogoutIcon";
 import { AppContext } from "../../../App";
 
 import "./AccountSelector.css";
-import { getProxiedURL } from "../../../utils/requests";
 
 export default function AccountSelector({ accountsList, activeAccount, setActiveAccount, isTabletLayout, logout, ...props }) {
 
@@ -137,7 +136,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                     <div className="account">
                         <div className="pp-container">
                             <img ref={(el) => (profilePictureRefs.current[0] = el)} className="profile-picture" src={((accountsList[activeAccount].firstName !== "Guest")
-                                ? settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : getProxiedURL("https:" + accountsList[activeAccount].picture)
+                                ? settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : accountsList[activeAccount].picture
                                 : accountsList[activeAccount].picture
                             )} alt={"Photo de profil de " + accountsList[activeAccount].firstName} />
                         </div>
@@ -157,7 +156,7 @@ export default function AccountSelector({ accountsList, activeAccount, setActive
                                     return <div className="alt-account" key={account.id} role="button" tabIndex="0" onKeyDown={(event) => handleKeyDown2(event, () => { switchAccount(index); handleClose() })} onClick={() => { switchAccount(index); handleClose() }}>
                                         <div className="account">
                                             <div className="pp-container">
-                                                <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={getProxiedURL("https:" + account.picture)} alt={"Photo de profil de " + account.firstName} />
+                                                <img ref={(el) => (profilePictureRefs.current[index+1] = el)} className="profile-picture" src={account.picture} alt={"Photo de profil de " + account.firstName} />
                                             </div>
                                             <address className="account-info">
                                                 <span className="name"><span className="first-name">{account.firstName}</span> <span className="last-name">{account.lastName.toUpperCase()}</span></span>

@@ -4,7 +4,6 @@ import { AppContext } from "../../../App";
 import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 import Button from "../../generic/UserInputs/Button";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-import { getProxiedURL } from "../../../utils/requests";
 import FileComponent from "../../generic/FileComponent";
 import ContentLoader from "react-content-loader";
 import CanardmanSleeping from "../../graphics/CanardmanSleeping";
@@ -112,7 +111,7 @@ export default function Account({ schoolLife, fetchSchoolLife, fetchAdministrati
                         <img
                             ref={(el) => (profilePictureRefs.current[0] = el)}
                             className="profile-picture"
-                            src={(settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : ((accountsListState[activeAccount].firstName !== "Guest") ? getProxiedURL("https:" + accountsListState[activeAccount].picture) : accountsListState[activeAccount].picture))}
+                            src={(settings.get("isStreamerModeEnabled") ? "/images/scholar-canardman.png" : ((accountsListState[activeAccount].firstName !== "Guest") ? "https:" + accountsListState[activeAccount].picture : accountsListState[activeAccount].picture))}
                             alt={"Photo de profil de " + accountsListState[activeAccount].firstName}
                         />
                     </div>

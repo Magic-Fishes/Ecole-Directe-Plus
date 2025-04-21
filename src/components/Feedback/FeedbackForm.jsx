@@ -13,7 +13,6 @@ import { AppContext } from "../../App";
 // graphics
 import PasteIcon from "../graphics/PasteIcon"
 import AtWhite from "../graphics/AtWhite"
-import { getProxiedURL } from "../../utils/requests";
 
 import "./FeedbackForm.css";
 import { getBrowser, getOS } from "../../utils/utils";
@@ -301,7 +300,7 @@ ${getBrowser()} ; ${getOS()} ; <inconnu> (Complété automatiquement. Modifiable
                             color: parseInt("0x" + color),
                             author: {
                                 name: ((activeUser && isAnonymous) ? activeUser.lastName + " " + activeUser.firstName : "Poisson-zèbre Augmenté") + " (" + (isAnonymous ? "N/A" : (userEmail || (activeUser ? activeUser.email : ""))) + ")",
-                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : getProxiedURL("https:" + activeUser.picture))
+                                icon_url: ((isAnonymous || !activeUser) ? "https://i.ibb.co/CKmD9z8/poisson-z-bre.jpg" : "https:" + activeUser.picture)
                             },
                             title: "**__" + selectedFeedbackType + "__ : " + subject + "**",
                             description: feedbackContent,

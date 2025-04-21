@@ -20,7 +20,6 @@ import { useCreateNotification } from "./components/generic/PopUps/Notification"
 import { getGradeValue, calcAverage, findCategory, calcCategoryAverage, calcGeneralAverage, formatSkills, safeParseFloat, calcClassGeneralAverage, calcClassAverage } from "./utils/gradesTools";
 import { areOccurenciesEqual, createUserLists, encrypt, decrypt, getBrowser } from "./utils/utils";
 import { getCurrentSchoolYear } from "./utils/date";
-import { getProxiedURL } from "./utils/requests";
 import EdpuLogo from "./components/graphics/EdpuLogo";
 import { tr } from "date-fns/locale";
 
@@ -1505,7 +1504,7 @@ export default function App({ edpFetch }) {
             referrerPolicy: "no-referrer"
         }
 
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, true), options, "text")
+        edpFetch(`https://api.ecoledirecte.com/v3/login.awp?v=${apiVersion}`, options, "text")
             .then((response) => {
                 if (!response) {
                     setIsEDPUnblockInstalled(false);
@@ -1615,7 +1614,7 @@ export default function App({ edpFetch }) {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/timeline.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1664,7 +1663,7 @@ export default function App({ edpFetch }) {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : "",
         }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/eleves/${accountsListState[userId].id}/notes.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1733,7 +1732,7 @@ export default function App({ edpFetch }) {
             abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
         } else {
             edpFetch(
-                getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                `https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`,
                 {
                     method: "POST",
                     headers: {
@@ -1798,7 +1797,7 @@ export default function App({ edpFetch }) {
         } else {
             try {
                 const response = await edpFetch(
-                    getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`, true),
+                    `https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/${endpoint}.awp?verbe=get&v=${apiVersion}`,
                     {
                         method: "POST",
                         headers: {
@@ -1847,7 +1846,7 @@ export default function App({ edpFetch }) {
         const userId = activeAccount;
 
         return edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1909,7 +1908,7 @@ export default function App({ edpFetch }) {
             folderId = 0;
         }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?force=false&typeRecuperation=${specialFolderType}&idClasseur=${folderId}&orderBy=date&order=desc&query=&onlyRead=&getAll=1&verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -1983,7 +1982,7 @@ export default function App({ edpFetch }) {
         const mode = (oldSortedMessages.find((item) => item.id === id).folderId === -1 || oldSortedMessages.find((item) => item.id === id).folderId === -4) ? "expediteur" : "destinataire";
 
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages/${id}.awp?verbe=get&mode=${mode}&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -2032,7 +2031,7 @@ export default function App({ edpFetch }) {
             ids: ids
         }
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/${accountsListState[userId].accountType === "E" ? "eleves/" + accountsListState[userId].id : "familles/" + accountsListState[userId].familyId}/messages.awp?verbe=put&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -2071,7 +2070,7 @@ export default function App({ edpFetch }) {
             anneeScolaire: getUserSettingValue("isSchoolYearEnabled") ? getUserSettingValue("schoolYear").join("-") : ""
         }
 
-        edpFetch(getProxiedURL(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`, true),
+        edpFetch(`https://api.ecoledirecte.com/v3/eleves/${accountsListState[activeAccount].id}/viescolaire.awp?verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -2116,7 +2115,7 @@ export default function App({ edpFetch }) {
     function fetchA2F({ method = "get", choice = "", callback = (() => { }), errorCallback = (() => { }), controller = (new AbortController()) }) {
         abortControllers.current.push(controller);
         edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`, true),
+            `https://api.ecoledirecte.com/v3/connexion/doubleauth.awp?verbe=${method}&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
@@ -2153,7 +2152,7 @@ export default function App({ edpFetch }) {
         const data = {
             libelle: name,
         }
-        edpFetch(getProxiedURL("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0", true),
+        edpFetch("https://api.ecoledirecte.com/v3/messagerie/classeurs.awp?verbe=post%26v=4.52.0",
             {
                 method: "POST",
                 headers: {
@@ -2185,8 +2184,7 @@ export default function App({ edpFetch }) {
 
     async function fetchAdministrativeDocuments(selectedYear, controller = (new AbortController())) {
         abortControllers.current.push(controller);
-        return edpFetch(
-            getProxiedURL(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`, true),
+        return edpFetch(`https://api.ecoledirecte.com/v3/${accountsListState[activeAccount].accountType === "E" ? "eleves" : "famille"}Documents.awp?archive=${selectedYear}&verbe=get&v=${apiVersion}`,
             {
                 method: "POST",
                 headers: {
