@@ -1,5 +1,6 @@
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
+import { LoginCodes } from "../../EcoleDirecteHandlerCore/constants/codes";
 
 import TextInput from "../generic/UserInputs/TextInput";
 import CheckBox from "../generic/UserInputs/CheckBox";
@@ -15,6 +16,59 @@ import { AccountContext } from "../../App";
 const today = new Date();
 const april = (today.getMonth() === 3) && (today.getDate() < 2);
 
+const displayStates = {
+    [LoginCodes.SUCCESS.code]: {
+        submitState: ButtonStates.SUBMITTED,
+        submitButtonText: "Connecté",
+        errorMessage: "",
+    },
+    [LoginCodes.INVALID_CREDENTIALS.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "Identifiant et/ou mot de passe invalide",
+    },
+    [LoginCodes.REQUIRE_DOUBLE_AUTH.code]: {
+        submitState: ButtonStates.SUBMITTING,
+        submitButtonText: "A2F requise",
+        errorMessage: "",
+    },
+    [LoginCodes.SERVER_ERROR.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
+    },
+    [LoginCodes.ACCOUNT_CREATION_ERROR.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "Il semblerait que votre compte EcoleDirecte ne soit pas encore valide, renseignez vous auprès de votre établissement ou d'EcoleDirecte. On vous attend avec impatience !",
+    },
+    [LoginCodes.EMPTY_RESPONSE.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "La connexion avec le serveur nécessite l'extension EDPUnblock",
+    },
+    [LoginCodes.NO_EXT_RESPONSE.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "Nous n'avons pas réussi à communiquer avec l'extension EDP Unblock, vérifiez qu'elle soit à jour et/ou qu'elle ait les permissions nécessaires.",
+    },
+    [LoginCodes.EXT_NO_GTK_COOKIE.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "L'extension EDP Unblock n'a pas réussi à accéder aux cookies nécessaires pour votre connexion, vérifiez qu'elle soit à jour et/ou qu'elle ait les permissions nécessaires.",
+    },
+    [LoginCodes.EXT_NO_COOKIE.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "L'extension EDP Unblock n'a pas réussi à accéder aux cookies nécessaires pour votre connexion, vérifiez qu'elle soit à jour et/ou qu'elle ait les permissions nécessaires.",
+    },
+    [LoginCodes.EXT_ERROR.code]: {
+        submitState: ButtonStates.INVALID,
+        submitButtonText: "Échec de la connexion",
+        errorMessage: "Il y a eu un problème lors de l'obtention des cookies nécessaires à votre connexion par l'extension, réessayez plus tard.",
+    }
+}
+
 export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false, ...props }) {
 
     const {
@@ -24,11 +78,16 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
         doubleAuthAcquired,
     } = useContext(AccountContext);
 
+    const [username, setUsername] = useState(userCredentials.username.value);
+    const [password, setPassword] = useState(userCredentials.password.value);
+    const [localKeepLoggedIn, setLocalKeepLoggedIn] = useState(keepLoggedIn.value);
     const [displayState, setDisplayState] = useState({
         submitState: ButtonStates.NEUTRAL,
         submitButtonText: "Se connecter",
         errorMessage: "",
     })
+
+    const loginRef = useRef({ username, password, keepLoggedIn: localKeepLoggedIn });
 
     function resetDisplayState() {
         setDisplayState((old) => ({
@@ -39,24 +98,24 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
     }
 
     function updateUsername(event) {
-        userCredentials.username.set(event.target.value);
+        setUsername(event.target.value);
         resetDisplayState();
     }
 
     function updatePassword(event) {
-        userCredentials.password.set(event.target.value);
+        setPassword(event.target.value);
         resetDisplayState();
     }
 
     function updateKeepLoggedIn(event) {
-        keepLoggedIn.set(event.target.checked); // !:! à set
+        setLocalKeepLoggedIn(event.target.checked);
     }
 
     function handleSubmit(event) {
         event.preventDefault();
         // empêche la connexion si déjà connecté ou formulaire invalide
         if (displayState.submitState === ButtonStates.SUBMITTED) {
-            return 0
+            return;
         }
         // UI
         setDisplayState({
@@ -66,65 +125,23 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
         })
 
         // Process login
-        requestLogin()
+        requestLogin(username, password, localKeepLoggedIn)
             .then((result) => {
-                switch (result.code) {
-                    case 0:
-                        setDisplayState({
-                            submitState: ButtonStates.SUBMITTED,
-                            submitButtonText: "Connecté",
-                            errorMessage: "",
-                        })
-                        return;
-                    case 1:
-                        setDisplayState({
-                            submitState: ButtonStates.INVALID,
-                            submitButtonText: "Échec de la connexion",
-                            errorMessage: "Identifiant et/ou mot de passe invalide",
-                        });
-                        return;
-                    case 2:
-                        setDisplayState({
-                            submitState: ButtonStates.SUBMITTING,
-                            submitButtonText: "A2F requise",
-                            errorMessage: "",
-                        });
-                        return;
-                    case 3:
-                        setDisplayState({
-                            submitState: ButtonStates.INVALID,
-                            submitButtonText: "Échec de la connexion",
-                            errorMessage: "La connexion avec le serveur a échoué, réessayez dans quelques minutes",
-                        });
-                        return;
-                    case 4:
-                        setDisplayState({
-                            submitState: ButtonStates.INVALID,
-                            submitButtonText: "Échec de la connexion",
-                            errorMessage: "Il semblerait que votre compte EcoleDirecte ne soit pas encore valide, renseignez vous auprès de votre établissement ou d'EcoleDirecte. On vous attend avec impatience !",
-                        });
-                        return;
-                    case 5:
-                        setDisplayState({
-                            submitState: ButtonStates.INVALID,
-                            submitButtonText: "Échec de la connexion",
-                            errorMessage: "La connexion avec le serveur nécessite l'extension EDPUnblock",
-                        });
-                        return;
-                    case -1:
-                        setDisplayState({
-                            submitState: ButtonStates.INVALID,
-                            submitButtonText: "Échec de la connexion",
-                            errorMessage: "Une erreur inattendue s'est produite",
-                        });
-                        return;
+                if (Object.keys(displayStates).includes(result.code)) {
+                    setDisplayState(displayStates[result.code]);
+                } else {
+                    setDisplayState({
+                        submitState: ButtonStates.INVALID,
+                        submitButtonText: "Échec de la connexion",
+                        errorMessage: "Une erreur inattendue s'est produite",
+                    });
                 }
             });
     }
 
     useEffect(() => {
         if (doubleAuthAcquired) {
-            requestLogin()
+            requestLogin(username, password, localKeepLoggedIn)
                 .then((result) => {
                     // !:!
                     setDisplayState({
@@ -135,6 +152,18 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
                 });
         }
     }, [doubleAuthAcquired])
+
+
+    // We store username/password/keepLoggedIn values in a ref to 
+    useEffect(() => {
+        loginRef.current = { username, password, keepLoggedIn: localKeepLoggedIn };
+    }, [username, password, localKeepLoggedIn]);
+
+    useEffect(() => () => {
+        userCredentials.username.set(loginRef.current.username);
+        userCredentials.password.set(loginRef.current.password);
+        keepLoggedIn.set(loginRef.current.keepLoggedIn);
+    }, []);
 
     if (localStorage.userSettings) {
         if (((JSON.parse(localStorage.userSettings)[0].displayTheme) !== "dark") && (april)) {
@@ -150,13 +179,37 @@ export default function LoginForm({ logout, disabledKeepLoggedInCheckBox = false
 
     return (
         <form onSubmit={handleSubmit} {...props} id="login-form">
-            <TextInput className="login-input" textType="text" placeholder={april ? "Nom d'Utilisateur" : "Identifiant"} autoComplete="username" value={userCredentials.username.value} icon={<AccountIcon />} onChange={updateUsername} isRequired={true} warningMessage="Veuillez entrer votre identifiant" onWarning={() => setDisplayState((old) => ({submitState: ButtonStates.INVALID, ...old}))} />
-            <TextInput className="login-input" textType="password" placeholder={april ? "•••••••••••" : "Mot de passe"} autoComplete="current-password" value={userCredentials.password.value} icon={<KeyIcon />} onChange={updatePassword} isRequired={true} warningMessage="Veuillez entrer votre mot de passe" onWarning={() => setDisplayState((old) => ({submitState: ButtonStates.INVALID, ...old}))} />
+            <TextInput
+                textType="text"
+                value={username}
+                onChange={updateUsername}
+                onWarning={() => setDisplayState((old) => ({ submitState: ButtonStates.INVALID, ...old }))}
+                disabled={displayState.submitState === ButtonStates.SUBMITTING}
+                className={"login-input"}
+                placeholder={april ? "Nom d'Utilisateur" : "Identifiant"}
+                isRequired={true}
+                autoComplete="username"
+                warningMessage="Veuillez entrer votre identifiant"
+                icon={<AccountIcon />}
+            />
+            <TextInput
+                textType="password"
+                value={password}
+                onChange={updatePassword}
+                onWarning={() => setDisplayState((old) => ({ submitState: ButtonStates.INVALID, ...old }))}
+                disabled={displayState.submitState === ButtonStates.SUBMITTING}
+                className={"login-input"}
+                placeholder={april ? "•••••••••••" : "Mot de passe"}
+                isRequired={true}
+                autoComplete="current-password"
+                warningMessage="Veuillez entrer votre mot de passe"
+                icon={<KeyIcon />}
+            />
             <p className="error-message">{displayState.errorMessage}</p>
             <div className="login-option">
                 <Tooltip delay={400}>
                     <TooltipTrigger>
-                        <CheckBox disabled={disabledKeepLoggedInCheckBox} id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn.value} onChange={updateKeepLoggedIn} />
+                        <CheckBox disabled={disabledKeepLoggedInCheckBox || displayState.submitState === ButtonStates.SUBMITTING} id="keep-logged-in" label="Rester connecté" checked={keepLoggedIn.value} onChange={updateKeepLoggedIn} />
                     </TooltipTrigger>
                     <TooltipContent className="fdisclaimer">
                         Avertissement : cette fonctionnalité peut présenter des risques, notamment si vous êtes infecté par un logiciel malveillant

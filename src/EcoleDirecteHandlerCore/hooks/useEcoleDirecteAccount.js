@@ -50,52 +50,67 @@ export default function useEcoleDirecteAccount(initialAccount) {
     const requireDoubleAuth = loginState === LoginStates.REQUIRE_DOUBLE_AUTH;
     const doubleAuthAcquired = loginState === LoginStates.DOUBLE_AUTH_ACQUIRED;
 
-    async function requestLogin(controller = new AbortController()) {
+    async function requestLogin(localUsername, localPassword, keepLoggedIn, controller = new AbortController()) {
 
         let response;
-        if (username === guestCredentials.username && password === guestCredentials.password) {
+        if (localUsername === guestCredentials.username && localPassword === guestCredentials.password) {
             response = import(/* @vite-ignore */ guestDataPath.login)
         } else {
             response = fetchLogin(username, password, doubleAuthKey.current, controller)
         }
 
-        return response.then((response) => {
-            switch (response.code) {
-                case 200:
-                    setToken(response.token); // collecte du token
-                    setUsers(mapLogin(response.data));
-                    setLoginState(LoginStates.LOGGED_IN);
-                    return LoginCodes.SUCCESS;
-                case 250:
-                    doubleAuthKey.current = null;
-                    setToken(response.token); // collecte du token pour la double authentification
-                    setLoginState(LoginStates.REQUIRE_DOUBLE_AUTH);
-                    return LoginCodes.REQUIRE_DOUBLE_AUTH;
-                case 202:
-                    setLoginState(LoginStates.REQUIRE_LOGIN);
-                    return LoginCodes.ACCOUNT_CREATION_ERROR;
-                case -1:
-                    setLoginState(LoginStates.BANNED_USER);
-                    return LoginCodes.EMPTY_RESPONSE;
-                default: // UNHANDLED ERROR
-                    // !:! report l'erreur
-                    return { code: -1, message: response.message };
-            }
-        })
+        return response
+            .then((response) => {
+                switch (response.code) {
+                    case 200:
+                        setToken(response.token); // collecte du token
+                        setUsers(mapLogin(response.data));
+                        setLoginState(LoginStates.LOGGED_IN);
+                        if (keepLoggedIn) {
+                            setUsername(localUsername);
+                            setPassword(localPassword);
+                        } else {
+                            setUsername("");
+                            setPassword("");
+                        }
+                        return LoginCodes.SUCCESS;
+                    case 250:
+                        doubleAuthKey.current = null;
+                        setToken(response.token); // collecte du token pour la double authentification
+                        setLoginState(LoginStates.REQUIRE_DOUBLE_AUTH);
+                        return LoginCodes.REQUIRE_DOUBLE_AUTH;
+                    case 202:
+                        setLoginState(LoginStates.REQUIRE_LOGIN);
+                        return LoginCodes.ACCOUNT_CREATION_ERROR;
+                    case -1:
+                        setLoginState(LoginStates.BANNED_USER);
+                        return LoginCodes.EMPTY_RESPONSE;
+                    default: // UNHANDLED ERROR
+                        // !:! report l'erreur
+                        return { code: -1, message: response.message };
+                }
+            })
             .catch((error) => {
                 if (error.type === "ED_ERROR") {
+                    if (error.code < 0) {
+                        setLoginState(LoginStates.BANNED_USER);
+                    } else {
+                        setLoginState(LoginStates.REQUIRE_LOGIN);
+                    }
                     switch (error.code) {
+                        case 1:
+                            return LoginCodes.NO_EXT_RESPONSE;
+                        case 2:
+                            return LoginCodes.EXT_NO_GTK_COOKIE;
+                        case 3:
+                            return LoginCodes.EXT_NO_COOKIE;
                         case 505:
-                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return LoginCodes.INVALID_CREDENTIALS;
                         case 74000:
-                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return LoginCodes.SERVER_ERROR;
                         case -1:
-                            setLoginState(LoginStates.BANNED_USER);
                             return LoginCodes.EMPTY_RESPONSE;
                         default:
-                            setLoginState(LoginStates.REQUIRE_LOGIN);
                             return { code: -1, message: error.message };
                     }
                 }
@@ -186,8 +201,7 @@ export default function useEcoleDirecteAccount(initialAccount) {
         return { username, password, token, selectedUserIndex, users }
     }
 
-    function logout()
-    {
+    function logout() {
         setUsers(null);
         setToken("");
         setUsername("");

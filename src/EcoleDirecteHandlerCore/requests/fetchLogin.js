@@ -3,12 +3,19 @@ import { FetchErrorBuilders } from "../constants/codes";
 import EdpError from "../utils/EdpError";
 
 async function setupGtkToken() {
-    await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const handleMessage = (event) => {
             if (event.data && event.data.type === "EDPU_MESSAGE") {
-                if (event.data.payload.action === "gtkRulesUpdated") {
+                const message = event.data.payload;
+                if (message.action === "gtkRulesUpdated") {
                     window.removeEventListener("message", handleMessage);
                     resolve();
+                } else if (message.action === "noGtkCookie") {
+                    window.removeEventListener("message", handleMessage);
+                    reject(new EdpError(FetchErrorBuilders.login.EXT_NO_GTK_COOKIE));
+                } else if (message.action === "noCookie") {
+                    window.removeEventListener("message", handleMessage);
+                    reject(new EdpError(FetchErrorBuilders.login.EXT_NO_COOKIE));
                 }
             }
         }
@@ -18,12 +25,13 @@ async function setupGtkToken() {
             .then(() => {
                 setTimeout(() => {
                     window.removeEventListener("message", handleMessage);
-                    reject(new EdpError(FetchErrorBuilders.login.NO_EDPU_RESPONSE));
+                    reject(new EdpError(FetchErrorBuilders.login.NO_EXT_RESPONSE));
                 }, 3000);
+            })
+            .catch((error) => {
+                window.removeEventListener("message", handleMessage);
+                reject(error);
             });
-    }).catch((error) => {
-        console.error(error);
-        throw error;
     });
 }
 
