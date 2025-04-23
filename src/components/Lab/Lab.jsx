@@ -322,6 +322,12 @@ export default function Lab({ fetchGrades }) {
             ac ut consequat semper viverra nam libero justo laoreet sit amet cursus sit amet dictum sit amet justo donec enim diam vulputate ut pharetra sit amet aliquam id diam maecenas ultricies mi eget mauris pharetra et ultrices neque ornare aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin sagittis nisl rhoncus mattis rhoncus urna neque viverra justo nec ultrices dui sapien eget mi proin sed libero enim sed
             </OutlineEffectDiv>
 
+            <h4>OutlineEffectDiv</h4>
+            <Button onClick={() => fetch("https://doc1.ecoledirecte.com/PhotoEleves/073TEST2_714d424d764c7533325151/65766a305651.jpg")}>
+            Fetch pp
+            </Button>
+            <img src="https://doc1.ecoledirecte.com/PhotoEleves/073TEST2_714d424d764c7533325151/65766a305651.jpg"></img>
+
             {/* FOOTER */}
             <div style={{ height: "100px" }}></div>
         </div>
