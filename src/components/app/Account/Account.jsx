@@ -4,7 +4,6 @@ import { AccountContext, AppContext, SettingsContext, UserDataContext } from "..
 import HolographicDiv from "../../generic/CustomDivs/HolographicDiv";
 import Button from "../../generic/UserInputs/Button";
 import DropDownMenu from "../../generic/UserInputs/DropDownMenu";
-import { getProxiedURL } from "../../../utils/requests";
 import FileComponent from "../../generic/FileComponent";
 import ContentLoader from "react-content-loader";
 import CanardmanSleeping from "../../graphics/CanardmanSleeping";
@@ -119,7 +118,7 @@ export default function Account({ }) {
                         <img
                             ref={(el) => (profilePictureRefs.current[0] = el)}
                             className="profile-picture"
-                            src={(isStreamerModeEnabled ? "/images/scholar-canardman.png" : ((account.selectedUser.firstName !== "Guest") ? getProxiedURL("https:" + account.selectedUser.picture) : account.selectedUser.picture))}
+                            src={isStreamerModeEnabled ? "/images/scholar-canardman.png" : account.selectedUser.picture}
                             alt={"Photo de profil de " + account.selectedUser.firstName}
                         />
                     </div>
