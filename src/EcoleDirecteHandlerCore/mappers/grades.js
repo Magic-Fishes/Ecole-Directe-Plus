@@ -222,7 +222,7 @@ export function mapGrades(grades) {
             periods[periodCode].subjects[subjectCode].average = average;
             periods[periodCode].subjects[subjectCode].classAverage = classAverage;
 
-            const category = findCategory(periods[periodCode], subjectCode);
+            const category = findCategory(periods[periodCode].subjects, subjectCode);
             if (category !== null) {
                 const categoryAverage = calcCategoryAverage(periods[periodCode], category);
                 periods[periodCode].subjects[category.code].average = categoryAverage;

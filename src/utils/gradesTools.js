@@ -82,15 +82,16 @@ export function calcClassAverage(list) {
     }
 }
 
-export function findCategory(period, subject) {
-    const subjectsKeys = Object.keys(period.subjects);
-    let i = subjectsKeys.indexOf(subject);
-    while (--i > 0 && !period.subjects[subjectsKeys[i]]?.isCategory) { } // très sad
-    if (!period.subjects[subjectsKeys[i]]?.isCategory) {
-        return null;
+export function findCategory(subjects, subjectKey) {
+    let category = null;
+    for (const key in subjects) {
+        if (subjects[key].isCategory) {
+            category = subjects[key];
+        }
+        if (key === subjectKey)
+            return category;
     }
-
-    return period.subjects[subjectsKeys[i]];
+    return null;
 }
 
 export function calcCategoryAverage(period, category) {
