@@ -104,7 +104,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                 const newClassList = [...oldClassList];
                 const MAX_TIME_DIFFERENCE = 3 * 1000 * 60 * 60 * 24;
                 let isNewGrade = (Date.now() - (grade.entryDate ?? grade.date)) <= MAX_TIME_DIFFERENCE;
-                if (isNewGrade && (grade.isReal ?? true)) {
+                if (isNewGrade && (!grade.isSimulated ?? true)) {
                     newClassList.push("new-grade");
                 }
                 return newClassList;
@@ -124,7 +124,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
             replace: grade.id === undefined ? "" : true,
             id: grade.id ?? "",
             ref: gradeRef,
-            className: `grade${((grade.isSignificant ?? true) && (grade.isReal ?? true)) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""}${(grade.isReal ?? true) ? "" : " sim-grade"} ${className} ${classList.join(" ")}`,
+            className: `grade${((grade.isSignificant ?? true) && (!grade.isSimulated ?? true)) ? "" : " not-significant"}${(grade.upTheStreak ?? false) ? " streak-grade" : ""}${((grade.upTheStreak ?? false) === "maybe") ? " maybe-streak" : ""}${(grade.id ?? false) ? " selectable" : ""}${(!grade.isSimulated ?? true) ? "" : " sim-grade"} ${className} ${classList.join(" ")}`,
             ...props,
         },
         <span className="grade-container">
@@ -220,7 +220,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                     </span>
                 )
             )}
-            {(grade.isReal ?? true) === false && (
+            {(!grade.isSimulated ?? true) === false && (
                 <CloseButton
                     className="delete-grade-button"
                     onClick={() => {

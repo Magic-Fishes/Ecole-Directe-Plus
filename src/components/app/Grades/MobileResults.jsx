@@ -182,13 +182,13 @@ export default function Results({ activeAccount, grades, selectedPeriod, setSele
                                             <div className="subject-average"><Grade grade={{ value: el.average, subject: el }} /></div>
                                         </div>
                                             <div key={"grade-" + el.id} className="mobile-grade-row mobile-row">
-                                                {el.grades.filter(el => el.isReal).map((grade) => {
+                                                {el.grades.filter(el => !el.isSimulated).map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )
                                                 })}
                                                 <GradeSimulationTrigger subjectKey={idx} selectedPeriod={selectedPeriod} />
-                                                {el.grades.filter(el => !el.isReal).map((grade) => {
+                                                {el.grades.filter(el => el.isSimulated).map((grade) => {
                                                     return (
                                                         <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                     )

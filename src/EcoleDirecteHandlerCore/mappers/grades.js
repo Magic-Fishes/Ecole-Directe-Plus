@@ -165,8 +165,8 @@ export function mapGrades(grades) {
             newGrade.examSubjectSRC = grade.uncSujet;
             // newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
             // newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-            newGrade.isReal = true;
-            /* Si newGrade.isReal est faux :
+            newGrade.isSimulated = false;
+            /* Si newGrade.isSimulated :
                 pas de :
                     - badges
                     - streak

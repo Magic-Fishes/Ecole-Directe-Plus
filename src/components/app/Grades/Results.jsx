@@ -204,11 +204,11 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                                 <span>Classe : <Grade grade={{ value: el.classAverage }} /></span><span>Min : <Grade grade={{ value: (el.minAverage < el.average ? el.minAverage : el.average) }} /></span><span>Max : <Grade grade={{ value: (el.maxAverage > el.average ? el.maxAverage : el.average) }} /></span>
                                                             </div>
                                                             : <div className="grades-values">
-                                                                {el.grades.filter(el => el.isReal).map((grade) => {
+                                                                {el.grades.filter(el => !el.isSimulated).map((grade) => {
                                                                     return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}
                                                                 <GradeSimulationTrigger subjectKey={idx} activePeriod={activePeriod} />
-                                                                {el.grades.filter(el => !el.isReal).map((grade) => {
+                                                                {el.grades.filter(el => el.isSimulated).map((grade) => {
                                                                     return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}
                                                             </div>}

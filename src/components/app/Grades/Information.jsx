@@ -179,7 +179,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             <div className="number-value">{selectedElement.classMax.toString().replace(".", ",")}{isNaN(selectedElement.classMax) ? null : <sub>/{selectedElement.scale}</sub>}</div>
                         </div>}
                     </div>
-                    {true && <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isReal ? " (non significatif)" : " (note simulée)")}</p>}
+                    <p className="selected-coefficient">coefficient : {selectedElement.coef}{selectedElement.isSignificant ? "" : (selectedElement.isSimulated ? " (note simulée)" : " (non significatif)")}</p>
                     <hr className="information-hr" />
                     <div className="info-zone">
                         <div className="text">
