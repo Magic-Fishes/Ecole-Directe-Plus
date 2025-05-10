@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { AppContext, SettingsContext, UserDataContext } from "../../../App";
+import { SettingsContext, UserDataContext } from "../../../App";
 
 import {
     WindowsContainer,
@@ -43,7 +43,7 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
         if (isLoggedIn && grades === undefined) {
             userData.get.grades(fetchSchoolYear, controller).then(console.log);
         }
-
+        console.log(grades);
         return () => {
             controller.abort();
         }
@@ -56,8 +56,8 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
                 <WindowsLayout direction="row" ultimateContainer={true}>
                     <WindowsLayout direction="column">
                         <StreakScore streakScore={(grades?.[activePeriod]?.streak) ?? 0} streakHighScore={(grades?.[activePeriod]?.maxStreak) ?? 0} />
-                        <Information grades={grades} activeAccount={activeAccount} />
-                        <Strengths grades={grades} activeAccount={activeAccount} />
+                        <Information />
+                        <Strengths />
                     </WindowsLayout>
                     <WindowsLayout growthFactor={2}>
                         <DOMSimulation>

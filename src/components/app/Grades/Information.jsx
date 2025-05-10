@@ -49,36 +49,38 @@ function findGradesObjectById(list, value) {
     }
 }
 
-export default function Information({ grades, activeAccount, selectedPeriod, ...props }) {
+export default function Information({ ...props }) {
     const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
 
-    const { gradesEnabledFeatures: {value: gradesEnabledFeatures} } = useContext(UserDataContext);
+    const {
+        grades: { value: grades },
+        activePeriod: { value: activePeriod },
+        gradesEnabledFeatures: { value: gradesEnabledFeatures }
+    } = useContext(UserDataContext);
 
     const settings = useContext(SettingsContext);
     const { displayMode, isStreamerModeEnabled } = settings.user;
 
     const location = useLocation();
     const navigate = useNavigate();
-    
+
     const [isCorrectionLoading, setIsCorrectionLoading] = useState(false);
     const [isSubjectLoading, setIsSubjectLoading] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const isDisplayModeQuality = displayMode === "quality";
-    
-    let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
-    if (grades && grades[selectedPeriod]) {
-        selectedElement = findGradesObjectById(Object.values(grades && grades[selectedPeriod].subjects), location.hash.slice(1));
-    }
 
-    console.log("tst: ", selectedElement);
+    let selectedElement = isNaN(parseInt(location.hash.slice(1))) ? undefined : "loading";
+    if (grades && grades[activePeriod]) {
+        selectedElement = findGradesObjectById(Object.values(grades && grades[activePeriod].subjects), location.hash.slice(1));
+    }
 
     return (
         <Window className="information" growthFactor={(isExpanded && !["none", undefined].includes(selectedElement)) ? 2 : 1} {...props} >
             <WindowHeader>
                 <h2>Informations</h2>
                 {!isTabletLayout && <button className="expand-reduce-button" onClick={() => setIsExpanded((old) => !old)} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>{isExpanded ? <ReduceIcon /> : <ExpandIcon />}</button>}
-                <button className="clear-button" onClick={() => {navigate("#"); setIsExpanded(false)}} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
+                <button className="clear-button" onClick={() => { navigate("#"); setIsExpanded(false) }} style={{ display: (["none", undefined].includes(selectedElement) ? "none" : "") }}>✕</button>
             </WindowHeader>
             <WindowContent>
                 {selectedElement === "loading" ? <div className="element-information">
@@ -247,7 +249,7 @@ export default function Information({ grades, activeAccount, selectedPeriod, ...
                             <div className="number-name">Max</div>
                             <div className="number-value">{selectedElement.maxAverage.toString().replace(".", ",")}{isNaN(selectedElement.maxAverage) ? null : <sub>/20</sub>}</div>
                         </div>}
-                        {grades.get("gradesEnabledFeatures")?.rank && <div>
+                        {gradesEnabledFeatures?.rank && <div>
                             <div className="number-name">Rang</div>
                             <div className="number-value">{selectedElement.rank}</div>
                         </div>}
