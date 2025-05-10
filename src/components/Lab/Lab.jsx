@@ -42,7 +42,7 @@ import { textToHSL } from "../../utils/utils"
 import DefaultFileIcon from "../graphics/file/DefaultFileIcon"
 import OutlineEffectDiv from "../generic/CustomDivs/OutlineEffectDiv";
 import useInitializer from "../../EcoleDirecteHandlerCore/hooks/utils/useInitializer";
-import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants";
+import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants/constants";
 export default function Lab({ fetchGrades }) {
     const addNotification = useCreateNotification()
     // States

@@ -24,10 +24,11 @@ import { getCurrentSchoolYear } from "./utils/date";
 import EdpuLogo from "./components/graphics/EdpuLogo";
 import useEcoleDirecteSession from "./EcoleDirecteHandlerCore/hooks/useEcoleDirecteSession";
 
-import { defaultGlobalSettings, EDPVersion, consoleLogEDPLogo } from "./edpConfig";
+import { logEDPLogo } from "./edpConfig";
+import { defaultAccountSettings, defaultGlobalSettings } from "./utils/constants/default";
 import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
-import { Browsers, LocalStorageKeys } from "./utils/constants";
+import { Browsers, LocalStorageKeys } from "./utils/constants/constants";
 import { useLocalStorageEffect, useDisplayModeEffect, useDisplayThemeEffect, useBrowserDisplayThemeChange } from "./utils/hooks/useCustomEffect";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
@@ -56,55 +57,16 @@ const lsIdName = "encryptedUserIds"
 const WINDOW_WIDTH_BREAKPOINT_MOBILE_LAYOUT = 450; // px
 const WINDOW_WIDTH_BREAKPOINT_TABLET_LAYOUT = 869; // px
 
-
-//default settings
-const defaultSettings = {
-    keepLoggedIn: false,
-    displayTheme: "auto",
-    displayMode: "quality",
-    isSepiaEnabled: false,
-    isHighContrastEnabled: false,
-    isGrayscaleEnabled: false,
-    isPhotoBlurEnabled: false,
-    isPartyModeEnabled: true,
-    isPeriodEventEnabled: true,
-    isStreamerModeEnabled: false,
-    gradeScale: 20,
-    isGradeScaleEnabled: false,
-    schoolYear: getCurrentSchoolYear(),
-    isSchoolYearEnabled: false,
-    isLucioleFontEnabled: false,
-    windowArrangement: [],
-    allowWindowsArrangement: true,
-    dynamicLoading: true,
-    shareSettings: true,
-    negativeBadges: false,
-    allowAnonymousReports: true,
-    isDevChannel: false,
-    selectedChart: 0
-}
-
 const userBrowser = getBrowser();
 
 // get data from localstorage
 const accountListFromLs = JSON.parse(localStorage.getItem("accountsList") ?? "[]");
 let userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "[{}]"));
 
-function getSetting(setting, accountIdx, isGlobal = false) {
-    if (isGlobal) {
-        const globalSettingsFromLs = JSON.parse((localStorage.getItem("globalSettings") ?? "{}"));
-        return globalSettingsFromLs[setting] ?? defaultSettings[setting];
-    } else if (userSettingsFromLs[accountIdx]) {
-        userSettingsFromLs = JSON.parse((localStorage.getItem("userSettings") ?? "{}"));
-        return ((userSettingsFromLs[accountIdx] && userSettingsFromLs[accountIdx][setting]) ?? defaultSettings[setting]);
-    }
-    return defaultSettings[setting];
-}
-
 /*
 function initSettings(accountList) {
     // comment ajouter un setting :
-    // userSettings ici ; defaultSettings
+    // userSettings ici ; defaultAccountSettings
     const userSettings = [];
     for (let i = 0; i < (accountList?.length || 1); i++) { //Si au login, il y a aucun compte d'enregistré on considère qu'il y a un seul compte
         userSettings.push({
@@ -188,9 +150,8 @@ let promptInstallPWA = () => { };
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); promptInstallPWA = () => event.prompt() });
 window.addEventListener("appinstalled", () => { promptInstallPWA = null });
 
-consoleLogEDPLogo();
-
-export default function App({ }) {
+logEDPLogo();
+export default function App() {
     const userSession = useEcoleDirecteSession(getInitialEcoleDirecteSessions());
 
     const {
@@ -215,7 +176,8 @@ export default function App({ }) {
 
     // user settings
     // paramètres propre à chaque profil du compte
-    const userSettings = useAccountSettings(selectedUserIndex.value != null ? selectedUserIndex.value : 0, [Object.fromEntries(Object.keys(defaultSettings).map((setting) => [setting, { value: defaultSettings[setting], properties: {} }]))]); // !:! Il faut ettre un default pertinent
+
+    const userSettings = useAccountSettings(selectedUserIndex.value, [defaultAccountSettings]); // !:! je pense que ca marche pas quand le nombre d'utilisateur change
 
     const { displayTheme, displayMode } = userSettings;
 
@@ -256,7 +218,7 @@ export default function App({ }) {
     // useEffect(() => {
     //     const lsGlobalSettings = {};
     //     for (const i in globalSettings) {
-    //         lsGlobalSettings[i] = globalSettings[i].value ?? defaultSettings[i];
+    //         lsGlobalSettings[i] = globalSettings[i].value ?? defaultAccountSettings[i];
     //     }
     //     localStorage.setItem("globalSettings", JSON.stringify(lsGlobalSettings));
 
@@ -369,7 +331,6 @@ export default function App({ }) {
             window.removeEventListener("resize", handleWindowResize);
         }
     }, []);
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                                                                                                  //
@@ -1516,7 +1477,6 @@ export default function App({ }) {
         isDevChannel,
         globalSettings,
         actualDisplayTheme,
-        EDPVersion,
     }), [
         refreshApp,
         addNewGrade,
@@ -1532,7 +1492,6 @@ export default function App({ }) {
         isStandaloneApp,
         isDevChannel,
         actualDisplayTheme,
-        EDPVersion,
     ]);
 
     const accountContextValue = {

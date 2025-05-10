@@ -1,7 +1,8 @@
 
 import { useState, useEffect, useRef, useContext } from "react";
 import { getBrowser, getOS } from "../../utils/utils";
-import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants";
+import { BrowserLabels, OperatingSystemLabels } from "../../utils/constants/constants";
+import { EDPVersion } from "../../utils/constants/configs";
 
 import SegmentedControl from "../generic/UserInputs/SegmentedControl";
 import DropDownMenu from "../generic/UserInputs/DropDownMenu";
@@ -73,7 +74,7 @@ ${BrowserLabels[getBrowser()]} ; ${OperatingSystemLabels[getOS()]} ; <inconnu> (
     const [submitButtonText, setSubmitButtonText] = useState("Envoyer");
     const [allowSharing, setAllowSharing] = useState(true);
 
-    const { isDevChannel, EDPVersion } = useContext(AppContext);
+    const { isDevChannel } = useContext(AppContext);
 
     const settings = useContext(SettingsContext);
 

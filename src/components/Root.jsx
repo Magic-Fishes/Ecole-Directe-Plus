@@ -9,7 +9,7 @@ import ProxyErrorNotification from "./Errors/ProxyErrorNotification";
 import { useCreateNotification } from "./generic/PopUps/Notification";
 import DoubleAuthLogin from "./Login/DoubleAuthLogin";
 
-import { EDPVersion } from "../edpConfig";
+import { EDPVersion } from "../utils/constants/configs";
 import { AccountContext, SettingsContext } from "../App";
 import { formatISO, isValid, parseISO } from "date-fns";
 
