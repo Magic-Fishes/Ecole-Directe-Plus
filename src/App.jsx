@@ -1420,7 +1420,7 @@ export default function App() {
                             path: "dashboard",
                         },
                         {
-                            element: <Dashboard activeAccount={selectedUserIndex.value} isLoggedIn={isLoggedIn} isTabletLayout={isTabletLayout} />,
+                            element: <Dashboard isTabletLayout={isTabletLayout} />,
                             path: ":userId/dashboard"
                         },
                         {
