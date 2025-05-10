@@ -10,7 +10,7 @@ import {
     WindowContent
 } from "../../generic/Window";
 
-import { AppContext } from "../../../App";
+import { AccountContext, UserDataContext } from "../../../App";
 import Notebook from "./Notebook";
 import BottomSheet from "../../generic/PopUps/BottomSheet";
 import EncodedHTMLDiv from "../../generic/CustomDivs/EncodedHTMLDiv";
@@ -19,7 +19,7 @@ import PopUp from "../../generic/PopUps/PopUp";
 import { formatDateRelative } from "../../../utils/date";
 import FileComponent from "../../generic/FileComponent";
 import { getISODate } from "../../../utils/utils";
-import DateSelector from "./Calendar";
+import Calendar from "./Calendar";
 import InfoButton from "../../generic/Informative/InfoButton";
 import DownloadIcon from "../../graphics/DownloadIcon"
 
@@ -31,11 +31,15 @@ const supposedNoSessionContent = [
     "",
 ]
 
-export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks }) {
-    // States
+export default function Homeworks() {
+    const userData = useContext(UserDataContext);
+    const {
+        homeworks: { value: homeworks }
+    } = userData;
 
-    const { useUserData } = useContext(AppContext);
-    const homeworks = useUserData("sortedHomeworks").get();
+    const account = useContext(AccountContext);
+    const { loginStates: { isLoggedIn } } = account;
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -43,23 +47,20 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
     const selectedDate = hashParameters.length ? hashParameters[0].slice(1) : getISODate(new Date())
     const selectedTask = hashParameters.length > 1 && homeworks && homeworks[selectedDate]?.find(e => e.id == hashParameters[1])
 
-    // behavior
     useEffect(() => {
         document.title = "Cahier de texte • Ecole Directe Plus";
     }, []);
 
     useEffect(() => {
         const controller = new AbortController();
-        if (isLoggedIn) {
-            if (homeworks === undefined) {
-                fetchHomeworks(controller);
-            }
+        if (isLoggedIn && homeworks === undefined) {
+            userData.get.homeworks(null, controller);
         }
 
         return () => {
             controller.abort();
         }
-    }, [isLoggedIn, activeAccount, homeworks, location.hash]);
+    }, [isLoggedIn, homeworks]);
 
     // This seemed to be useless because we use the <Navigate/> component is a parameter isn't valid
     /*useEffect(() => {
@@ -101,7 +102,7 @@ export default function Homeworks({ isLoggedIn, activeAccount, fetchHomeworks })
                                 </InfoButton>
                             </WindowHeader>
                             <WindowContent>
-                                <DateSelector defaultSelectedDate={selectedDate} />
+                                <Calendar defaultSelectedDate={selectedDate} homeworks={homeworks} />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>

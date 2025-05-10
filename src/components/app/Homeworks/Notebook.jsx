@@ -41,7 +41,6 @@ export default function Notebook({ hideDateController = false }) {
 
     const hashParameters = location.hash.split(";")
     const homeworkDay = activeHomework?.day;
-    const homeworkId = activeHomework?.day;
 
     // function validDateFormat(dateString) {
     //     const date = dateString.split("-");
