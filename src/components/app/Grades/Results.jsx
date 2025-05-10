@@ -51,8 +51,6 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
         }
     }, [location, grades]);
 
-    console.log(grades);
-
     return (
         <MoveableContainer className="results-container" style={{ flex: "1", display: "flex", flexFlow: "row nowrap", gap: "20px" }} name="results-utimate-container" {...props}>
             {!isTabletLayout ? <MoveableContainer style={{ display: "flex", flexFlow: "column nowrap", gap: "20px" }} >
@@ -183,7 +181,7 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                 <tbody>
                                     {grades && grades[activePeriod]
                                         ? Object.keys(grades[activePeriod].subjects).map((idx) => {
-                                            const el = grades[activePeriod].subjects[idx]
+                                            const el = grades[activePeriod].subjects[idx];
                                             return (
                                                 <tr key={el.id} className={el.isCategory ? "category-row" : "subject-row"}>
                                                     <th className="head-cell">

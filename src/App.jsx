@@ -169,7 +169,7 @@ export default function App() {
 
     const tokenState = token.value;
     const setTokenState = token.set;
-    const [accountsListState, setAccountsListState] = useState(accountListFromLs); // liste des profils sur le compte (notamment si compte parent)
+    const accountsListState = userSession.account.users;
     const globalSettings = useSettings(defaultGlobalSettings);
     // !:! pour le default, store les valeurs en js, et quand on les get, on regarde si elles existent sinon on prend celle par dfaut du config.json
     const { isDevChannel, keepLoggedIn } = globalSettings;
@@ -1342,7 +1342,7 @@ export default function App() {
                     path: "/",
                 },
                 {
-                    element: <Feedback activeUser={(accountsListState.length > 0 && selectedUser)} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
+                    element: <Feedback activeUser={isLoggedIn && selectedUser} carpeConviviale={carpeConviviale} isTabletLayout={isTabletLayout} />,
                     path: "feedback",
                 },
                 {
@@ -1362,7 +1362,7 @@ export default function App() {
                     path: "museum",
                 },
                 {
-                    element: <UnsubscribeEmails activeUser={(accountsListState.length > 0 && selectedUser)} thonFrustre={thonFrustre} />,
+                    element: <UnsubscribeEmails activeUser={isLoggedIn && selectedUser} thonFrustre={thonFrustre} />,
                     path: "unsubscribe-emails",
                 },
                 {

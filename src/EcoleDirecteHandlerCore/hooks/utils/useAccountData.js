@@ -43,7 +43,7 @@ export default function useAccountData() {
 
     /**This is the function you'll mainly use to change and initialize data of an account with mutiple users.
      * Here is an explanations of the params :
-     *  @param data      is the "key" of the data, its identifier in the object "userData" returned bah the hook
+     *  @param data      is the "key" of the data, its identifier in the object "userData" returned by the hook
      *  @param value     is the value you want to assign to the key above
      *  @param userIndex is the index of a specific user, this may be important in cases where you work with
      *                   async threads and you get data for a user after that the sekected user changed.

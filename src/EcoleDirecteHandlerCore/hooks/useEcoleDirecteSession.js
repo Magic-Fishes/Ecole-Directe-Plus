@@ -39,11 +39,9 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
         userData,
         {
             initialize: initializeUserData,
-            reset: resetUserData, // En théories c'est utile dans je sais plus quel contexte mais j'ai oublié pourquoi je l'ai dev
+            reset: resetUserData,
             setSelectedUserDataIndex,
         },
-        caca,
-        pipi
     ] = useAccountData();
     const account = useEcoleDirecteAccount({});
     const { token, users, selectedUser, selectedUserIndex, loginStates } = account;
@@ -125,7 +123,6 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
                         const { mappedHomeworks, mappedUpcomingAssignments, activeHomework } = mapUpcomingHomeworks(response.data);
                         userData.homeworks.set(mappedHomeworks, requestUserIndex);
                         userData.upcomingAssignments.set(mappedUpcomingAssignments, requestUserIndex);
-                        console.log(userData.activeHomework)
                         userData.activeHomework.set(activeHomework, requestUserIndex);
                     } else {
                         const { mappedDay } = mapDayHomeworks(response.data);
@@ -145,8 +142,6 @@ export default function useEcoleDirecteSession(localStorageSession = {}) {
                                 }, requestUserIndex);
                             }
                         } else {
-                            console.log(userData.homeworks);
-                            console.log(userData.activeHomework);
                             userData.homeworks.set({ ...userData.homeworks.value, ...mappedDay }, requestUserIndex);
                         }
                     }

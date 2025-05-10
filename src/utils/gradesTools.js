@@ -103,7 +103,7 @@ export function calcCategoryAverage(period, category) {
         const currentSubject = period.subjects[subjectsKeys[i]];
         let coefMultiplicator = 1;
         if (currentSubject.isSubSubject) {
-            const subjectCode = currentSubject.name.split(" - ")[0];
+            const subjectCode = currentSubject.name.split(" - ")[0]; 
             const validKeys = Object.keys(period.subjects).filter((key) => (key !== subjectCode && key.includes(subjectCode))); // selects other subsubjects (and exclude the parent subject)
             let sum = 0;
             for (let validKey of validKeys) {
