@@ -168,11 +168,9 @@ export function mapGrades(grades) {
             newGrade.isSimulated = false;
             /* Si newGrade.isSimulated :
                 pas de :
-                    - badges
-                    - streak
                     - moyenne de classe/min/max
                     - correction ni sujet
-                    - date
+                    - compétence
                 différences : 
                     - id = randomUUID
                 choisit par l'utilisateur : 
@@ -329,15 +327,15 @@ export function mapGrades(grades) {
         }
     }
 
-    let activePeriod = 0;
+    let activePeriodIndex = 0;
     for (let periodCode in periods) {
         if (Date.now() > periods[periodCode].endDate) {
-            if (activePeriod < Object.keys(periods).length - 1) {
-                activePeriod++;
+            if (activePeriodIndex < Object.keys(periods).length - 1) {
+                activePeriodIndex++;
             }
         }
     }
-    activePeriod = Object.keys(periods)[activePeriod];
+    const activePeriod = Object.keys(periods)[activePeriodIndex];
 
     return {
         grades: periods,

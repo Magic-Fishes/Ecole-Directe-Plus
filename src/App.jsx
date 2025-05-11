@@ -17,8 +17,7 @@ import AppLoading from "./components/generic/Loading/AppLoading";
 import LandingPage from "./components/LandingPage/LandingPage";
 import EdpUnblock from "./components/EdpUnblock/EdpUnblock"
 import { useCreateNotification } from "./components/generic/PopUps/Notification";
-import { calcAverage, calcCategoryAverage, calcGeneralAverage } from "./utils/gradesTools";
-import { createUserLists, getBrowser } from "./utils/utils";
+import { getBrowser } from "./utils/utils";
 import { getInitialEcoleDirecteSessions } from "./utils/edpUtils"
 import { getCurrentSchoolYear } from "./utils/date";
 import EdpuLogo from "./components/graphics/EdpuLogo";
@@ -338,60 +337,11 @@ export default function App() {
     //                                                                                                                                                                                  //
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function addNewGrade(periodKey, subjectKey, newValues) {
-        /** 
-         * Ajoute une nouvelle note à l'utilisateur (simulation)
-         * - @param newValues.value : valeur de la note
-         * - @param newValues.coef : coefficient de la note
-         * - @param newValues.scale : note maximum posible
-         * - @param newValues.name : nom du devoir
-         * - @param newValues.type : type de devoir (DS, DM, ...)
-         */
-        const grades = userData.grades.value;
-        grades[periodKey].subjects[subjectKey].grades.push({
-            ...newValues,
-            badges: [],
-            classAverage: "N/A",
-            classMin: "N/A",
-            classMax: "N/A",
-            date: new Date(),
-            elementType: "grade",
-            entryDate: new Date(),
-            examCorrectionSRC: "",
-            examSubjectSRC: "",
-            id: crypto.randomUUID(),
-            isReal: false,
-            skill: [],
-            subjectName: grades[periodKey].subjects[subjectKey].name,
-            upTheStreak: false,
-            subjectKey: subjectKey,
-            periodKey: periodKey,
-        })
-        userData.set("grades", grades);
-        updatePeriodGrades(periodKey)
-    }
-
-    function deleteFakeGrade(UUID, subjectKey, periodKey) {
+    function removeSimulatedGrade(UUID, subjectKey, periodKey) {
         const newGrades = { ...userData.grades }
         newGrades[periodKey].subjects[subjectKey].grades = newGrades[periodKey].subjects[subjectKey].grades.filter((el) => el.id !== UUID)
         userData.set("grades", newGrades);
         updatePeriodGrades(periodKey);
-    }
-
-    function updatePeriodGrades(periodKey) {
-        const grades = userData.grades;
-        const period = grades[periodKey];
-
-        for (const subject in period.subjects) {
-            if (!subject.includes("category")) {
-                period.subjects[subject].average = calcAverage(period.subjects[subject].grades);
-            } else {
-                period.subjects[subject].average = calcCategoryAverage(period, period.subjects[subject]);
-            }
-        }
-        period.generalAverage = calcGeneralAverage(period)
-        sortedGrades[periodKey] = period;
-        changeUserData("sortedGrades", sortedGrades);
     }
 
     function sortNextHomeworks(homeworks) { // This function will sort (I would rather call it translate) the EcoleDirecte response to a better js object
@@ -1463,8 +1413,6 @@ export default function App() {
 
     const appContextValue = useMemo(() => ({
         refreshApp,
-        addNewGrade,
-        deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworksSequentially,
         promptInstallPWA,
@@ -1479,8 +1427,6 @@ export default function App() {
         actualDisplayTheme,
     }), [
         refreshApp,
-        addNewGrade,
-        deleteFakeGrade,
         fetchHomeworksDone,
         fetchHomeworksSequentially,
         promptInstallPWA,

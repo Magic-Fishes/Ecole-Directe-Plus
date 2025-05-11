@@ -205,7 +205,7 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                                 {el.grades.filter(el => !el.isSimulated).map((grade) => {
                                                                     return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}
-                                                                <GradeSimulationTrigger subjectKey={idx} activePeriod={activePeriod} />
+                                                                <GradeSimulationTrigger subjectKey={idx} periodKey={activePeriod} />
                                                                 {el.grades.filter(el => el.isSimulated).map((grade) => {
                                                                     return <Grade grade={grade} key={grade.id} className={`${(grade.id && location.hash === "#" + grade.id) ? " selected" : ""}`} />
                                                                 })}

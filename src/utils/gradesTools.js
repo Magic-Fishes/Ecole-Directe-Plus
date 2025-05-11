@@ -188,3 +188,85 @@ export function formatSkills(skills) {
         value: isNaN(parseInt(el.valeur)) || parseInt(el.valeur) < 1 || parseInt(el.valeur) > 4 ? "Non évaluée" : skillsValues[parseInt(el.valeur) - 1] // la pire compétence possible commence à 1 donc on ajuste pour les tableaux js
     }))
 }
+
+/** 
+ * Modifie l'objet grades pour y ajouter une nouvelle note définie par `newValues`
+ *
+ * @param {string} periodKey 
+ * @param {string} subjectKey
+ * @param {Object} newValues
+ * @param newValues.value valeur de la note
+ * @param newValues.coef coefficient de la note
+ * @param newValues.scale note maximum posible
+ * @param newValues.name nom du devoir
+ * @param newValues.type type de devoir (DS, DM, ...)
+ */
+export function addSimulatedGrade(periodKey, subjectKey, newValues, grades) {
+    const period = grades[periodKey];
+    const subject = period.subjects[subjectKey];
+    const grade = {
+        ...newValues,
+        badges: [],
+        classAverage: "N/A",
+        classMin: "N/A",
+        classMax: "N/A",
+        date: new Date(),
+        elementType: "grade",
+        entryDate: new Date(),
+        examCorrection: "",
+        examSubject: "",
+        id: crypto.randomUUID(),
+        isSimulated: true,
+        isSignificant: true,
+        subjectName: subject.name,
+        skill: [],
+        upTheStreak: newValues.value / newValues.scale >= subject.average / 20,
+        subjectKey: subjectKey,
+        periodKey: periodKey,
+    }
+    if (newValues.value === newValues.scale) {
+        grade.badges.push("star");
+    }
+    if (newValues.value / newValues.scale > subject.average / 20) {
+        grade.badges.push("stonks");
+    }
+    else if (newValues.value / newValues.scale === subject.average / 20) {
+        grade.badges.push("meh");
+    }
+    if (grade.upTheStreak) {
+        grade.badges.push("keepOnFire");
+    };
+    
+    subject.grades.push(grade);
+    
+    period.streak += grade.upTheStreak;
+    if (period.streak > period.maxStreak) {
+        period.maxStreak += 1;
+    }
+    subject.average = calcAverage(subject.grades);
+    period.generalAverage = calcGeneralAverage(period);
+    const category = findCategory(period.subjects, subjectKey);
+    category.average = calcCategoryAverage(period, category);
+}
+
+/** 
+ * Modifie l'objet `grades` pour y retirer une note d'id `id`
+ *
+ * @param {string} periodKey 
+ * @param {string} subjectKey
+ * @param {string} id L'id de la note à retirer de l'objet `grades`
+ * @param {Object} grades l'objet grades utilisé par EDP pour stocker les notes
+ */
+export function removeSimulatedGrade(periodKey, subjectKey, id, grades) {
+    const period = grades[periodKey];
+    const subject = period.subjects[subjectKey];
+    const grade = subject.grades.find((grade) => grade.id === id);
+
+    subject.grades = subject.grades.filter((grade) => grade.id !== id);
+
+    period.streak -= grade.upTheStreak;
+    subject.average = calcAverage(subject.grades);
+    period.generalAverage = calcGeneralAverage(period);
+    const category = findCategory(period.subjects, subjectKey);
+    category.average = calcCategoryAverage(period, category);
+}

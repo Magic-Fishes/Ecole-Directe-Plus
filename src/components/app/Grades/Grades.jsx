@@ -43,7 +43,7 @@ export default function Grades({ activeAccount, isLoggedIn, isTabletLayout }) {
         if (isLoggedIn && grades === undefined) {
             userData.get.grades(fetchSchoolYear, controller).then(console.log);
         }
-        console.log(grades);
+
         return () => {
             controller.abort();
         }

@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 import CloseButton from "../../graphics/CloseButton";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../../generic/PopUps/Tooltip";
 import Arrow from "../../graphics/Arrow";
-import { AppContext, SettingsContext, UserDataContext } from "../../../App";
+import { SettingsContext, UserDataContext } from "../../../App";
+import { removeSimulatedGrade } from "../../../utils/gradesTools";
 
 import "./Grade.css";
 
 export default function Grade({ grade, subject, className = "", ...props }) {
-    const { deleteFakeGrade } = useContext(AppContext);
-
     const userData = useContext(UserDataContext);
-    const { grades, activePeriod, gradesEnabledFeatures } = userData;
+    const {
+        grades: { value: grades, set: setGrades },
+        activePeriod: { value: activePeriod },
+        gradesEnabledFeatures: { value: gradesEnabledFeatures } } = userData;
 
     const settings = useContext(SettingsContext);
     const { isGradeScaleEnabled, gradeScale } = settings.user;
@@ -21,8 +23,8 @@ export default function Grade({ grade, subject, className = "", ...props }) {
 
     const gradeRef = useRef(null);
 
-    const generalAverage = grades.value[activePeriod.value]?.generalAverage;
-    const coefficientEnabled = gradesEnabledFeatures.value?.coefficient;
+    const generalAverage = grades[activePeriod]?.generalAverage;
+    const coefficientEnabled = gradesEnabledFeatures?.coefficient;
 
     function getSummedCoef(subjects) {
         let sum = 0;
@@ -43,7 +45,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
     // Use subject coef if subject is provided, otherwise use grade's coef
     const gradeCoef = grade.coef ?? 1;
     let subjectCoef = grade?.subject?.coef ?? gradeCoef;
-    let subjectsSummedCoefs = getSummedCoef(grades.value[activePeriod.value].subjects);
+    let subjectsSummedCoefs = getSummedCoef(grades[activePeriod].subjects);
     // if all subjects have 0 as coef, we replace all coef by 1 to avoid division by 0
     const gradeScore = (subjectCoef * (grade.value - (generalAverage ?? grade.value))) / ((subjectsSummedCoefs - subjectCoef) || 1);
 
@@ -110,6 +112,11 @@ export default function Grade({ grade, subject, className = "", ...props }) {
                 return newClassList;
             });
         }
+    }
+
+    function handleDeleteSimulatedGrade(periodKey, subjectKey, id) {
+        removeSimulatedGrade(periodKey, subjectKey, id, grades);
+        setGrades(grades);
     }
 
     useEffect(() => {
@@ -223,13 +230,7 @@ export default function Grade({ grade, subject, className = "", ...props }) {
             {(!grade.isSimulated ?? true) === false && (
                 <CloseButton
                     className="delete-grade-button"
-                    onClick={() => {
-                        deleteFakeGrade(
-                            grade.id,
-                            grade.subjectKey,
-                            grade.periodKey
-                        );
-                    }}
+                    onClick={() => handleDeleteSimulatedGrade(grade.periodKey, grade.subjectKey, grade.id)}
                 />
             )}
         </span>
