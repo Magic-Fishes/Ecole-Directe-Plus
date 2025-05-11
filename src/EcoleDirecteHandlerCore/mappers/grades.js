@@ -63,7 +63,7 @@ export function mapGrades(grades) {
                     if (matiere.sousMatiere) {
                         newSubject.name = matiere.codeMatiere + " - " + matiere.codeSousMatiere;
                     } else {
-                        newSubject.name = matiere.discipline.replace(". ", ".").replace(".", ". ");
+                        newSubject.name = matiere.discipline.replaceAll(". ", ".").replaceAll(".", ". ");
                     }
                     newSubject.classAverage = safeParseFloat(matiere.moyenneClasse);
                     newSubject.minAverage = safeParseFloat(matiere.moyenneMin);

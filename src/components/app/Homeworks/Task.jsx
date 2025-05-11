@@ -76,7 +76,7 @@ export default function Task({ task, day, ...props }) {
                 <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} onChange={() => { checkTask(day, task) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <div className="task-title">
                     <h4>
-                        {task.subject.replace(". ", ".").replace(".", ". ")}
+                        {task.subject.replaceAll(". ", ".").replaceAll(".", ". ")}
                     </h4>
                     {task.addDate && <span className="add-date">Donné le {(new Date(task.addDate)).toLocaleDateString("fr-FR")}</span>}
                     {task.isInterrogation && <span className="interrogation-alert">évaluation</span>}

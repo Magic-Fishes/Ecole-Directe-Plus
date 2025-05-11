@@ -59,7 +59,7 @@ export default function DetailedSessionContent({ sessionContent, day, sessionCon
     return <div ref={detailedTaskRef} onClick={(e) => { navigate(`#${day};${sessionContent.id}`); e.stopPropagation() }} className={`detailed-session-content ${sessionContent.isDone ? "done" : ""}`} id={"session-content-" + sessionContent.id} {...props} >
         <div className="session-content-header">
             <h4>
-                {sessionContent.subject.replace(". ", ".").replace(".", ". ")}
+                {sessionContent.subject.replaceAll(". ", ".").replaceAll(".", ". ")}
             </h4>
         </div>
         <div className="session-content-subtitle">

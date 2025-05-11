@@ -107,7 +107,7 @@ export default function DetailedTask({ task, day, ...props }) {
             <div className="task-header">
                 <CheckBox id={"task-cb-" + task.id} ref={taskCheckboxRef} label="Effectué" onChange={() => { checkTask(day, task) }} checked={task.isDone} onMouseEnter={() => isMouseInCheckBoxRef.current = true} onMouseLeave={() => isMouseInCheckBoxRef.current = false} />
                 <h4>
-                    {task.subject.replace(". ", ".").replace(".", ". ")}
+                    {task.subject.replaceAll(". ", ".").replaceAll(".", ". ")}
                 </h4>
             </div>
             <div className="task-subtitle">

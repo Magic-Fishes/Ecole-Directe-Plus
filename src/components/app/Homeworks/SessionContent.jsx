@@ -27,7 +27,7 @@ export default function SessionContent({ day, sessionContent, sessionContentInde
             ? <div className={`session-content ${sessionContent.isDone ? "done" : ""}`} id={"session-content-" + sessionContent.id} onClick={handleSessionContentClick} onKeyDown={handleKeyDown} tabIndex={0} {...props} >
                 <div className="session-content-title">
                     <h4>
-                        {sessionContent.subject.replace(". ", ".").replace(".", ". ")}
+                        {sessionContent.subject.replaceAll(". ", ".").replaceAll(".", ". ")}
                     </h4>
                     {sessionContent.addDate && <span className="add-date">Écrit le {(new Date(sessionContent.addDate)).toLocaleDateString("fr-FR")}</span>}
                 </div>
