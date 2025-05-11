@@ -162,9 +162,9 @@ export function mapGrades(grades) {
             newGrade.classAverage = safeParseFloat(grade.moyenneClasse);
             newGrade.subjectName = grade.libelleMatiere;
             newGrade.isSignificant = !grade.nonSignificatif;
-            newGrade.examSubjectSRC = grade.uncSujet;
-            // newGrade.examSubjectSRC = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
-            // newGrade.examCorrectionSRC = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+            newGrade.examSubject = grade.uncSujet;
+            // newGrade.examSubject = grade.uncSujet === "" ? undefined : new File(grade.uncSujet, "NODEVOIR", grade.uncSujet, `sujet-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
+            // newGrade.examCorrection = grade.uncCorrige === "" ? undefined : new File(grade.uncCorrige, "NODEVOIR", grade.uncCorrige, `correction-${grade.devoir}-${grade.subjectCode}`, { idDevoir: grade.id });
             newGrade.isSimulated = false;
             /* Si newGrade.isSimulated :
                 pas de :

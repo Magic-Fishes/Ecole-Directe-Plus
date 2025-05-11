@@ -238,9 +238,9 @@ export default function Lab({ fetchGrades }) {
             </div>
             <h3>StoreCallToAction</h3>
             <div id="store-call-to-action">
-                <StoreCallToAction companyLogoSRC="/images/apple-logo.svg" companyLogoAlt="Logo de Apple" targetURL="https://youtu.be/uHgt8giw1LY" />
-                <StoreCallToAction companyLogoSRC="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://youtu.be/uHgt8giw1LY" />
-                <StoreCallToAction companyLogoSRC="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://youtu.be/uHgt8giw1LY" />
+                <StoreCallToAction companyLogoSrc="/images/apple-logo.svg" companyLogoAlt="Logo de Apple" targetURL="https://youtu.be/uHgt8giw1LY" />
+                <StoreCallToAction companyLogoSrc="/images/google-logo.svg" companyLogoAlt="Logo de Google" targetURL="https://youtu.be/uHgt8giw1LY" />
+                <StoreCallToAction companyLogoSrc="/images/microsoft-logo.svg" companyLogoAlt="Logo de Microsoft" targetURL="https://youtu.be/uHgt8giw1LY" />
             </div>
             {/* <h3>GameOfLife</h3>
             <canvas id="gameOfLife"></canvas> */}

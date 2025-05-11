@@ -203,18 +203,18 @@ export default function Information({ ...props }) {
                             </div> : null}
                         </div>
                         {/* Dcp on activera ca quand on gèrera les fichiers mais ca a l'air de bien marcher nv css (il manque peut-etre une border) */}
-                        {(selectedElement.examCorrectionSRC || selectedElement.examSubjectSRC) && <div className="files">
-                            {selectedElement.examSubjectSRC && <div className="file open-correction" role="button" onClick={async () => {
+                        {(selectedElement.examCorrection || selectedElement.examSubject) && <div className="files">
+                            {selectedElement.examSubject && <div className="file open-correction" role="button" onClick={async () => {
                                 setIsSubjectLoading(true);
-                                await selectedElement.examSubjectSRC.download();
+                                await selectedElement.examSubject.download();
                                 setIsSubjectLoading(false)
                             }}>
                                 {isSubjectLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}
                                 <span className="sub-text">Sujet</span>
                             </div>}
-                            {selectedElement.examCorrectionSRC && <div className="file download-correction" role="button" onClick={async () => {
+                            {selectedElement.examCorrection && <div className="file download-correction" role="button" onClick={async () => {
                                 setIsCorrectionLoading(true);
-                                await selectedElement.examCorrectionSRC.download();
+                                await selectedElement.examCorrection.download();
                                 setIsCorrectionLoading(false)
                             }}                                    >
                                 {isCorrectionLoading ? <LoadingAnimation className="download-loading-animation" /> : <DownloadIcon className="download-icon" />}
