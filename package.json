@@ -17,12 +17,16 @@
     "uuid": "^9.0.1",
     "vite": "^4.5.5"
   },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  },
   "scripts": {
     "dev": "vite",
     "domain": "vite --config vite.domain.config.js",
     "host": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri"
   },
   "eslintConfig": {
     "extends": [

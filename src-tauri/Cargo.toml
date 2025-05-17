@@ -1,0 +1,21 @@
+[package]
+name = "portableedp"
+version = "0.1.0"
+description = "A wrapper of Ecole Directe Plus for easy use, on mobile and desktop."
+authors = ["Mikkel ALMONTE--RINGAUD <contact@vexcited.com>"]
+edition = "2021"
+
+[lib]
+name = "portableedp_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+url = "2.5"
+include-flate = "0.3"
+tauri-plugin-http = { version = "=2.3.0", default-features = false, features = ["rustls-tls", "http2", "charset", "macos-system-configuration", "unsafe-headers"] }
