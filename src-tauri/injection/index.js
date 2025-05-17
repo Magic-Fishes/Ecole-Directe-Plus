@@ -1,4 +1,3 @@
-// @ts-expect-error : not typed
 window.navigator.__defineGetter__("platform", () => "Win64"); // Matches the User-Agent.
 navigator.__defineGetter__("userAgentData", () => undefined);
 
