@@ -6,18 +6,6 @@ window.__EDP_APP__ = {
 	LOGIN_COOKIES: [],
 };
 
-/// Replicate the way the extension works by sending the same payload
-/// to the app, to make sure the app can handle the same payload.
-const sendPayloadAsExtension = (payload) => {
-	window.postMessage(
-		{
-			type: "EDPU_MESSAGE",
-			payload,
-		},
-		"*",
-	);
-};
-
 (async () => {
 	/// Prevent running anything if we're in an <iframe>
 	if (window.self !== window.top) {
@@ -69,7 +57,12 @@ const sendPayloadAsExtension = (payload) => {
 				},
 			).split("=")[1];
 
-			sendPayloadAsExtension({ action: "gtkRulesUpdated" });
+      postMessage({
+          type: "EDPU_MESSAGE",
+          payload: {
+            action: "gtkRulesUpdated"
+          },
+      }, "*");
 		}
 
 		return response;
@@ -79,5 +72,15 @@ const sendPayloadAsExtension = (payload) => {
 		/// Make sure we allow the app to understand we have
 		/// an extension configured.
 		document.documentElement.classList.add("edp-unblock");
+
+    setTimeout(() => {
+      postMessage({
+        type: "EDP_UNBLOCK",
+        payload: {
+          message: "EXTENSION_INSTALLED",
+          version: "0.0.0"
+        }
+      }, "*")
+    }, 500);
 	});
 })();
