@@ -1,12 +1,11 @@
 [package]
-name = "portableedp"
+name = "ecoledirecteplus"
 version = "0.1.0"
-description = "A wrapper of Ecole Directe Plus for easy use, on mobile and desktop."
-authors = ["Mikkel ALMONTE--RINGAUD <contact@vexcited.com>"]
+description = "Ecole Directe Plus is a web app that is designed to replace and improve EcoleDirecte."
 edition = "2021"
 
 [lib]
-name = "portableedp_lib"
+name = "ecoledirecteplus_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

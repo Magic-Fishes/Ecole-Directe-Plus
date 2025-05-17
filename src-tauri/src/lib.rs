@@ -24,7 +24,7 @@ pub fn run() {
                     format!(
                         r#"
                           if (!window.__EDP_APP_INIT__) {{
-                          window.__EDP_APP_INIT__ = true;
+                            window.__EDP_APP_INIT__ = true;
                             {injection}
                           }}
                         "#
