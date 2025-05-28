@@ -1449,8 +1449,10 @@ export default function App({ edpFetch }) {
                         reject(new Error("NoEDPUResponse"));
                     }, 3000);
                 })
-                .catch((err) => {
-                    setIsEDPUnblockInstalled(false);
+                .catch(() => {
+                    if (navigator.onLine)
+                        // the error is probably due to the extension not being installed
+                        setIsEDPUnblockInstalled(false);
                 });
         }).catch((error) => {
             console.error(error);
