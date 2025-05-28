@@ -1448,6 +1448,9 @@ export default function App({ edpFetch }) {
                         window.removeEventListener("message", handleMessage);
                         reject(new Error("NoEDPUResponse"));
                     }, 3000);
+                })
+                .catch((err) => {
+                    setIsEDPUnblockInstalled(false);
                 });
         }).catch((error) => {
             console.error(error);
