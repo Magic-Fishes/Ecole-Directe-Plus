@@ -1,7 +1,2 @@
-.DS_Store
-
-/dist/
 /target/
 /gen/schemas
-/gen/keystore.properties
-/node_modules/

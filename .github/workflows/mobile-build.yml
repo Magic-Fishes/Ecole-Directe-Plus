@@ -1,0 +1,307 @@
+name: nightly mobile build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-desktop:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-15"
+            target: "aarch64-apple-darwin"
+          - platform: "macos-15"
+            target: "x86_64-apple-darwin"
+
+          - platform: ubuntu-22.04
+            target: "x86_64-unknown-linux-gnu"
+          - platform: ubuntu-22.04
+            target: "aarch64-unknown-linux-gnu"
+          - platform: ubuntu-22.04
+            target: "armv7-unknown-linux-gnueabihf"
+
+          - platform: "windows-latest"
+            target: "x86_64-pc-windows-msvc"
+          - platform: "windows-latest"
+            target: "aarch64-pc-windows-msvc"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: (Linux) ARM sources.list
+        if: matrix.target == 'aarch64-unknown-linux-gnu' || matrix.target == 'armv7-unknown-linux-gnueabihf'
+        run: |
+          # Add [arch=amd64] to the initial entries of the sources.list
+          sudo sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list
+
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs) main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-updates main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs) universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-updates universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs) multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-updates multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-security main restricted" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-security universe" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ $(lsb_release -cs)-security multiverse" | sudo tee -a /etc/apt/sources.list
+
+      - name: (Linux) ARM setup
+        if: matrix.target == 'aarch64-unknown-linux-gnu' || matrix.target == 'armv7-unknown-linux-gnueabihf'
+        run: |
+          sudo dpkg --add-architecture arm64
+          sudo dpkg --add-architecture armhf
+          sudo apt-get update
+
+      - name: (Linux) install dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            libssl-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+
+      - name: (Linux) (ARMv7) install dependencies
+        if: matrix.target == 'armv7-unknown-linux-gnueabihf'
+        run: |
+          sudo apt-get install -y \
+            libc6:armhf \
+            libc6-dev:armhf \
+            libapparmor1:armhf \
+            libwebkit2gtk-4.1-dev:armhf \
+            libssl-dev:armhf \
+            gcc-arm-linux-gnueabihf \
+            g++-arm-linux-gnueabihf
+
+      - name: (Linux) (ARM64) install dependencies
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get install -y \
+            libc6:arm64 \
+            libc6-dev:arm64 \
+            libapparmor1:arm64 \
+            libwebkit2gtk-4.1-dev:arm64 \
+            libssl-dev:arm64 \
+            gcc-aarch64-linux-gnu \
+            g++-aarch64-linux-gnu
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: npm
+
+      - name: install dependencies
+        run: npm install
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          prefix-key: rust-${{ hashFiles('**/Cargo.lock') }}
+          shared-key: ${{ matrix.platform }}-${{ matrix.target }}
+
+      - name: build
+        if: matrix.platform != 'ubuntu-22.04'
+        # if we are compiling for Windows ARM, we can only support NSIS
+        run: npm run tauri build -- --target ${{ matrix.target }} ${{ matrix.target == 'aarch64-pc-windows-msvc' && '--bundles nsis' || '' }}
+        env:
+          RUSTFLAGS: -Awarnings
+
+      - name: (Linux) (x86_64) build
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: npm run tauri build -- --target ${{ matrix.target }} --bundles deb,rpm,appimage -- --config target.x86_64-unknown-linux-gnu.linker=\'x86_64-linux-gnu-gcc\'
+        env:
+          RUSTFLAGS: -Awarnings
+
+      - name: (Linux) (ARMv7) build
+        if: matrix.target == 'armv7-unknown-linux-gnueabihf'
+        run: npm run tauri build -- --target ${{ matrix.target }} --bundles deb,rpm -- --config target.armv7-unknown-linux-gnueabihf.linker=\'arm-linux-gnueabihf-gcc\'
+        env:
+          RUSTFLAGS: -Awarnings -L/usr/lib/arm-linux-gnueabihf
+          CC: arm-linux-gnueabihf-gcc
+          PKG_CONFIG_SYSROOT_DIR: /usr/lib/arm-linux-gnueabihf
+          PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
+
+      - name: (Linux) (ARM64) build
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: npm run tauri build -- --target ${{ matrix.target }} --bundles deb,rpm -- --config target.aarch64-unknown-linux-gnu.linker=\'aarch64-linux-gnu-gcc\'
+        env:
+          RUSTFLAGS: -Awarnings -L/usr/lib/aarch64-linux-gnu
+          CC: aarch64-linux-gnu-gcc
+          PKG_CONFIG_SYSROOT_DIR: /usr/lib/aarch64-linux-gnu
+          PKG_CONFIG_PATH: /usr/lib/aarch64-linux-gnu/pkgconfig
+
+      - name: (Windows) (only x86) distribute .msi
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-msi
+          path: target/${{ matrix.target }}/release/bundle/msi/*.msi
+
+      - name: (Windows) distribute NSIS (.exe)
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-nsis
+          path: target/${{ matrix.target }}/release/bundle/nsis/*.exe
+
+      - name: (Linux) distribute .deb
+        if: matrix.platform == 'ubuntu-22.04'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-deb
+          path: target/${{ matrix.target }}/release/bundle/deb/*.deb
+
+      - name: (Linux) distribute .rpm
+        if: matrix.platform == 'ubuntu-22.04'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-rpm
+          path: target/${{ matrix.target }}/release/bundle/rpm/*.rpm
+
+      - name: (Linux) distribute .appimage
+        if: matrix.platform == 'ubuntu-22.04'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-appimage
+          path: target/${{ matrix.target }}/release/bundle/appimage/*.AppImage
+
+      - name: (macOS) distribute .dmg
+        if: matrix.platform == 'macos-15'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-${{ matrix.target }}-dmg
+          path: target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+
+  build-mobile:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04
+            os: android
+            target-full: "aarch64-linux-android"
+            target-short: "aarch64"
+
+          - platform: ubuntu-22.04
+            os: android
+            target-full: "armv7-linux-androideabi"
+            target-short: "armv7"
+
+          - platform: ubuntu-22.04
+            os: android
+            target-full: "i686-linux-android"
+            target-short: "i686"
+
+          - platform: ubuntu-22.04
+            os: android
+            target-full: "x86_64-linux-android"
+            target-short: "x86_64"
+
+          - platform: macos-15
+            os: "ios"
+            target-full: "aarch64-apple-ios"
+            target-short: "aarch64"
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: npm
+
+      - name: install frontend dependencies
+        run: npm install
+
+      - name: (Android) install Java
+        if: matrix.os == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - if: matrix.os == 'android'
+        uses: android-actions/setup-android@v3
+
+      - name: (Android) install NDK
+        if: matrix.os == 'android'
+        run: |
+          echo "y" | sdkmanager --install "ndk;25.2.9519653"
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/25.2.9519653" >> $GITHUB_ENV
+          echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/25.2.9519653" >> $GITHUB_ENV
+
+      - name: (Android) setup signing
+        if: matrix.os == 'android'
+        run: |
+          cd gen/android
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
+          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
+          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
+
+      - name: (iOS) setup signing
+        if: matrix.os == 'ios'
+        run: |
+          base64 -d <<< "${{ secrets.APPLE_API_KEY_BASE64 }}" > $RUNNER_TEMP/apple-api-key.p8
+
+      - name: setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target-full }}
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          prefix-key: rust-${{ hashFiles('**/Cargo.lock') }}
+          shared-key: ${{ matrix.platform }}-${{ matrix.target-full }}
+
+      - name: (Android) install dependencies
+        if: matrix.os == 'android'
+        run: |
+          cargo install cargo-ndk
+
+      - name: (Android) build .apk
+        if: matrix.os == 'android'
+        env:
+          NDK_HOME: ${{ env.NDK_HOME }}
+        run: |
+          npm run tauri android build -- --target ${{ matrix.target-short }} --apk --ci
+
+      - name: (iOS) build .ipa
+        if: matrix.os == 'ios'
+        env:
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+        run: |
+          export APPLE_API_KEY_PATH=$RUNNER_TEMP/apple-api-key.p8
+          npm run tauri ios build -- --target ${{ matrix.target-short }} --export-method release-testing --ci
+
+      - name: (Android) distribute .apk
+        if: matrix.os == 'android'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-android-${{ matrix.target-short }}-apk
+          path: |
+            gen/android/app/build/outputs/apk/universal/release/*.apk
+
+      - name: (iOS) distribute .ipa
+        if: matrix.os == 'ios'
+        uses: actions/upload-artifact@v4
+        with:
+          name: edp-ios-${{ matrix.target-short }}-ipa
+          path: |
+            gen/apple/build/arm64/*.ipa
