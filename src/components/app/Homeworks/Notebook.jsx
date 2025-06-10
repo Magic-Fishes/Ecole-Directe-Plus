@@ -6,11 +6,11 @@ import { capitalizeFirstLetter, getISODate } from "../../../utils/utils";
 import { AppContext, SettingsContext, UserDataContext } from "../../../App";
 import Task from "./Task";
 import SessionContent from "./SessionContent";
-import DropDownArrow from "../../graphics/DropDownArrow";
 import { applyZoom, getZoomedBoudingClientRect } from "../../../utils/zoom";
 import DetailedTask from "./DetailedTask";
 import DetailedSessionContent from "./DetailedSessionContent";
 import { canScroll } from "../../../utils/DOM";
+import DateSelector from "./DateSelector";
 
 import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
@@ -55,34 +55,6 @@ export default function Notebook({ hideDateController = false }) {
 
     //     return true;
     // }
-
-    function nearestHomeworkDate(direction, date) {
-        /**
-         * Return the nearest date on which there is homeworks according to the given date
-         * @param direction Direction in time to check : 1 to move forward ; -1 to move backwards
-         */
-        if (!homeworks) {
-            return getISODate(new Date());
-        }
-
-        const dates = Object.keys(homeworks).filter(e => homeworks[e].length);
-        if (!dates.includes(date)) {
-            dates.push(date);
-        }
-        dates.sort();
-        const newDateIdx = dates.indexOf(date) + direction;
-        if (newDateIdx < 0) {
-            const prevDate = new Date(date);
-            prevDate.setDate(prevDate.getDate() - 1);
-            return getISODate(prevDate);
-        } else if (newDateIdx >= dates.length) {
-            const nextDate = new Date(date);
-            nextDate.setDate(nextDate.getDate() + 1);
-            return getISODate(nextDate);
-        }
-
-        return dates[newDateIdx];
-    }
 
     function customScrollIntoView(element) {
         const container = notebookContainerRef.current;
@@ -275,21 +247,8 @@ export default function Notebook({ hideDateController = false }) {
     }, [location.hash, homeworks, isLoggedIn]);
 
     return <>
-        {!hideDateController && (!homeworks || Object.keys(homeworks).length > 0)
-            ? <div className="date-selector">
-                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(-1, homeworkDay))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(-1, homeworkDay)) } }} >
-                    <DropDownArrow />
-                </span>
-                <span className="selected-date" onClick={() => { navigate(`#${nearestHomeworkDate(1, getISODate(new Date()))}`, { replace: true }) }}>
-                    <div>
-                        <time dateTime={homeworkDay || null}>{(new Date(homeworkDay)).toLocaleDateString("fr-FR") == "Invalid Date" ? "JJ/MM/AAAA" : (new Date(homeworkDay)).toLocaleDateString("fr-FR")}</time>
-                        <time dateTime={getISODate(new Date())}>Aujourd'hui</time>
-                    </div>
-                </span>
-                <span className="change-date-arrow" onClick={() => navigateToDate(nearestHomeworkDate(1, homeworkDay))} tabIndex={0} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { navigateToDate(nearestHomeworkDate(1, homeworkDay)) } }} >
-                    <DropDownArrow />
-                </span>
-            </div>
+        {(!hideDateController && (!homeworks || Object.keys(homeworks).length > 0))
+            ? <DateSelector homeworks={homeworks} onChange={setActiveHomeworkDate} selectedDate={activeHomeworkDate} defaultDate={getISODate(new Date())} defaultDisplayDate={"À venir"} />
             : null
         }
         <div className={`notebook-container ${hasMouseMoved ? "mouse-moved" : ""}`} ref={notebookContainerRef}>
