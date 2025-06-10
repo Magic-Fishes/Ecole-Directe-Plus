@@ -25,9 +25,6 @@ export default function Notebook({ hideDateController = false }) {
     const settings = useContext(SettingsContext);
     const { displayMode } = settings.user;
 
-    const location = useLocation();
-    const urlParams = new URLSearchParams(location.search);
-
     const navigate = useNavigate();
 
     const notebookContainerRef = useRef(null);
@@ -111,26 +108,6 @@ export default function Notebook({ hideDateController = false }) {
         const TASK_MAX_WIDTH = Math.min(document.fullscreenElement?.classList.contains("notebook-window") ? 800 : 600, containerBounds.width);
         notebookContainerRef.current.scrollTo(bounds.x - containerBounds.x + TASK_MAX_WIDTH / 2 * (oldSelectedElementBounds.x >= bounds.x) + notebookContainerRef.current.scrollLeft - containerBounds.width / 2, 0)
     }
-
-    /* handle url redirection*/
-    useEffect(() => {
-        if (homeworks) {
-            const urlParamDate = urlParams.get("homework_date");
-            const urlParamId = parseInt(urlParams.get("homework_id"));
-            if (urlParamDate || urlParamId) {
-
-                const urlActiveHomework = { day: null, id: null }
-                if (Object.keys(homeworks).includes(urlParamDate)) {
-                    urlActiveHomework.day = urlParamDate;
-                    if (homeworks[date].some((task) => task.id === urlParamId)) {
-                        urlActiveHomework.id = urlParamId;
-                    }
-                }
-                setActiveHomework(urlActiveHomework);
-                navigate(location.pathname);
-            }
-        }
-    }, [location, homeworks, anchorElement.current]);
 
     useEffect(() => {
         const verticalToHorizontalScrolling = (event) => {

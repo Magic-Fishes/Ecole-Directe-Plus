@@ -29,6 +29,7 @@ import useSettings from "./utils/hooks/useSettings";
 import useAccountSettings from "./utils/hooks/useAccountSettings";
 import { Browsers, LocalStorageKeys } from "./utils/constants/constants";
 import { useLocalStorageEffect, useDisplayModeEffect, useDisplayThemeEffect, useBrowserDisplayThemeChange } from "./utils/hooks/useCustomEffect";
+import NavigateSave from "./components/generic/router/NavigateSave";
 
 // CODE-SPLITTING - DYNAMIC IMPORTS
 const Lab = lazy(() => import("./components/app/CoreApp").then((module) => { return { default: module.Lab } }));
@@ -1317,17 +1318,17 @@ export default function App() {
                 },
                 {
                     element: (isLoggedIn
-                        ? <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} />
+                        ? <NavigateSave to={`/app/${selectedUserIndex.value}/dashboard`} saveQueryParams />
                         : <Login logout={logout} isEDPUnblockInstalledActuallyInstalled={isEDPUnblockActuallyInstalled} />),
                     path: "login",
                 },
                 {
-                    element: <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} />,
+                    element: <NavigateSave to={`/app/${selectedUserIndex.value}/dashboard`} saveQueryParams/>,
                     path: "app",
                 },
                 {
                     element: (!isLoggedIn
-                        ? <Navigate to="/login" replace={true} />
+                        ? <NavigateSave to="/login" replace={true} saveQueryParams />
                         : <>
                             <Header
                                 token={tokenState}
@@ -1346,7 +1347,7 @@ export default function App() {
                     path: "app",
                     children: [
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/account`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/account`} replace={true} saveQueryParams />,
                             path: "account",
                         },
                         {
@@ -1354,7 +1355,7 @@ export default function App() {
                             path: ":userId/account"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/settings`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/settings`} replace={true} saveQueryParams />,
                             path: "settings",
                         },
                         {
@@ -1362,11 +1363,11 @@ export default function App() {
                             path: ":userId/settings"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/dashboard`} replace={true} saveQueryParams />,
                             path: ":userId",
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/dashboard`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/dashboard`} replace={true} saveQueryParams />,
                             path: "dashboard",
                         },
                         {
@@ -1374,7 +1375,7 @@ export default function App() {
                             path: ":userId/dashboard"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/grades`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/grades`} replace={true} saveQueryParams />,
                             path: "grades"
                         },
                         {
@@ -1382,7 +1383,7 @@ export default function App() {
                             path: ":userId/grades"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/homeworks`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/homeworks`} replace={true} saveQueryParams />,
                             path: "homeworks"
                         },
                         {
@@ -1390,7 +1391,7 @@ export default function App() {
                             path: ":userId/homeworks"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/timetable`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/timetable`} replace={true} saveQueryParams />,
                             path: "timetable"
                         },
                         {
@@ -1398,7 +1399,7 @@ export default function App() {
                             path: ":userId/timetable"
                         },
                         {
-                            element: <Navigate to={`/app/${selectedUserIndex.value}/messaging`} replace={true} />,
+                            element: <NavigateSave to={`/app/${selectedUserIndex.value}/messaging`} replace={true} saveQueryParams />,
                             path: "messaging"
                         },
                         {
