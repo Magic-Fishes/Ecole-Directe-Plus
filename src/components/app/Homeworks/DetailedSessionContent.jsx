@@ -11,7 +11,7 @@ export default function DetailedSessionContent({ sessionContent, day, sessionCon
     const navigate = useNavigate()
 
     const detailedTaskRef = useRef(null);
-    const { actualDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
+    const { usedDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
     const settings = useUserSettings();
 
     const location = useLocation();
@@ -67,7 +67,7 @@ export default function DetailedSessionContent({ sessionContent, day, sessionCon
             {sessionContent.isInterrogation && <span className="interrogation-alert">évaluation</span>}
         </div>
         <Link to={`#${day};${sessionContent.id};s`} className="session-content-link" onClick={(e) => e.stopPropagation()} replace={true} >
-            <EncodedHTMLDiv className="session-content-content" backgroundColor={actualDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{sessionContent.sessionContent}</EncodedHTMLDiv>
+            <EncodedHTMLDiv className="session-content-content" backgroundColor={usedDisplayTheme === "dark" ? "#40405b" : "#e4e4ff"} >{sessionContent.sessionContent}</EncodedHTMLDiv>
         </Link>
         <div className="session-content-footer">
             <Link to={`#${day};${sessionContent.id};f`} onClick={(e) => e.stopPropagation()} replace={true} className={`session-content-footer-button ${sessionContent.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link>

@@ -12,7 +12,7 @@ import ConfusedCanardman from "../../graphics/ConfusedCanardman";
 import "./Account.css";
 
 export default function Account({ }) {
-    const { actualDisplayTheme } = useContext(AppContext)
+    const { usedDisplayTheme } = useContext(AppContext)
 
     const account = useContext(AccountContext);
 
@@ -174,8 +174,8 @@ export default function Account({ }) {
                                                     <ContentLoader
                                                         animate={displayMode === "quality"}
                                                         speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                        backgroundColor={usedDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                        foregroundColor={usedDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
                                                         height="30"
                                                         style={{ width: "30%" }}
                                                     >
@@ -187,8 +187,8 @@ export default function Account({ }) {
                                                         <ContentLoader
                                                             animate={displayMode === "quality"}
                                                             speed={1}
-                                                            backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
-                                                            foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                            backgroundColor={usedDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                            foregroundColor={usedDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
                                                             height="25"
                                                             style={{ width: `${contentLoaderRandomValues.current.fileNameWidth[index]}%` }}
                                                         >
@@ -198,8 +198,8 @@ export default function Account({ }) {
                                                             <ContentLoader
                                                                 animate={displayMode === "quality"}
                                                                 speed={1}
-                                                                backgroundColor={actualDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
+                                                                backgroundColor={usedDisplayTheme === "dark" ? "#5b5abd" : "#9595cc"}
+                                                                foregroundColor={usedDisplayTheme === "dark" ? "#494897" : "#b0b0f2"}
                                                                 height="20"
                                                                 style={{ width: "100%" }}
                                                             >

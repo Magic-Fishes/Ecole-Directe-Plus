@@ -17,7 +17,7 @@ import { formatDateRelative } from "../../../utils/date";
 import ContentLoader from "react-content-loader"
 
 export default function LastGrades({ className = "", ...props }) {
-    const { actualDisplayTheme } = useContext(AppContext)
+    const { usedDisplayTheme } = useContext(AppContext)
 
     const {
         lastGrades: { value: lastGrades },
@@ -73,8 +73,8 @@ export default function LastGrades({ className = "", ...props }) {
                             <ContentLoader
                                 animate={displayMode.value === "quality"}
                                 speed={1}
-                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 style={{ width: contentLoadersRandomValues.current.subjectNameWidth[i] + "px", height: "25px" }}
                                 className="last-grade-name"
                             >
@@ -85,8 +85,8 @@ export default function LastGrades({ className = "", ...props }) {
                                     animate={displayMode.value === "quality"}
                                     key={i}
                                     speed={1}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                    backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                     style={{ width: "20px", height: "20px" }}
                                     className="last-grade-name"
                                 >
@@ -97,8 +97,8 @@ export default function LastGrades({ className = "", ...props }) {
                                 <ContentLoader
                                     animate={displayMode.value === "quality"}
                                     speed={1}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                    backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                     style={{ width: contentLoadersRandomValues.current.datesWidth[i] + "px", height: "25px" }}
                                     className="last-grade-name"
                                 >

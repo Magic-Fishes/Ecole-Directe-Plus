@@ -14,7 +14,7 @@ import DateSelector from "./DateSelector";
 
 import "./Notebook.css";
 export default function Notebook({ hideDateController = false }) {
-    const { isLoggedIn, actualDisplayTheme } = useContext(AppContext);
+    const { isLoggedIn, usedDisplayTheme } = useContext(AppContext);
 
     const userData = useContext(UserDataContext);
     const {
@@ -306,8 +306,8 @@ export default function Notebook({ hideDateController = false }) {
                                 <ContentLoader
                                     animate={displayMode.value === "quality"}
                                     speed={1}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
+                                    backgroundColor={usedDisplayTheme === "dark" ? "#9E9CCC" : "#676997"}
+                                    foregroundColor={usedDisplayTheme === "dark" ? "#807FAD" : "#8F90C1"}
                                     style={{ width: `${130}px`, maxHeight: "25px" }}
                                 >
                                     <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />

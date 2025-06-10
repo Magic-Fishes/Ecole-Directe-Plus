@@ -50,7 +50,7 @@ function findGradesObjectById(list, value) {
 }
 
 export default function Information({ ...props }) {
-    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+    const { isTabletLayout, usedDisplayTheme } = useContext(AppContext);
 
     const {
         grades: { value: grades },
@@ -90,8 +90,8 @@ export default function Information({ ...props }) {
                                 <ContentLoader
                                     animate={isDisplayModeQuality}
                                     speed={1}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                    backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                     height="20"
                                     style={{ width: "70%" }}
                                 >
@@ -128,8 +128,8 @@ export default function Information({ ...props }) {
                             <ContentLoader
                                 animate={isDisplayModeQuality}
                                 speed={1}
-                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "300px" }}
                             >
@@ -139,8 +139,8 @@ export default function Information({ ...props }) {
                             <ContentLoader
                                 animate={isDisplayModeQuality}
                                 speed={1}
-                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "200px" }}
                             >
@@ -150,8 +150,8 @@ export default function Information({ ...props }) {
                             <ContentLoader
                                 animate={isDisplayModeQuality}
                                 speed={1}
-                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 height="20"
                                 style={{ maxWidth: "260px" }}
                             >
@@ -227,7 +227,7 @@ export default function Information({ ...props }) {
                             <p className="skill-name">{el.name}</p>
                             <p>{el.description}</p>
                         </span>
-                        <span className="skill-value" style={{ "color": (actualDisplayTheme === "dark" ? (el.value === "Non atteint" ? "#FF0000" : el.value === "Partiellement atteint" ? "#FFC000" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#00B050" : "#FFF8") : (el.value === "Non atteint" ? "#F00" : el.value === "Partiellement atteint" ? "#DA8700" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#03a880" : "#0008")) }}>
+                        <span className="skill-value" style={{ "color": (usedDisplayTheme === "dark" ? (el.value === "Non atteint" ? "#FF0000" : el.value === "Partiellement atteint" ? "#FFC000" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#00B050" : "#FFF8") : (el.value === "Non atteint" ? "#F00" : el.value === "Partiellement atteint" ? "#DA8700" : el.value === "Atteint" ? "#0070C0" : el.value === "Dépassé" ? "#03a880" : "#0008")) }}>
                             {el.value}
                         </span>
                     </div>].flat())}

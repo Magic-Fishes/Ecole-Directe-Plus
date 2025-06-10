@@ -22,7 +22,7 @@ import "./Results.css";
 import { DisplayTypes } from "./Grades";
 
 export default function Results({ selectedDisplayType, setSelectedDisplayType, ...props }) {
-    const { isTabletLayout, actualDisplayTheme } = useContext(AppContext);
+    const { isTabletLayout, usedDisplayTheme } = useContext(AppContext);
 
     const userData = useContext(UserDataContext);
     const {
@@ -221,8 +221,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                     <ContentLoader
                                                         animate={isDisplayModeQuality}
                                                         speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                        backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                        foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                         style={{ width: subjectNameWidth + "px", maxHeight: "30px" }}
                                                     >
                                                         <rect x="0" y="0" rx="10" ry="10" width="100%" height="100%" />
@@ -232,8 +232,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                     <ContentLoader
                                                         animate={isDisplayModeQuality}
                                                         speed={1}
-                                                        backgroundColor={actualDisplayTheme === "dark" ? "#7878ae" : "#75759a"}
-                                                        foregroundColor={actualDisplayTheme === "dark" ? "#9292d4" : "#9292c0"}
+                                                        backgroundColor={usedDisplayTheme === "dark" ? "#7878ae" : "#75759a"}
+                                                        foregroundColor={usedDisplayTheme === "dark" ? "#9292d4" : "#9292c0"}
                                                         viewBox="0 0 50 50"
                                                         style={{ maxHeight: "30px" }}
                                                     >
@@ -246,8 +246,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                             <ContentLoader
                                                                 animate={isDisplayModeQuality}
                                                                 speed={1}
-                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -255,8 +255,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                             <ContentLoader
                                                                 animate={isDisplayModeQuality}
                                                                 speed={1}
-                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -264,8 +264,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                             <ContentLoader
                                                                 animate={isDisplayModeQuality}
                                                                 speed={1}
-                                                                backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                                backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                 style={{ width: "80px", maxHeight: "25px" }}
                                                             >
                                                                 <rect x="0" y="0" rx="10" ry="10" style={{ width: "100%", height: "100%" }} />
@@ -277,8 +277,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                                                     <ContentLoader
                                                                         animate={isDisplayModeQuality}
                                                                         speed={1}
-                                                                        backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                                                        foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                                                        backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                                                        foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                                                         viewBox="0 0 70 50"
                                                                         height="30"
                                                                         key={crypto.randomUUID()}
@@ -301,8 +301,8 @@ export default function Results({ selectedDisplayType, setSelectedDisplayType, .
                                     animate={isDisplayModeQuality}
                                     speed={1}
                                     style={{ width: "100%", height: "100%", padding: "25px" }}
-                                    backgroundColor={actualDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
-                                    foregroundColor={actualDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
+                                    backgroundColor={usedDisplayTheme === "dark" ? "#63638c" : "#9d9dbd"}
+                                    foregroundColor={usedDisplayTheme === "dark" ? "#7e7eb2" : "#bcbce3"}
                                 >
                                     <rect x="0" y="70%" rx="10" ry="10" style={{ width: "18%", height: "30%", padding: "10px" }} />
                                     <rect x="20%" y="65%" rx="10" ry="10" style={{ width: "18%", height: "45%", padding: "10px" }} />

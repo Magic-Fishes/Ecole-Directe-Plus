@@ -198,7 +198,7 @@ export default function App() {
     // diverse
     const abortControllers = useRef([]); // permet d'abort tous les fetch en cas de déconnexion de l'utilisateur pendant une requête
     const entryURL = useRef(window.location.href);
-    const actualDisplayTheme = displayTheme.value === "auto" // thème d'affichage réel (ex: dark ou light, et non pas auto)
+    const usedDisplayTheme = displayTheme.value === "auto" // thème d'affichage réel (ex: dark ou light, et non pas auto)
         ? window.matchMedia('(prefers-color-scheme: dark)').matches
             ? "dark"
             : "light"
