@@ -51,7 +51,6 @@
     scroll-snap-align: center;
     cursor: grab;
     transition: .2s;
-    
     display: flex;
     flex-flow: column nowrap;
 }
