@@ -7,11 +7,12 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 
 export function mapUpcomingHomeworks(homeworks) {
     // This function will map (I would rather call it translate) the EcoleDirecte response to a better js object
-    const activeHomework = { day: null, id: null };
+    let activeHomeworkDate = null;
+    let activeHomeworkId = null;
     const mappedUpcomingAssignments = []
     const mappedHomeworks = Object.fromEntries(Object.entries(homeworks).map((day) => {
-        if (activeHomework.day === null && tomorrow < new Date(day[0])) {
-            activeHomework.day = day[0];
+        if (activeHomeworkDate === null && tomorrow < new Date(day[0])) {
+            activeHomeworkDate = day[0];
         }
         return [day[0], day[1].map((homework) => {
             const { codeMatiere, aFaire, donneLe, effectue, idDevoir, interrogation, matiere, /* rendreEnLigne, documentsAFaire // I don't know what to do with that for now */ } = homework;
@@ -52,7 +53,8 @@ export function mapUpcomingHomeworks(homeworks) {
     return {
         mappedHomeworks,
         mappedUpcomingAssignments,
-        activeHomework,
+        activeHomeworkDate,
+        activeHomeworkId,
     }
 }
 

@@ -34,7 +34,9 @@ const supposedNoSessionContent = [
 export default function Homeworks() {
     const userData = useContext(UserDataContext);
     const {
-        homeworks: { value: homeworks }
+        homeworks: { value: homeworks },
+        activeHomeworkDate: { value: activeHomeworkDate },
+        activeHomeworkId: { value: activeHomeworkId }
     } = userData;
 
     const account = useContext(AccountContext);
@@ -62,18 +64,6 @@ export default function Homeworks() {
         }
     }, [isLoggedIn, homeworks]);
 
-    // This seemed to be useless because we use the <Navigate/> component is a parameter isn't valid
-    /*useEffect(() => {
-        if (hashParameters.length > 2) {
-            if (hashParameters[2] === "s" && !selectedTask?.sessionContent) {
-                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
-            }
-            if (hashParameters[2] === "f" && !selectedTask?.files?.length) {
-                navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true })
-            }
-        }
-    }, [location.hash])*/
-
     // JSX
     return <>
         <div id="homeworks">
@@ -85,7 +75,7 @@ export default function Homeworks() {
                                 <h2>Prochains devoirs surveillés</h2>
                             </WindowHeader>
                             <WindowContent className="upcoming-assignments-container">
-                                <UpcomingAssignments homeworks={homeworks} />
+                                <UpcomingAssignments />
                             </WindowContent>
                         </Window>
                         <Window growthFactor={1.75} >
@@ -102,7 +92,7 @@ export default function Homeworks() {
                                 </InfoButton>
                             </WindowHeader>
                             <WindowContent>
-                                <Calendar defaultSelectedDate={selectedDate} homeworks={homeworks} />
+                                <Calendar />
                             </WindowContent>
                         </Window>
                     </WindowsLayout>
@@ -119,7 +109,17 @@ export default function Homeworks() {
         </div>
         {(hashParameters.length > 2 && hashParameters[2] === "s" && selectedTask) && (!supposedNoSessionContent.includes(selectedTask.sessionContent)
             ? <BottomSheet heading="Contenu de séance" onClose={() => { navigate(`${hashParameters[0]};${hashParameters[1]}`, { replace: true }) }}>
-                <EncodedHTMLDiv className="bottomsheet-session-content">{selectedTask.sessionContent}</EncodedHTMLDiv><div className="task-footer"><Link to={`#${selectedDate};${selectedTask.id};s;f`} onClick={(e) => e.stopPropagation()} replace={true} className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}><DownloadIcon className="download-icon" />Fichiers</Link></div>
+                <EncodedHTMLDiv className="bottomsheet-session-content">{selectedTask.sessionContent}</EncodedHTMLDiv>
+                <div className="task-footer">
+                    <div
+                        to={`#${selectedDate};${selectedTask.id};s;f`}
+                        onClick={(e) => e.stopPropagation()}
+                        replace={true}
+                        className={`task-footer-button ${selectedTask.sessionContentFiles.length === 0 ? "disabled" : ""}`}
+                    >
+                        <DownloadIcon className="download-icon" />Fichiers
+                    </div>
+                </div>
             </BottomSheet>
             : <Navigate to={`${hashParameters[0]};${hashParameters[1]}`} />)}
         {(hashParameters.length > 2 && hashParameters[2] === "f" && selectedTask) && ((selectedTask.type === "task" ? selectedTask.files.length : selectedTask.sessionContentFiles.length)
