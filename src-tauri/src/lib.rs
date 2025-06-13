@@ -12,19 +12,22 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![])
         .setup(move |app: &mut App| {
+          // NOTE: will trigger a warning on mobile builds since `mut` is unused.
           let mut win = WebviewWindowBuilder::new(app, "main", app_url_external)
                 .disable_drag_drop_handler()
                 .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36")
                 .initialization_script(
                     format!(
                         r#"
-                  if (!window.__EDP_APP_INIT__) {{
-                  window.__EDP_APP_INIT__ = true;
-                    {injection}
-                  }}
-                "#
+                          if (!window.__EDP_APP_INIT__) {{
+                            window.__EDP_APP_INIT__ = true;
+                            {injection}
+                          }}
+                        "#
                     )
                     .as_str(),
                 );

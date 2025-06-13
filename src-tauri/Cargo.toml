@@ -1,12 +1,11 @@
 [package]
-name = "portableedp"
+name = "ecoledirecteplus"
 version = "0.1.0"
-description = "A wrapper of Ecole Directe Plus for easy use, on mobile and desktop."
-authors = ["Mikkel ALMONTE--RINGAUD <contact@vexcited.com>"]
+description = "Ecole Directe Plus is a web app that is designed to replace and improve EcoleDirecte."
 edition = "2021"
 
 [lib]
-name = "portableedp_lib"
+name = "ecoledirecteplus_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
@@ -18,4 +17,12 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 url = "2.5"
 include-flate = "0.3"
-tauri-plugin-http = { version = "=2.3.0", default-features = false, features = ["rustls-tls", "http2", "charset", "macos-system-configuration", "unsafe-headers"] }
+tauri-plugin-http = { version = "=2.3.0", default-features = false, features = [
+  "rustls-tls",
+  "http2",
+  "charset",
+  "macos-system-configuration",
+  "unsafe-headers",
+] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
