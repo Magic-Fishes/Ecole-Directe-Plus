@@ -1,6 +1,5 @@
 // libs/utils
 import { useState, useRef } from "react";
-import useInitializer from "./utils/useInitializer";
 
 // constants
 import { LoginStates, LoginCodes, DoubleAuthCodes } from "../constants/codes";
