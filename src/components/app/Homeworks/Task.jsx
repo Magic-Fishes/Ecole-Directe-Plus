@@ -11,7 +11,7 @@ export default function Task({ task, day, ...props }) {
     const { usedDisplayTheme, fetchHomeworksDone, useUserSettings } = useContext(AppContext)
 
     const userData = useContext(UserDataContext);
-    const { homeworks } = userData;
+    const { homeworks: {value: homeworks, set: setHomeworks} } = userData;
 
     const settings = useContext(SettingsContext);
     const { isPartyModeEnabled, displayMode } = settings.user;
@@ -39,19 +39,20 @@ export default function Task({ task, day, ...props }) {
     }
 
     function checkTask(date, task) {
-        const tasksToUpdate = (task.isDone ? {
-            tasksNotDone: [task.id],
-        } : {
-            tasksDone: [task.id],
-        })
-        fetchHomeworksDone(tasksToUpdate);
-        if (tasksToUpdate.tasksDone !== undefined) {
+        const isTaskDone = task.isDone;
+        if (!isTaskDone) {
             if (isPartyModeEnabled.value && displayMode.value === "quality") {
                 completedTaskAnimation();
             }
         }
-        homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
-        userData.set("homeworks", homeworks);
+        task.check()
+        .catch((error) => {
+            console.error(error);
+            homeworks[date].find((item) => item.id === task.id).isDone = isTaskDone;
+            setHomeworks(homeworks);
+        });
+        homeworks[date].find((item) => item.id === task.id).isDone = !isTaskDone;
+        setHomeworks(homeworks);
     }
 
     function handleTaskClick(event) {

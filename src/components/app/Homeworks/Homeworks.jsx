@@ -25,6 +25,8 @@ import DownloadIcon from "../../graphics/DownloadIcon"
 
 import "./Homeworks.css";
 import "./DetailedTask.css";
+import LogoutIcon from "../../graphics/LogoutIcon";
+import LinkableButton from "../../generic/buttons/LinkableButton";
 
 const supposedNoSessionContent = [
     "PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+PHAgc3R5bGU9Ii13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwKTsiPjxicj48L3A+",

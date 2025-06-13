@@ -665,50 +665,6 @@ export default function App() {
         }
     }
 
-
-    async function fetchHomeworksDone({ tasksDone = [], tasksNotDone = [] }, controller = (new AbortController())) {
-        /**
-         * Change the state of selected homeworks
-         * @param tasksDone Tasks switched to true 
-         * @param tasksNotDone Tasks switched to false
-         * These two paramerters are in a single object 
-         * @param controller AbortController
-         */
-        abortControllers.current.push(controller);
-        const userId = selectedUserIndex.value;
-
-        return fetch(
-            `https://api.ecoledirecte.com/v3/Eleves/${accountsListState[userId].id}/cahierdetexte.awp?verbe=put&v=${apiVersion}`,
-            {
-                method: "POST",
-                headers: {
-                    "x-token": tokenState
-                },
-                body: "data=" + JSON.stringify({ idDevoirsEffectues: tasksDone, idDevoirsNonEffectues: tasksNotDone }),
-                signal: controller.signal
-            },
-            "json"
-        )
-            .then((response) => {
-                let code;
-                if (selectedUser.id === -1) {
-                    code = 49969;
-                } else {
-                    code = response.code;
-                }
-                if (code === 520 || code === 525) {
-                    // token invalide
-                    console.log("INVALID TOKEN: LOGIN REQUIRED");
-                    requireLogin();
-                }
-                setTokenState((old) => (response?.token || old));
-            })
-            .finally(() => {
-                abortControllers.current.splice(abortControllers.current.indexOf(controller), 1);
-            })
-    }
-
-
     async function fetchMessages(folderId = 0, controller = (new AbortController())) {
         const oldMessageFolders = useUserData("messageFolders").get();
         if (oldMessageFolders && oldMessageFolders?.length > 0) {
@@ -1414,7 +1370,6 @@ export default function App() {
 
     const appContextValue = useMemo(() => ({
         refreshApp,
-        fetchHomeworksDone,
         fetchHomeworksSequentially,
         promptInstallPWA,
         selectedUserIndex,
@@ -1425,10 +1380,9 @@ export default function App() {
         isStandaloneApp,
         isDevChannel,
         globalSettings,
-        actualDisplayTheme,
+        usedDisplayTheme,
     }), [
         refreshApp,
-        fetchHomeworksDone,
         fetchHomeworksSequentially,
         promptInstallPWA,
         selectedUserIndex,
@@ -1438,7 +1392,7 @@ export default function App() {
         isTabletLayout,
         isStandaloneApp,
         isDevChannel,
-        actualDisplayTheme,
+        usedDisplayTheme,
     ]);
 
     const accountContextValue = {

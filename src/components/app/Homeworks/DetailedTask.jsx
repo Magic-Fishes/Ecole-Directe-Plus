@@ -19,58 +19,34 @@ const supposedNoSessionContent = [
 ]
 
 export default function DetailedTask({ task, day, ...props }) {
-    const { usedDisplayTheme, fetchHomeworksDone } = useContext(AppContext);
+    const { usedDisplayTheme } = useContext(AppContext);
     
     const userData = useContext(UserDataContext);
-    const { homeworks } = userData;
+    const {
+        homeworks: {value: homeworks, set: setHomeworks}
+    } = userData;
 
     const settings = useContext(SettingsContext);
     const { isPartyModeEnabled, displayMode, isStreamerModeEnabled } = settings.user;
     
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const location = useLocation();
     
     const isMouseInCheckBoxRef = useRef(false);
     const detailedTaskRef = useRef(null);
     const taskCheckboxRef = useRef(null);
     const contentLoadersRandomValues = useRef({ labelWidth: Math.floor(Math.random() * 150) + 100, contentHeight: Math.floor(Math.random() * 200) + 50 })
-    const oldLocationHash = useRef(null);
 
     function scrollIntoViewNearestParent(element) {
+        if (!element) {
+            return;
+        }
         const parent = element.parentElement;
         const parentBounds = getZoomedBoudingClientRect(parent.getBoundingClientRect());
         const bounds = getZoomedBoudingClientRect(element.getBoundingClientRect());
 
         parent.scrollTo(0, bounds.y - parentBounds.y + parent.scrollTop - 20)
     }
-
-    useEffect(() => {
-        if (oldLocationHash.current === location.hash) {
-            return;
-        }
-
-        oldLocationHash.current = location.hash;
-
-        if (["#patch-notes", "#policy", "#feedback"].includes(location.hash)) {
-            return;
-        }
-
-        const anchors = location.hash.split(";");
-
-        if (anchors.length < 2) {
-            return;
-        }
-
-        const taskId = parseInt(anchors[1]);
-
-        if (isNaN(taskId)) {
-            return;
-        }
-
-        if (taskId === task.id && detailedTaskRef.current) {
-            setTimeout(() => scrollIntoViewNearestParent(detailedTaskRef.current), 200);
-        }
-    }, [location, detailedTaskRef.current, homeworks])
 
     function completedTaskAnimation() {
         const bounds = getZoomedBoudingClientRect(taskCheckboxRef.current.getBoundingClientRect());
@@ -89,17 +65,20 @@ export default function DetailedTask({ task, day, ...props }) {
     }
 
     function checkTask(date, task) {
-        const tasksToUpdate = (task.isDone
-            ? { tasksNotDone: [task.id] }
-            : { tasksDone: [task.id] })
-        fetchHomeworksDone(tasksToUpdate); // !:! need to handle errors and stuff (idk but need handle it)
-        if (tasksToUpdate.tasksDone !== undefined) {
+        const isTaskDone = task.isDone;
+        if (!isTaskDone) {
             if (isPartyModeEnabled.value && displayMode.value === "quality") {
                 completedTaskAnimation();
             }
         }
-        homeworks[date].find((item) => item.id === task.id).isDone = !task.isDone;
-        userData.set("homeworks", homeworks);
+        task.check()
+        .catch((error) => {
+            console.error(error);
+            homeworks[date].find((item) => item.id === task.id).isDone = isTaskDone;
+            setHomeworks(homeworks);
+        });
+        homeworks[date].find((item) => item.id === task.id).isDone = !isTaskDone;
+        setHomeworks(homeworks);
     }
 
     return <>{(task?.content
