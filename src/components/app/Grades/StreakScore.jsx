@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react';
 
 import { AppContext } from "../../../App";
 import {
@@ -13,9 +13,7 @@ import InfoButton from "../../generic/Informative/InfoButton";
 import Star from "../../graphics/Star";
 import ArrowOutline from "../../graphics/ArrowOutline";
 
-
 import "./StreakScore.css";
-
 
 export default function StreakScore({ streakScore, streakHighScore=0, className="", ...props }) {
     const [displayedStreakScore, setDisplayedStreakScore] = useState(0);
@@ -33,7 +31,7 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
     useEffect(() => {
         // animation du score de streak
         currentStep.current = 0;
-        
+
         function lerp(start, end, t) {
             // si on veut changer la "courbe" (t'as la ref) c'est ici, là c'est linéaire
             return start + t * (end - start);
@@ -44,10 +42,23 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
                 setDisplayedStreakScore(Math.round(lerp(0, streakScore, (currentStep.current + 1) / max)));
                 currentStep.current++;
             }
-        }
+        };
+
+        // Function to handle streak score calculation considering "Abs"
+        const calculateStreakScore = (scores) => {
+            let streak = 0;
+            for (let score of scores) {
+                if (score !== "Abs" && score !== "Disp" && score >= streakScore) {
+                    streak++;
+                }
+            }
+            return streak;
+        };
 
         if (displayMode.get() === "quality" && streakScore) {
-            const STEP_NUMBER = (streakScore < 15 ? streakScore : 12 + Math.floor(streakScore / 5)); // à ne pas confondre avec le sport qui consiste à monter et descendre des dizaines de fois par minutes
+            const scores = getScores(); // Assuming getScores() returns an array of scores
+            const streak = calculateStreakScore(scores);
+            const STEP_NUMBER = (streak < 15 ? streak : 12 + Math.floor(streak / 5));
             const STEP_DURATION = 50;
             intervalId.current = setInterval(() => newStep(STEP_NUMBER), STEP_DURATION);
         } else {
@@ -58,7 +69,7 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
             if (intervalId.current) {
                 clearInterval(intervalId.current);
             }
-        }
+        };
     }, [streakScore]);
 
     useEffect(() => {
@@ -77,15 +88,14 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
             } else {
                 setArrowsNumber(newArrowsNumber);
             }
-        }
+        };
         window.addEventListener("resize", arrowsNumberCalculation);
         arrowsNumberCalculation();
 
         return () => {
             window.removeEventListener("resize", arrowsNumberCalculation);            
-        }
+        };
     }, []);
-    
 
     return (
         <Window className={`streak-score ${className}`} allowFullscreen={true} growthFactor={.8} {...props}>
@@ -118,5 +128,5 @@ export default function StreakScore({ streakScore, streakHighScore=0, className=
                 </div>
             </WindowContent>
         </Window>
-    )
+    );
 }
